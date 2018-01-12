@@ -1,0 +1,30 @@
+{
+  "name": "velocity",
+  "version": "1.0.0",
+  "description": "verlocity description",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "http": "0.0.0",
+    "pug": "^2.0.0-rc.4",
+    "shelljs": "^0.7.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "",
+    "stop": "kill 8341"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larryyueli/velocity.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/larryyueli/velocity/issues"
+  },
+  "homepage": "https://github.com/larryyueli/velocity#readme"
+}
