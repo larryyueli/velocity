@@ -1,6 +1,8 @@
 // server related configuration
 const port = 8000;
 exports.port = port;
+const urlencoded = true;
+exports.urlencoded = urlencoded;
 
 // session related configuration
 const maxSessionAge = 60 * 60 * 1000;

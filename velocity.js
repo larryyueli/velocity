@@ -8,7 +8,7 @@ const app = express();
 const config = require(`${__dirname}/Backend/config.js`);
 
 app.use(express.static(`${__dirname}/UI`));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(session({
     secret: config.sessionSecret,
     resave: config.sessionResave,
