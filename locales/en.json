@@ -1,0 +1,9 @@
+{
+	"login": {
+		"signIn": "Sign In"
+	},
+	"userInformation": {
+		"password": "Password",
+		"username": "Username"
+	}
+}
