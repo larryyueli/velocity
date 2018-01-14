@@ -10,7 +10,7 @@ $('#login').submit(function(evt) {
         },
         error: function(data) {
             var jsonResponse = data.responseJSON;
-        $('#invalid').html(`<div class="chip white-text red darken-4">${getErrorFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`);
+            $('#invalid').html(`<div class="chip white-text red darken-4">${getErrorFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`);
         },
         complete: function(data) {
             $('#password').val('').focus();
