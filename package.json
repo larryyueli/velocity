@@ -13,7 +13,7 @@
   "devDependencies": {},
   "scripts": {
     "restart": "npm stop ; npm start",
-    "start": "(node velocity.js && nodejs velocity.js) &",
+    "start": "(node velocity.js || nodejs velocity.js) &",
     "stop": "kill $(ps -ef | grep velocity | awk '{print $2}')",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
