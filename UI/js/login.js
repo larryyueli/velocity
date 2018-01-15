@@ -1,19 +1,22 @@
+const loginForm = $('#login');
+const errorField = $('#invalid');
+const passwordField = $('#password');
 
-$('#login').submit(function(evt) {
+loginForm.submit(function(evt) {
     evt.preventDefault();
     $.ajax({
         type: 'POST',
         url: '/login',
-        data: $('#login').serialize(),
+        data: loginForm.serialize(),
         success: function(data) {
             window.location.href = '/'; // TODO: add a link to the correct path
         },
         error: function(data) {
             var jsonResponse = data.responseJSON;
-            $('#invalid').html(`<div class="chip white-text red darken-4">${getErrorFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`);
+            errorField.html(`<div class="chip white-text red darken-4">${getErrorMessageFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`);
         },
         complete: function(data) {
-            $('#password').val('').focus();
+            passwordField.val('').focus();
         }
     });
 });

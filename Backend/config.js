@@ -17,3 +17,7 @@ const rollingSession = true;
 exports.rollingSession = rollingSession;
 const secureSessionCookie = false;
 exports.secureSessionCookie = secureSessionCookie;
+const languageOptions = ['en'];
+exports.secureSessionCookie = languageOptions;
+const defaultLanguage = 'en';
+exports.secureSessionCookie = defaultLanguage;

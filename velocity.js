@@ -8,19 +8,22 @@ const session = require('express-session');
 
 const app = express();
 
+// File names to render
+const login = 'login';
+
 // Setting up i18n library
 i18n.configure({
-    locales:['en'],
-    defaultLocale: 'en',
-    directory: __dirname + '/locales',
+    locales: config.languageOptions,
+    defaultLocale: config.defaultLanguage,
+    directory: `${__dirname}/locales`,
     objectNotation: true
 });
 
 app.set('view engine', 'pug');
 
-app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
-app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
-app.use('/materializecss', express.static(__dirname + '/node_modules/materialize-css/dist'));
+app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist/`));
+app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
+app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 
@@ -48,5 +51,5 @@ app.listen(config.port, function () {
 });
 
 app.get('/', function (req, res) {
-    return res.status(200).render('login');
+    return res.status(200).render(login);
 });
