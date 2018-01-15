@@ -2,25 +2,27 @@
   "name": "velocity",
   "version": "1.0.0",
   "description": "verlocity description",
-  "main": "server.js",
+  "main": "velocity.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "http": "0.0.0",
-    "moment": "^2.20.1",
-    "mongodb": "^3.0.1",
-    "readline-sync": "^1.4.7",
-    "uuid": "^3.1.0",
     "i18n": "^0.8.3",
     "jquery": "^3.2.1",
     "materialize-css": "^0.100.2",
-    "pug": "^2.0.0-rc.4"
+    "moment": "^2.20.1",
+    "mongodb": "^3.0.1",
+    "pug": "^2.0.0-rc.4",
+    "readline-sync": "^1.4.7",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {},
   "scripts": {
     "restart": "npm stop ; npm start",
+    "setup": "node Backend/setup.js || nodejs Backend/setup.js",
     "start": "(node velocity.js || nodejs velocity.js) &",
     "stop": "kill $(ps -ef | grep velocity | awk '{print $2}')",
     "test": "echo \"Error: no test specified\" && exit 1"

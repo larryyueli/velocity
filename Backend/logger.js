@@ -1,17 +1,18 @@
 const fs = require('fs');
+
 const common = require('./common.js');
 
 var dateStamp;
 
 /**
- * print a normal message
+ * print an info message
  * 
  * @param {string} text 
  */
 exports.info = function (text) {
     init();
 
-    var txt = common.formatString('[{0}] log: {1}', [common.getDate(), text]);
+    const txt = `[{${common.getDate()}}] info: ${text}`;
     console.log(txt);
 }
 
@@ -23,7 +24,7 @@ exports.info = function (text) {
 exports.error = function (text) {
     init();
 
-    var txt = common.formatString('[{0}] error: {1}', [common.getDate(), text]);
+    const txt = `[{${common.getDate()}}] error: ${text}`;
     console.error(txt);
 }
 
@@ -31,14 +32,13 @@ exports.error = function (text) {
  * initiate the logging with file
  */
 const init = function () {
-    const currentDate = common.getDateByFormat('YYYY-MM-DD');
+    const currentDate = common.getDateFormatted('YYYY-MM-DD');
     if (!process.env.DEBUG && dateStamp !== currentDate) {
         dateStamp = currentDate;
-        const logger = fs.createWriteStream(__dirname + '/../logs/'+dateStamp+'.log', {'flags':'a'});
+        const logger = fs.createWriteStream(`${__dirname}/../Logs/${dateStamp}.log`, { 'flags': 'a' });
         process.stdout.write = process.stderr.write = logger.write.bind(logger);
-        process.on('uncaughtException', function(err) {
-                console.error((err && err.stack) ? err.stack : err);
-            }
-        );
+        process.on('uncaughtException', function (err) {
+            console.error((err && err.stack) ? err.stack : err);
+        });
     }
 }

@@ -1,33 +1,36 @@
 const rls = require('readline-sync');
-const users = require('./users.js');
-const common = require('./common.js');
-const logger = require('./logger.js');
 
+const common = require(`${__dirname}/common.js`);
+const db = require(`${__dirname}/db.js`);
+const logger = require(`${__dirname}/logger.js`);
+
+/**
+ * add an admin account
+ */
 const setupAdminAccount = function () {
+    logger.info('Quizzard server setup');
+    logger.info('Creating administrator account.');
 
-    logger.log('Quizzard server setup');
-    logger.log('Creating administrator account.');
-
-    let user = rls.question('Please enter username: ');
-    let pass = rls.question('Enter password: ', {
+    const username = rls.question('Please enter a username: ');
+    const password = rls.question('Enter a password: ', {
         hideEchoBack: true,
-        mask: ''
+        mask: '*'
     });
-    let pass2 = rls.question('Confirm password: ', {
+    const password2 = rls.question('Confirm your password: ', {
         hideEchoBack: true,
-        mask: ''
+        mask: '*'
     });
 
-    if (pass != pass2) {
-        logger.error('Passwords do not match.');
+    if (password !== password2) {
+        logger.error('Your passwords do not match, please try again.');
         process.exit(1);
     }
-    setupAdminAccount(user, pass);
-    var acc = {
-        username: accid,
-        password: pass,
-        fname: accid,
-        lname: accid
+
+    const user = {
+        username: username,
+        password: password,
+        fname: username,
+        lname: username
     };
 
     db.initialize(function (err, result) {
@@ -36,20 +39,13 @@ const setupAdminAccount = function () {
             process.exit(1);
         }
 
-        users.addAdmin(acc, function (err, res) {
+        users.addAdmin(user, function (err, res) {
             if (err) {
-                if (err.code === 2014) {
-                    logger.error('Could not create account. Please try again.');
-                    process.exit(1);
-                } else if (err.code === 2019) {
-                    logger.error('Account with username exists.');
-                    process.exit(1);
-                }
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            logger.log('Administrator account created.');
+            logger.info('Administrator account created.');
             process.exit(0);
         });
     });

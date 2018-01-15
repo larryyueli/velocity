@@ -1,21 +1,23 @@
 // TODO: license
 const bodyParser = require('body-parser');
-const config = require(`${__dirname}/Backend/config.js`);
 const express = require('express');
 const i18n = require("i18n");
 const pug = require('pug');
 const session = require('express-session');
 
+const config = require(`${__dirname}/Backend/config.js`);
+const logger = require(`${__dirname}/Backend/logger.js`);
+
 const app = express();
 
 // File names to render
-const login = 'login';
+const loginPage = 'login';
 
 // Setting up i18n library
 i18n.configure({
     locales: config.languageOptions,
     defaultLocale: config.defaultLanguage,
-    directory: `${__dirname}/locales`,
+    directory: `${__dirname}/Locales`,
     objectNotation: true
 });
 
@@ -47,9 +49,9 @@ app.use(function(req, res, next) {
 });
 
 app.listen(config.port, function () {
-    console.log(`app is listening on port ${config.port}`);
+    logger.info(`app is listening on port ${config.port}`);
 });
 
 app.get('/', function (req, res) {
-    return res.status(200).render(login);
+    return res.status(200).render(loginPage);
 });
