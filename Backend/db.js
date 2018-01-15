@@ -3,11 +3,12 @@ const Db = require('mongodb').Db;
 const Server = require('mongodb').Server;
 
 const common = require(`${__dirname}/common.js`);
+const config = require(`${__dirname}/config.js`);
 const logger = require(`${__dirname}/logger.js`);
 
-const DB_HOST = process.env.DB_HOST || 'localhost';
-const DB_PORT = process.env.DB_PORT || 27017;
-const DB_NAME = process.env.DB_NAME || 'quizzard';
+const DB_HOST = config.default_db_host;
+const DB_PORT = config.default_db_port;
+const DB_NAME = config.default_db_name;
 const db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
 var usersCollection;
