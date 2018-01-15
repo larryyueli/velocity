@@ -17,6 +17,19 @@ exports.info = function (text) {
 }
 
 /**
+ * print a warning message
+ * 
+ * @param {string} text 
+ */
+exports.warning = function (text) {
+    init();
+
+    const txt = `[{${common.getDate()}}] warning: ${text}`;
+    console.log(txt);
+}
+
+
+/**
  * print an error message
  * 
  * @param {string} text 
