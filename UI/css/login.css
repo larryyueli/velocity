@@ -1,0 +1,20 @@
+.form-login {
+    margin: 0 auto;
+    max-width: 400px;
+}
+
+#invalid {
+    color: red;
+    text-align: center;
+}
+
+#logo {
+    display: block;
+    height: auto;
+    margin: 0 auto;
+    max-width: 300px;
+    max-height: 300px;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    width: auto;
+}
