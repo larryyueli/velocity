@@ -27,7 +27,7 @@ const default_db_host = 'localhost';
 exports.default_db_host = default_db_host;
 const default_db_port = 27017;
 exports.default_db_port = default_db_port;
-const default_db_name = 'quizzard';
+const default_db_name = 'velocity';
 exports.default_db_name = default_db_name;
 
 // session related configuration

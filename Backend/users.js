@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const bcrypt = require('bcryptjs');
 
 const common = require(`${__dirname}/common.js`);
+const db = require(`${__dirname}/db.js`);
 const logger = require(`${__dirname}/logger.js`);
 
 /**

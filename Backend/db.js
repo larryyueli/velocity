@@ -35,7 +35,7 @@ var usersCollection;
  *
  * @param {function} callback callback function
  */
-exports.initialize = function (callback) {
+const initialize = function (callback) {
     db.open(function (err, db) {
         if (err) {
             return callback(common.getError(1004), null);
@@ -45,6 +45,7 @@ exports.initialize = function (callback) {
         return callback(null, 'ok');
     });
 }
+exports.initialize = initialize;
 
 /**
  * add a user object to the users collection

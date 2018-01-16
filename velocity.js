@@ -23,6 +23,7 @@ const pug = require('pug');
 const session = require('express-session');
 
 const config = require(`${__dirname}/Backend/config.js`);
+const db = require(`${__dirname}/Backend/db.js`);
 const logger = require(`${__dirname}/Backend/logger.js`);
 
 const app = express();
