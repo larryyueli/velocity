@@ -10,6 +10,7 @@ const app = express();
 
 // File names to render
 const login = 'login';
+const modeSelector = 'modeSelector';
 
 // Setting up i18n library
 i18n.configure({
