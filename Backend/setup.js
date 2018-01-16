@@ -48,7 +48,8 @@ const setupAdminAccount = function () {
         username: username,
         password: password,
         fname: username,
-        lname: username
+        lname: username,
+        type: common.userTypes.MODE_SELECTOR
     };
 
     db.initialize(function (err, result) {
@@ -57,7 +58,7 @@ const setupAdminAccount = function () {
             process.exit(1);
         }
 
-        users.addAdmin(user, function (err, res) {
+        users.addUser(user, function (err, res) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);

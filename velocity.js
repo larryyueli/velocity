@@ -58,8 +58,8 @@ app.use(session({
     }
 }));
 
-app.use(function(req, res, next) {
-    res.locals.__ = res.__ = function() {
+app.use(function (req, res, next) {
+    res.locals.__ = res.__ = function () {
         return i18n.__.apply(req, arguments);
     };
 
@@ -68,6 +68,15 @@ app.use(function(req, res, next) {
 
 app.listen(config.port, function () {
     logger.info(`app is listening on port ${config.port}`);
+
+    db.initialize(function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            process.exit(1);
+        }
+
+        logger.info('Connection to Quizzard database successful.');
+    });
 });
 
 app.get('/', function (req, res) {

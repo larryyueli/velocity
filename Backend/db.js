@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const bcrypt = require('bcryptjs');
 const Db = require('mongodb').Db;
 const Server = require('mongodb').Server;
 
@@ -34,18 +33,37 @@ var usersCollection;
 /**
  * Open a connection to the database
  *
- * @param {function} callback
+ * @param {function} callback callback function
  */
 exports.initialize = function (callback) {
     db.open(function (err, db) {
         if (err) {
-            logger.error(common.getError(1004).message);
-            return callback(err, null);
+            return callback(common.getError(1004), null);
         }
 
-        logger.info('Connection to Quizzard database successful.');
         usersCollection = db.collection('users');
-
         return callback(null, 'ok');
+    });
+}
+
+/**
+ * add a user object to the users collection
+ *
+ * @param {object} user user object to add
+ * @param {function} callback callback function
+ */
+const addUser = function (user, callback) {
+    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function (err, obj) {
+        if (err) {
+            return callback(common.getError(1003), null);
+        }
+
+        if (obj) {
+            return callback(common.getError(2001), null);
+        }
+
+        usersCollection.insert(user, function (err, res) {
+            return callback(err ? common.getError(1004) : null, err ? null : user);
+        });
     });
 }
