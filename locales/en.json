@@ -2,6 +2,22 @@
 	"login": {
 		"signIn": "Sign In"
 	},
+	"modeSelector": {
+		"classMode": {
+			"description": "If you are a professor and would like to use Velocity in your classroom, then class mode is the one for you.",
+			"features": "This mode offers features like: Making assignments, assigning groups, adding teaching assistants, creating rubrics/marking criteria, and much more.",
+			"title": "Class Mode",
+			"usage": "Use class mode now"
+		},
+		"collaboratorMode": {
+			"description": "If you would like to organize your projects using scrum/kanban boards, then collaborator mode is the one for you.",
+			"features": "This mode offers features like: Making projects, working with others under an organization, organization using both scrum and kanban, and much more.",
+			"title": "Collaborator Mode",
+			"usage": "Use collaborator mode now"
+		},
+		"description": "Please select the mode that you would like to use",		
+		"title": "Welcome to Velocity!"
+	},
 	"userInformation": {
 		"password": "Password",
 		"username": "Username"
