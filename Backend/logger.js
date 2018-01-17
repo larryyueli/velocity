@@ -23,40 +23,41 @@ const common = require('./common.js');
 var dateStamp;
 
 /**
- * print an info message
+ * log an info message
  * 
  * @param {string} text 
  */
 exports.info = function (text) {
-    init();
-
-    const txt = `[{${common.getDate()}}] info: ${text}`;
-    console.log(txt);
+    log('info', text);
 }
 
 /**
- * print a warning message
+ * log a warning message
  * 
  * @param {string} text 
  */
 exports.warning = function (text) {
-    init();
-
-    const txt = `[{${common.getDate()}}] warning: ${text}`;
-    console.log(txt);
+    log('warning', text);
 }
 
-
 /**
- * print an error message
+ * log an error message
  * 
  * @param {string} text 
  */
 exports.error = function (text) {
-    init();
+    log('error', text);
+}
 
-    const txt = `[{${common.getDate()}}] error: ${text}`;
-    console.error(txt);
+/**
+ * log a message of a type
+ * 
+ * @param {string} type 
+ * @param {string} text 
+ */
+const log = function (type, text) {
+    init();
+    console.error(`[{${common.getDate()}}] ${type}: ${text}`);
 }
 
 /**

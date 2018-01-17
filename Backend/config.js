@@ -23,17 +23,17 @@ const urlencoded = true;
 exports.urlencoded = urlencoded;
 
 // database related configuration
-const default_db_host = 'localhost';
+const default_db_host = process.env.DB_HOST || 'localhost';
 exports.default_db_host = default_db_host;
-const default_db_port = 27017;
+const default_db_port = process.env.DB_PORT || 27017;
 exports.default_db_port = default_db_port;
-const default_db_name = 'velocity';
+const default_db_name = process.env.DB_NAME || 'velocity';
 exports.default_db_name = default_db_name;
 
 // session related configuration
 const maxSessionAge = 60 * 60 * 1000;
 exports.maxSessionAge = maxSessionAge;
-const sessionSecret = 'test';
+const sessionSecret = 'tests';
 exports.sessionSecret = sessionSecret;
 const sessionResave = false;
 exports.sessionResave = sessionResave;

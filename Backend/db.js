@@ -16,17 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const Db = require('mongodb').Db;
-const Server = require('mongodb').Server;
+const mongoClient = require('mongodb').MongoClient;
 
 const common = require(`${__dirname}/common.js`);
 const config = require(`${__dirname}/config.js`);
-const logger = require(`${__dirname}/logger.js`);
-
-const DB_HOST = config.default_db_host;
-const DB_PORT = config.default_db_port;
-const DB_NAME = config.default_db_name;
-const db = new Db(DB_NAME, new Server(DB_HOST, DB_PORT));
 
 var usersCollection;
 
@@ -36,12 +29,13 @@ var usersCollection;
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    db.open(function (err, db) {
+    const url = `mongodb://${config.default_db_host}:${config.default_db_port}`;
+    mongoClient.connect(url, function (err, client) {
         if (err) {
-            return callback(common.getError(1004), null);
+            return callback(common.getError(1001), null);
         }
 
-        usersCollection = db.collection('users');
+        usersCollection = client.db(config.default_db_name).collection('users');
         return callback(null, 'ok');
     });
 }
@@ -54,7 +48,7 @@ exports.initialize = initialize;
  * @param {function} callback callback function
  */
 const addUser = function (user, callback) {
-    usersCollection.findOne({$or:[{_id: user._id}, {username: user.username}]}, function (err, obj) {
+    usersCollection.findOne({ $or: [{ _id: user._id }, { username: user.username }] }, function (err, obj) {
         if (err) {
             return callback(common.getError(1003), null);
         }
@@ -68,3 +62,4 @@ const addUser = function (user, callback) {
         });
     });
 }
+exports.addUser = addUser;

@@ -20,7 +20,6 @@ const bcrypt = require('bcryptjs');
 
 const common = require(`${__dirname}/common.js`);
 const db = require(`${__dirname}/db.js`);
-const logger = require(`${__dirname}/logger.js`);
 
 /**
  * Create USER, if the USER object is valid
@@ -29,7 +28,11 @@ const logger = require(`${__dirname}/logger.js`);
  * @param {function} callback callback function
  */
 const addUser = function (user, callback) {
-    if (!user.fname || !user.lname || !user.username || !user.password || !user.type) {
+    if (typeof (user.fname) === 'undefined'
+        || typeof (user.lname) === 'undefined'
+        || typeof (user.username) === 'undefined'
+        || typeof (user.password) === 'undefined'
+        || typeof (user.type) === 'undefined') {
         return callback(common.getError(2000), null);
     }
 
@@ -38,7 +41,7 @@ const addUser = function (user, callback) {
             return callback(common.getError(1002), null);
         }
 
-        var currentDate = common.getDate();
+        const currentDate = common.getDate();
         var userToAdd = {};
 
         userToAdd._id = common.getUUID();
@@ -49,7 +52,7 @@ const addUser = function (user, callback) {
         userToAdd.atime = currentDate;
         userToAdd.mtime = currentDate;
         userToAdd.email = user.email ? user.email : '';
-        userToAdd.type = common.userTypes.ADMIN;
+        userToAdd.type = user.type;
         userToAdd.password = hash;
         userToAdd.active = true;
         userToAdd.picture = null;

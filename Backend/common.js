@@ -49,12 +49,11 @@ exports.defaultError = defaultError;
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({
-    MODE_SELECTOR: 0,
-    PROJECT_ADMIN: 1,
-    PROJECT_COLLABORATOR: 2,
-    PROFESSOR: 3,
-    TA: 4,
-    STUDENT: 5
+    MODE_SELECTOR:      0,
+    COLLABORATOR:       1,
+    PROFESSOR:          2,
+    TA:                 3,
+    STUDENT:            4
 });
 exports.userTypes = userTypes;
 // </Global Constants> ------------------------------------------

@@ -21,6 +21,7 @@ const rls = require('readline-sync');
 const common = require(`${__dirname}/common.js`);
 const db = require(`${__dirname}/db.js`);
 const logger = require(`${__dirname}/logger.js`);
+const users = require(`${__dirname}/users.js`);
 
 /**
  * add an admin account
@@ -58,13 +59,15 @@ const setupAdminAccount = function () {
             process.exit(1);
         }
 
+        logger.info('Connection to Quizzard database successful.');
+
         users.addUser(user, function (err, res) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            logger.info('Administrator account created.');
+            logger.info('Mode selector account created.');
             process.exit(0);
         });
     });
