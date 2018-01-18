@@ -1,5 +1,17 @@
+.padding-0 {
+    padding: 0 !important;
+}
+
+.padding-top-10 {
+    padding-top: 10px;
+}
+
 .pointer {
     cursor: pointer;
+}
+
+.margin-0 {
+    margin: 0 !important;
 }
 
 .margin-top-0 {

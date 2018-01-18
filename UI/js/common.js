@@ -23,3 +23,19 @@ const defaultError = 'Something went wrong, please try again!';
 function getErrorMessageFromResponse(data) {
     return data ? errors[data['code']] || defaultError : defaultError;
 }
+
+/**
+ * Allows us to call an animate function with a callback
+ */
+$.fn.extend({
+    animateCss: function (animationName, callback) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        this.addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+            if (callback) {
+              callback();
+            }
+        });
+        return this;
+    }
+});

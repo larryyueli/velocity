@@ -1,4 +1,7 @@
 {
+	"app": {
+		"name": "Velocity"
+	},
 	"login": {
 		"signIn": "Sign In"
 	},
@@ -18,10 +21,26 @@
 		"description": "Please select the mode that you would like to use",		
 		"title": "Welcome to Velocity!"
 	},
+	"notifications": {
+		"clearAll": "clear all notifications",
+		"new": "new",
+		"noNew": "no new notifications"
+	},
+	"pageNames": {
+		"about": "About",
+		"chatRoom": "Chat Room",
+		"grades": "Grades",
+		"logout": "Logout",
+		"profile": "Profile",
+		"projects": "Projects",
+		"settings": "Settings",
+		"submitFeedback": "Submit Feedback",
+		"users": "Users"
+	},
 	"pageNotFound": {
-		"title": "Velocity Page Not Found",
 		"description": "We could not find the page you were looking for",
-		"prompt": "Return to your main page"
+		"prompt": "Return to your main page",
+		"title": "Velocity Page Not Found"
 	},
 	"userInformation": {
 		"password": "Password",
