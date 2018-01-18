@@ -6,52 +6,52 @@
                 i.material-icons menu
             ul.left.hide-on-med-and-down
                 li#nav-projects
-                    a.navbarLink(href='/') #{__('pageNames.projects')}
+                    a.navbarLink(href='#!') #{__('pageNames.projects')}
                 if canAccessUsers
                     li#nav-users
-                        a.navbarLink(href='/') #{__('pageNames.users')}
+                        a.navbarLink(href='#!') #{__('pageNames.users')}
                 if canAccessSettings
                     li#nav-settings
-                        a.navbarLink(href='/') #{__('pageNames.settings')}
+                        a.navbarLink(href='#!') #{__('pageNames.settings')}
                 if canAccessGrades
                     li#nav-grades
-                        a.navbarLink(href='/') #{__('pageNames.grades')}
+                        a.navbarLink(href='#!') #{__('pageNames.grades')}
                 li#nav-chatRoom
-                    a.navbarLink(href='/') #{__('pageNames.chatRoom')}
+                    a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
             ul.right
                 li
-                    a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='/', data-activates='notifications_nav')
+                    a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications
                         .hide-on-small-only
                             span.new.badge#notifCount(class=!notifications || (notifications && notifications.length === 0) ? "hidden" : "", data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
                         .hide-on-med-and-up
                             span.mobile-badge#mobileNotifCount(class=!notifications || (notifications && notifications.length === 0) ? "hidden" : "") #{notifications? notifications.length : 0}
                 li
-                    a.navbarLink.button-collapse.right.padding-0.show-on-large(href='/', data-activates='account_nav')
+                    a.navbarLink.button-collapse.right.padding-0.show-on-large(href='#!', data-activates='account_nav')
                         i.material-icons.md-28 account_circle
 
 ul#mobile.side-nav
     li.full-width#navm-projects
-        a.navbarLinkHidden(href='/')
+        a.navbarLinkHidden(href='#!')
             i.material-icons folder
             | #{__('pageNames.projects')}
     if canAccessUsers
         li.full-width#navm-users
-            a.navbarLinkHidden(href='/')
+            a.navbarLinkHidden(href='#!')
                 i.material-icons people
                 | #{__('pageNames.users')}
     if canAccessSettings
         li.full-width#navm-settings
-            a.navbarLinkHidden(href='/')
+            a.navbarLinkHidden(href='#!')
                 i.material-icons settings
                 | #{__('pageNames.settings')}
     if canAccessGrades
         li.full-width#navm-grades
-            a.navbarLinkHidden(href='/')
+            a.navbarLinkHidden(href='#!')
                 i.material-icons edit
                 | #{__('pageNames.grades')}
     li.full-width#navm-chatRoom
-        a.navbarLinkHidden(href='/')
+        a.navbarLinkHidden(href='#!')
             i.material-icons chat
             | #{__('pageNames.chatRoom')}
 
