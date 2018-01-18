@@ -4,7 +4,7 @@ block styles
     link(rel='stylesheet' href='/css/pageNotFound.css')
 
 block title
-    title Velocity Page Not Found
+    title #{__('pageNotFound.title')}
 
 block content
     .col.s12.m6#card-container
@@ -16,4 +16,3 @@ block content
                     | #{__('pageNotFound.description')}
             .card-action
                 a(href='/') #{__('pageNotFound.prompt')}
-    
