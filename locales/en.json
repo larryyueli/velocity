@@ -18,6 +18,11 @@
 		"description": "Please select the mode that you would like to use",		
 		"title": "Welcome to Velocity!"
 	},
+	"pageNotFound": {
+		"title": "Velocity Page Not Found",
+		"description": "We could not find the page you were looking for",
+		"prompt": "Return to your main page"
+	},
 	"userInformation": {
 		"password": "Password",
 		"username": "Username"
