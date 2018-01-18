@@ -36,6 +36,7 @@ function clearNotification(item, id) {
 
         // Removing the notification number if no more new notifications are found
         if (parseInt(notifCount[0].innerText) === 0) {
+            notificationList.sideNav('hide');
             notifCount.addClass('hidden');
             mobileNotifCount.addClass('hidden');
             clearNotifications.addClass('hidden');

@@ -23,9 +23,9 @@
                     a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='/', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications
                         .hide-on-small-only
-                            span.new.badge#notifCount(class=notifications.length === 0 ? "hidden" : "", data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
+                            span.new.badge#notifCount(class=!notifications || (notifications && notifications.length === 0) ? "hidden" : "", data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
                         .hide-on-med-and-up
-                            span.mobile-badge#mobileNotifCount(class=notifications.length === 0 ? "hidden" : "") #{notifications? notifications.length : 0}
+                            span.mobile-badge#mobileNotifCount(class=!notifications || (notifications && notifications.length === 0) ? "hidden" : "") #{notifications? notifications.length : 0}
                 li
                     a.navbarLink.button-collapse.right.padding-0.show-on-large(href='/', data-activates='account_nav')
                         i.material-icons.md-28 account_circle
@@ -84,12 +84,12 @@ ul#account_nav.side-nav
             | #{__('pageNames.logout')}
 
 ul#notifications_nav.side-nav
-    p.center.padding-top-10#noNotifications(class=notifications.length === 0 ? "" : "hidden")
+    p.center.padding-top-10#noNotifications(class=!notifications || (notifications && notifications.length === 0) ? "" : "hidden")
         i
             span #{__('notifications.noNew')}
-    p.center.padding-top-10.pointer#clearNotifications(class=notifications.length === 0 ? "hidden" : "", onClick='clearAllNotifications()')
+    p.center.padding-top-10.pointer#clearNotifications(class=!notifications || (notifications && notifications.length === 0) ? "hidden" : "", onClick='clearAllNotifications()')
         span.blue-text #{__('notifications.clearAll')}
-    if notifications.length !== 0
+    if notifications && notifications.length !== 0
         each notif in notifications
             li
                 a.navbarLinkHidden.waves-effect(href=notif.link)
