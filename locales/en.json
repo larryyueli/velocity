@@ -21,5 +21,9 @@
 	"userInformation": {
 		"password": "Password",
 		"username": "Username"
+	},
+	"pageNotFound": {
+		"description": "We could not find the page you were looking for",
+		"prompt": "Return to your main page"
 	}
 }
