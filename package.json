@@ -4,7 +4,8 @@
   "description": "velocity description",
   "main": "velocity.js",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "animate.css": "^3.5.2",
+    "bcryptjs": "^2.4.3",    
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "express": "^4.16.2",

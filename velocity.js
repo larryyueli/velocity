@@ -29,7 +29,12 @@ const logger = require(`${__dirname}/Backend/logger.js`);
 const app = express();
 
 // File names to render
+<<<<<<< HEAD
 const loginPage = 'login';
+=======
+const login = 'login';
+const modeSelectorPage = 'modeSelector';
+>>>>>>> 07ee08001a864a670533701c49fd8fc47e903af8
 
 // Setting up i18n library
 i18n.configure({
@@ -45,6 +50,7 @@ app.set('views', `${__dirname}/Templates`);
 app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
+app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 
