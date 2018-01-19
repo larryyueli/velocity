@@ -4,16 +4,16 @@ const notificationList = $('#notifications_nav');
 const noNotifications = $('#noNotifications');
 const clearNotifications = $('#clearNotifications');
 
-$(".button-collapse").sideNav({
+$('.button-collapse').sideNav({
     closeOnClick: true
 });
 
-$(".button-collapse.right").sideNav({
+$('.button-collapse.right').sideNav({
     edge: 'right',
     closeOnClick: true
 });
 
-$(".button-collapse-open.right").sideNav({
+$('.button-collapse-open.right').sideNav({
     edge: 'right',
 });
 
@@ -74,14 +74,6 @@ function addNotification(notifList) {
 
     // Adding all new notifications
     notifList.forEach(notification => {
-        notificationList.append(`
-            <li>
-                <a class="navbarLinkHidden waves-effect" href="${notification.link}">
-                    <i class="material-icons">${notification.type}</i>
-                    ${notification.name}
-                    <span class="right pointer clear-notification" onclick="clearNotification($(this), ${notification.id})">X</span>
-                </a>
-            </li>
-        `);
+        notificationList.append(getNotification(notification));
     });
 }

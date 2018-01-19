@@ -31,26 +31,26 @@
                         i.material-icons.md-28 account_circle
 
 ul#mobile.side-nav
-    li.full-width#navm-projects
+    li#navm-projects
         a.navbarLinkHidden(href='#!')
             i.material-icons folder
             | #{__('pageNames.projects')}
     if canAccessUsers
-        li.full-width#navm-users
+        li#navm-users
             a.navbarLinkHidden(href='#!')
                 i.material-icons people
                 | #{__('pageNames.users')}
     if canAccessSettings
-        li.full-width#navm-settings
+        li#navm-settings
             a.navbarLinkHidden(href='#!')
                 i.material-icons settings
                 | #{__('pageNames.settings')}
     if canAccessGrades
-        li.full-width#navm-grades
+        li#navm-grades
             a.navbarLinkHidden(href='#!')
                 i.material-icons edit
                 | #{__('pageNames.grades')}
-    li.full-width#navm-chatRoom
+    li#navm-chatRoom
         a.navbarLinkHidden(href='#!')
             i.material-icons chat
             | #{__('pageNames.chatRoom')}
