@@ -18,23 +18,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const bodyParser = require('body-parser');
 const express = require('express');
-const i18n = require("i18n");
+const i18n = require('i18n');
 const pug = require('pug');
 const session = require('express-session');
 
-const config = require(`${__dirname}/Backend/config.js`);
-const db = require(`${__dirname}/Backend/db.js`);
-const logger = require(`${__dirname}/Backend/logger.js`);
+const config = require('./Backend/config.js');
+const db = require('./Backend/db.js');
+const logger = require('./Backend/logger.js');
+const users = require('./Backend/users.js');
 
 const app = express();
 
 // File names to render
-<<<<<<< HEAD
 const loginPage = 'login';
-=======
-const login = 'login';
 const modeSelectorPage = 'modeSelector';
->>>>>>> 07ee08001a864a670533701c49fd8fc47e903af8
 
 // Setting up i18n library
 i18n.configure({
@@ -87,13 +84,43 @@ app.listen(config.port, function () {
 });
 
 app.get('/', function (req, res) {
-    if (verifyActiveSession()) {
-        return res.redirect('home');
+    if (verifyActiveSession(req)) {
+        if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
+            return res.status(200).render(modeSelectorPage);
+        }
+        return res.status(200).send('hello world');
     }
 
     return res.status(401).render(loginPage);
 });
 
-const verifyActiveSession = function () {
-    return req.session !== 'undefined' && req.session.user !== 'undefined';
+app.put('/login', function (req, res) {
+    if (!verifyActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (typeof (req.body.user) === 'undefined'
+        || typeof (req.body.passwd) === 'undefined') {
+        logger.error(JSON.stringify(common.getError(2002)));
+        return res.status(400).send(common.getError(2002));
+    }
+
+    const username = req.body.user.toLowerCase();
+    const password = req.body.passwd;
+    logger.info(`Login request by user: ${username}`);
+
+    users.login(username, password, function (err, userObject) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(403).send(err);
+        }
+
+        logger.info(`User ${username} logged in`);
+        req.session.user = user;
+        return res.status(200).send('success');
+    });
+});
+
+const verifyActiveSession = function (req) {
+    return typeof (req.session) !== 'undefined' && typeof (req.session.user) !== 'undefined';
 }

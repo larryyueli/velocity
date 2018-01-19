@@ -38,7 +38,10 @@ const errors = Object.freeze({
 
     //2000 users
     2000: 'missing requirement',
-    2001: 'user already exists'
+    2001: 'user already exists',
+    2002: 'missing username or password for login',
+    2003: 'user not found',
+    2004: 'wrong password'
 });
 exports.errors = errors;
 

@@ -61,3 +61,45 @@ const addUser = function (user, callback) {
     });
 }
 exports.addUser = addUser;
+
+/**
+ * find a single user by the search parameters
+ * 
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const getUser = function (searchQuery, callback) {
+    db.getUser(searchQuery, callback);
+}
+exports.getUser = getUser;
+
+/**
+ * verify if the user can login
+ * 
+ * @param {string} username username
+ * @param {string} password password
+ * @param {function} callback callback function
+ */
+const login = function (username, password, callback) {
+    if (typeof (username) === 'undefined'
+        || typeof (password) === 'undefined') {
+        return callback(common.getError(2002), null);
+    }
+    getUser({ username: username }, function (err, userObj) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        bcrypt.hash(password, 11, function (err, hash) {
+            if (err) {
+                return callback(common.getError(1002), null);
+            }
+
+            if (userObj.password === hash) {
+                return callback(null, userObj);
+            }
+            return callback(common.getError(2004), null);
+        });
+    });
+}
+exports.login = login;

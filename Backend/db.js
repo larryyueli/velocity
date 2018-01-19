@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const mongoClient = require('mongodb').MongoClient;
 
-const common = require(`${__dirname}/common.js`);
-const config = require(`${__dirname}/config.js`);
+const common = require('./common.js');
+const config = require('./config.js');
 
 var usersCollection;
 
@@ -63,3 +63,24 @@ const addUser = function (user, callback) {
     });
 }
 exports.addUser = addUser;
+
+/**
+ * find a single user by the search parameters
+ * 
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const getUser = function (searchQuery, callback) {
+    usersCollection.findOne(searchQuery, function (err, obj) {
+        if (err) {
+            return callback(common.getError(1003), null);
+        }
+
+        if (!obj) {
+            return callback(common.getError(2003), null);
+        }
+
+        return callback(null, obj);
+    });
+}
+exports.getUser = getUser;
