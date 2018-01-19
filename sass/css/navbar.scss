@@ -1,15 +1,23 @@
-.navbarLink:link, .navbarLink:visited, .navbarLink:hover, .navbarLink:active {
-    color: white;
-    text-decoration: none;
+@import 'app.scss';
+
+.navbarLink {
+    &:link, &:visited, &:hover, &:active {
+        color: white;
+        text-decoration: none;
+    }
 }
 
-.navbarLinkHidden:link, .navbarLinkHidden:visited, .navbarLinkHidden:hover, .navbarLinkHidden:active {
-    color: black;
-    text-decoration: none;
+.navbarLinkHidden {
+    &:link, &:visited, &:hover, &:active {
+        color: black;
+        text-decoration: none;
+    }
 }
 
 .nav-colour {
-    background-color: rgb(104, 130, 142) !important;
+    @include themify($themes) {
+        background-color: themed('primaryColour');
+    }
 }
 
 .notification-item {
