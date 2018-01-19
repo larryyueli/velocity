@@ -13,7 +13,7 @@ loginForm.submit(function(evt) {
         },
         error: function(data) {
             var jsonResponse = data.responseJSON;
-            errorField.html(`<div class="chip white-text red darken-4">${getErrorMessageFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`);
+            errorField.html(getErrorPill(jsonResponse));
         },
         complete: function(data) {
             passwordField.val('').focus();
