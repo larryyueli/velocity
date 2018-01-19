@@ -29,7 +29,6 @@ app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist/`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
 app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
-app.use(express.static(`${__dirname}/UI`));
 app.use(
     sassMiddleware({
         src: `${__dirname}/sass`, 
