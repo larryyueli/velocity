@@ -81,5 +81,13 @@ app.listen(config.port, function () {
 });
 
 app.get('/', function (req, res) {
-    return res.status(200).render(loginPage);
+    if (verifyActiveSession()) {
+        return res.redirect('home');
+    }
+
+    return res.status(401).render(loginPage);
 });
+
+const verifyActiveSession = function () {
+    return req.session !== 'undefined' && req.session.user !== 'undefined';
+}
