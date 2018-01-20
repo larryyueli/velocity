@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const rls = require('readline-sync');
+const fs = require('fs');
 
 const common = require('./common.js');
 const db = require('./db.js');
@@ -27,8 +28,7 @@ const users = require('./users.js');
  * add an admin account
  */
 const setupAdminAccount = function () {
-    logger.info('Quizzard server setup');
-    logger.info('Creating administrator account.');
+    logger.info('Velocity server setup');
 
     const username = rls.question('Please enter a username: ');
     const password = rls.question('Enter a password: ', {
@@ -53,22 +53,37 @@ const setupAdminAccount = function () {
         type: common.userTypes.MODE_SELECTOR
     };
 
-    db.initialize(function (err, result) {
+    fs.readFile(`${__dirname}/config.js`, 'utf8', function (err, data) {
         if (err) {
             logger.error(JSON.stringify(err));
             process.exit(1);
         }
 
-        logger.info('Connection to Quizzard database successful.');
-
-        users.addUser(user, function (err, res) {
+        const newConfig = data.replace(/velocity_db_.+;/g, `velocity_db_${common.getUUID()}';`);
+        fs.writeFile(`${__dirname}/config.js`, newConfig, function (err) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            logger.info('Mode selector account created.');
-            process.exit(0);
+            logger.info('The new configuration has been saved!');
+            db.initialize(function (err, result) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    process.exit(1);
+                }
+
+                logger.info('Connection to Velocity database successful.');
+                users.addUser(user, function (err, res) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        process.exit(1);
+                    }
+
+                    logger.info('Successful created mode selector account.');
+                    process.exit(0);
+                });
+            });
         });
     });
 }
