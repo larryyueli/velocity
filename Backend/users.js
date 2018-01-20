@@ -28,11 +28,11 @@ const db = require('./db.js');
  * @param {function} callback callback function
  */
 const addUser = function (user, callback) {
-    if (typeof (user.fname) === 'undefined'
-        || typeof (user.lname) === 'undefined'
-        || typeof (user.username) === 'undefined'
-        || typeof (user.password) === 'undefined'
-        || typeof (user.type) === 'undefined') {
+    if (typeof (user.fname) === common.variableTypes.UNDEFINED
+        || typeof (user.lname) === common.variableTypes.UNDEFINED
+        || typeof (user.username) === common.variableTypes.UNDEFINED
+        || typeof (user.password) === common.variableTypes.UNDEFINED
+        || typeof (user.type) === common.variableTypes.UNDEFINED) {
         return callback(common.getError(2000), null);
     }
 
@@ -81,8 +81,8 @@ exports.getUser = getUser;
  * @param {function} callback callback function
  */
 const login = function (username, password, callback) {
-    if (typeof (username) === 'undefined'
-        || typeof (password) === 'undefined') {
+    if (typeof (username) === common.variableTypes.UNDEFINED
+        || typeof (password) === common.variableTypes.UNDEFINED) {
         return callback(common.getError(2002), null);
     }
     getUser({ username: username }, function (err, userObj) {

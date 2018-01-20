@@ -33,6 +33,7 @@ const app = express();
 // File names to render
 const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
+const pageNotFound = 'pageNotFound';
 
 // Setting up i18n library
 i18n.configure({
@@ -84,13 +85,24 @@ app.listen(config.port, function () {
     });
 });
 
+// <Requests Function> -----------------------------------------------
+/**
+ * verify active sessions
+ *
+ * @param {object} req req value of the session
+ */
+const verifyActiveSession = function (req) {
+    return typeof (req.session) !== common.variableTypes.UNDEFINED
+        && typeof (req.session.user) !== common.variableTypes.UNDEFINED;
+}
+
 /**
  * root path to redirect to the proper page based on session state
  *
- * @param {string} path web path
- * @param {function} callback callback function
+ * @param {object} req req object
+ * @param {object} res res object
  */
-app.get('/', function (req, res) {
+const handleRootPath = function (req, res) {
     if (verifyActiveSession(req)) {
         if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
             return res.status(200).render(modeSelectorPage);
@@ -99,17 +111,17 @@ app.get('/', function (req, res) {
     }
 
     return res.status(401).render(loginPage);
-});
+}
 
 /**
  * login path to create a session if the username and password are valid
  *
- * @param {string} path web path
- * @param {function} callback callback function
+ * @param {object} req req object
+ * @param {object} res res object
  */
-app.post('/login', function (req, res) {
-    if (typeof (req.body.username) === 'undefined'
-        || typeof (req.body.password) === 'undefined') {
+const handleLoginPath = function (req, res) {
+    if (typeof (req.body.username) === common.variableTypes.UNDEFINED
+        || typeof (req.body.password) === common.variableTypes.UNDEFINED) {
         logger.error(JSON.stringify(common.getError(2002)));
         return res.status(400).send(common.getError(2002));
     }
@@ -126,16 +138,42 @@ app.post('/login', function (req, res) {
 
         logger.info(`User: ${username} logged in`);
         req.session.user = userObject;
-        return res.status(200).send('success');
+        return res.status(200).send('ok');
     });
-});
+}
 
 /**
- * verify active sessions
+ * path to destroy the session if it exists
  *
- * @param {object} req req value of the session
+ * @param {object} req req object
+ * @param {object} res res object
  */
-const verifyActiveSession = function (req) {
-    return typeof (req.session) !== 'undefined'
-        && typeof (req.session.user) !== 'undefined';
+const handleLogoutPath = function (req, res) {
+    if (verifyActiveSession(req)) {
+        logger.info(`User ${req.session.user.username} logged out.`);
+        req.session.destroy();
+    }
+
+    return res.status(200).send('ok');
 }
+// </Requests Function> -----------------------------------------------
+
+// <Get Requests> ------------------------------------------------
+app.get('/', handleRootPath);
+app.get('/logout', handleLogoutPath);
+// </Get Requests> -----------------------------------------------
+
+// <Post Requests> -----------------------------------------------
+app.post('/login', handleLoginPath);
+// </Post Requests> -----------------------------------------------
+
+// <Put Requests> ------------------------------------------------
+// </Put Requests> -----------------------------------------------
+
+// <Delete Requests> ------------------------------------------------
+// </Delete Requests> -----------------------------------------------
+
+// 404 route
+app.use(function (req, res, next) {
+    return res.status(404).render(pageNotFound);
+});

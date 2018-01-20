@@ -66,7 +66,7 @@ exports.addUser = addUser;
 
 /**
  * find a single user by the search parameters
- * 
+ *
  * @param {object} searchQuery search parameters
  * @param {function} callback callback function
  */

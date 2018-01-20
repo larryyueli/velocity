@@ -62,6 +62,12 @@ const userTypes = Object.freeze({
     STUDENT:            4
 });
 exports.userTypes = userTypes;
+
+// all variable types
+const variableTypes = Object.freeze({
+    UNDEFINED:      'undefined'
+});
+exports.variableTypes = variableTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
