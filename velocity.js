@@ -84,6 +84,12 @@ app.listen(config.port, function () {
     });
 });
 
+/**
+ * root path to redirect to the proper page based on session state
+ *
+ * @param {string} path web path
+ * @param {function} callback callback function
+ */
 app.get('/', function (req, res) {
     if (verifyActiveSession(req)) {
         if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
@@ -95,6 +101,12 @@ app.get('/', function (req, res) {
     return res.status(401).render(loginPage);
 });
 
+/**
+ * login path to create a session if the username and password are valid
+ *
+ * @param {string} path web path
+ * @param {function} callback callback function
+ */
 app.post('/login', function (req, res) {
     if (typeof (req.body.username) === 'undefined'
         || typeof (req.body.password) === 'undefined') {
@@ -118,6 +130,11 @@ app.post('/login', function (req, res) {
     });
 });
 
+/**
+ * verify active sessions
+ *
+ * @param {object} req req value of the session
+ */
 const verifyActiveSession = function (req) {
     return typeof (req.session) !== 'undefined'
         && typeof (req.session.user) !== 'undefined';
