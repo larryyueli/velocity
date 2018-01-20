@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const bcrypt = require('bcryptjs');
 
-const common = require(`${__dirname}/common.js`);
-const db = require(`${__dirname}/db.js`);
+const common = require('./common.js');
+const db = require('./db.js');
 
 /**
  * Create USER, if the USER object is valid
@@ -90,15 +90,21 @@ const login = function (username, password, callback) {
             return callback(err, null);
         }
 
-        bcrypt.hash(password, 11, function (err, hash) {
+        if (!userObj.active) {
+            return callback(common.getError(2005), null);
+        }
+
+        bcrypt.compare(password, userObj.password, function (err, valid) {
             if (err) {
-                return callback(common.getError(1002), null);
+                return callback(common.getError(1005), null);
             }
 
-            if (userObj.password === hash) {
-                return callback(null, userObj);
+            if (!valid) {
+                return callback(common.getError(2004), null);
             }
-            return callback(common.getError(2004), null);
+
+            delete userObj.password;
+            return callback(null, userObj);
         });
     });
 }

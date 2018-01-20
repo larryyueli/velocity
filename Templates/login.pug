@@ -16,12 +16,12 @@ block content
             .row
                 .input-field
                     i.material-icons.prefix person
-                    input.form-control#username(type='text' name='user' placeholder=__('userInformation.username') required autofocus)
+                    input.form-control#username(type='text' name='username' placeholder=__('userInformation.username') required autofocus)
                     label.sr-only(for='user') Username
             .row
                 .input-field
                     i.material-icons.prefix vpn_key
-                    input.form-control#password(type='password' name='pass' placeholder=__('userInformation.password') required)
+                    input.form-control#password(type='password' name='password' placeholder=__('userInformation.password') required)
                     label.sr-only(for='password') Password
             button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signIn')}
    

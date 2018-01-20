@@ -22,6 +22,7 @@ const i18n = require('i18n');
 const pug = require('pug');
 const session = require('express-session');
 
+const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
 const logger = require('./Backend/logger.js');
@@ -94,19 +95,15 @@ app.get('/', function (req, res) {
     return res.status(401).render(loginPage);
 });
 
-app.put('/login', function (req, res) {
-    if (!verifyActiveSession(req)) {
-        return res.status(401).render(loginPage);
-    }
-
-    if (typeof (req.body.user) === 'undefined'
-        || typeof (req.body.passwd) === 'undefined') {
+app.post('/login', function (req, res) {
+    if (typeof (req.body.username) === 'undefined'
+        || typeof (req.body.password) === 'undefined') {
         logger.error(JSON.stringify(common.getError(2002)));
         return res.status(400).send(common.getError(2002));
     }
 
-    const username = req.body.user.toLowerCase();
-    const password = req.body.passwd;
+    const username = req.body.username.toLowerCase();
+    const password = req.body.password;
     logger.info(`Login request by user: ${username}`);
 
     users.login(username, password, function (err, userObject) {
@@ -115,12 +112,13 @@ app.put('/login', function (req, res) {
             return res.status(403).send(err);
         }
 
-        logger.info(`User ${username} logged in`);
-        req.session.user = user;
+        logger.info(`User: ${username} logged in`);
+        req.session.user = userObject;
         return res.status(200).send('success');
     });
 });
 
 const verifyActiveSession = function (req) {
-    return typeof (req.session) !== 'undefined' && typeof (req.session.user) !== 'undefined';
+    return typeof (req.session) !== 'undefined'
+        && typeof (req.session.user) !== 'undefined';
 }

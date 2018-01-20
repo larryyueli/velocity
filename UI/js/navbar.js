@@ -26,10 +26,10 @@ $('.button-collapse-open.right').sideNav({
 function clearNotification(item, id) {
     // Remove the notification from view
     const itemToRemove = item.parent().parent();
-    
+
     itemToRemove.animateCss('fadeOutRight', function () {
         itemToRemove.remove();
-    
+
         // Updating the count
         notifCount[0].innerText = parseInt(notifCount[0].innerText) - 1;
         mobileNotifCount[0].innerText = parseInt(mobileNotifCount[0].innerText) - 1;

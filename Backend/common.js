@@ -35,13 +35,16 @@ const errors = Object.freeze({
     1002: 'failed to hash the password',
     1003: 'failed to get user, database issue',
     1004: 'failed to add user, database issue',
+    1005: 'failed to verify password, hashing issue',
+    1006: 'failed create user session',
 
     //2000 users
     2000: 'missing requirement',
     2001: 'user already exists',
     2002: 'missing username or password for login',
     2003: 'user not found',
-    2004: 'wrong password'
+    2004: 'wrong password',
+    2005: 'user account is not active'
 });
 exports.errors = errors;
 

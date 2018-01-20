@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const rls = require('readline-sync');
 
-const common = require('/common.js');
+const common = require('./common.js');
 const db = require('./db.js');
 const logger = require('./logger.js');
 const users = require('./users.js');
