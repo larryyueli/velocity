@@ -9,7 +9,7 @@ loginForm.submit(function (evt) {
         url: '/login',
         data: loginForm.serialize(),
         success: function (data) {
-            window.location.href = '/'; // TODO: add a link to the correct path
+            window.location.href = '/';
         },
         error: function (data) {
             const jsonResponse = data.responseJSON;
