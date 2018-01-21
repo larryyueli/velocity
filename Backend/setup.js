@@ -20,6 +20,7 @@ const fs = require('fs');
 const rls = require('readline-sync');
 
 const common = require('./common.js');
+const config = require('./config.js');
 const db = require('./db.js');
 const logger = require('./logger.js');
 const users = require('./users.js');
@@ -68,13 +69,15 @@ const setupAdminAccount = function () {
             process.exit(1);
         }
 
-        const newConfig = data.replace(/velocity_db_.+;/g, `velocity_db_${common.getUUID()}';`);
+        const newDbName = `velocity_db_${common.getUUID()}`;
+        const newConfig = data.replace(/velocity_db_.+;/g, `${newDbName}';`);
         fs.writeFile(`${__dirname}/config.js`, newConfig, function (err) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
+            config.default_db_name = newDbName;
             logger.info('The new configuration has been saved!');
             db.initialize(function (err, result) {
                 if (err) {

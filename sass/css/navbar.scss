@@ -1,0 +1,82 @@
+@import 'app.scss';
+
+.navbarLink {
+    @include themify($themes) {
+        &:link, &:visited, &:hover, &:active {
+            color: themed('primaryTextOnPrimary') !important;
+            text-decoration: none;
+        }
+    }
+}
+
+.navbarLinkHidden {
+    &:link, &:visited, &:hover, &:active {
+        color: black;
+        text-decoration: none;
+    }
+}
+
+.nav-colour {
+    @include themify($themes) {
+        background-color: themed('primaryColour');
+    }
+}
+
+.notification-item {
+    display: -webkit-inline-box !important;
+}
+
+.notifBadgeColour {
+    @include themify($themes) {
+        background-color: themed('notificationBackground') !important;
+    }
+}
+
+.mobile-badge {
+    @include themify($themes) {
+        color: themed('notificationNumber');
+    }
+
+    display: block;
+    font-size: 11px;
+    margin-left: -5px;
+    margin-top: -5px;
+    position: relative;
+}
+
+#notifications_nav li {
+    -webkit-animation-duration: 0.3s; 
+}
+
+.blue-text {
+    color: blue;
+}
+
+.truncate {
+    display: inline-block !important;
+    overflow: hidden;
+    padding-left: 15px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 80%;
+}
+
+.full-description {
+    margin-left: 50px;
+    padding-right: 10px;
+    line-height: 1.5em !important;
+    word-wrap: break-word;
+}
+
+.right-icons {
+    color: gray;
+    display: inline-flex;
+
+    .clear-notification {
+        padding: 0 5px;
+    }
+}
+
+.visibility-icon {
+    padding-top: 14px;
+}

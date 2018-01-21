@@ -20,6 +20,8 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const i18n = require('i18n');
 const pug = require('pug');
+const sass = require('node-sass');
+const sassMiddleware = require('node-sass-middleware');
 const session = require('express-session');
 
 const common = require('./Backend/common.js');
@@ -50,6 +52,15 @@ app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
 app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
+app.use(
+    sassMiddleware({
+        src: `${__dirname}/sass`, 
+        dest: `${__dirname}/UI/stylesheets`,
+        prefix:  '/stylesheets',
+        debug: true, // TODO: remove before release
+        outputStyle: 'compressed'
+    })
+);
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 
@@ -175,5 +186,5 @@ app.post('/login', handleLoginPath);
 
 // 404 route
 app.use(function (req, res, next) {
-    return res.status(404).render(pageNotFound);
+    return res.status(404).render(pageNotFoundPage);
 });

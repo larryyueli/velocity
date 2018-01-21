@@ -5,7 +5,8 @@
 	"login": {
 		"signIn": "Sign In",
 		"confirmPassword": "Confirm Password",
-		"signup": "Sign Up"
+		"signup": "Sign Up",
+		"title": "Velocity - Login"
 	},
 	"modeSelector": {
 		"classMode": {
@@ -21,7 +22,8 @@
 			"usage": "Use collaborator mode now"
 		},
 		"description": "Please select the mode that you would like to use",
-		"title": "Welcome to Velocity!"
+		"header": "Welcome to Velocity!",
+		"title": "Select mode"
 	},
 	"notifications": {
 		"clearAll": "clear all notifications",

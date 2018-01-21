@@ -18,11 +18,14 @@
     "mongodb": "^3.0.1",
     "pug": "^2.0.0-rc.4",
     "readline-sync": "^1.4.7",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "node-sass": "^4.7.2",
+    "node-sass-middleware": "^0.11.0"
   },
   "devDependencies": {},
   "scripts": {
     "restart": "npm stop ; npm start",
+    "sass": "node-sass sass/css -o UI/css",
     "setup": "node Backend/setup.js || nodejs Backend/setup.js",
     "start": "(node velocity.js || nodejs velocity.js) &",
     "stop": "kill $(ps -ef | grep velocity | awk '{print $2}')",

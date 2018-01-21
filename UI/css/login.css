@@ -1,35 +1,29 @@
 .form-login {
-    margin: 0 auto;
-    max-width: 400px;
-}
+  margin: 0 auto;
+  max-width: 400px; }
 
-#invalid {
-    color: red;
-    text-align: center;
-}
+#loginForm_invalid {
+  color: red;
+  text-align: center; }
 
 #logo {
-    display: block;
-    height: auto;
-    margin: 0 auto;
-    max-width: 300px;
-    max-height: 300px;
-    padding-bottom: 50px;
-    padding-top: 50px;
-    width: auto;
-}
+  display: block;
+  height: auto;
+  margin: 0 auto;
+  max-width: 300px;
+  max-height: 300px;
+  padding-bottom: 50px;
+  padding-top: 50px;
+  width: auto; }
 
-.max500px{
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 500px;
-}
+.max500px {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 500px; }
 
 body {
-    background-image: url('../img/Pattern.jpg');
-    background-repeat: repeat;
-}
+  background-image: url("../img/Pattern.jpg");
+  background-repeat: repeat; }
 
 .whiteRectangleTransparent {
-    background-color: rgba(255, 255, 255, 0.2);
-}
+  background-color: rgba(255, 255, 255, 0.2); }

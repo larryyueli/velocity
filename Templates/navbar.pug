@@ -23,7 +23,7 @@
                     a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications
                         .hide-on-small-only
-                            span.new.badge#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
+                            span.new.badge.notifBadgeColour#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
                         .hide-on-med-and-up
                             span.mobile-badge#mobileNotifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '') #{notifications? notifications.length : 0}
                 li
@@ -91,11 +91,15 @@ ul#notifications_nav.side-nav
         span.blue-text #{__('notifications.clearAll')}
     if notifications && notifications.length !== 0
         each notif in notifications
-            li
-                a.navbarLinkHidden.waves-effect(href=notif.link)
-                    i.material-icons #{notif.type}
+            span
+                li
+                    a.navbarLinkHidden.waves-effect.padding-right-0.truncate(href=notif.link)
+                        i.material-icons.margin-right-10 #{notif.type}
+                        | #{notif.name}
+                    span.right.right-icons
+                        i.pointer.padding-right-5.material-icons.md-22.visibility-icon(onclick=`viewFullNotificationToggle($(this), ${notif.id})`) keyboard_arrow_down
+                        span.pointer.clear-notification.padding-right-10(id=`${notif.id}-clear`, onClick=`clearNotification($(this), ${notif.id})`) X
+                li.full-description.hidden(id=`${notif.id}-desc`)
                     | #{notif.name}
-                    span.right.pointer.clear-notification(onClick=`clearNotification($(this), ${notif.id})`) X
-
 block scripts
     script(src='/js/navbar.js')
