@@ -2,3 +2,4 @@ node_modules
 Logs/*.log
 npm-debug.log
 UI/stylesheets/css
+UI/css
