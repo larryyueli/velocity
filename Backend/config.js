@@ -27,13 +27,13 @@ const default_db_host = process.env.DB_HOST || 'localhost';
 exports.default_db_host = default_db_host;
 const default_db_port = process.env.DB_PORT || 27017;
 exports.default_db_port = default_db_port;
-const default_db_name = process.env.DB_NAME || 'velocity_db_cdd72830-fe2e-11e7-8149-ab0ae8958225';
+const default_db_name = process.env.DB_NAME || 'velocity_db_fe0685f0-fe3d-11e7-849f-a32fc16dc9da';
 exports.default_db_name = default_db_name;
 
 // session related configuration
 const maxSessionAge = 60 * 60 * 1000;
 exports.maxSessionAge = maxSessionAge;
-const sessionSecret = 'tests';
+const sessionSecret = 'superSecretSecret';
 exports.sessionSecret = sessionSecret;
 const sessionResave = false;
 exports.sessionResave = sessionResave;

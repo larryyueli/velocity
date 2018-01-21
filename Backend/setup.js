@@ -30,8 +30,10 @@ const users = require('./users.js');
 const setupAdminAccount = function () {
     logger.info('Velocity server setup');
 
-    const username = rls.question('Please enter a username: ');
-    const password = rls.question('Enter a password: ', {
+    const username = rls.question('Please enter your username: ');
+    const fname = rls.question('Please enter your first name: ');
+    const lname = rls.question('Please enter your last name: ');
+    const password = rls.question('Enter your password: ', {
         hideEchoBack: true,
         mask: '*'
     });
@@ -48,8 +50,8 @@ const setupAdminAccount = function () {
     const user = {
         username: username,
         password: password,
-        fname: username,
-        lname: username,
+        fname: fname,
+        lname: lname,
         type: common.userTypes.MODE_SELECTOR
     };
 

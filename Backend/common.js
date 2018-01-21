@@ -31,7 +31,7 @@ const uuidv1 = require('uuid/v1');
 const errors = Object.freeze({
     //1000 system
     1000: 'invalid request',
-    1001: 'failed to connet to the db',
+    1001: 'failed to connect to the db',
     1002: 'failed to hash the password',
     1003: 'failed to get user, database issue',
     1004: 'failed to add user, database issue',
@@ -68,6 +68,12 @@ const variableTypes = Object.freeze({
     UNDEFINED:      'undefined'
 });
 exports.variableTypes = variableTypes;
+
+// all color themes
+const colorThemes = Object.freeze({
+    DEFAULT:        'default'
+});
+exports.colorThemes = colorThemes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -76,7 +82,7 @@ exports.variableTypes = variableTypes;
  *
  * @return {string}
  */
-var getUUID = function () {
+const getUUID = function () {
     return uuidv1();
 }
 exports.getUUID = getUUID;
@@ -87,7 +93,7 @@ exports.getUUID = getUUID;
  * @param {object} obj object to check
  * @return {boolean}
  */
-var isEmptyObject = function (obj) {
+const isEmptyObject = function (obj) {
     for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             return false;
@@ -103,7 +109,7 @@ exports.isEmptyObject = isEmptyObject;
  * @param {number} errorCode the error number
  * @return {object} object of the error and its message
  */
-var getError = function (errorCode) {
+const getError = function (errorCode) {
     return {
         code: errorCode,
         message: errors[errorCode] || defaultError
@@ -116,7 +122,7 @@ exports.getError = getError;
  *
  * @return {string} date formatted as YYYY-MM-DD hh:mm:ss A
  */
-var getDate = function () {
+const getDate = function () {
     return getDateFormatted('YYYY-MM-DD hh:mm:ss A');
 }
 exports.getDate = getDate;
@@ -127,7 +133,7 @@ exports.getDate = getDate;
  * @param {string} format date format
  * @return {string} date formatted
  */
-var getDateFormatted = function (format) {
+const getDateFormatted = function (format) {
     return date().format(format);
 }
 exports.getDateFormatted = getDateFormatted;
