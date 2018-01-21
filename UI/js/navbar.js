@@ -17,6 +17,22 @@ $('.button-collapse-open.right').sideNav({
     edge: 'right',
 });
 
+function viewFullNotificationToggle(item, id, action = true) {
+    const description = $(`#${id}-desc`);
+
+    if (action) {
+        description.toggleClass('hidden');
+
+        if (description.hasClass('hidden')) {
+            item[0].innerHTML = 'keyboard_arrow_down';
+        } else {
+            item[0].innerHTML = 'keyboard_arrow_up';
+        }
+    } else {
+        description.addClass('hidden');
+    }
+}
+
 /**
  * Removes a notification from view and clears it
  *
@@ -25,8 +41,9 @@ $('.button-collapse-open.right').sideNav({
  */
 function clearNotification(item, id) {
     // Remove the notification from view
-    const itemToRemove = item.parent().parent();
-    
+    const itemToRemove = item.parent().parent();    
+    viewFullNotificationToggle(item, id, false);
+
     itemToRemove.animateCss('fadeOutRight', function () {
         itemToRemove.remove();
     
@@ -50,8 +67,19 @@ function clearNotification(item, id) {
  */
 function clearAllNotifications() {
     const items = notificationList[0].getElementsByTagName('li');
+    var outer = null;
+    var inner = null;
+
     for (i = 0; i < items.length; i++) {
-        items[i].getElementsByTagName('span')[0].onclick();
+        outer = items[i].getElementsByTagName('span')[0];
+
+        if (outer) {
+            inner = outer.getElementsByTagName('span');
+
+            if (inner) {
+                    inner[0].onclick();
+            }
+        }
     }
 }
 

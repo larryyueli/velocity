@@ -3,7 +3,8 @@
 		"name": "Velocity"
 	},
 	"login": {
-		"signIn": "Sign In"
+		"signIn": "Sign In",
+		"title": "Velocity - Login"
 	},
 	"modeSelector": {
 		"classMode": {
@@ -18,8 +19,9 @@
 			"title": "Collaborator Mode",
 			"usage": "Use collaborator mode now"
 		},
-		"description": "Please select the mode that you would like to use",		
-		"title": "Welcome to Velocity!"
+		"description": "Please select the mode that you would like to use",
+		"header": "Welcome to Velocity!",
+		"title": "Select mode"
 	},
 	"notifications": {
 		"clearAll": "clear all notifications",

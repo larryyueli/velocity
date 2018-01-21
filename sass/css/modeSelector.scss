@@ -1,0 +1,20 @@
+@import 'app.scss';
+
+.cardColor {
+    @include themify($themes) {
+        background-color: themed('primaryColour') !important;
+        color: themed('primaryTextOnPrimary') !important;
+    }
+}
+
+.cardAction {
+    @include themify($themes) {
+        background-color: themed('secondaryColour') !important;
+    }
+}
+
+.linkColor {
+    @include themify($themes) {
+        color: themed('primaryTextOnSecondary') !important;
+    }
+}
