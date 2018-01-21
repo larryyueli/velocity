@@ -1,9 +1,11 @@
 @import 'app.scss';
 
 .navbarLink {
-    &:link, &:visited, &:hover, &:active {
-        color: white;
-        text-decoration: none;
+    @include themify($themes) {
+        &:link, &:visited, &:hover, &:active {
+            color: themed('primaryTextOnPrimary') !important;
+            text-decoration: none;
+        }
     }
 }
 
@@ -24,8 +26,17 @@
     display: -webkit-inline-box !important;
 }
 
+.notifBadgeColour {
+    @include themify($themes) {
+        background-color: themed('notificationBackground') !important;
+    }
+}
+
 .mobile-badge {
-    color: #02ffe6;
+    @include themify($themes) {
+        color: themed('notificationNumber');
+    }
+
     display: block;
     font-size: 11px;
     margin-left: -5px;

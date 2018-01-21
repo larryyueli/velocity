@@ -1,5 +1,11 @@
 $themes: (
     default: (
-        primaryColour: rgb(104, 130, 142)
+        primaryColour: #546e7a,
+        primaryTextOnPrimary: white,
+        secondaryColour: rgb(104, 130, 142),
+        primaryTextOnSecondary: #ffab40,
+
+        notificationBackground: #26a69a,
+        notificationNumber: #02ffe6
     )
 );
