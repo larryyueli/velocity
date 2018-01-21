@@ -17,3 +17,7 @@
 .margin-top-0 {
     margin-top: 0px;
 }
+
+.noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
+    text-decoration: none;
+}
