@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const config = require(`${__dirname}/Backend/config.js`);
 const express = require('express');
 const i18n = require("i18n");
-const path = require('path');
 const pug = require('pug');
 const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
@@ -34,11 +33,11 @@ app.use(
         src: `${__dirname}/sass`, 
         dest: `${__dirname}/UI/stylesheets`,
         prefix:  '/stylesheets',
-        debug: true,
+        debug: true, // TODO: remove before release
         outputStyle: 'compressed'
     })
 );
-app.use(express.static(path.join(__dirname, 'UI')));
+app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 
 app.use(session({

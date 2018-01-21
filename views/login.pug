@@ -4,9 +4,10 @@ block styles
     link(rel='stylesheet' href='/stylesheets/css/login.css')
 
 block title
-    title Velocity - Login
+    title #{__('login.title')}
 
 block content
+    include navbar
     .container
         img#logo(src='img/logo.png')
         form.form-login#login

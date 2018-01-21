@@ -4,7 +4,7 @@ block styles
     link(rel='stylesheet' href='/stylesheets/modeSelector.css')
 
 block title
-    title Select mode
+    title #{__('modeSelector.title')}
 
 block content
     .container
@@ -12,7 +12,7 @@ block content
             .center-align
                 h1
                     b
-                        | #{__('modeSelector.title')}
+                        | #{__('modeSelector.header')}
                 h4
                     | #{__('modeSelector.description')}
         br

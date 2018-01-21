@@ -22,6 +22,6 @@ html(lang='en')
         block title
             title Velocity
 
-    body.theme-default
+    bodyclass(class=(user && user.theme) ? user.theme : "theme-default")
         block content
         block scripts
