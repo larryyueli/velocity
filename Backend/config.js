@@ -21,6 +21,8 @@ const port = 8000;
 exports.port = port;
 const urlencoded = true;
 exports.urlencoded = urlencoded;
+var debugMode = false;
+exports.debugMode = debugMode;
 
 // database related configuration
 const default_db_host = process.env.DB_HOST || 'localhost';

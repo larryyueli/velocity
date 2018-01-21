@@ -37,6 +37,13 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 
+// read input parameters
+process.argv.forEach(function (val, index, array) {
+    if (val === 'DEBUG') {
+        config.debugMode = true;
+    }
+});
+
 // Setting up i18n library
 i18n.configure({
     locales: config.languageOptions,
@@ -84,15 +91,19 @@ app.use(function (req, res, next) {
 });
 
 app.listen(config.port, function () {
-    logger.info(`app is listening on port ${config.port}`);
+    const localDebugMode = config.debugMode;
+    config.debugMode = true;
 
+    logger.info(`Velocity web app is listening on port ${config.port}`);
     db.initialize(function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
             process.exit(1);
         }
 
-        logger.info('Connection to Quizzard database successful.');
+        logger.info('Connection to velocity database successful.');
+        config.debugMode = localDebugMode;
+        logger.info(`Debug mode status: ${config.debugMode}`);
     });
 });
 
