@@ -33,3 +33,7 @@
 .margin-right-10 {
     margin-right: 10px !important;
 }
+
+.noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
+    text-decoration: none;
+}

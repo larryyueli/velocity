@@ -6,9 +6,15 @@ UI errors for user display
 */
 const errors = Object.freeze({
     //1000 system errors
+    1000: 'Invalid request',
 
     //2000 user errors
     2000: 'Invalid username or password',
+    2001: 'User already exists',
+    2002: 'Invalid username or password',
+    2003: 'Invalid username or password',
+    2004: 'Invalid username or password',
+    2005: 'Account is not active'
 });
 
 const defaultError = 'Something went wrong, please try again!';
@@ -56,10 +62,10 @@ function getErrorPill(jsonResponse) {
 $.fn.extend({
     animateCss: function (animationName, callback) {
         var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        this.addClass('animated ' + animationName).one(animationEnd, function() {
+        this.addClass('animated ' + animationName).one(animationEnd, function () {
             $(this).removeClass('animated ' + animationName);
             if (callback) {
-              callback();
+                callback();
             }
         });
         return this;

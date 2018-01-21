@@ -4,6 +4,8 @@
 	},
 	"login": {
 		"signIn": "Sign In",
+		"confirmPassword": "Confirm Password",
+		"signup": "Sign Up",
 		"title": "Velocity - Login"
 	},
 	"modeSelector": {
@@ -46,6 +48,9 @@
 	},
 	"userInformation": {
 		"password": "Password",
-		"username": "Username"
+		"username": "Username",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"email": "Email"
 	}
 }
