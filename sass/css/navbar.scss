@@ -33,15 +33,39 @@
     position: relative;
 }
 
-.clear-notification {
-    color: gray;
-    padding: 0 5px;
-}
-
 #notifications_nav li {
     -webkit-animation-duration: 0.3s; 
 }
 
 .blue-text {
     color: blue;
+}
+
+.truncate {
+    display: inline-block !important;
+    overflow: hidden;
+    padding-left: 15px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 80%;
+}
+
+.full-description {
+    margin-left: 50px;
+    padding-right: 10px;
+    line-height: 1.5em !important;
+    word-wrap: break-word;
+}
+
+.right-icons {
+    color: gray;
+    display: inline-flex;
+
+    .clear-notification {
+        padding: 0 5px;
+    }
+}
+
+.visibility-icon {
+    padding-top: 14px;
 }
