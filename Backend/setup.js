@@ -16,8 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const rls = require('readline-sync');
 const fs = require('fs');
+const rls = require('readline-sync');
 
 const common = require('./common.js');
 const db = require('./db.js');
@@ -33,18 +33,25 @@ const setupAdminAccount = function () {
     const username = rls.question('Please enter your username: ');
     const fname = rls.question('Please enter your first name: ');
     const lname = rls.question('Please enter your last name: ');
-    const password = rls.question('Enter your password: ', {
+    var password = rls.question('Enter your password: ', {
         hideEchoBack: true,
         mask: '*'
     });
-    const password2 = rls.question('Confirm your password: ', {
+    var password2 = rls.question('Confirm your password: ', {
         hideEchoBack: true,
         mask: '*'
     });
 
-    if (password !== password2) {
+    while (password !== password2) {
         logger.error('Your passwords do not match, please try again.');
-        process.exit(1);
+        password = rls.question('Enter your password: ', {
+            hideEchoBack: true,
+            mask: '*'
+        });
+        password2 = rls.question('Confirm your password: ', {
+            hideEchoBack: true,
+            mask: '*'
+        });
     }
 
     const user = {

@@ -33,7 +33,7 @@ const app = express();
 // File names to render
 const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
-const pageNotFound = 'pageNotFound';
+const pageNotFoundPage = 'pageNotFound';
 
 // Setting up i18n library
 i18n.configure({

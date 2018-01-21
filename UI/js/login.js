@@ -1,6 +1,6 @@
-const loginForm = $('#login');
-const errorField = $('#invalid');
-const passwordField = $('#password');
+const loginForm = $('#loginForm');
+const errorField = $('#loginForm_invalid');
+const passwordField = $('#loginForm_password');
 
 loginForm.submit(function (evt) {
     evt.preventDefault();

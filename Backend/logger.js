@@ -65,10 +65,12 @@ const log = function (type, text) {
  */
 const init = function () {
     const currentDate = common.getDateFormatted('YYYY-MM-DD');
+
     if (!process.env.DEBUG && dateStamp !== currentDate) {
         dateStamp = currentDate;
         const logger = fs.createWriteStream(`${__dirname}/../Logs/${dateStamp}.log`, { 'flags': 'a' });
         process.stdout.write = process.stderr.write = logger.write.bind(logger);
+
         process.on('uncaughtException', function (err) {
             console.error((err && err.stack) ? err.stack : err);
         });

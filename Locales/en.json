@@ -3,7 +3,9 @@
 		"name": "Velocity"
 	},
 	"login": {
-		"signIn": "Sign In"
+		"signIn": "Sign In",
+		"confirmPassword": "Confirm Password",
+		"signup": "Sign Up"
 	},
 	"modeSelector": {
 		"classMode": {
@@ -18,7 +20,7 @@
 			"title": "Collaborator Mode",
 			"usage": "Use collaborator mode now"
 		},
-		"description": "Please select the mode that you would like to use",		
+		"description": "Please select the mode that you would like to use",
 		"title": "Welcome to Velocity!"
 	},
 	"notifications": {
@@ -44,6 +46,9 @@
 	},
 	"userInformation": {
 		"password": "Password",
-		"username": "Username"
+		"username": "Username",
+		"firstName": "First Name",
+		"lastName": "Last Name",
+		"email": "Email"
 	}
 }

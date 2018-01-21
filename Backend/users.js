@@ -57,8 +57,8 @@ const addUser = function (user, callback) {
         userToAdd.active = true;
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
-        userToAdd.canAccessUsersList = (user.type !== common.userTypes.STUDENT);
-        userToAdd.canAccessGlobalSettings = (user.type === common.userTypes.PROFESSOR
+        userToAdd.canAccessUsers = (user.type !== common.userTypes.STUDENT);
+        userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.COLLABORATOR);
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.TA);

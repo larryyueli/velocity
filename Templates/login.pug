@@ -7,23 +7,69 @@ block title
     title Velocity - Login
 
 block content
-
     .container
-        img#logo(src='img/logo.png')
-        form.form-login#login
-            br
-            p#invalid
-            .row
-                .input-field
-                    i.material-icons.prefix person
-                    input.form-control#username(type='text' name='username' placeholder=__('userInformation.username') required autofocus)
-                    label.sr-only(for='user') Username
-            .row
-                .input-field
-                    i.material-icons.prefix vpn_key
-                    input.form-control#password(type='password' name='password' placeholder=__('userInformation.password') required)
-                    label.sr-only(for='password') Password
-            button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signIn')}
-   
+        .card.max500px.whiteRectangleTransparent
+            .card-content
+                img#logo(src='img/logo.png')
+            .card-tabs
+                ul.tabs.tabs-fixed-width
+                    li.tab
+                        a.noLineLink.active(href='#loginDiv') Login
+                    li.tab
+                        a.noLineLink(href='#signupDiv') Sign Up
+                    li.tab
+                        a.noLineLink(href='#forgotPasswordDiv') Forgot Password
+            .card-content.grey.lighten-4
+                #loginDiv
+                    form.form-login#loginForm
+                        br
+                        p#loginForm_invalid
+                        .row
+                            .input-field
+                                i.material-icons.prefix person
+                                input.form-control#loginForm_username(type='text' name='username' placeholder=__('userInformation.username') required autofocus)
+                                label.sr-only(for='username') Username
+                        .row
+                            .input-field
+                                i.material-icons.prefix vpn_key
+                                input.form-control#loginForm_password(type='password' name='password' placeholder=__('userInformation.password') required)
+                                label.sr-only(for='password') Password
+                        button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signIn')}
+                #signupDiv
+                    form.form-login#signupForm
+                        br
+                        p#signupForm_invalid
+                        .row
+                            .input-field
+                                i.material-icons.prefix person
+                                input.form-control#signupForm_fname(type='text' name='fname' placeholder=__('userInformation.firstName') required autofocus)
+                                label.sr-only(for='fname') First Name
+                        .row
+                            .input-field
+                                i.material-icons.prefix person
+                                input.form-control#signupForm_lname(type='text' name='lname' placeholder=__('userInformation.lastName') required)
+                                label.sr-only(for='lname') Last Name
+                        .row
+                            .input-field
+                                i.material-icons.prefix person
+                                input.form-control#signupForm_username(type='text' name='username' placeholder=__('userInformation.username') required)
+                                label.sr-only(for='username') Username
+                        .row
+                            .input-field
+                                i.material-icons.prefix email
+                                input.form-control#signupForm_email(type='text' name='email' placeholder=__('userInformation.email') required)
+                                label.sr-only(for='email') Email
+                        .row
+                            .input-field
+                                i.material-icons.prefix vpn_key
+                                input.form-control#signupForm_password(type='password' name='password' placeholder=__('userInformation.password') required)
+                                label.sr-only(for='password') Password
+                        .row
+                            .input-field
+                                i.material-icons.prefix vpn_key
+                                input.form-control#signupForm_confirmPassword(type='password' name='confirmPassword' placeholder=__('login.confirmPassword') required)
+                                label.sr-only(for='confirmPassword') Confirm Password
+                        button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signup')}
+                #forgotPasswordDiv Forgot Password
 block scripts
     script(src='/js/login.js')

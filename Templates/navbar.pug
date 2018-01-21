@@ -7,10 +7,10 @@
             ul.left.hide-on-med-and-down
                 li#nav-projects
                     a.navbarLink(href='#!') #{__('pageNames.projects')}
-                if canAccessUsersList
+                if canAccessUsers
                     li#nav-users
                         a.navbarLink(href='#!') #{__('pageNames.users')}
-                if canAccessGlobalSettings
+                if canAccessSettings
                     li#nav-settings
                         a.navbarLink(href='#!') #{__('pageNames.settings')}
                 if canAccessGrades
@@ -35,12 +35,12 @@ ul#mobile.side-nav
         a.navbarLinkHidden(href='#!')
             i.material-icons folder
             | #{__('pageNames.projects')}
-    if canAccessUsersList
+    if canAccessUsers
         li#navm-users
             a.navbarLinkHidden(href='#!')
                 i.material-icons people
                 | #{__('pageNames.users')}
-    if canAccessGlobalSettings
+    if canAccessSettings
         li#navm-settings
             a.navbarLinkHidden(href='#!')
                 i.material-icons settings
