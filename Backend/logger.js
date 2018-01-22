@@ -30,7 +30,7 @@ var dateStamp;
  */
 exports.info = function (text) {
     init();
-    console.log(`[{${common.getDate()}}] info: ${text}`);
+    console.log(`[${common.getDate()}] info: ${text}`);
 }
 
 /**
@@ -40,7 +40,7 @@ exports.info = function (text) {
  */
 exports.warning = function (text) {
     init();
-    console.warn(`[{${common.getDate()}}] warning: ${text}`);
+    console.warn(`[${common.getDate()}] warning: ${text}`);
 }
 
 /**
@@ -50,7 +50,7 @@ exports.warning = function (text) {
  */
 exports.error = function (text) {
     init();
-    console.error(`[{${common.getDate()}}] error: ${text}`);
+    console.error(`[${common.getDate()}] error: ${text}`);
 }
 
 /**
