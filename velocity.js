@@ -136,6 +136,20 @@ const handleRootPath = function (req, res) {
 }
 
 /**
+ * path to get the me object
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleMePath = function (req, res) {
+    if (verifyActiveSession(req)) {
+        return res.status(200).send(req.session.user);
+    }
+
+    return res.status(403).send(common.getError(2006));
+}
+
+/**
  * login path to create a session if the username and password are valid
  *
  * @param {object} req req object
@@ -183,6 +197,7 @@ const handleLogoutPath = function (req, res) {
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
 app.get('/logout', handleLogoutPath);
+app.get('/me', handleMePath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------

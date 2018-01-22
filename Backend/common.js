@@ -44,7 +44,8 @@ const errors = Object.freeze({
     2002: 'missing username or password for login',
     2003: 'user not found',
     2004: 'wrong password',
-    2005: 'user account is not active'
+    2005: 'user account is not active',
+    2006: 'user\'s session is not valid or timed out'
 });
 exports.errors = errors;
 
