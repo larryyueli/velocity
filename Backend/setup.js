@@ -29,6 +29,7 @@ const users = require('./users.js');
  * add an admin account
  */
 const setupAdminAccount = function () {
+    config.debugMode = true;
     logger.info('Velocity server setup');
 
     const username = rls.question('Please enter your username: ');

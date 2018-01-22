@@ -73,3 +73,22 @@ const getUser = function (searchQuery, callback) {
     });
 }
 exports.getUser = getUser;
+
+/**
+ * find a single user by the search parameters, 
+ * then update its values by the update parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateUser = function (searchQuery, updateQuery, callback) {
+    usersCollection.update(searchQuery, updateQuery, function (err, result) {
+        if (err) {
+            return callback(common.getError(1013), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+exports.updateUser = updateUser;

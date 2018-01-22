@@ -43,6 +43,7 @@ const errors = Object.freeze({
     1010: 'could not add the settings object, database issue',
     1011: 'could not update the settings object, database issue',
     1012: 'could not the selected mode',
+    1013: 'failed to update user object, database issue',
 
     //2000 users
     2000: 'missing requirement',
@@ -52,6 +53,7 @@ const errors = Object.freeze({
     2004: 'wrong password',
     2005: 'user account is not active',
     2006: 'user\'s session is not valid or timed out',
+    2007: 'failed to update user, missing information'
 });
 exports.errors = errors;
 
@@ -62,33 +64,38 @@ exports.defaultError = defaultError;
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({
-    MODE_SELECTOR:      0,
-    COLLABORATOR:       1,
-    PROFESSOR:          2,
-    TA:                 3,
-    STUDENT:            4
+    MODE_SELECTOR: 0,
+    COLLABORATOR: 1,
+    PROFESSOR: 2,
+    TA: 3,
+    STUDENT: 4
 });
 exports.userTypes = userTypes;
 
 // all variable types
 const variableTypes = Object.freeze({
-    UNDEFINED:      'undefined'
+    ARRAY: '[object Array]',
+    BOOLEAN: '[object Boolean]',
+    NUMBER: '[object Number]',
+    OBJECT: '[object Object]',
+    STRING: '[object String]',
+    UNDEFINED: 'undefined'
 });
 exports.variableTypes = variableTypes;
 
 // all color themes
 const colorThemes = Object.freeze({
-    DEFAULT:        'default'
+    DEFAULT: 'default'
 });
 exports.colorThemes = colorThemes;
 
 // all project types
-const modeType = Object.freeze({
-    UNKNOWN:        -1,
-    CLASS:          0,
-    COLLABORATOR:   1
+const modeTypes = Object.freeze({
+    UNKNOWN: -1,
+    CLASS: 0,
+    COLLABORATORS: 1
 });
-exports.modeType = modeType;
+exports.modeTypes = modeTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

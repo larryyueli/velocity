@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common = require('./common.js');
 const db = require('./db.js');
 
-const settingsObject;
+var settingsObject;
 
 /**
  * fetch the settings object from the database
@@ -66,7 +66,7 @@ const resetAllSettings = function (callback) {
         var defaultSettings = {};
         defaultSettings._id = common.getUUID();
         defaultSettings.active = true;
-        defaultSettings.mode = common.modeType.UNKNOWN;
+        defaultSettings.mode = common.modeTypes.UNKNOWN;
 
         db.addAllSettings(defaultSettings, function (err, result) {
             if (err) {

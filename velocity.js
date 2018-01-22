@@ -65,7 +65,7 @@ app.use(
         src: `${__dirname}/sass`,
         dest: `${__dirname}/UI/stylesheets`,
         prefix: '/stylesheets',
-        debug: true, // TODO: remove before release
+        debug: false, // TODO: remove before release
         outputStyle: 'compressed'
     })
 );
@@ -122,7 +122,7 @@ app.listen(config.port, function () {
  *
  * @param {object} req req value of the session
  */
-const verifyActiveSession = function (req) {
+const isActiveSession = function (req) {
     return typeof (req.session) !== common.variableTypes.UNDEFINED
         && typeof (req.session.user) !== common.variableTypes.UNDEFINED;
 }
@@ -163,7 +163,7 @@ const handleLoginPath = function (req, res) {
  * @param {object} res res object
  */
 const handleLogoutPath = function (req, res) {
-    if (verifyActiveSession(req)) {
+    if (isActiveSession(req)) {
         logger.info(`User ${req.session.user.username} logged out.`);
         req.session.destroy();
     }
@@ -178,11 +178,11 @@ const handleLogoutPath = function (req, res) {
  * @param {object} res res object
  */
 const handleMePath = function (req, res) {
-    if (verifyActiveSession(req)) {
-        return res.status(200).send(req.session.user);
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
     }
 
-    return res.status(403).send(common.getError(2006));
+    return res.status(200).send(req.session.user);
 }
 
 /**
@@ -192,14 +192,15 @@ const handleMePath = function (req, res) {
  * @param {object} res res object
  */
 const handleRootPath = function (req, res) {
-    if (verifyActiveSession(req)) {
-        if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
-            return res.status(200).render(modeSelectorPage);
-        }
-        return res.status(200).send('hello world');
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
     }
 
-    return res.status(401).render(loginPage);
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
+        return res.status(200).render(modeSelectorPage);
+    }
+
+    return res.status(200).send(`user type: ${req.session.user.type}`); // TO DO: replace with proper pages
 }
 
 /**
@@ -209,7 +210,7 @@ const handleRootPath = function (req, res) {
  * @param {object} res res object
  */
 const handleSelectModePath = function (req, res) {
-    if (!verifyActiveSession(req)) {
+    if (!isActiveSession(req)) {
         return res.status(403).send(common.getError(2006));
     }
 
@@ -226,7 +227,29 @@ const handleSelectModePath = function (req, res) {
             return res.status(500).send(common.getError(1012));
         }
 
-        return res.status(200).send('mode updated successfully');
+        var newType;
+        if (selectedMode === common.modeTypes.CLASS) {
+            newType = common.userTypes.PROFESSOR
+        }
+
+        if (selectedMode === common.modeTypes.COLLABORATORS) {
+            newType = common.userTypes.COLLABORATOR
+        }
+
+        const updateObject = {
+            _id: req.session.user._id,
+            type: newType
+        };
+
+        users.updateUser(updateObject, function (err, result) {
+            if (err) {
+                logger.error(err);
+                return res.status(500).send(err);
+            }
+
+            req.session.user.type = newType;
+            return res.status(200).send('mode updated successfully');
+        });
     });
 }
 // </Requests Function> -----------------------------------------------

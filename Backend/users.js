@@ -116,3 +116,42 @@ const login = function (username, password, callback) {
     });
 }
 exports.login = login;
+
+/**
+ * update the user information
+ *
+ * @param {object} newUser user object to add
+ * @param {function} callback callback function
+ */
+const updateUser = function (newUser, callback) {
+    var searchQuery = { _id: newUser._id };
+    var updateQuery = {};
+    updateQuery.$set = {};
+
+    if ('_id' in newUser
+        && typeof (newUser._id) !== common.variableTypes.STRING) {
+        searchQuery._id = newUser._id;
+    }
+
+    if (common.isEmptyObject(searchQuery)) {
+        return callback(common.getError(2007), null);
+    }
+
+    if ('type' in newUser
+        && typeof (newUser.type) !== common.variableTypes.NUMBER) {
+        updateQuery.$set.type = newUser.type;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set)) {
+        delete updateQuery.$set;
+    }
+
+    if (common.isEmptyObject(updateQuery)) {
+        return callback(common.getError(2007), null);
+    }
+
+    updateQuery.$set.mtime = common.getDate();
+
+    db.updateUser(searchQuery, updateQuery, callback);
+}
+exports.updateUser = updateUser;
