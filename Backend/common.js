@@ -74,11 +74,11 @@ exports.userTypes = userTypes;
 
 // all variable types
 const variableTypes = Object.freeze({
-    ARRAY: '[object Array]',
-    BOOLEAN: '[object Boolean]',
-    NUMBER: '[object Number]',
-    OBJECT: '[object Object]',
-    STRING: '[object String]',
+    ARRAY: 'array',
+    BOOLEAN: 'boolean',
+    NUMBER: 'number',
+    OBJECT: 'object',
+    STRING: 'string',
     UNDEFINED: 'undefined'
 });
 exports.variableTypes = variableTypes;
@@ -124,6 +124,23 @@ const isEmptyObject = function (obj) {
     return true;
 }
 exports.isEmptyObject = isEmptyObject;
+
+/**
+ * check if value in the object
+ *
+ * @param {any} value value to check
+ * @param {object} obj object to check
+ * @return {boolean}
+ */
+const isValueInObject = function (value, obj) {
+    for (var key in obj) {
+        if (obj[key] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isValueInObject = isValueInObject;
 
 /**
  * return an object of error code and its message

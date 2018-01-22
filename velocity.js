@@ -134,8 +134,8 @@ const isActiveSession = function (req) {
  * @param {object} res res object
  */
 const handleLoginPath = function (req, res) {
-    if (typeof (req.body.username) === common.variableTypes.UNDEFINED
-        || typeof (req.body.password) === common.variableTypes.UNDEFINED) {
+    if (typeof (req.body.username) !== common.variableTypes.STRING
+        || typeof (req.body.password) !== common.variableTypes.STRING) {
         logger.error(JSON.stringify(common.getError(2002)));
         return res.status(400).send(common.getError(2002));
     }
@@ -214,25 +214,24 @@ const handleSelectModePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
-    if (typeof (req.body.selectedMode) === common.variableTypes.UNDEFINED
-        || parseInt(req.body.selectedMode) === common.variableTypes.UNDEFINED) {
+    const parsedSelectedMode = parseInt(req.body.selectedMode);
+    if (!common.isValueInObject(parsedSelectedMode, common.modeTypes)) {
         logger.error(JSON.stringify(common.getError(1000)));
         return res.status(400).send(common.getError(1000));
     }
 
-    const selectedMode = parseInt(req.body.selectedMode);
-    settings.updateModeType(selectedMode, function (err, result) {
+    settings.updateModeType(parsedSelectedMode, function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(common.getError(1012));
         }
 
         var newType;
-        if (selectedMode === common.modeTypes.CLASS) {
+        if (parsedSelectedMode === common.modeTypes.CLASS) {
             newType = common.userTypes.PROFESSOR
         }
 
-        if (selectedMode === common.modeTypes.COLLABORATORS) {
+        if (parsedSelectedMode === common.modeTypes.COLLABORATORS) {
             newType = common.userTypes.COLLABORATOR
         }
 
@@ -243,7 +242,7 @@ const handleSelectModePath = function (req, res) {
 
         users.updateUser(updateObject, function (err, result) {
             if (err) {
-                logger.error(err);
+                logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
 

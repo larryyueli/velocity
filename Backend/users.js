@@ -28,11 +28,11 @@ const db = require('./db.js');
  * @param {function} callback callback function
  */
 const addUser = function (user, callback) {
-    if (typeof (user.fname) === common.variableTypes.UNDEFINED
-        || typeof (user.lname) === common.variableTypes.UNDEFINED
-        || typeof (user.username) === common.variableTypes.UNDEFINED
-        || typeof (user.password) === common.variableTypes.UNDEFINED
-        || typeof (user.type) === common.variableTypes.UNDEFINED) {
+    if (typeof (user.fname) !== common.variableTypes.STRING
+        || typeof (user.lname) !== common.variableTypes.STRING
+        || typeof (user.username) !== common.variableTypes.STRING
+        || typeof (user.password) !== common.variableTypes.STRING
+        || typeof (user.type) !== common.variableTypes.NUMBER) {
         return callback(common.getError(2000), null);
     }
 
@@ -87,8 +87,8 @@ exports.getUser = getUser;
  * @param {function} callback callback function
  */
 const login = function (username, password, callback) {
-    if (typeof (username) === common.variableTypes.UNDEFINED
-        || typeof (password) === common.variableTypes.UNDEFINED) {
+    if (typeof (username) !== common.variableTypes.STRING
+        || typeof (password) !== common.variableTypes.STRING) {
         return callback(common.getError(2002), null);
     }
 
@@ -137,8 +137,7 @@ const updateUser = function (newUser, callback) {
         return callback(common.getError(2007), null);
     }
 
-    if ('type' in newUser
-        && typeof (newUser.type) !== common.variableTypes.NUMBER) {
+    if (common.isValueInObject(newUser.type, common.userTypes)) {
         updateQuery.$set.type = newUser.type;
     }
 

@@ -87,7 +87,7 @@ exports.resetAllSettings = resetAllSettings;
  * @param {function} callback callback function
  */
 const updateModeType = function (modeType, callback) {
-    if (typeof (modeType) === common.variableTypes.UNDEFINED) {
+    if (!common.isValueInObject(modeType, common.modeTypes)) {
         return callback(common.getError(1000), null);
     }
 
