@@ -28,6 +28,7 @@ const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
 const logger = require('./Backend/logger.js');
+const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
 const app = express();
@@ -61,9 +62,9 @@ app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize
 app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
 app.use(
     sassMiddleware({
-        src: `${__dirname}/sass`, 
+        src: `${__dirname}/sass`,
         dest: `${__dirname}/UI/stylesheets`,
-        prefix:  '/stylesheets',
+        prefix: '/stylesheets',
         debug: true, // TODO: remove before release
         outputStyle: 'compressed'
     })
@@ -102,8 +103,16 @@ app.listen(config.port, function () {
         }
 
         logger.info('Connection to velocity database successful.');
-        config.debugMode = localDebugMode;
-        logger.info(`Debug mode status: ${config.debugMode}`);
+        settings.initialize(function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                process.exit(1);
+            }
+
+            logger.info('Settings object has been fetched successful.');
+            config.debugMode = localDebugMode;
+            logger.info(`Debug mode status: ${config.debugMode}`);
+        });
     });
 });
 

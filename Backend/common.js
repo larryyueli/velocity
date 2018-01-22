@@ -37,6 +37,10 @@ const errors = Object.freeze({
     1004: 'failed to add user, database issue',
     1005: 'failed to verify password, hashing issue',
     1006: 'failed create user session',
+    1007: 'failed to get settings object, database issue',
+    1008: 'settings object does not exist',
+    1009: 'could not delete the settings object, database issue',
+    1010: 'could not add the settings object, database issue',
 
     //2000 users
     2000: 'missing requirement',
@@ -45,7 +49,7 @@ const errors = Object.freeze({
     2003: 'user not found',
     2004: 'wrong password',
     2005: 'user account is not active',
-    2006: 'user\'s session is not valid or timed out'
+    2006: 'user\'s session is not valid or timed out',
 });
 exports.errors = errors;
 
@@ -75,6 +79,14 @@ const colorThemes = Object.freeze({
     DEFAULT:        'default'
 });
 exports.colorThemes = colorThemes;
+
+// all project types
+const projectType = Object.freeze({
+    UNKNOWN:        0,
+    CLASS:          1,
+    COLLABORATOR:   2
+});
+exports.projectType = projectType;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

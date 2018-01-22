@@ -91,6 +91,7 @@ const login = function (username, password, callback) {
         || typeof (password) === common.variableTypes.UNDEFINED) {
         return callback(common.getError(2002), null);
     }
+
     getUser({ username: username }, function (err, userObj) {
         if (err) {
             return callback(err, null);
