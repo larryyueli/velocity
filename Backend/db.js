@@ -52,4 +52,5 @@ exports.getUser = db_users.getUser;
 exports.addAllSettings = db_settings.addAllSettings;
 exports.getAllSettings = db_settings.getAllSettings;
 exports.removeAllSettings = db_settings.removeAllSettings;
+exports.updateAllSettings = db_settings.updateAllSettings;
 // </Settings Collection> ---------------------------------------------

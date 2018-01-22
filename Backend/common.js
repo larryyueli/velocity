@@ -41,6 +41,8 @@ const errors = Object.freeze({
     1008: 'settings object does not exist',
     1009: 'could not delete the settings object, database issue',
     1010: 'could not add the settings object, database issue',
+    1011: 'could not update the settings object, database issue',
+    1012: 'could not the selected mode',
 
     //2000 users
     2000: 'missing requirement',
@@ -82,9 +84,9 @@ exports.colorThemes = colorThemes;
 
 // all project types
 const modeType = Object.freeze({
-    UNKNOWN:        0,
-    CLASS:          1,
-    COLLABORATOR:   2
+    UNKNOWN:        -1,
+    CLASS:          0,
+    COLLABORATOR:   1
 });
 exports.modeType = modeType;
 // </Global Constants> ------------------------------------------

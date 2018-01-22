@@ -128,37 +128,6 @@ const verifyActiveSession = function (req) {
 }
 
 /**
- * root path to redirect to the proper page based on session state
- *
- * @param {object} req req object
- * @param {object} res res object
- */
-const handleRootPath = function (req, res) {
-    if (verifyActiveSession(req)) {
-        if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
-            return res.status(200).render(modeSelectorPage);
-        }
-        return res.status(200).send('hello world');
-    }
-
-    return res.status(401).render(loginPage);
-}
-
-/**
- * path to get the me object
- *
- * @param {object} req req object
- * @param {object} res res object
- */
-const handleMePath = function (req, res) {
-    if (verifyActiveSession(req)) {
-        return res.status(200).send(req.session.user);
-    }
-
-    return res.status(403).send(common.getError(2006));
-}
-
-/**
  * login path to create a session if the username and password are valid
  *
  * @param {object} req req object
@@ -201,6 +170,65 @@ const handleLogoutPath = function (req, res) {
 
     return res.status(200).send('ok');
 }
+
+/**
+ * path to get the me object
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleMePath = function (req, res) {
+    if (verifyActiveSession(req)) {
+        return res.status(200).send(req.session.user);
+    }
+
+    return res.status(403).send(common.getError(2006));
+}
+
+/**
+ * root path to redirect to the proper page based on session state
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleRootPath = function (req, res) {
+    if (verifyActiveSession(req)) {
+        if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
+            return res.status(200).render(modeSelectorPage);
+        }
+        return res.status(200).send('hello world');
+    }
+
+    return res.status(401).render(loginPage);
+}
+
+/**
+ * path to set the mode in the global settings
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSelectModePath = function (req, res) {
+    if (!verifyActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    if (typeof (req.body.selectedMode) === common.variableTypes.UNDEFINED
+        || parseInt(req.body.selectedMode) === common.variableTypes.UNDEFINED) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    const selectedMode = parseInt(req.body.selectedMode);
+    settings.updateModeType(selectedMode, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(common.getError(1012));
+        }
+
+        return res.status(200).send('mode updated successfully');
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -211,6 +239,7 @@ app.get('/me', handleMePath);
 
 // <Post Requests> -----------------------------------------------
 app.post('/login', handleLoginPath);
+app.post('/selectMode', handleSelectModePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
@@ -219,7 +248,10 @@ app.post('/login', handleLoginPath);
 // <Delete Requests> ------------------------------------------------
 // </Delete Requests> -----------------------------------------------
 
-// 404 route
+
+/**
+ * If request path does not match any of the above routes, then resolve to 404
+ */
 app.use(function (req, res, next) {
     return res.status(404).render(pageNotFoundPage);
 });

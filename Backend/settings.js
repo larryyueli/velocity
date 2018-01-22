@@ -73,9 +73,32 @@ const resetAllSettings = function (callback) {
                 return callback(err, null);
             }
 
-            settingsObject = obj;
+            settingsObject = defaultSettings;
             return callback(null, 'ok');
         });
     });
 }
 exports.resetAllSettings = resetAllSettings;
+
+/**
+ * update the mode type
+ *
+ * @param {number} modeType mode type
+ * @param {function} callback callback function
+ */
+const updateModeType = function (modeType, callback) {
+    if (typeof (modeType) === common.variableTypes.UNDEFINED) {
+        return callback(common.getError(1000), null);
+    }
+
+    const updateQuery = { $set: { mode: modeType } };
+    db.updateAllSettings(updateQuery, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        settingsObject.mode = modeType;
+        return callback(null, result);
+    });
+}
+exports.updateModeType = updateModeType;

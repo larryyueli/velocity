@@ -82,3 +82,20 @@ const addAllSettings = function (settingsObj, callback) {
     });
 }
 exports.addAllSettings = addAllSettings;
+
+/**
+ * update the settings object
+ *
+ * @param {object} udpateQuery the deltas for the settings object
+ * @param {function} callback callback function
+ */
+const updateAllSettings = function (udpateQuery, callback) {
+    settingsCollection.update({}, udpateQuery, function (err, result) {
+        if (err) {
+            return callback(common.getError(1011), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+exports.updateAllSettings = updateAllSettings;
