@@ -57,6 +57,7 @@ const addUser = function (user, callback) {
         userToAdd.active = true;
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
+        userToAdd.notificationEnabled = true;
         userToAdd.canAccessUsers = (user.type !== common.userTypes.STUDENT);
         userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.COLLABORATOR);
@@ -124,7 +125,7 @@ exports.login = login;
  * @param {function} callback callback function
  */
 const updateUser = function (newUser, callback) {
-    var searchQuery = { _id: newUser._id };
+    var searchQuery = {};
     var updateQuery = {};
     updateQuery.$set = {};
 
@@ -135,6 +136,30 @@ const updateUser = function (newUser, callback) {
 
     if (common.isEmptyObject(searchQuery)) {
         return callback(common.getError(2007), null);
+    }
+
+    if (typeof (newUser.fname) === common.variableTypes.STRING) {
+        updateQuery.$set.fname = newUser.fname;
+    }
+
+    if (typeof (newUser.lname) === common.variableTypes.STRING) {
+        updateQuery.$set.lname = newUser.lname;
+    }
+
+    if (typeof (newUser.username) === common.variableTypes.STRING) {
+        updateQuery.$set.username = newUser.username;
+    }
+
+    if (typeof (newUser.email) === common.variableTypes.STRING) {
+        updateQuery.$set.email = newUser.email;
+    }
+
+    if (common.isValueInObject(newUser.theme, common.colorThemes)) {
+        updateQuery.$set.theme = newUser.theme;
+    }
+
+    if (typeof (newUser.notificationEnabled) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set.notificationEnabled = newUser.notificationEnabled;
     }
 
     if (common.isValueInObject(newUser.type, common.userTypes)) {

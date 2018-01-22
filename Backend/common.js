@@ -143,6 +143,25 @@ const isValueInObject = function (value, obj) {
 exports.isValueInObject = isValueInObject;
 
 /**
+ * return boolean from boolean string if possible, otherwise undefined
+ *
+ * @param {string} value value to convert
+ * @return {boolean}
+ */
+const convertStringToBoolean = function (value) {
+    if (value.toLowerCase() === 'false') {
+        return false;
+    }
+
+    if (value.toLowerCase() === 'true') {
+        return true;
+    }
+
+    return variableTypes.UNDEFINED;
+}
+exports.convertStringToBoolean = convertStringToBoolean;
+
+/**
  * return an object of error code and its message
  *
  * @param {number} errorCode the error number

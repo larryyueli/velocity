@@ -37,6 +37,7 @@ const app = express();
 const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
+const profilePage = 'profile';
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -186,6 +187,60 @@ const handleMePath = function (req, res) {
 }
 
 /**
+ * path to get the profile page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProfilePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    return res.status(200).render(profilePage, {
+        user: req.session.user
+    });
+}
+
+/**
+ * path to update the user profile
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUpdateProfilePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    var updateObject = {};
+    updateObject._id = req.session.user._id;
+    updateObject.fname = req.body.fname || req.session.user.fname;
+    updateObject.lname = req.body.lname || req.session.user.lname;
+    updateObject.username = req.body.username || req.session.user.username;
+    updateObject.email = req.body.email || req.session.user.email;
+    updateObject.theme = req.body.theme || req.session.user.theme;
+    updateObject.notificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled)
+        || req.session.user.notificationEnabled;
+
+    users.updateUser(updateObject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        req.session.user.fname = updateObject.fname;
+        req.session.user.lname = updateObject.lname;
+        req.session.user.username = updateObject.username;
+        req.session.user.theme = updateObject.theme;
+        req.session.user.email = updateObject.email;
+        req.session.user.notificationEnabled = updateObject.notificationEnabled;
+
+        return res.status(200).send('profile has been updated successfully');
+    });
+}
+
+/**
  * root path to redirect to the proper page based on session state
  *
  * @param {object} req req object
@@ -257,11 +312,13 @@ const handleSelectModePath = function (req, res) {
 app.get('/', handleRootPath);
 app.get('/logout', handleLogoutPath);
 app.get('/me', handleMePath);
+app.get('/profile', handleProfilePath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
 app.post('/login', handleLoginPath);
 app.post('/selectMode', handleSelectModePath);
+app.post('/updateProfile', handleUpdateProfilePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
