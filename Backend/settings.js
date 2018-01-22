@@ -27,10 +27,10 @@ const settingsObject;
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    db.getSettings(function (err, obj) {
+    db.getAllSettings(function (err, obj) {
         if (err) {
             if (err.code === 1008) {
-                resetSettings(callback);
+                resetAllSettings(callback);
             } else {
                 return callback(err, null);
             }
@@ -47,18 +47,18 @@ exports.initialize = initialize;
  *
  * @returns {object}
  */
-const getSettings = function () {
+const getAllSettings = function () {
     return settingsObject;
 }
-exports.getSettings = getSettings;
+exports.getAllSettings = getAllSettings;
 
 /**
  * reset all settings to default
  *
  * @param {function} callback callback function
  */
-const resetSettings = function (callback) {
-    db.removeSettings(function (err, result) {
+const resetAllSettings = function (callback) {
+    db.removeAllSettings(function (err, result) {
         if (err) {
             return callback(err, null);
         }
@@ -66,9 +66,9 @@ const resetSettings = function (callback) {
         var defaultSettings = {};
         defaultSettings._id = common.getUUID();
         defaultSettings.active = true;
-        defaultSettings.type = common.projectType.UNKNOWN;
+        defaultSettings.mode = common.modeType.UNKNOWN;
 
-        db.addSettings(defaultSettings, function (err, result) {
+        db.addAllSettings(defaultSettings, function (err, result) {
             if (err) {
                 return callback(err, null);
             }
@@ -78,4 +78,4 @@ const resetSettings = function (callback) {
         });
     });
 }
-exports.resetSettings = resetSettings;
+exports.resetAllSettings = resetAllSettings;

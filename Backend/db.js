@@ -35,8 +35,8 @@ const initialize = function (callback) {
             return callback(common.getError(1001), null);
         }
 
-        db_settings.usersCollection = client.db(config.default_db_name).collection('settings');
-        db_users.usersCollection = client.db(config.default_db_name).collection('users');
+        db_settings.initialize(client.db(config.default_db_name).collection('settings'));
+        db_users.initialize(client.db(config.default_db_name).collection('users'));
 
         return callback(null, 'ok');
     });
@@ -49,7 +49,7 @@ exports.getUser = db_users.getUser;
 // </Users Collection> ------------------------------------------------
 
 // <Settings Collection> ----------------------------------------------
-exports.getSettings = db_settings.getSettings;
-exports.removeSettings = db_settings.removeSettings;
-exports.addSettings = db_settings.addSettings;
+exports.addAllSettings = db_settings.addAllSettings;
+exports.getAllSettings = db_settings.getAllSettings;
+exports.removeAllSettings = db_settings.removeAllSettings;
 // </Settings Collection> ---------------------------------------------

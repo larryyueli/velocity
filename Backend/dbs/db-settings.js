@@ -16,14 +16,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const common = require('./../common.js');
+
 var settingsCollection;
+
+/**
+ * instantiate the settings database object
+ *
+ * @param {object} collectionObject collection object
+ */
+const initialize = function (collectionObject) {
+    settingsCollection = collectionObject;
+}
+exports.initialize = initialize;
 
 /**
  * get the settings object
  *
  * @param {function} callback callback function
  */
-const getSettings = function (callback) {
+const getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
             return callback(common.getError(1007), null);
@@ -36,14 +48,14 @@ const getSettings = function (callback) {
         return callback(null, obj);
     });
 }
-exports.getSettings = getSettings;
+exports.getAllSettings = getAllSettings;
 
 /**
  * remove the settings object to its initial state
  *
  * @param {function} callback callback function
  */
-const removeSettings = function (callback) {
+const removeAllSettings = function (callback) {
     settingsCollection.remove({}, function (err, result) {
         if (err) {
             return callback(common.getError(1009), null);
@@ -52,7 +64,7 @@ const removeSettings = function (callback) {
         return callback(null, 'ok');
     });
 }
-exports.removeSettings = removeSettings;
+exports.removeAllSettings = removeAllSettings;
 
 /**
  * add the settings object
@@ -60,7 +72,7 @@ exports.removeSettings = removeSettings;
  * @param {object} settingsObj the settings object
  * @param {function} callback callback function
  */
-const addSettings = function (settingsObj, callback) {
+const addAllSettings = function (settingsObj, callback) {
     settingsCollection.insert(settingsObj, function (err, obj) {
         if (err) {
             return callback(common.getError(1010), null);
@@ -69,4 +81,4 @@ const addSettings = function (settingsObj, callback) {
         return callback(null, settingsObj);
     });
 }
-exports.addSettings = addSettings;
+exports.addAllSettings = addAllSettings;

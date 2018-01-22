@@ -16,7 +16,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const common = require('./../common.js');
+
 var usersCollection;
+
+/**
+ * instantiate the users database object
+ *
+ * @param {object} collectionObject collection object
+ */
+const initialize = function (collectionObject) {
+    usersCollection = collectionObject;
+}
+exports.initialize = initialize;
 
 /**
  * add a user object to the users collection

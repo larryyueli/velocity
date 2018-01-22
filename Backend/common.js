@@ -81,12 +81,12 @@ const colorThemes = Object.freeze({
 exports.colorThemes = colorThemes;
 
 // all project types
-const projectType = Object.freeze({
+const modeType = Object.freeze({
     UNKNOWN:        0,
     CLASS:          1,
     COLLABORATOR:   2
 });
-exports.projectType = projectType;
+exports.modeType = modeType;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
