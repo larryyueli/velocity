@@ -27,6 +27,7 @@ const pug = require('pug');
 const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
 const session = require('express-session');
+const ws = require('ws');
 
 const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
@@ -36,6 +37,7 @@ const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
 const app = express();
+const wss = new ws.Server({ port: config.wsPort });
 
 // File names to render
 const loginPage = 'login';
@@ -77,7 +79,6 @@ app.use(
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
-
 app.use(session({
     secret: config.sessionSecret,
     resave: config.sessionResave,
@@ -88,7 +89,6 @@ app.use(session({
         maxAge: config.maxSessionAge
     }
 }));
-
 app.use(function (req, res, next) {
     res.locals.__ = res.__ = function () {
         return i18n.__.apply(req, arguments);
@@ -343,6 +343,15 @@ app.post('/updateProfile', handleUpdateProfilePath);
 app.delete('/logout', handleLogoutPath);
 // </Delete Requests> -----------------------------------------------
 
+// <wss Requests> ------------------------------------------------
+wss.on('connection', function (ws, req) {
+    ws.on('message', function (message) {
+        console.log(`WS message ${message} from user ${req.session.user.username}`);
+    });
+
+    ws.send('ws ok');
+});
+// </wss Requests> -----------------------------------------------
 
 /**
  * If request path does not match any of the above routes, then resolve to 404
