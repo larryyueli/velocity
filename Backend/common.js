@@ -42,7 +42,7 @@ const errors = Object.freeze({
     1009: 'could not delete the settings object, database issue',
     1010: 'could not add the settings object, database issue',
     1011: 'could not update the settings object, database issue',
-    1012: 'could not the selected mode',
+    1012: 'could not update the selected mode',
     1013: 'failed to update user object, database issue',
 
     //2000 users

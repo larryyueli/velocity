@@ -16,13 +16,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const fs = require('fs');
+
 // server related configuration
-const port = 8000;
-exports.port = port;
+const hostName = 'localhost';
+exports.hostName = hostName;
+const httpPort = 8000;
+exports.httpPort = httpPort;
+const httpsPort = 8080;
+exports.httpsPort = httpsPort;
 const urlencoded = true;
 exports.urlencoded = urlencoded;
 var debugMode = false;
 exports.debugMode = debugMode;
+const ssl_options = {
+    key: fs.readFileSync(`${__dirname}/../Keys/private.key`),
+    cert: fs.readFileSync(`${__dirname}/../Keys/cert.crt`)
+};
+exports.ssl_options = ssl_options;
 
 // database related configuration
 const default_db_host = process.env.DB_HOST || 'localhost';

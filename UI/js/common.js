@@ -16,7 +16,7 @@ const errors = Object.freeze({
     2004: 'Invalid username or password',
     2005: 'Account is not active',
     2006: 'Session timed out',
-    2007: 'failed to update user, missing information'
+    2007: 'Failed to update user, missing information'
 });
 const defaultError = 'Something went wrong, please try again!';
 

@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const forceSSL = require('express-force-ssl');
+const helmet = require('helmet');
+const http = require('http');
+const https = require('https');
 const i18n = require('i18n');
 const pug = require('pug');
 const sass = require('node-sass');
@@ -66,12 +70,13 @@ app.use(
         src: `${__dirname}/sass`,
         dest: `${__dirname}/UI/stylesheets`,
         prefix: '/stylesheets',
-        debug: false, // TODO: remove before release
+        debug: true, // TODO: remove before release
         outputStyle: 'compressed'
     })
 );
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
+app.use(forceSSL);
 
 app.use(session({
     secret: config.sessionSecret,
@@ -92,27 +97,38 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.listen(config.port, function () {
+// settings https server
+const httpsServer = https.createServer(config.ssl_options, app);
+const httpServer = http.createServer(function (req, res) {
+    res.writeHead(301, { 'Location': `https://${config.hostName}:${config.httpsPort}` });
+    res.end();
+});
+
+httpServer.listen(config.httpPort, function () {
     const localDebugMode = config.debugMode;
     config.debugMode = true;
 
-    logger.info(`Velocity web app is listening on port ${config.port}`);
-    db.initialize(function (err, result) {
-        if (err) {
-            logger.error(JSON.stringify(err));
-            process.exit(1);
-        }
-
-        logger.info('Connection to velocity database successful.');
-        settings.initialize(function (err, result) {
+    logger.info(`HTTP Server is listening on port :${config.httpPort}.`);
+    httpsServer.listen(config.httpsPort, function () {
+        logger.info(`HTTPs Server is listening on port :${config.httpsPort}.`);
+        logger.info(`Velocity web app is listening on port ${config.httpsPort}`);
+        db.initialize(function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            logger.info('Settings object has been fetched successful.');
-            config.debugMode = localDebugMode;
-            logger.info(`Debug mode status: ${config.debugMode}`);
+            logger.info('Connection to velocity database successful.');
+            settings.initialize(function (err, result) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    process.exit(1);
+                }
+
+                logger.info('Settings object has been fetched successful.');
+                config.debugMode = localDebugMode;
+                logger.info(`Debug mode status: ${config.debugMode}`);
+            });
         });
     });
 });
@@ -310,7 +326,6 @@ const handleSelectModePath = function (req, res) {
 
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
-app.get('/logout', handleLogoutPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 // </Get Requests> -----------------------------------------------
@@ -325,6 +340,7 @@ app.post('/updateProfile', handleUpdateProfilePath);
 // </Put Requests> -----------------------------------------------
 
 // <Delete Requests> ------------------------------------------------
+app.delete('/logout', handleLogoutPath);
 // </Delete Requests> -----------------------------------------------
 
 
