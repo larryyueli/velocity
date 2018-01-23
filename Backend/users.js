@@ -131,7 +131,7 @@ const updateUser = function (newUser, callback) {
 
     if ('_id' in newUser
         && typeof (newUser._id) !== common.variableTypes.STRING) {
-        searchQuery._id = newUser._id;
+        searchQuery = { _id: newUser._id };
     }
 
     if (common.isEmptyObject(searchQuery)) {
@@ -148,6 +148,7 @@ const updateUser = function (newUser, callback) {
 
     if (typeof (newUser.username) === common.variableTypes.STRING) {
         updateQuery.$set.username = newUser.username;
+        searchQuery = { $and: [{ _id: newUser._id }, { username: { $ne: newUser.username } }] };
     }
 
     if (typeof (newUser.email) === common.variableTypes.STRING) {
