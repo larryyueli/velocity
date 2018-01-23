@@ -14,10 +14,32 @@ const errors = Object.freeze({
     2002: 'Invalid username or password',
     2003: 'Invalid username or password',
     2004: 'Invalid username or password',
-    2005: 'Account is not active'
+    2005: 'Account is not active',
+    2006: 'Session timed out',
+    2007: 'Failed to update user, missing information'
+});
+const defaultError = 'Something went wrong, please try again!';
+
+var meObject;
+
+$(function () {
+    getMeObject();
 });
 
-const defaultError = 'Something went wrong, please try again!';
+/**
+ * get the me object
+ */
+function getMeObject() {
+    $.ajax({
+        type: 'GET',
+        url: '/me',
+        success: function (data) {
+            meObject = data;
+        },
+        error: function (data) {
+        }
+    });
+}
 
 /**
  * Returns the correct error message to use, if no errors match returns

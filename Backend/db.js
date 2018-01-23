@@ -20,8 +20,8 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
-
-var usersCollection;
+const db_settings = require('./dbs/db-settings.js');
+const db_users = require('./dbs/db-users.js');
 
 /**
  * Open a connection to the database
@@ -35,52 +35,23 @@ const initialize = function (callback) {
             return callback(common.getError(1001), null);
         }
 
-        usersCollection = client.db(config.default_db_name).collection('users');
+        db_settings.initialize(client.db(config.default_db_name).collection('settings'));
+        db_users.initialize(client.db(config.default_db_name).collection('users'));
+
         return callback(null, 'ok');
     });
 }
 exports.initialize = initialize;
 
-/**
- * add a user object to the users collection
- *
- * @param {object} user user object to add
- * @param {function} callback callback function
- */
-const addUser = function (user, callback) {
-    usersCollection.findOne({ $or: [{ _id: user._id }, { username: user.username }] }, function (err, obj) {
-        if (err) {
-            return callback(common.getError(1003), null);
-        }
+// <Users Collection> -------------------------------------------------
+exports.addUser = db_users.addUser;
+exports.getUser = db_users.getUser;
+exports.updateUser = db_users.updateUser;
+// </Users Collection> ------------------------------------------------
 
-        if (obj) {
-            return callback(common.getError(2001), null);
-        }
-
-        usersCollection.insert(user, function (err, res) {
-            return callback(err ? common.getError(1004) : null, err ? null : user);
-        });
-    });
-}
-exports.addUser = addUser;
-
-/**
- * find a single user by the search parameters
- *
- * @param {object} searchQuery search parameters
- * @param {function} callback callback function
- */
-const getUser = function (searchQuery, callback) {
-    usersCollection.findOne(searchQuery, function (err, obj) {
-        if (err) {
-            return callback(common.getError(1003), null);
-        }
-
-        if (!obj) {
-            return callback(common.getError(2003), null);
-        }
-
-        return callback(null, obj);
-    });
-}
-exports.getUser = getUser;
+// <Settings Collection> ----------------------------------------------
+exports.addAllSettings = db_settings.addAllSettings;
+exports.getAllSettings = db_settings.getAllSettings;
+exports.removeAllSettings = db_settings.removeAllSettings;
+exports.updateAllSettings = db_settings.updateAllSettings;
+// </Settings Collection> ---------------------------------------------

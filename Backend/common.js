@@ -37,6 +37,13 @@ const errors = Object.freeze({
     1004: 'failed to add user, database issue',
     1005: 'failed to verify password, hashing issue',
     1006: 'failed create user session',
+    1007: 'failed to get settings object, database issue',
+    1008: 'settings object does not exist',
+    1009: 'could not delete the settings object, database issue',
+    1010: 'could not add the settings object, database issue',
+    1011: 'could not update the settings object, database issue',
+    1012: 'could not update the selected mode',
+    1013: 'failed to update user object, database issue',
 
     //2000 users
     2000: 'missing requirement',
@@ -44,7 +51,9 @@ const errors = Object.freeze({
     2002: 'missing username or password for login',
     2003: 'user not found',
     2004: 'wrong password',
-    2005: 'user account is not active'
+    2005: 'user account is not active',
+    2006: 'user\'s session is not valid or timed out',
+    2007: 'failed to update user, missing information'
 });
 exports.errors = errors;
 
@@ -55,25 +64,38 @@ exports.defaultError = defaultError;
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({
-    MODE_SELECTOR:      0,
-    COLLABORATOR:       1,
-    PROFESSOR:          2,
-    TA:                 3,
-    STUDENT:            4
+    MODE_SELECTOR: 0,
+    COLLABORATOR: 1,
+    PROFESSOR: 2,
+    TA: 3,
+    STUDENT: 4
 });
 exports.userTypes = userTypes;
 
 // all variable types
 const variableTypes = Object.freeze({
-    UNDEFINED:      'undefined'
+    ARRAY: 'array',
+    BOOLEAN: 'boolean',
+    NUMBER: 'number',
+    OBJECT: 'object',
+    STRING: 'string',
+    UNDEFINED: 'undefined'
 });
 exports.variableTypes = variableTypes;
 
 // all color themes
 const colorThemes = Object.freeze({
-    DEFAULT:        'default'
+    DEFAULT: 'default'
 });
 exports.colorThemes = colorThemes;
+
+// all project types
+const modeTypes = Object.freeze({
+    UNKNOWN: -1,
+    CLASS: 0,
+    COLLABORATORS: 1
+});
+exports.modeTypes = modeTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -102,6 +124,42 @@ const isEmptyObject = function (obj) {
     return true;
 }
 exports.isEmptyObject = isEmptyObject;
+
+/**
+ * check if value in the object
+ *
+ * @param {any} value value to check
+ * @param {object} obj object to check
+ * @return {boolean}
+ */
+const isValueInObject = function (value, obj) {
+    for (var key in obj) {
+        if (obj[key] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isValueInObject = isValueInObject;
+
+/**
+ * return boolean from boolean string if possible, otherwise undefined
+ *
+ * @param {string} value value to convert
+ * @return {boolean}
+ */
+const convertStringToBoolean = function (value) {
+    if (value.toLowerCase() === 'false') {
+        return false;
+    }
+
+    if (value.toLowerCase() === 'true') {
+        return true;
+    }
+
+    return variableTypes.UNDEFINED;
+}
+exports.convertStringToBoolean = convertStringToBoolean;
 
 /**
  * return an object of error code and its message

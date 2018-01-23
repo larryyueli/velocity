@@ -19,17 +19,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const fs = require('fs');
 const rls = require('readline-sync');
 
-const common = require('./common.js');
-const config = require('./config.js');
-const db = require('./db.js');
-const logger = require('./logger.js');
-const users = require('./users.js');
+const common = require('../Backend/common.js');
+const config = require('../Backend/config.js');
+const db = require('../Backend/db.js');
+const logger = require('../Backend/logger.js');
+const users = require('../Backend/users.js');
 
 /**
  * add an admin account
  */
 const setupAdminAccount = function () {
+    config.debugMode = true;
     logger.info('Velocity server setup');
+
+    const pathToConfigFile = `${__dirname}/../Backend/config.js`;
 
     const username = rls.question('Please enter your username: ');
     const fname = rls.question('Please enter your first name: ');
@@ -63,7 +66,7 @@ const setupAdminAccount = function () {
         type: common.userTypes.MODE_SELECTOR
     };
 
-    fs.readFile(`${__dirname}/config.js`, 'utf8', function (err, data) {
+    fs.readFile(pathToConfigFile, 'utf8', function (err, data) {
         if (err) {
             logger.error(JSON.stringify(err));
             process.exit(1);
@@ -71,7 +74,7 @@ const setupAdminAccount = function () {
 
         const newDbName = `velocity_db_${common.getUUID()}`;
         const newConfig = data.replace(/velocity_db_.+;/g, `${newDbName}';`);
-        fs.writeFile(`${__dirname}/config.js`, newConfig, function (err) {
+        fs.writeFile(pathToConfigFile, newConfig, function (err) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);

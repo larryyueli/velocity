@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const fs = require('fs');
 
 const common = require('./common.js');
+const config = require('./config.js');
 
 var dateStamp;
 
@@ -28,7 +29,8 @@ var dateStamp;
  * @param {string} text 
  */
 exports.info = function (text) {
-    log('info', text);
+    init();
+    console.log(`[${common.getDate()}] info: ${text}`);
 }
 
 /**
@@ -37,7 +39,8 @@ exports.info = function (text) {
  * @param {string} text 
  */
 exports.warning = function (text) {
-    log('warning', text);
+    init();
+    console.warn(`[${common.getDate()}] warning: ${text}`);
 }
 
 /**
@@ -46,18 +49,8 @@ exports.warning = function (text) {
  * @param {string} text 
  */
 exports.error = function (text) {
-    log('error', text);
-}
-
-/**
- * log a message of a type
- * 
- * @param {string} type 
- * @param {string} text 
- */
-const log = function (type, text) {
     init();
-    console.error(`[{${common.getDate()}}] ${type}: ${text}`);
+    console.error(`[${common.getDate()}] error: ${text}`);
 }
 
 /**
@@ -66,7 +59,7 @@ const log = function (type, text) {
 const init = function () {
     const currentDate = common.getDateFormatted('YYYY-MM-DD');
 
-    if (!process.env.DEBUG && dateStamp !== currentDate) {
+    if (!config.debugMode && dateStamp !== currentDate) {
         dateStamp = currentDate;
         const logger = fs.createWriteStream(`${__dirname}/../Logs/${dateStamp}.log`, { 'flags': 'a' });
         process.stdout.write = process.stderr.write = logger.write.bind(logger);

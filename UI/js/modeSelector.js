@@ -6,5 +6,16 @@
  * @param {Integer} mode 
  */
 function selectMode(mode) {
-    //TODO: send ajax request
+    $.ajax({
+        type: 'POST',
+        url: '/selectMode',
+        data: { selectedMode: mode },
+        success: function (data) {
+            window.location.href = '/';
+        },
+        error: function (data) {
+            const jsonResponse = data.responseJSON;
+            errorField.html(getErrorPill(jsonResponse));
+        }
+    });
 }

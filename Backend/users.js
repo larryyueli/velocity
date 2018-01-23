@@ -28,11 +28,11 @@ const db = require('./db.js');
  * @param {function} callback callback function
  */
 const addUser = function (user, callback) {
-    if (typeof (user.fname) === common.variableTypes.UNDEFINED
-        || typeof (user.lname) === common.variableTypes.UNDEFINED
-        || typeof (user.username) === common.variableTypes.UNDEFINED
-        || typeof (user.password) === common.variableTypes.UNDEFINED
-        || typeof (user.type) === common.variableTypes.UNDEFINED) {
+    if (typeof (user.fname) !== common.variableTypes.STRING
+        || typeof (user.lname) !== common.variableTypes.STRING
+        || typeof (user.username) !== common.variableTypes.STRING
+        || typeof (user.password) !== common.variableTypes.STRING
+        || typeof (user.type) !== common.variableTypes.NUMBER) {
         return callback(common.getError(2000), null);
     }
 
@@ -57,6 +57,7 @@ const addUser = function (user, callback) {
         userToAdd.active = true;
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
+        userToAdd.notificationEnabled = true;
         userToAdd.canAccessUsers = (user.type !== common.userTypes.STUDENT);
         userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.COLLABORATOR);
@@ -87,10 +88,11 @@ exports.getUser = getUser;
  * @param {function} callback callback function
  */
 const login = function (username, password, callback) {
-    if (typeof (username) === common.variableTypes.UNDEFINED
-        || typeof (password) === common.variableTypes.UNDEFINED) {
+    if (typeof (username) !== common.variableTypes.STRING
+        || typeof (password) !== common.variableTypes.STRING) {
         return callback(common.getError(2002), null);
     }
+
     getUser({ username: username }, function (err, userObj) {
         if (err) {
             return callback(err, null);
@@ -115,3 +117,65 @@ const login = function (username, password, callback) {
     });
 }
 exports.login = login;
+
+/**
+ * update the user information
+ *
+ * @param {object} newUser user object to add
+ * @param {function} callback callback function
+ */
+const updateUser = function (newUser, callback) {
+    var searchQuery = {};
+    var updateQuery = {};
+    updateQuery.$set = {};
+
+    if (typeof (newUser._id) === common.variableTypes.STRING) {
+        searchQuery = { _id: newUser._id };
+    }
+
+    if (common.isEmptyObject(searchQuery)) {
+        return callback(common.getError(2007), null);
+    }
+
+    if (typeof (newUser.fname) === common.variableTypes.STRING) {
+        updateQuery.$set.fname = newUser.fname;
+    }
+
+    if (typeof (newUser.lname) === common.variableTypes.STRING) {
+        updateQuery.$set.lname = newUser.lname;
+    }
+
+    if (typeof (newUser.username) === common.variableTypes.STRING) {
+        updateQuery.$set.username = newUser.username;
+        searchQuery = { $and: [{ _id: newUser._id }, { username: { $ne: newUser.username } }] };
+    }
+
+    if (typeof (newUser.email) === common.variableTypes.STRING) {
+        updateQuery.$set.email = newUser.email;
+    }
+
+    if (common.isValueInObject(newUser.theme, common.colorThemes)) {
+        updateQuery.$set.theme = newUser.theme;
+    }
+
+    if (typeof (newUser.notificationEnabled) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set.notificationEnabled = newUser.notificationEnabled;
+    }
+
+    if (common.isValueInObject(newUser.type, common.userTypes)) {
+        updateQuery.$set.type = newUser.type;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set)) {
+        delete updateQuery.$set;
+    }
+
+    if (common.isEmptyObject(updateQuery)) {
+        return callback(common.getError(2007), null);
+    }
+
+    updateQuery.$set.mtime = common.getDate();
+
+    db.updateUser(searchQuery, updateQuery, callback);
+}
+exports.updateUser = updateUser;
