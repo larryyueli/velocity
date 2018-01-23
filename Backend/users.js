@@ -130,7 +130,7 @@ const updateUser = function (newUser, callback) {
     updateQuery.$set = {};
 
     if ('_id' in newUser
-        && typeof (newUser._id) !== common.variableTypes.STRING) {
+        && typeof (newUser._id) === common.variableTypes.STRING) {
         searchQuery = { _id: newUser._id };
     }
 
