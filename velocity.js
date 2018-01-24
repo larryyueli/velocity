@@ -37,7 +37,25 @@ const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
 const app = express();
-const wss = new ws.Server({ port: config.wsPort });
+const sessionParser = session({
+    secret: config.sessionSecret,
+    resave: config.sessionResave,
+    saveUninitialized: config.saveUninitializedSession,
+    rolling: config.rollingSession,
+    cookie: {
+        secure: config.secureSessionCookie,
+        maxAge: config.maxSessionAge
+    }
+});
+const wsSessionInterceptor = function (info, callback) {
+    sessionParser(info.req, {}, function () {
+        callback(isActiveSession(info.req));
+    });
+}
+const notificationsWS = new ws.Server({
+    verifyClient: wsSessionInterceptor,
+    port: config.notificationsWSPort
+});
 
 // File names to render
 const loginPage = 'login';
@@ -72,23 +90,14 @@ app.use(
         src: `${__dirname}/sass`,
         dest: `${__dirname}/UI/stylesheets`,
         prefix: '/stylesheets',
-        debug: true, // TODO: remove before release
+        debug: false, // TODO: remove before release
         outputStyle: 'compressed'
     })
 );
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
-app.use(session({
-    secret: config.sessionSecret,
-    resave: config.sessionResave,
-    saveUninitialized: config.saveUninitializedSession,
-    rolling: config.rollingSession,
-    cookie: {
-        secure: config.secureSessionCookie,
-        maxAge: config.maxSessionAge
-    }
-}));
+app.use(sessionParser);
 app.use(function (req, res, next) {
     res.locals.__ = res.__ = function () {
         return i18n.__.apply(req, arguments);
@@ -322,6 +331,8 @@ const handleSelectModePath = function (req, res) {
         });
     });
 }
+
+
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -343,15 +354,13 @@ app.post('/updateProfile', handleUpdateProfilePath);
 app.delete('/logout', handleLogoutPath);
 // </Delete Requests> -----------------------------------------------
 
-// <wss Requests> ------------------------------------------------
-wss.on('connection', function (ws, req) {
+// <notificationsWS Requests> ------------------------------------------------
+notificationsWS.on('connection', function (ws, req) {
     ws.on('message', function (message) {
-        console.log(`WS message ${message} from user ${req.session.user.username}`);
     });
-
     ws.send('ws ok');
 });
-// </wss Requests> -----------------------------------------------
+// </notificationsWS Requests> -----------------------------------------------
 
 /**
  * If request path does not match any of the above routes, then resolve to 404
