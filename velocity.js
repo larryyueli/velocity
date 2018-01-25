@@ -208,7 +208,9 @@ const handleMePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
-    return res.status(200).send(req.session.user);
+    var meObject = req.session.user;
+    delete meObject._id;
+    return res.status(200).send(meObject);
 }
 
 /**
