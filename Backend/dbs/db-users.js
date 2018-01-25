@@ -85,7 +85,7 @@ exports.getUser = getUser;
 const updateUser = function (searchQuery, updateQuery, callback) {
     usersCollection.update(searchQuery, updateQuery, function (err, result) {
         if (err) {
-            return callback(common.getError(1013), null);
+            return callback(common.getError(1007), null);
         }
 
         return callback(null, 'ok');

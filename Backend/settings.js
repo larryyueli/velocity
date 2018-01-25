@@ -29,7 +29,7 @@ var settingsObject;
 const initialize = function (callback) {
     db.getAllSettings(function (err, obj) {
         if (err) {
-            if (err.code === 1008) {
+            if (err.code === 3001) {
                 resetAllSettings(callback);
             } else {
                 return callback(err, null);
@@ -88,7 +88,7 @@ exports.resetAllSettings = resetAllSettings;
  */
 const updateModeType = function (modeType, callback) {
     if (!common.isValueInObject(modeType, common.modeTypes)) {
-        return callback(common.getError(1000), null);
+        return callback(common.getError(3006), null);
     }
 
     const updateQuery = { $set: { mode: modeType } };

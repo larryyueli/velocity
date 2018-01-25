@@ -55,3 +55,9 @@ exports.getAllSettings = db_settings.getAllSettings;
 exports.removeAllSettings = db_settings.removeAllSettings;
 exports.updateAllSettings = db_settings.updateAllSettings;
 // </Settings Collection> ---------------------------------------------
+
+// <Virtual File System Collection> -----------------------------------
+exports.addToVirtualFileSystem = db_settings.addToVirtualFileSystem;
+exports.removeFromVirtualFileSystem = db_settings.removeFromVirtualFileSystem;
+exports.findInVirtualFileSystem = db_settings.findInVirtualFileSystem;
+// </Virtual File System Collection> ----------------------------------

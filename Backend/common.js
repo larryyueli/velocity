@@ -26,6 +26,8 @@ const uuidv1 = require('uuid/v1');
  * categories:
  * 1000 -> system
  * 2000 -> user
+ * 3000 -> settings
+ * 4000 -> custom file system
  */
 
 const errors = Object.freeze({
@@ -37,13 +39,7 @@ const errors = Object.freeze({
     1004: 'failed to add user, database issue',
     1005: 'failed to verify password, hashing issue',
     1006: 'failed create user session',
-    1007: 'failed to get settings object, database issue',
-    1008: 'settings object does not exist',
-    1009: 'could not delete the settings object, database issue',
-    1010: 'could not add the settings object, database issue',
-    1011: 'could not update the settings object, database issue',
-    1012: 'could not update the selected mode',
-    1013: 'failed to update user object, database issue',
+    1007: 'failed to update user object, database issue',
 
     //2000 users
     2000: 'missing requirement',
@@ -53,7 +49,28 @@ const errors = Object.freeze({
     2004: 'wrong password',
     2005: 'user account is not active',
     2006: 'user\'s session is not valid or timed out',
-    2007: 'failed to update user, missing information'
+    2007: 'failed to update user, missing information',
+
+    //3000 settings
+    3000: 'failed to get settings object, database issue',
+    3001: 'settings object does not exist',
+    3002: 'could not delete the settings object, database issue',
+    3003: 'could not add the settings object, database issue',
+    3004: 'could not update the settings object, database issue',
+    3005: 'could not update the selected mode',
+    3006: 'invalid mode',
+
+    //4000 custom file system
+    4000: 'failed to add entry to the virtual file system, database issue',
+    4001: 'failed to add entry to the physical file system',
+    4002: 'failed to remove entry from the virtual file system, database issue',
+    4003: 'failed to remove entry from the physical file system',
+    4004: 'failed to forcefully remove entry from the physical file system',
+    4005: 'failed to find an entry in the virtual file system, database issue',
+    4006: 'entry does not exist in the virtual file system',
+    4007: 'entry does not exist in the physical file system',
+    4008: 'failed to write file into the physical file system',
+    4009: 'failed to remove the custom file system root from the physical file system'
 });
 exports.errors = errors;
 
@@ -96,6 +113,29 @@ const modeTypes = Object.freeze({
     COLLABORATORS: 1
 });
 exports.modeTypes = modeTypes;
+
+// common path shared across the backend
+const cfsTree = Object.freeze({
+    ROOT: `${__dirname}/..`,
+    HOME: `${__dirname}/../FileSystem`,
+    USERS: `${__dirname}/../FileSystem/Users`
+});
+exports.cfsTree = cfsTree;
+
+// common permissions on files
+const cfsPermission = Object.freeze({
+    PUBLIC: 0,
+    OWNER: 1,
+    SYSTEM: 2
+});
+exports.cfsPermission = cfsPermission;
+
+// common system item types
+const cfsTypes = Object.freeze({
+    FILE: 0,
+    DIRECTORY: 1
+});
+exports.cfsTypes = cfsTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

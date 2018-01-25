@@ -296,14 +296,14 @@ const handleSelectModePath = function (req, res) {
 
     const parsedSelectedMode = parseInt(req.body.selectedMode);
     if (!common.isValueInObject(parsedSelectedMode, common.modeTypes)) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
+        logger.error(JSON.stringify(common.getError(3006)));
+        return res.status(400).send(common.getError(3006));
     }
 
     settings.updateModeType(parsedSelectedMode, function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(500).send(common.getError(1012));
+            return res.status(500).send(err);
         }
 
         var newType;
