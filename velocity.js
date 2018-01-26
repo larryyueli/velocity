@@ -141,7 +141,7 @@ httpServer.listen(config.httpPort, function () {
                         logger.error(JSON.stringify(err));
                         process.exit(1);
                     }
-    
+
                     logger.info('File System exists and seems ok');
                     config.debugMode = localDebugMode;
                     logger.info(`Debug mode status: ${config.debugMode}`);
@@ -185,6 +185,13 @@ const handleLoginPath = function (req, res) {
             return res.status(403).send(err);
         }
 
+        if (!settings.getAllSettings().active
+            && userObject.type !== common.userTypes.PROFESSOR
+            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN) {
+            logger.error(JSON.stringify(common.getError(3007)));
+            return res.status(403).send(common.getError(3007));
+        }
+
         logger.info(`User: ${username} logged in`);
         req.session.user = userObject;
         return res.status(200).send('ok');
@@ -217,7 +224,7 @@ const handleMePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
-    var meObject = req.session.user;
+    var meObject = JSON.parse(JSON.stringify(req.session.user));
     delete meObject._id;
     return res.status(200).send(meObject);
 }
@@ -323,7 +330,7 @@ const handleSelectModePath = function (req, res) {
         }
 
         if (parsedSelectedMode === common.modeTypes.COLLABORATORS) {
-            newType = common.userTypes.COLLABORATOR
+            newType = common.userTypes.COLLABORATOR_ADMIN
         }
 
         const updateObject = {

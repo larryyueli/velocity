@@ -60,7 +60,7 @@ const addUser = function (user, callback) {
         userToAdd.notificationEnabled = true;
         userToAdd.canAccessUsers = (user.type !== common.userTypes.STUDENT);
         userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR
-            || user.type === common.userTypes.COLLABORATOR);
+            || user.type === common.userTypes.COLLABORATOR_ADMIN);
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.TA);
 
