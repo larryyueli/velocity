@@ -29,6 +29,7 @@ const sassMiddleware = require('node-sass-middleware');
 const session = require('express-session');
 const ws = require('ws');
 
+const cfs = require('./Backend/customFileSystem.js');
 const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
@@ -135,8 +136,16 @@ httpServer.listen(config.httpPort, function () {
                 }
 
                 logger.info('Settings object has been fetched successful.');
-                config.debugMode = localDebugMode;
-                logger.info(`Debug mode status: ${config.debugMode}`);
+                cfs.initialize(function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        process.exit(1);
+                    }
+    
+                    logger.info('File System exists and seems ok');
+                    config.debugMode = localDebugMode;
+                    logger.info(`Debug mode status: ${config.debugMode}`);
+                });
             });
         });
     });

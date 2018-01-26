@@ -82,10 +82,11 @@ exports.defaultError = defaultError;
 // all user types
 const userTypes = Object.freeze({
     MODE_SELECTOR: 0,
-    COLLABORATOR: 1,
-    PROFESSOR: 2,
-    TA: 3,
-    STUDENT: 4
+    COLLABORATOR_ADMIN: 1,
+    COLLABORATOR: 2,
+    PROFESSOR: 3,
+    TA: 4,
+    STUDENT: 5
 });
 exports.userTypes = userTypes;
 
@@ -136,6 +137,13 @@ const cfsTypes = Object.freeze({
     DIRECTORY: 1
 });
 exports.cfsTypes = cfsTypes;
+
+// common system directory names
+const cfsMainDirectories = Object.freeze({
+    FILESYSTEM: 'FileSystem',
+    USERS: 'Users'
+});
+exports.cfsMainDirectories = cfsMainDirectories;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

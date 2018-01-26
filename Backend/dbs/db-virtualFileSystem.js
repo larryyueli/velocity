@@ -70,7 +70,7 @@ exports.removeFromVirtualFileSystem = removeFromVirtualFileSystem;
  * @param {object} searchQuery search query
  * @param {function} callback callback function
  */
-const findInVirtualFileSystem = function (user, callback) {
+const findInVirtualFileSystem = function (searchQuery, callback) {
     vfsCollection.findOne(searchQuery, function (err, obj) {
         if (err) {
             return callback(common.getError(4005), null);

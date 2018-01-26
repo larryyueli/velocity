@@ -24,6 +24,26 @@ const common = require('./common.js');
 const db = require('./db.js');
 
 /**
+ * check if the file system exists, and create it if it doesnt
+ *
+ * @param {function} callback callback function
+ */
+const initialize = function (callback) {
+    existsSync(common.cfsMainDirectories.FILESYSTEM, function (err, result) {
+        if (err) {
+            if (err.code === 4006 || err.code === 4007) {
+                return resetCustomFileSystem(callback);
+            }
+
+            return callback(err, null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+exports.initialize = initialize;
+
+/**
  * make a directory given its parent path and the name of the new directory
  *
  * @param {string} parentPath parent path
@@ -162,11 +182,27 @@ const writeFile = function (fileObj, callback) {
 exports.writeFile = writeFile;
 
 /**
- * re-create the custom file syste,
+ * re-create the custom file system
  *
  * @param {function} callback callback function
  */
 const resetCustomFileSystem = function (callback) {
+    removeCustomFileSystem(function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        return createCustomFileSystem(callback);
+    });
+}
+exports.resetCustomFileSystem = resetCustomFileSystem;
+
+/**
+ * remove the custom file system
+ *
+ * @param {function} callback callback function
+ */
+const removeCustomFileSystem = function (callback) {
     db.removeFromVirtualFileSystem({}, function (err, result) {
         if (err) {
             return callback(err, null);
@@ -177,11 +213,23 @@ const resetCustomFileSystem = function (callback) {
                 return callback(common.getError(4009), null);
             }
 
-            mkdir(common.cfsTree.HOME, 'Users', common.cfsPermission.SYSTEM, callback);
+            return callback(null, 'ok');
         });
     });
 }
-exports.resetCustomFileSystem = resetCustomFileSystem;
+exports.removeCustomFileSystem = removeCustomFileSystem;
+
+/**
+ * create the root of custom file system
+ *
+ * @param {function} callback callback function
+ */
+const createCustomFileSystem = function (callback) {
+    mkdir(common.cfsTree.ROOT,
+        common.cfsMainDirectories.FILESYSTEM,
+        common.cfsPermission.SYSTEM, callback);
+}
+exports.createCustomFileSystem = createCustomFileSystem;
 
 // convert string to a path
 exports.joinPath = path.join;
