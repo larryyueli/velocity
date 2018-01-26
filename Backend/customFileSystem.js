@@ -38,7 +38,17 @@ const initialize = function (callback) {
             return callback(err, null);
         }
 
-        return callback(null, 'ok');
+        existsSync(common.cfsMainDirectories.USERS, function (err, result) {
+            if (err) {
+                if (err.code === 4006 || err.code === 4007) {
+                    return resetCustomFileSystem(callback);
+                }
+    
+                return callback(err, null);
+            }
+    
+            return callback(null, 'ok');
+        });
     });
 }
 exports.initialize = initialize;
@@ -227,7 +237,17 @@ exports.removeCustomFileSystem = removeCustomFileSystem;
 const createCustomFileSystem = function (callback) {
     mkdir(common.cfsTree.ROOT,
         common.cfsMainDirectories.FILESYSTEM,
-        common.cfsPermission.SYSTEM, callback);
+        common.cfsPermission.SYSTEM,
+        function (err, result) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            mkdir(common.cfsTree.HOME,
+                common.cfsMainDirectories.USERS,
+                common.cfsPermission.SYSTEM,
+                callback);
+        });
 }
 exports.createCustomFileSystem = createCustomFileSystem;
 
