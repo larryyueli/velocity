@@ -1,8 +1,8 @@
-const notifCount = $('#notifCount');
-const mobileNotifCount = $('#mobileNotifCount');
-const notificationList = $('#notifications_nav');
-const noNotifications = $('#noNotifications');
-const clearNotifications = $('#clearNotifications');
+var notifCount = $('#notifCount');
+var mobileNotifCount = $('#mobileNotifCount');
+var notificationList = $('#notifications_nav');
+var noNotifications = $('#noNotifications');
+var clearNotifications = $('#clearNotifications');
 
 $('.button-collapse').sideNav({
     closeOnClick: true

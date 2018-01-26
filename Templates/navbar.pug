@@ -7,13 +7,13 @@
             ul.left.hide-on-med-and-down
                 li#nav-projects
                     a.navbarLink(href='#!') #{__('pageNames.projects')}
-                if canAccessUsers
+                if user.canAccessUsers
                     li#nav-users
                         a.navbarLink(href='#!') #{__('pageNames.users')}
-                if canAccessSettings
+                if user.canAccessSettings
                     li#nav-settings
                         a.navbarLink(href='#!') #{__('pageNames.settings')}
-                if canAccessGrades
+                if user.canAccessGrades
                     li#nav-grades
                         a.navbarLink(href='#!') #{__('pageNames.grades')}
                 li#nav-chatRoom
@@ -35,17 +35,17 @@ ul#mobile.side-nav
         a.navbarLinkHidden(href='#!')
             i.material-icons folder
             | #{__('pageNames.projects')}
-    if canAccessUsers
+    if user.canAccessUsers
         li#navm-users
             a.navbarLinkHidden(href='#!')
                 i.material-icons people
                 | #{__('pageNames.users')}
-    if canAccessSettings
+    if user.canAccessSettings
         li#navm-settings
             a.navbarLinkHidden(href='#!')
                 i.material-icons settings
                 | #{__('pageNames.settings')}
-    if canAccessGrades
+    if user.canAccessGrades
         li#navm-grades
             a.navbarLinkHidden(href='#!')
                 i.material-icons edit
@@ -61,11 +61,11 @@ ul#account_nav.side-nav
             .background
                 img(src='img/office.jpg')
             img.circle(src='img/account_circle.png')
-            span.white-text.name #{firstName} #{lastName}
-            span.white-text.email #{userId}
-            span.white-text.email #{email}
+            span.white-text.name #{user.fname} #{user.lname}
+            span.white-text.email #{user.username}
+            span.white-text.email #{user.email}
     li#nav-profile
-        a.navbarLinkHidden.waves-effect(href='#!')
+        a.navbarLinkHidden.waves-effect(href='/profile')
             i.material-icons person
             | #{__('pageNames.profile')}
     li#nav-about
