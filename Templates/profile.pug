@@ -1,10 +1,79 @@
 extends layout
 
-//- block styles
-//-     link(rel='stylesheet' href='/stylesheets/css/login.css')
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/profile.css')
 
 block title
     title Velocity - Login
 
 block content
     include navbar
+    .container
+        .row#viewForm
+            .col.s12.m10.l8.xl6.offset-m1.offset-l2.offset-xl3
+                .card
+                    .card-content.padding-0
+                        img.full-width(src='img/account_circle.png')
+                    .back.hide-on-med-and-up.small-back
+                    .back.hide-on-small-only.hide-on-large-only.med-back
+                    .back.hide-on-med-and-down.large-back
+                    .some
+                        h3 #{user.fname} #{user.lname}
+                        h5 #{user.username}
+                        h5 #{__(`userInformation.types.${user.type}`)}
+                        br
+                        br
+                        a.waves-effect.waves-light.btn.theme-button(onclick='enableEdit()')
+                            i.material-icons.left edit
+                            | Edit
+        .row.hidden#editForm
+            .col.s12.m4.l3
+                .card
+                    .card-content.padding-0
+                        img.full-width(src='img/account_circle.png')
+            .col.s12.m8.l9
+                .card.form-card
+                    form
+                        .row
+                            .input-field.col.s6
+                                input#fname(type='text', name='newfname', value=user.fname, disabled=!editNamesEnabled)
+                                label(for='fname') First Name
+                            .input-field.col.s6
+                                input#lname(type='text', name='newlname', value=user.lname, disabled=!editNamesEnabled)
+                                label(for='lname') Last Name
+                        .row
+                            .input-field.col.s12
+                                input#passwd.validate(type='password', name='newpassword', disabled=!editPasswordEnabled)
+                                label(for='passwd') New Password
+                        .row
+                            .input-field.col.s12
+                                input#confirmpasswd.validate(type='password', name='confirmpassword', disabled=!editPasswordEnabled)
+                                label(for='confirmpasswd') Confirm Password
+                        .row
+                            .input-field.col.s12
+                                input#email.validate(type='email', name='newemail', value=user.email, disabled=!editEmailEnabled)
+                                label(for='email') New Email
+                        .row
+                            .file-field.input-field
+                                .btn.theme-button
+                                    span Picture
+                                    input(type='file', accept='.jpg, .jpeg, .png')#profile-picture-input
+                                .file-path-wrapper
+                                    input.file-path.validate(type='text', placeholder='Select your profile picture')
+                        .row
+                            hr
+                        .row
+                            .input-field.col.s12
+                                input#currentpasswd.validate(type='password', name='currentpasswd' required)
+                                label(for='currentpasswd') Current Password
+                        .row.center
+                            button.waves-effect.waves-light.btn.theme-button(type='submit') Edit
+                                i.material-icons.right send
+                            span.padding-right-10
+                            .hide-on-med-and-up
+                                br
+                            button.waves-effect.waves-light.btn.red(onClick='disableEdit()') Cancel
+                                i.material-icons.right clear
+
+block scripts
+  script(src='/js/profile.js')

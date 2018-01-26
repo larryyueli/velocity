@@ -47,10 +47,17 @@
 		"title": "Velocity Page Not Found"
 	},
 	"userInformation": {
-		"password": "Password",
-		"username": "Username",
+		"email": "Email",
 		"firstName": "First Name",
 		"lastName": "Last Name",
-		"email": "Email"
+		"password": "Password",
+		"types": {
+			"0": "Mode Selector",
+			"1": "Collaborator",
+			"2": "Professor",
+			"3": "Teaching Assistant",
+			"4": "Student"
+		},
+		"username": "Username"
 	}
 }
