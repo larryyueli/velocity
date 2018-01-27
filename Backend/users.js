@@ -58,7 +58,8 @@ const addUser = function (user, callback) {
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
         userToAdd.notificationEnabled = true;
-        userToAdd.canAccessUsers = (user.type !== common.userTypes.STUDENT);
+        userToAdd.canAccessUsers = (user.type === common.userTypes.PROFESSOR
+            || user.type === common.userTypes.COLLABORATOR_ADMIN);
         userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.COLLABORATOR_ADMIN);
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR
@@ -161,6 +162,12 @@ const updateUser = function (newUser, callback) {
 
     if (common.isValueInObject(newUser.type, common.userTypes)) {
         updateQuery.$set.type = newUser.type;
+        updateQuery.$set.canAccessUsers = (newUser.type === common.userTypes.PROFESSOR
+            || newUser.type === common.userTypes.COLLABORATOR_ADMIN);
+        updateQuery.$set.canAccessSettings = (newUser.type === common.userTypes.PROFESSOR
+            || newUser.type === common.userTypes.COLLABORATOR_ADMIN);
+        updateQuery.$set.canAccessGrades = (newUser.type === common.userTypes.PROFESSOR
+            || newUser.type === common.userTypes.TA);
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {
