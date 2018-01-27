@@ -312,6 +312,10 @@ const handleSelectModePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
+    if (req.session.user.type !== common.userTypes.MODE_SELECTOR) {
+        return res.status(400).send(common.getError(1000));
+    }
+
     const parsedSelectedMode = parseInt(req.body.selectedMode);
     if (!common.isValueInObject(parsedSelectedMode, common.modeTypes)) {
         logger.error(JSON.stringify(common.getError(3006)));

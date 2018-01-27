@@ -30,7 +30,7 @@ const initialize = function (callback) {
     db.getAllSettings(function (err, obj) {
         if (err) {
             if (err.code === 3001) {
-                resetAllSettings(callback);
+                return resetAllSettings(callback);
             } else {
                 return callback(err, null);
             }

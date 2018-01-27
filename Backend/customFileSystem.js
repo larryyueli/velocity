@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const fs = require('fs');
 const rimraf = require('rimraf');
-const path = require('path');
 
 const common = require('./common.js');
 const db = require('./db.js');
@@ -61,7 +60,7 @@ const initialize = function (callback) {
  * @param {function} callback callback function
  */
 const mkdir = function (parentPath, directoryName, directoryPermissions, callback) {
-    const fullPath = path.join(parentPath, directoryName);
+    const fullPath = `${parentPath}/${directoryName}`;
     const entryObject = {
         _id: directoryName,
         path: fullPath,
@@ -92,7 +91,7 @@ const mkdir = function (parentPath, directoryName, directoryPermissions, callbac
  * @param {function} callback callback function
  */
 const rmdir = function (parentPath, directoryName, callback) {
-    const fullPath = path.join(parentPath, directoryName);
+    const fullPath = `${parentPath}/${directoryName}`;
     db.removeFromVirtualFileSystem({ _id: directoryName }, function (err, result) {
         if (err) {
             return callback(err, null);
@@ -116,7 +115,7 @@ const rmdir = function (parentPath, directoryName, callback) {
  * @param {function} callback callback function
  */
 const rmrf = function (parentPath, directoryName, callback) {
-    const fullPath = path.join(parentPath, directoryName);
+    const fullPath = `${parentPath}/${directoryName}`;
     db.removeFromVirtualFileSystem({ _id: directoryName }, function (err, result) {
         if (err) {
             return callback(err, null);
@@ -159,7 +158,7 @@ const existsSync = function (entryId, callback) {
  * @param {function} callback callback function
  */
 const writeFile = function (fileObj, callback) {
-    const fullPath = `${path.join(fileObj.filePath, fileObj.fileName)}.${fileObj.fileExtension}`;
+    const fullPath = `${fileObj.filePath}/${fileObj.fileName}.${fileObj.fileExtension}`;
     const fileObject = {
         _id: fileObj.fileName,
         path: fullPath,
@@ -226,19 +225,19 @@ const removeCustomFileSystem = function (callback) {
  * @param {function} callback callback function
  */
 const createCustomFileSystem = function (callback) {
-    mkdir(common.cfsTree.ROOT,
-        common.cfsMainDirectories.FILESYSTEM,
-        common.cfsPermission.SYSTEM,
-        function (err, result) {
-            if (err) {
-                return callback(err, null);
-            }
+    var dParent = common.cfsTree.ROOT;
+    var dName = common.cfsMainDirectories.FILESYSTEM;
+    var dPermissions = common.cfsPermission.SYSTEM;
+    mkdir(dParent, dName, dPermissions, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
 
-            mkdir(common.cfsTree.HOME,
-                common.cfsMainDirectories.USERS,
-                common.cfsPermission.SYSTEM,
-                callback);
-        });
+        dParent = common.cfsTree.HOME;
+        dName = common.cfsMainDirectories.USERS;
+        dPermissions = common.cfsPermission.SYSTEM;
+        mkdir(dParent, dName, dPermissions, callback);
+    });
 }
 
 // <exports> -----------------------------------
@@ -246,7 +245,6 @@ exports.createCustomFileSystem = createCustomFileSystem;
 exports.dirExists = existsSync;
 exports.fileExists = existsSync;
 exports.initialize = initialize;
-exports.joinPath = path.join;
 exports.mkdir = mkdir;
 exports.removeCustomFileSystem = removeCustomFileSystem;
 exports.resetCustomFileSystem = resetCustomFileSystem;
