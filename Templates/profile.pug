@@ -4,7 +4,7 @@ block styles
     link(rel='stylesheet' href='/stylesheets/css/profile.css')
 
 block title
-    title Velocity - Login
+    title #{__('profile.title')}
 
 block content
     include navbar
@@ -25,54 +25,71 @@ block content
                         br
                         a.waves-effect.waves-light.btn.theme-button(onclick='enableEdit()')
                             i.material-icons.left edit
-                            | Edit
-        .row.hidden#editForm
+                            | #{__('actions.edit')}
+        .row.hidden#editMode
             .col.s12.m4.l3
                 .card
                     .card-content.padding-0
                         img.full-width(src='img/account_circle.png')
+                .card
+                    .card-content
+                        a.dropdown-button.btn(data-activates='theme-dropdown')
+                            | #{user.theme}
+                            i.material-icons edit
+                        ul.dropdown-content#theme-dropdown
+                            each theme in themes
+                              li //-add if statement and highlight the right one
+                                  span #{theme}
             .col.s12.m8.l9
                 .card.form-card
-                    form
+                    form#editForm
                         .row
                             .input-field.col.s6
-                                input#fname(type='text', name='newfname', value=user.fname, disabled=!editNamesEnabled)
-                                label(for='fname') First Name
+                                input#fname(type='text', name='newfname', value=user.fname)
+                                label(for='fname')
+                                    | #{__('userInformation.firstName')}
                             .input-field.col.s6
-                                input#lname(type='text', name='newlname', value=user.lname, disabled=!editNamesEnabled)
-                                label(for='lname') Last Name
+                                input#lname(type='text', name='newlname', value=user.lname)
+                                label(for='lname')
+                                    | #{__('userInformation.firstName')}
                         .row
                             .input-field.col.s12
-                                input#passwd.validate(type='password', name='newpassword', disabled=!editPasswordEnabled)
-                                label(for='passwd') New Password
+                                input#passwd.validate(type='password', name='newpassword')
+                                label(for='passwd')
+                                    | #{__('userInformation.newPassword')}
                         .row
                             .input-field.col.s12
-                                input#confirmpasswd.validate(type='password', name='confirmpassword', disabled=!editPasswordEnabled)
-                                label(for='confirmpasswd') Confirm Password
+                                input#confirmpasswd.validate(type='password', name='confirmpassword')
+                                label(for='confirmpasswd')
+                                    | #{__('userInformation.confirmPassword')}
                         .row
                             .input-field.col.s12
-                                input#email.validate(type='email', name='newemail', value=user.email, disabled=!editEmailEnabled)
-                                label(for='email') New Email
+                                input#email.validate(type='email', name='newemail', value=user.email)
+                                label(for='email')
+                                    | #{__('userInformation.email')}
                         .row
                             .file-field.input-field
                                 .btn.theme-button
-                                    span Picture
+                                    span Picture //change this to a materialize icon
                                     input(type='file', accept='.jpg, .jpeg, .png')#profile-picture-input
                                 .file-path-wrapper
-                                    input.file-path.validate(type='text', placeholder='Select your profile picture')
+                                    input.file-path.validate(type='text', placeholder=__('profile.selectPicture'))
                         .row
                             hr
                         .row
                             .input-field.col.s12
                                 input#currentpasswd.validate(type='password', name='currentpasswd' required)
-                                label(for='currentpasswd') Current Password
+                                label(for='currentpasswd')
+                                    | #{__('userInformation.currentPassword')}
                         .row.center
-                            button.waves-effect.waves-light.btn.theme-button(type='submit') Edit
+                            button.waves-effect.waves-light.btn.theme-button(type='submit')
+                                | #{__('actions.edit')}
                                 i.material-icons.right send
                             span.padding-right-10
                             .hide-on-med-and-up
                                 br
-                            button.waves-effect.waves-light.btn.red(onClick='disableEdit()') Cancel
+                            button.waves-effect.waves-light.btn.red(onClick='disableEdit()')
+                                | #{__('actions.cancel')}
                                 i.material-icons.right clear
 
 block scripts

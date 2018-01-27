@@ -37,8 +37,7 @@ $('#editForm').submit(function(evt) {
 */
 var enableEdit = function() {
     $('#viewForm').addClass('hidden');
-    $('#editForm').removeClass('hidden');
-    $('#cancelButton').removeClass('hidden');
+    $('#editMode').removeClass('hidden');
 }
 
 /**
@@ -67,18 +66,16 @@ var editProfile = function(id) {
 
     $.ajax({
         type: 'POST',
-        url: '/profilemod',
+        url: '/updateProfile',
         data: user,
         success: function(data) {
-            uploadProfilePicture();
+            //uploadProfilePicture();
         },
         error: function(data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else if (data['status'] === 404) {
-                window.location.href = '/page-not-found';
             } else {
                 failSnackbar(getErrorFromResponse(jsonResponse));
             }

@@ -214,7 +214,8 @@ const handleProfilePath = function (req, res) {
     }
 
     return res.status(200).render(profilePage, {
-        user: req.session.user
+        user: req.session.user,
+        themes: common.colorThemes
     });
 }
 

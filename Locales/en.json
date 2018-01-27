@@ -1,10 +1,13 @@
 {
+	"actions": {
+		"cancel": "cancel",
+		"edit": "edit"
+	},
 	"app": {
 		"name": "Velocity"
 	},
 	"login": {
 		"signIn": "Sign In",
-		"confirmPassword": "Confirm Password",
 		"signup": "Sign Up",
 		"title": "Velocity - Login"
 	},
@@ -46,10 +49,17 @@
 		"prompt": "Return to your main page",
 		"title": "Velocity Page Not Found"
 	},
+	"profile": {
+			"selectPicture": "Select your profile picture",
+			"title": "Velocity - Profile"
+	},
 	"userInformation": {
+		"confirmPassword": "Confirm Password",
+		"currentPassword": "Current Password",
 		"email": "Email",
 		"firstName": "First Name",
 		"lastName": "Last Name",
+		"newPassword": "New Password",
 		"password": "Password",
 		"types": {
 			"0": "Mode Selector",

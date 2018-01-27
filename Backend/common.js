@@ -149,11 +149,11 @@ exports.isValueInObject = isValueInObject;
  * @return {boolean}
  */
 const convertStringToBoolean = function (value) {
-    if (value.toLowerCase() === 'false') {
+    if (value && value.toLowerCase() === 'false') {
         return false;
     }
 
-    if (value.toLowerCase() === 'true') {
+    if (value && value.toLowerCase() === 'true') {
         return true;
     }
 
