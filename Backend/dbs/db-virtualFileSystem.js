@@ -28,7 +28,6 @@ var vfsCollection;
 const initialize = function (collectionObject) {
     vfsCollection = collectionObject;
 }
-exports.initialize = initialize;
 
 /**
  * add an entry to the virtual file system collection
@@ -45,7 +44,6 @@ const addToVirtualFileSystem = function (systemEntry, callback) {
         return callback(null, systemEntry);
     });
 }
-exports.addToVirtualFileSystem = addToVirtualFileSystem;
 
 /**
  * remove an entry from the virtual file system
@@ -62,7 +60,6 @@ const removeFromVirtualFileSystem = function (searchQuery, callback) {
         return callback(null, 'ok');
     });
 }
-exports.removeFromVirtualFileSystem = removeFromVirtualFileSystem;
 
 /**
  * find an entry in the virtual file system by the search query
@@ -83,4 +80,10 @@ const findInVirtualFileSystem = function (searchQuery, callback) {
         return callback(null, obj);
     });
 }
+
+// <exports> -----------------------------------
+exports.addToVirtualFileSystem = addToVirtualFileSystem;
 exports.findInVirtualFileSystem = findInVirtualFileSystem;
+exports.initialize = initialize;
+exports.removeFromVirtualFileSystem = removeFromVirtualFileSystem;
+// </exports> ----------------------------------

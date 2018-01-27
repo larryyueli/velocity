@@ -43,15 +43,14 @@ const initialize = function (callback) {
                 if (err.code === 4006 || err.code === 4007) {
                     return resetCustomFileSystem(callback);
                 }
-    
+
                 return callback(err, null);
             }
-    
+
             return callback(null, 'ok');
         });
     });
 }
-exports.initialize = initialize;
 
 /**
  * make a directory given its parent path and the name of the new directory
@@ -84,7 +83,6 @@ const mkdir = function (parentPath, directoryName, directoryPermissions, callbac
         });
     });
 }
-exports.mkdir = mkdir;
 
 /**
  * BE CAREFUL: remove a directory given its parent path and the name of the new directory
@@ -109,7 +107,6 @@ const rmdir = function (parentPath, directoryName, callback) {
         });
     });
 }
-exports.rmdir = rmdir;
 
 /**
  * BE CAREFUL: perform rm -rf on a directory
@@ -134,7 +131,6 @@ const rmrf = function (parentPath, directoryName, callback) {
         });
     });
 }
-exports.rmrf = rmrf;
 
 /**
  * check if a file or directory exists
@@ -155,8 +151,6 @@ const existsSync = function (entryId, callback) {
         return callback(null, fileObj);
     });
 }
-exports.dirExists = existsSync;
-exports.fileExists = existsSync;
 
 /**
  * write data to a file
@@ -189,7 +183,6 @@ const writeFile = function (fileObj, callback) {
         });
     });
 }
-exports.writeFile = writeFile;
 
 /**
  * re-create the custom file system
@@ -205,7 +198,6 @@ const resetCustomFileSystem = function (callback) {
         return createCustomFileSystem(callback);
     });
 }
-exports.resetCustomFileSystem = resetCustomFileSystem;
 
 /**
  * remove the custom file system
@@ -227,7 +219,6 @@ const removeCustomFileSystem = function (callback) {
         });
     });
 }
-exports.removeCustomFileSystem = removeCustomFileSystem;
 
 /**
  * create the root of custom file system
@@ -249,7 +240,17 @@ const createCustomFileSystem = function (callback) {
                 callback);
         });
 }
-exports.createCustomFileSystem = createCustomFileSystem;
 
-// convert string to a path
+// <exports> -----------------------------------
+exports.createCustomFileSystem = createCustomFileSystem;
+exports.dirExists = existsSync;
+exports.fileExists = existsSync;
+exports.initialize = initialize;
 exports.joinPath = path.join;
+exports.mkdir = mkdir;
+exports.removeCustomFileSystem = removeCustomFileSystem;
+exports.resetCustomFileSystem = resetCustomFileSystem;
+exports.rmdir = rmdir;
+exports.rmrf = rmrf;
+exports.writeFile = writeFile;
+// </exports> ----------------------------------

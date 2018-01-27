@@ -67,7 +67,6 @@ const addUser = function (user, callback) {
         db.addUser(userToAdd, callback);
     });
 }
-exports.addUser = addUser;
 
 /**
  * find a single user by the search parameters
@@ -78,7 +77,6 @@ exports.addUser = addUser;
 const getUser = function (searchQuery, callback) {
     db.getUser(searchQuery, callback);
 }
-exports.getUser = getUser;
 
 /**
  * verify if the user can login
@@ -116,7 +114,6 @@ const login = function (username, password, callback) {
         });
     });
 }
-exports.login = login;
 
 /**
  * update the user information
@@ -178,4 +175,10 @@ const updateUser = function (newUser, callback) {
 
     db.updateUser(searchQuery, updateQuery, callback);
 }
+
+// <exports> -----------------------------------
+exports.addUser = addUser;
+exports.getUser = getUser;
+exports.login = login;
 exports.updateUser = updateUser;
+// </exports> ----------------------------------

@@ -28,7 +28,6 @@ var usersCollection;
 const initialize = function (collectionObject) {
     usersCollection = collectionObject;
 }
-exports.initialize = initialize;
 
 /**
  * add a user object to the users collection
@@ -51,7 +50,6 @@ const addUser = function (user, callback) {
         });
     });
 }
-exports.addUser = addUser;
 
 /**
  * find a single user by the search parameters
@@ -72,7 +70,6 @@ const getUser = function (searchQuery, callback) {
         return callback(null, obj);
     });
 }
-exports.getUser = getUser;
 
 /**
  * find a single user by the search parameters, 
@@ -91,4 +88,10 @@ const updateUser = function (searchQuery, updateQuery, callback) {
         return callback(null, 'ok');
     });
 }
+
+// <exports> -----------------------------------
+exports.addUser = addUser;
+exports.getUser = getUser;
+exports.initialize = initialize;
 exports.updateUser = updateUser;
+// </exports> ----------------------------------

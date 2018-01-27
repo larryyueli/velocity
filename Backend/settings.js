@@ -40,7 +40,6 @@ const initialize = function (callback) {
         return callback(null, 'ok');
     });
 }
-exports.initialize = initialize;
 
 /**
  * get all settings
@@ -50,7 +49,6 @@ exports.initialize = initialize;
 const getAllSettings = function () {
     return settingsObject;
 }
-exports.getAllSettings = getAllSettings;
 
 /**
  * reset all settings to default
@@ -78,7 +76,6 @@ const resetAllSettings = function (callback) {
         });
     });
 }
-exports.resetAllSettings = resetAllSettings;
 
 /**
  * update the mode type
@@ -101,4 +98,10 @@ const updateModeType = function (modeType, callback) {
         return callback(null, result);
     });
 }
+
+// <exports> -----------------------------------
+exports.getAllSettings = getAllSettings;
+exports.initialize = initialize;
+exports.resetAllSettings = resetAllSettings;
 exports.updateModeType = updateModeType;
+// </exports> ----------------------------------

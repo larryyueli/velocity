@@ -28,7 +28,6 @@ var settingsCollection;
 const initialize = function (collectionObject) {
     settingsCollection = collectionObject;
 }
-exports.initialize = initialize;
 
 /**
  * get the settings object
@@ -48,7 +47,6 @@ const getAllSettings = function (callback) {
         return callback(null, obj);
     });
 }
-exports.getAllSettings = getAllSettings;
 
 /**
  * remove the settings object to its initial state
@@ -64,7 +62,6 @@ const removeAllSettings = function (callback) {
         return callback(null, 'ok');
     });
 }
-exports.removeAllSettings = removeAllSettings;
 
 /**
  * add the settings object
@@ -81,7 +78,6 @@ const addAllSettings = function (settingsObj, callback) {
         return callback(null, settingsObj);
     });
 }
-exports.addAllSettings = addAllSettings;
 
 /**
  * update the settings object
@@ -98,4 +94,11 @@ const updateAllSettings = function (udpateQuery, callback) {
         return callback(null, 'ok');
     });
 }
+
+// <exports> -----------------------------------
+exports.addAllSettings = addAllSettings;
+exports.getAllSettings = getAllSettings;
+exports.initialize = initialize;
+exports.removeAllSettings = removeAllSettings;
 exports.updateAllSettings = updateAllSettings;
+// </exports> ----------------------------------
