@@ -129,22 +129,30 @@ httpServer.listen(config.httpPort, function () {
             }
 
             logger.info('Connection to velocity database successful.');
-            settings.initialize(function (err, result) {
+            users.initialize(function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     process.exit(1);
                 }
 
-                logger.info('Settings object has been fetched successful.');
-                cfs.initialize(function (err, result) {
+                logger.info('Users list has been fetched successful.');
+                settings.initialize(function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         process.exit(1);
                     }
 
-                    logger.info('File System exists and seems ok');
-                    config.debugMode = localDebugMode;
-                    logger.info(`Debug mode status: ${config.debugMode}`);
+                    logger.info('Settings object has been fetched successful.');
+                    cfs.initialize(function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            process.exit(1);
+                        }
+
+                        logger.info('File System exists and seems ok');
+                        config.debugMode = localDebugMode;
+                        logger.info(`Debug mode status: ${config.debugMode}`);
+                    });
                 });
             });
         });

@@ -72,6 +72,24 @@ const getUser = function (searchQuery, callback) {
 }
 
 /**
+ * get the full list of users from the database
+ * 
+ * @param {object} searchQuery search parameters
+ * @param {object} sortQuery sort parameters
+ * @param {number} lim limit
+ * @param {function} callback callback function
+ */
+const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callback) {
+    usersCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
+        if (err) {
+            return callback(common.getError(1008), null);
+        }
+
+        return callback(null, list);
+    });
+}
+
+/**
  * find a single user by the search parameters, 
  * then update its values by the update parameters
  *
@@ -91,6 +109,7 @@ const updateUser = function (searchQuery, updateQuery, callback) {
 
 // <exports> -----------------------------------
 exports.addUser = addUser;
+exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;
 exports.initialize = initialize;
 exports.updateUser = updateUser;

@@ -47,6 +47,7 @@ exports.initialize = initialize;
 
 // <Users Collection> -------------------------------------------------
 exports.addUser = db_users.addUser;
+exports.getLimitedUsersListSorted = db_users.getLimitedUsersListSorted;
 exports.getUser = db_users.getUser;
 exports.updateUser = db_users.updateUser;
 // </Users Collection> ------------------------------------------------

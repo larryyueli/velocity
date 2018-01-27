@@ -21,6 +21,33 @@ const bcrypt = require('bcryptjs');
 const common = require('./common.js');
 const db = require('./db.js');
 
+var cachedUsersList;
+
+/**
+ * initialize the users cached list
+ *
+ * @param {function} callback callback function
+ */
+const initialize = function (callback) {
+    return updateCachedList(callback);
+}
+
+/**
+ * fetch the latest users list from the database
+ *
+ * @param {function} callback callback function
+ */
+const updateCachedList = function (callback) {
+    getLimitedUsersListSorted({}, { username: 1 }, 0, function (err, list) {
+        if (err) {
+            return callback(err, null)
+        }
+
+        cachedUsersList = list;
+        return callback(null, 'ok');
+    });
+}
+
 /**
  * Create USER, if the USER object is valid
  *
@@ -80,6 +107,34 @@ const getUser = function (searchQuery, callback) {
 }
 
 /**
+ * get the full list of users from the users collection
+ * 
+ * @param {object} searchQuery search parameters
+ * @param {object} sortQuery sort parameters
+ * @param {number} lim limit
+ * @param {function} callback callback function
+ */
+const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callback) {
+    db.getLimitedUsersListSorted(searchQuery, sortQuery, lim, callback);
+}
+
+/**
+ * find a single user by its username
+ * 
+ * @param {string} username username
+ * @param {function} callback callback function
+ */
+const getUserByUsername = function (username, callback) {
+    cachedUsersList.forEach(user => {
+        if (user.username === username) {
+            return callback(null, user);
+        }
+    });
+
+    getUser({ username: username }, callback);
+}
+
+/**
  * verify if the user can login
  * 
  * @param {string} username username
@@ -92,7 +147,7 @@ const login = function (username, password, callback) {
         return callback(common.getError(2002), null);
     }
 
-    getUser({ username: username }, function (err, userObj) {
+    getUserByUsername(username, function (err, userObj) {
         if (err) {
             return callback(err, null);
         }
@@ -185,7 +240,10 @@ const updateUser = function (newUser, callback) {
 
 // <exports> -----------------------------------
 exports.addUser = addUser;
+exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;
+exports.getUserByUsername = getUserByUsername;
+exports.initialize = initialize;
 exports.login = login;
 exports.updateUser = updateUser;
 // </exports> ----------------------------------

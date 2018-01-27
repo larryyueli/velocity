@@ -40,6 +40,7 @@ const errors = Object.freeze({
     1005: 'failed to verify password, hashing issue',
     1006: 'failed create user session',
     1007: 'failed to update user object, database issue',
+    1008: 'failed to get the users list, database issue',
 
     //2000 users
     2000: 'missing requirement',
