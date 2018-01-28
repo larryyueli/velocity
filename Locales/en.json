@@ -61,6 +61,7 @@
 		"lastName": "Last Name",
 		"newPassword": "New Password",
 		"password": "Password",
+		"picture": "picture",
 		"types": {
 			"0": "Mode Selector",
 			"1": "Collaborator",

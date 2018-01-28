@@ -40,7 +40,7 @@ const default_db_host = process.env.DB_HOST || 'localhost';
 exports.default_db_host = default_db_host;
 const default_db_port = process.env.DB_PORT || 27017;
 exports.default_db_port = default_db_port;
-var default_db_name = process.env.DB_NAME || 'velocity_db_2efc4df0-02a0-11e8-9f6d-e15e5bb48eb6';
+var default_db_name = process.env.DB_NAME || 'velocity_db_bc64eae0-0236-11e8-a4da-1b3d0a95403f';
 exports.default_db_name = default_db_name;
 
 // session related configuration

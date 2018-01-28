@@ -16,6 +16,43 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// common colour varianles
+const colours = Object.freeze({
+    green          : 'green',
+    orangeDark     : 'orange accent-4',
+    redDark        : 'red darken-4',
+});
+
+const snack = Object.freeze({
+    success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
+    warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
+    fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+});
+
+/* This function slides down a success snakbar */
+function successSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.success + msg + snack.close, 5000, colours.green);
+}
+
+/* This function slides down a warning snakbar */
+function warningSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.warning + msg + snack.close, 5000, colours.orangeDark);
+}
+
+/* This function slides down a fail snakbar */
+function failSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.fail + msg + snack.close, 5000, colours.redDark);
+}
+
+/* Listener for the `x` on the snackbar/toasts */
+$(document).on('click', '#closeSnack', function() {
+    $(this).parent().fadeOut();
+});
+
 /*
 UI errors for user display
 
