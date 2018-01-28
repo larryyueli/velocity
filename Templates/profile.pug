@@ -32,14 +32,24 @@ block content
                     .card-content.padding-0
                         img.full-width(src='img/account_circle.png')
                 .card
-                    .card-content
-                        a.dropdown-button.btn(data-activates='theme-dropdown')
-                            | #{user.theme}
-                            i.material-icons edit
-                        ul.dropdown-content#theme-dropdown
-                            each theme in themes
-                              li //-add if statement and highlight the right one
-                                  span #{theme}
+                    .card-content.center
+                        h5.card-title Question Creation Form
+                    .card-action
+                        .row
+                            .input-field.s12
+                                select#theme(name='theme')
+                                    each theme in themes
+                                        option(value=theme) #{theme}
+                                        //- add if statement to check selected one
+                                label #{__('userInformation.theme')}
+                        .row
+                            .switch
+                                label
+                                | #{__('switch.on')}
+                                input(id='notificationSwitch', type='checkbox', name='notificationEnabled' checked=user.notificationEnabled)
+                                span.lever
+                                | #{__('switch.off')}
+
             .col.s12.m8.l9
                 .card.form-card
                     form#editForm

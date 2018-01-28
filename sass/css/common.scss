@@ -41,3 +41,7 @@
 .noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
     text-decoration: none;
 }
+
+.width-unset {
+    width: unset !important;
+}

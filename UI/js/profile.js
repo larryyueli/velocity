@@ -64,6 +64,9 @@ var editProfile = function(id) {
         }
     });
 
+    user['notificationEnabled'] = $('#notificationSwitch')[0].checked;
+    user['theme'] = $('#theme')[0].value;
+
     $.ajax({
         type: 'POST',
         url: '/updateProfile',

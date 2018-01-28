@@ -53,6 +53,10 @@
 			"selectPicture": "Select your profile picture",
 			"title": "Velocity - Profile"
 	},
+	"switch": {
+		"on": "On",
+		"off": "Off"
+	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
 		"currentPassword": "Current Password",
@@ -62,6 +66,7 @@
 		"newPassword": "New Password",
 		"password": "Password",
 		"picture": "picture",
+		"theme": "Theme",
 		"types": {
 			"0": "Mode Selector",
 			"1": "Collaborator",
