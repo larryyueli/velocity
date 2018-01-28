@@ -92,7 +92,19 @@ const addUser = function (user, callback) {
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR
             || user.type === common.userTypes.TA);
 
-        db.addUser(userToAdd, callback);
+        db.addUser(userToAdd, function (err, obj) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            updateCachedList(function (err, result) {
+                if (err) {
+                    return callback(err, null);
+                }
+
+                return callback(null, obj)
+            });
+        });
     });
 }
 
@@ -235,7 +247,19 @@ const updateUser = function (newUser, callback) {
 
     updateQuery.$set.mtime = common.getDate();
 
-    db.updateUser(searchQuery, updateQuery, callback);
+    db.updateUser(searchQuery, updateQuery, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        updateCachedList(function (err, res) {
+            if (err) {
+                return callback(err, null);
+            }
+
+            return callback(null, result);
+        });
+    });
 }
 
 // <exports> -----------------------------------

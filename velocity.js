@@ -129,13 +129,13 @@ httpServer.listen(config.httpPort, function () {
             }
 
             logger.info('Connection to velocity database successful.');
-            users.initialize(function (err, result) {
+            cfs.initialize(function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     process.exit(1);
                 }
 
-                logger.info('Users list has been fetched successful.');
+                logger.info('File System exists and seems ok');
                 settings.initialize(function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
@@ -143,13 +143,13 @@ httpServer.listen(config.httpPort, function () {
                     }
 
                     logger.info('Settings object has been fetched successful.');
-                    cfs.initialize(function (err, result) {
+                    users.initialize(function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             process.exit(1);
                         }
 
-                        logger.info('File System exists and seems ok');
+                        logger.info('Users list has been fetched successful.');
                         config.debugMode = localDebugMode;
                         logger.info(`Debug mode status: ${config.debugMode}`);
                     });
