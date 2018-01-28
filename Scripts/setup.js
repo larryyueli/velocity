@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const fs = require('fs');
 const rls = require('readline-sync');
 
+const cfs = require('../Backend/customFileSystem.js');
 const common = require('../Backend/common.js');
 const config = require('../Backend/config.js');
 const db = require('../Backend/db.js');
@@ -89,14 +90,30 @@ const setupAdminAccount = function () {
                 }
 
                 logger.info('Connection to Velocity database successful.');
-                users.addUser(user, function (err, res) {
+                cfs.initialize(function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         process.exit(1);
                     }
 
-                    logger.info('Successful created mode selector account.');
-                    process.exit(0);
+                    logger.info('File System exists and seems ok');
+                    users.addUser(user, function (err, userObject) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            process.exit(1);
+                        }
+
+                        logger.info('Successful created mode selector account.');
+                        cfs.mkdir(common.cfsTree.USERS, userObject._id, common.cfsPermission.OWNER, function (err, result) {
+                            if (err) {
+                                logger.error(err);
+                                process.exit(1);
+                            }
+
+                            logger.info('Successful created users directory.');
+                            process.exit(0);
+                        });
+                    });
                 });
             });
         });

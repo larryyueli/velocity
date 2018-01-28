@@ -27,7 +27,9 @@ const pug = require('pug');
 const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
 const session = require('express-session');
+const ws = require('ws');
 
+const cfs = require('./Backend/customFileSystem.js');
 const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
@@ -36,6 +38,25 @@ const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
 const app = express();
+const sessionParser = session({
+    secret: config.sessionSecret,
+    resave: config.sessionResave,
+    saveUninitialized: config.saveUninitializedSession,
+    rolling: config.rollingSession,
+    cookie: {
+        secure: config.secureSessionCookie,
+        maxAge: config.maxSessionAge
+    }
+});
+const wsSessionInterceptor = function (info, callback) {
+    sessionParser(info.req, {}, function () {
+        callback(isActiveSession(info.req));
+    });
+}
+const notificationsWS = new ws.Server({
+    verifyClient: wsSessionInterceptor,
+    port: config.notificationsWSPort
+});
 
 // File names to render
 const loginPage = 'login';
@@ -70,25 +91,14 @@ app.use(
         src: `${__dirname}/sass`,
         dest: `${__dirname}/UI/stylesheets`,
         prefix: '/stylesheets',
-        debug: true, // TODO: remove before release
+        debug: false, // TODO: remove before release
         outputStyle: 'compressed'
     })
 );
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
-
-app.use(session({
-    secret: config.sessionSecret,
-    resave: config.sessionResave,
-    saveUninitialized: config.saveUninitializedSession,
-    rolling: config.rollingSession,
-    cookie: {
-        secure: config.secureSessionCookie,
-        maxAge: config.maxSessionAge
-    }
-}));
-
+app.use(sessionParser);
 app.use(function (req, res, next) {
     res.locals.__ = res.__ = function () {
         return i18n.__.apply(req, arguments);
@@ -119,15 +129,31 @@ httpServer.listen(config.httpPort, function () {
             }
 
             logger.info('Connection to velocity database successful.');
-            settings.initialize(function (err, result) {
+            cfs.initialize(function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     process.exit(1);
                 }
 
-                logger.info('Settings object has been fetched successful.');
-                config.debugMode = localDebugMode;
-                logger.info(`Debug mode status: ${config.debugMode}`);
+                logger.info('File System exists and seems ok');
+                settings.initialize(function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        process.exit(1);
+                    }
+
+                    logger.info('Settings object has been fetched successful.');
+                    users.initialize(function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            process.exit(1);
+                        }
+
+                        logger.info('Users list has been fetched successful.');
+                        config.debugMode = localDebugMode;
+                        logger.info(`Debug mode status: ${config.debugMode}`);
+                    });
+                });
             });
         });
     });
@@ -167,6 +193,13 @@ const handleLoginPath = function (req, res) {
             return res.status(403).send(err);
         }
 
+        if (!settings.getAllSettings().active
+            && userObject.type !== common.userTypes.PROFESSOR
+            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN) {
+            logger.error(JSON.stringify(common.getError(3007)));
+            return res.status(403).send(common.getError(3007));
+        }
+
         logger.info(`User: ${username} logged in`);
         req.session.user = userObject;
         return res.status(200).send('ok');
@@ -199,7 +232,9 @@ const handleMePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
-    return res.status(200).send(req.session.user);
+    var meObject = JSON.parse(JSON.stringify(req.session.user));
+    delete meObject._id;
+    return res.status(200).send(meObject);
 }
 
 /**
@@ -285,16 +320,20 @@ const handleSelectModePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
+    if (req.session.user.type !== common.userTypes.MODE_SELECTOR) {
+        return res.status(400).send(common.getError(1000));
+    }
+
     const parsedSelectedMode = parseInt(req.body.selectedMode);
     if (!common.isValueInObject(parsedSelectedMode, common.modeTypes)) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
+        logger.error(JSON.stringify(common.getError(3006)));
+        return res.status(400).send(common.getError(3006));
     }
 
     settings.updateModeType(parsedSelectedMode, function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(500).send(common.getError(1012));
+            return res.status(500).send(err);
         }
 
         var newType;
@@ -303,7 +342,7 @@ const handleSelectModePath = function (req, res) {
         }
 
         if (parsedSelectedMode === common.modeTypes.COLLABORATORS) {
-            newType = common.userTypes.COLLABORATOR
+            newType = common.userTypes.COLLABORATOR_ADMIN
         }
 
         const updateObject = {
@@ -322,6 +361,8 @@ const handleSelectModePath = function (req, res) {
         });
     });
 }
+
+
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -343,6 +384,13 @@ app.post('/updateProfile', handleUpdateProfilePath);
 app.delete('/logout', handleLogoutPath);
 // </Delete Requests> -----------------------------------------------
 
+// <notificationsWS Requests> ------------------------------------------------
+notificationsWS.on('connection', function (ws, req) {
+    ws.on('message', function (message) {
+    });
+    ws.send('ws ok');
+});
+// </notificationsWS Requests> -----------------------------------------------
 
 /**
  * If request path does not match any of the above routes, then resolve to 404

@@ -20,43 +20,48 @@ const fs = require('fs');
 
 // server related configuration
 const hostName = 'localhost';
-exports.hostName = hostName;
 const httpPort = 8000;
-exports.httpPort = httpPort;
 const httpsPort = 8080;
-exports.httpsPort = httpsPort;
+const notificationsWSPort = 8001;
 const urlencoded = true;
-exports.urlencoded = urlencoded;
 var debugMode = false;
-exports.debugMode = debugMode;
 const ssl_options = {
     key: fs.readFileSync(`${__dirname}/../Keys/private.key`),
     cert: fs.readFileSync(`${__dirname}/../Keys/cert.crt`)
 };
+
+exports.hostName = hostName;
+exports.httpPort = httpPort;
+exports.httpsPort = httpsPort;
+exports.notificationsWSPort = notificationsWSPort;
+exports.urlencoded = urlencoded;
+exports.debugMode = debugMode;
 exports.ssl_options = ssl_options;
 
 // database related configuration
 const default_db_host = process.env.DB_HOST || 'localhost';
-exports.default_db_host = default_db_host;
 const default_db_port = process.env.DB_PORT || 27017;
-exports.default_db_port = default_db_port;
 var default_db_name = process.env.DB_NAME || 'velocity_db_UNKNOWN';
+
+exports.default_db_host = default_db_host;
+exports.default_db_port = default_db_port;
 exports.default_db_name = default_db_name;
 
 // session related configuration
 const maxSessionAge = 60 * 60 * 1000;
-exports.maxSessionAge = maxSessionAge;
 const sessionSecret = 'superSecretSecret';
-exports.sessionSecret = sessionSecret;
 const sessionResave = false;
-exports.sessionResave = sessionResave;
 const saveUninitializedSession = false;
-exports.saveUninitializedSession = saveUninitializedSession;
 const rollingSession = true;
-exports.rollingSession = rollingSession;
 const secureSessionCookie = false;
-exports.secureSessionCookie = secureSessionCookie;
 const languageOptions = ['en'];
-exports.languageOptions = languageOptions;
 const defaultLanguage = 'en';
+
+exports.maxSessionAge = maxSessionAge;
+exports.sessionSecret = sessionSecret;
+exports.sessionResave = sessionResave;
+exports.saveUninitializedSession = saveUninitializedSession;
+exports.rollingSession = rollingSession;
+exports.secureSessionCookie = secureSessionCookie;
+exports.languageOptions = languageOptions;
 exports.defaultLanguage = defaultLanguage;

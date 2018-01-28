@@ -22,6 +22,7 @@ const common = require('./common.js');
 const config = require('./config.js');
 const db_settings = require('./dbs/db-settings.js');
 const db_users = require('./dbs/db-users.js');
+const db_vfs = require('./dbs/db-virtualFileSystem.js');
 
 /**
  * Open a connection to the database
@@ -37,6 +38,7 @@ const initialize = function (callback) {
 
         db_settings.initialize(client.db(config.default_db_name).collection('settings'));
         db_users.initialize(client.db(config.default_db_name).collection('users'));
+        db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
 
         return callback(null, 'ok');
     });
@@ -45,6 +47,7 @@ exports.initialize = initialize;
 
 // <Users Collection> -------------------------------------------------
 exports.addUser = db_users.addUser;
+exports.getLimitedUsersListSorted = db_users.getLimitedUsersListSorted;
 exports.getUser = db_users.getUser;
 exports.updateUser = db_users.updateUser;
 // </Users Collection> ------------------------------------------------
@@ -55,3 +58,9 @@ exports.getAllSettings = db_settings.getAllSettings;
 exports.removeAllSettings = db_settings.removeAllSettings;
 exports.updateAllSettings = db_settings.updateAllSettings;
 // </Settings Collection> ---------------------------------------------
+
+// <Virtual File System Collection> -----------------------------------
+exports.addToVirtualFileSystem = db_vfs.addToVirtualFileSystem;
+exports.removeFromVirtualFileSystem = db_vfs.removeFromVirtualFileSystem;
+exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
+// </Virtual File System Collection> ----------------------------------
