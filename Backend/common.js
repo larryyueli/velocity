@@ -92,6 +92,14 @@ const userTypes = Object.freeze({
 });
 exports.userTypes = userTypes;
 
+// user status
+const userStatus = Object.freeze({
+    DISABLED: 0,
+    PENDING: 1,
+    ACTIVE: 2
+});
+exports.userStatus = userStatus;
+
 // all variable types
 const variableTypes = Object.freeze({
     ARRAY: 'array',

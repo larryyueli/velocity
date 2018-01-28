@@ -52,5 +52,8 @@
 		"firstName": "First Name",
 		"lastName": "Last Name",
 		"email": "Email"
+	},
+	"profile": {
+		"title": "profile.title"
 	}
 }

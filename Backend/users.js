@@ -59,7 +59,8 @@ const addUser = function (user, callback) {
         || typeof (user.lname) !== common.variableTypes.STRING
         || typeof (user.username) !== common.variableTypes.STRING
         || typeof (user.password) !== common.variableTypes.STRING
-        || typeof (user.type) !== common.variableTypes.NUMBER) {
+        || !common.isValueInObject(user.type, common.userTypes)
+        || !common.isValueInObject(user.status, common.userStatus)) {
         return callback(common.getError(2000), null);
     }
 
@@ -81,7 +82,7 @@ const addUser = function (user, callback) {
         userToAdd.email = user.email ? user.email : '';
         userToAdd.type = user.type;
         userToAdd.password = hash;
-        userToAdd.active = true;
+        userToAdd.status = user.status;
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
         userToAdd.notificationEnabled = true;
@@ -164,7 +165,7 @@ const login = function (username, password, callback) {
             return callback(err, null);
         }
 
-        if (!userObj.active) {
+        if (userObj.status !== common.userStatus.ACTIVE) {
             return callback(common.getError(2005), null);
         }
 
@@ -262,8 +263,17 @@ const updateUser = function (newUser, callback) {
     });
 }
 
+/**
+ * get the full users list (cached)
+ * 
+ * @return {array} full users list
+ */
+const getFullUsersList = function () {
+    return cachedUsersList;
+}
 // <exports> -----------------------------------
 exports.addUser = addUser;
+exports.getFullUsersList = getFullUsersList;
 exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;
 exports.getUserByUsername = getUserByUsername;

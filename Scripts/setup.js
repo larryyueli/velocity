@@ -64,7 +64,8 @@ const setupAdminAccount = function () {
         password: password,
         fname: fname,
         lname: lname,
-        type: common.userTypes.MODE_SELECTOR
+        type: common.userTypes.MODE_SELECTOR,
+        status: common.userStatus.ACTIVE
     };
 
     fs.readFile(pathToConfigFile, 'utf8', function (err, data) {

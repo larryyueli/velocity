@@ -63,6 +63,7 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
+const usersPage = 'users';
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -362,13 +363,84 @@ const handleSelectModePath = function (req, res) {
     });
 }
 
+/**
+ * path to get the users list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
 
+    const fullUsersList = users.getFullUsersList();
+    var modeSelectorsList = [];
+    var collaboratorAdminsList = [];
+    var collaboratorsList = [];
+    var professorsList = [];
+    var TAsList = [];
+    var studentsList = [];
+    var disabledUsersList = [];
+    var pendingUsersList = [];
+    var unknownUsers = [];
+
+    for (var i = 0; i < fullUsersList.length; i++) {
+        var user = fullUsersList[i];
+        switch (user.status) {
+            case common.userStatus.DISABLED:
+                disabledUsersList.push(user);
+                break;
+            case common.userStatus.PENDING:
+                pendingUsersList.push(user);
+                break;
+            case common.userStatus.ACTIVE:
+                switch (user.type) {
+                    case common.userTypes.COLLABORATOR_ADMIN:
+                        collaboratorAdminsList.push(user);
+                        break;
+                    case common.userTypes.COLLABORATOR:
+                        collaboratorsList.push(user);
+                        break;
+                    case common.userTypes.PROFESSOR:
+                        professorsList.push(user);
+                        break;
+                    case common.userTypes.TA:
+                        TAsList.push(user);
+                        break;
+                    case common.userTypes.STUDENT:
+                        studentsList.push(user);
+                        break;
+                    default:
+                        unknownUsers.push(user);
+                        break;
+                }
+                break;
+            default:
+                unknownUsers.push(user);
+                break;
+        }
+
+    }
+
+    return res.status(200).render(usersPage, {
+        user: req.session.user,
+        collaboratorAdminsList: collaboratorAdminsList,
+        collaboratorsList: collaboratorsList,
+        professorsList: professorsList,
+        TAsList: TAsList,
+        studentsList: studentsList,
+        pendingUsersList: pendingUsersList,
+        disabledUsersList: disabledUsersList
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
+app.get('/users', handleUsersPath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------

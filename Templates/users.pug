@@ -1,0 +1,103 @@
+extends layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/profile.css')
+
+block title
+    title #{__('profile.title')}
+
+block content
+    include navbar
+    .container
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in collaboratorAdminsList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in collaboratorsList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in professorsList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in TAsList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in studentsList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in pendingUsersList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+        .row
+            table
+                thead
+                    tr
+                        th Username
+                        th First Name
+                        th last Name
+                tbody
+                    each user in disabledUsersList
+                        tr
+                            td #{user.username}
+                            td #{user.fname}
+                            td #{user.lname}
+                            
