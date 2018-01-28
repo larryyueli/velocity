@@ -17,6 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
+* Init function
+*/
+$(function () {
+    $('select').material_select();
+});
+
+/**
 * Submits the new updates for the profile
 */
 $('#editForm').submit(function (evt) {
