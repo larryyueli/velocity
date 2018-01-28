@@ -199,6 +199,10 @@ exports.isValueInObject = isValueInObject;
  * @return {boolean}
  */
 const convertStringToBoolean = function (value) {
+    if (typeof (value) === variableTypes.BOOLEAN) {
+        return value;
+    }
+
     if (value && value.toLowerCase() === 'false') {
         return false;
     }

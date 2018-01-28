@@ -185,8 +185,8 @@ const handleLoginPath = function (req, res) {
 
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
+    
     logger.info(`Login request by user: ${username}`);
-
     users.login(username, password, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -265,30 +265,43 @@ const handleUpdateProfilePath = function (req, res) {
         return res.status(403).send(common.getError(2006));
     }
 
-    var updateObject = {};
-    updateObject._id = req.session.user._id;
-    updateObject.fname = req.body.fname || req.session.user.fname;
-    updateObject.lname = req.body.lname || req.session.user.lname;
-    updateObject.username = req.body.username || req.session.user.username;
-    updateObject.email = req.body.email || req.session.user.email;
-    updateObject.theme = req.body.theme || req.session.user.theme;
-    updateObject.notificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled)
-        || req.session.user.notificationEnabled;
+    if (!req.body.currentPassword || req.body.newPassword !== req.body.confirmPassword) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
 
-    users.updateUser(updateObject, function (err, result) {
+    users.login(req.session.user.username, req.body.currentPassword, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
+            return res.status(403).send(err);
         }
 
-        req.session.user.fname = updateObject.fname;
-        req.session.user.lname = updateObject.lname;
-        req.session.user.username = updateObject.username;
-        req.session.user.theme = updateObject.theme;
-        req.session.user.email = updateObject.email;
-        req.session.user.notificationEnabled = updateObject.notificationEnabled;
+        const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
-        return res.status(200).send('profile has been updated successfully');
+        var updateObject = {};
+        updateObject._id = req.session.user._id;
+        updateObject.fname = req.body.fname || req.session.user.fname;
+        updateObject.lname = req.body.lname || req.session.user.lname;
+        updateObject.email = req.body.email || req.session.user.email;
+        updateObject.password = req.body.newPassword;
+        updateObject.theme = req.body.theme || req.session.user.theme;
+        updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
+            updateNotificationEnabled : req.session.user.notificationEnabled;
+
+        users.updateUser(updateObject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            req.session.user.fname = updateObject.fname;
+            req.session.user.lname = updateObject.lname;
+            req.session.user.theme = updateObject.theme;
+            req.session.user.email = updateObject.email;
+            req.session.user.notificationEnabled = updateObject.notificationEnabled;
+
+            return res.status(200).send('profile has been updated successfully');
+        });
     });
 }
 
