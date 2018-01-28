@@ -26,9 +26,9 @@ var dateStamp;
 /**
  * log an info message
  * 
- * @param {string} text 
+ * @param {string} text info text to log
  */
-exports.info = function (text) {
+const info = function (text) {
     init();
     console.log(`[${common.getDate()}] info: ${text}`);
 }
@@ -36,9 +36,9 @@ exports.info = function (text) {
 /**
  * log a warning message
  * 
- * @param {string} text 
+ * @param {string} text warning text to log
  */
-exports.warning = function (text) {
+const warning = function (text) {
     init();
     console.warn(`[${common.getDate()}] warning: ${text}`);
 }
@@ -46,9 +46,9 @@ exports.warning = function (text) {
 /**
  * log an error message
  * 
- * @param {string} text 
+ * @param {string} text error text to log
  */
-exports.error = function (text) {
+const error = function (text) {
     init();
     console.error(`[${common.getDate()}] error: ${text}`);
 }
@@ -69,3 +69,9 @@ const init = function () {
         });
     }
 }
+
+// <exports> -----------------------------------
+exports.error = error;
+exports.info = info;
+exports.warning = warning;
+// </exports> ----------------------------------

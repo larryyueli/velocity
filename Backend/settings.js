@@ -29,8 +29,8 @@ var settingsObject;
 const initialize = function (callback) {
     db.getAllSettings(function (err, obj) {
         if (err) {
-            if (err.code === 1008) {
-                resetAllSettings(callback);
+            if (err.code === 3001) {
+                return resetAllSettings(callback);
             } else {
                 return callback(err, null);
             }
@@ -40,7 +40,6 @@ const initialize = function (callback) {
         return callback(null, 'ok');
     });
 }
-exports.initialize = initialize;
 
 /**
  * get all settings
@@ -50,7 +49,6 @@ exports.initialize = initialize;
 const getAllSettings = function () {
     return settingsObject;
 }
-exports.getAllSettings = getAllSettings;
 
 /**
  * reset all settings to default
@@ -78,7 +76,6 @@ const resetAllSettings = function (callback) {
         });
     });
 }
-exports.resetAllSettings = resetAllSettings;
 
 /**
  * update the mode type
@@ -88,7 +85,7 @@ exports.resetAllSettings = resetAllSettings;
  */
 const updateModeType = function (modeType, callback) {
     if (!common.isValueInObject(modeType, common.modeTypes)) {
-        return callback(common.getError(1000), null);
+        return callback(common.getError(3006), null);
     }
 
     const updateQuery = { $set: { mode: modeType } };
@@ -101,4 +98,10 @@ const updateModeType = function (modeType, callback) {
         return callback(null, result);
     });
 }
+
+// <exports> -----------------------------------
+exports.getAllSettings = getAllSettings;
+exports.initialize = initialize;
+exports.resetAllSettings = resetAllSettings;
 exports.updateModeType = updateModeType;
+// </exports> ----------------------------------

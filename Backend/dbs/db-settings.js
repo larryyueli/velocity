@@ -28,7 +28,6 @@ var settingsCollection;
 const initialize = function (collectionObject) {
     settingsCollection = collectionObject;
 }
-exports.initialize = initialize;
 
 /**
  * get the settings object
@@ -38,17 +37,16 @@ exports.initialize = initialize;
 const getAllSettings = function (callback) {
     settingsCollection.findOne({}, function (err, obj) {
         if (err) {
-            return callback(common.getError(1007), null);
+            return callback(common.getError(3000), null);
         }
 
         if (!obj) {
-            return callback(common.getError(1008), null);
+            return callback(common.getError(3001), null);
         }
 
         return callback(null, obj);
     });
 }
-exports.getAllSettings = getAllSettings;
 
 /**
  * remove the settings object to its initial state
@@ -58,13 +56,12 @@ exports.getAllSettings = getAllSettings;
 const removeAllSettings = function (callback) {
     settingsCollection.remove({}, function (err, result) {
         if (err) {
-            return callback(common.getError(1009), null);
+            return callback(common.getError(3002), null);
         }
 
         return callback(null, 'ok');
     });
 }
-exports.removeAllSettings = removeAllSettings;
 
 /**
  * add the settings object
@@ -75,13 +72,12 @@ exports.removeAllSettings = removeAllSettings;
 const addAllSettings = function (settingsObj, callback) {
     settingsCollection.insert(settingsObj, function (err, obj) {
         if (err) {
-            return callback(common.getError(1010), null);
+            return callback(common.getError(3003), null);
         }
 
         return callback(null, settingsObj);
     });
 }
-exports.addAllSettings = addAllSettings;
 
 /**
  * update the settings object
@@ -92,10 +88,17 @@ exports.addAllSettings = addAllSettings;
 const updateAllSettings = function (udpateQuery, callback) {
     settingsCollection.update({}, udpateQuery, function (err, result) {
         if (err) {
-            return callback(common.getError(1011), null);
+            return callback(common.getError(3004), null);
         }
 
         return callback(null, 'ok');
     });
 }
+
+// <exports> -----------------------------------
+exports.addAllSettings = addAllSettings;
+exports.getAllSettings = getAllSettings;
+exports.initialize = initialize;
+exports.removeAllSettings = removeAllSettings;
 exports.updateAllSettings = updateAllSettings;
+// </exports> ----------------------------------
