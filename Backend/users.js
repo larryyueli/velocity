@@ -219,6 +219,10 @@ const updateUser = function (newUser, callback) {
         updateQuery.$set.email = newUser.email;
     }
 
+    if (typeof (newUser.picture) === common.variableTypes.STRING) {
+        updateQuery.$set.picture = newUser.picture;
+    }
+
     if (typeof (newUser.password) === common.variableTypes.STRING) {
         updateQuery.$set.password = newUser.password;
     }

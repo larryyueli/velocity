@@ -18,11 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const forceSSL = require('express-force-ssl');
 const helmet = require('helmet');
 const http = require('http');
 const https = require('https');
 const i18n = require('i18n');
+const path = require('path');
 const pug = require('pug');
 const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
@@ -95,6 +97,12 @@ app.use(
         outputStyle: 'compressed'
     })
 );
+app.use(fileUpload({
+    limits: { fileSize: config.filesSizeLimit },
+    safeFileNames: config.safeFileNames,
+    preserveExtension: config.preserveFileExtension,
+    abortOnLimit: config.abortOnExceedLimit
+}));
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
@@ -185,7 +193,7 @@ const handleLoginPath = function (req, res) {
 
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
-    
+
     logger.info(`Login request by user: ${username}`);
     users.login(username, password, function (err, userObject) {
         if (err) {
@@ -376,19 +384,113 @@ const handleSelectModePath = function (req, res) {
     });
 }
 
+/**
+ * path to update the profile pictures
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUpdateProfilePicturePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
 
+    const validImageExtensions = ['image/jpeg', 'image/png'];
+    const uploadedFile = req.files.userpicture;
+    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        logger.error(JSON.stringify(common.getError(2008)));
+        return res.status(400).send(common.getError(2008));
+    }
+
+    const fileName = common.getUUID();
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileName: fileName,
+        filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common.cfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err) + JSON.stringify(fileObject));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`Updated user: ${req.session.user._id} to file: ${fileName}`);
+        users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            req.session.user.picture = fileName;
+            return res.status(200).send(fileName);
+        });
+    });
+}
+
+/**
+ * fetch the profile picture
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleprofilePicturePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    const pictureId = req.params.pictureId;
+    if (pictureId === 'null') {
+        const defaultImagePath = `${__dirname}/UI/img/${account_circle.png}`;
+        return res.sendFile(defaultImagePath, function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    }
+
+    cfs.fileExists(pictureId, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        if (fileObj.permission !== common.cfsPermission.PUBLIC) {
+            logger.error(JSON.stringify(common.getError(4010)));
+            return res.status(403).send(common.getError(4010));
+        }
+
+        const validImageExtensions = ['jpeg', 'png'];
+        if (validImageExtensions.indexOf(fileObj.extension) === -1) {
+            logger.error(JSON.stringify(common.getError(2008)));
+            return res.status(400).send(common.getError(2008));
+        }
+
+        return res.sendFile(path.resolve(fileObj.path), function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
+app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
 app.post('/login', handleLoginPath);
 app.post('/selectMode', handleSelectModePath);
 app.post('/updateProfile', handleUpdateProfilePath);
+app.post('/updateProfilePicture', handleUpdateProfilePicturePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------

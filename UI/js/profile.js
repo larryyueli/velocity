@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /**
 * Submits the new updates for the profile
 */
-$('#editForm').submit(function(evt) {
+$('#editForm').submit(function (evt) {
     evt.preventDefault();
 
     if ($('#passwd').val() === $('#confirmpasswd').val()) {
@@ -35,7 +35,7 @@ $('#editForm').submit(function(evt) {
 *
 * @method enableEdit
 */
-var enableEdit = function() {
+var enableEdit = function () {
     $('#viewForm').addClass('hidden');
     $('#editMode').removeClass('hidden');
 }
@@ -45,7 +45,7 @@ var enableEdit = function() {
 *
 * @method disableEdit
 */
-var disableEdit = function() {
+var disableEdit = function () {
     location.reload();
 }
 
@@ -54,11 +54,11 @@ var disableEdit = function() {
  *
  * @param {string} id
  */
-var editProfile = function(id) {
+var editProfile = function (id) {
     var fields = $('#editForm').serializeArray();
     var user = {};
 
-    jQuery.each(fields, function(i, field) {
+    jQuery.each(fields, function (i, field) {
         if (field.value) {
             user[field.name] = field.value;
         }
@@ -71,10 +71,13 @@ var editProfile = function(id) {
         type: 'POST',
         url: '/updateProfile',
         data: user,
-        success: function(data) {
-            //uploadProfilePicture();
+        success: function (data) {
+            const files = $('#profile-picture-input').get(0).files;
+            if (files.length === 1) {
+                uploadProfilePicture();
+            }
         },
-        error: function(data) {
+        error: function (data) {
             var jsonResponse = data.responseJSON;
 
             if (data['status'] === 401) {
@@ -107,7 +110,7 @@ var uploadProfilePicture = function () {
 
     $.ajax({
         type: 'POST',
-        url: '/updateUserPicture',
+        url: '/updateProfilePicture',
         processData: false,
         contentType: false,
         data: formData,
