@@ -63,7 +63,9 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
-const usersPage = 'users';
+const usersPage = 'users/users';
+const usersAddPage = 'users/users-add';
+const usersEditPage = 'users/users-edit';
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -179,6 +181,11 @@ const isActiveSession = function (req) {
  * @param {object} res res object
  */
 const handleLoginPath = function (req, res) {
+    if (isActiveSession(req)) {
+        logger.info(`User ${req.session.user.username} logged out.`);
+        req.session.destroy();
+    }
+
     if (typeof (req.body.username) !== common.variableTypes.STRING
         || typeof (req.body.password) !== common.variableTypes.STRING) {
         logger.error(JSON.stringify(common.getError(2002)));
@@ -435,6 +442,44 @@ const handleUsersPath = function (req, res) {
         disabledUsersList: disabledUsersList
     });
 }
+
+/**
+ * root path to get the users creation form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersAddPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN
+        && req.session.user.type !== common.userTypes.PROFESSOR) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(usersAddPage);
+}
+
+/**
+ * root path to get the users edit form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersEditPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN
+        && req.session.user.type !== common.userTypes.PROFESSOR) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(usersEditPage);
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -442,6 +487,8 @@ app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/users', handleUsersPath);
+app.get('/users/add', handleUsersAddPath);
+app.get('/users/edit/:username', handleUsersEditPath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
@@ -464,9 +511,9 @@ notificationsWS.on('connection', function (client, req) {
     client.send('ws ok');
 });
 setInterval(function () {
-    for(var client of notificationsWS.clients){ 
+    for (var client of notificationsWS.clients) {
         client.send('ws ok');
-	}
+    }
 }, 60000);
 // </notificationsWS Requests> -----------------------------------------------
 
