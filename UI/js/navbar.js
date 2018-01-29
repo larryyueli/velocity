@@ -41,7 +41,7 @@ function viewFullNotificationToggle(item, id, action = true) {
  */
 function clearNotification(item, id) {
     // Remove the notification from view
-    const itemToRemove = item.parent().parent();    
+    const itemToRemove = item.parent().parent();
     viewFullNotificationToggle(item, id, false);
 
     itemToRemove.animateCss('fadeOutRight', function () {
@@ -77,7 +77,7 @@ function clearAllNotifications() {
             inner = outer.getElementsByTagName('span');
 
             if (inner) {
-                    inner[0].onclick();
+                inner[0].onclick();
             }
         }
     }
@@ -105,3 +105,10 @@ function addNotification(notifList) {
         notificationList.append(getNotification(notification));
     });
 }
+
+$(function () {
+    var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
+    socket.onmessage = function (event) {
+        addNotification([{ link: '/', type: '1', name: 'Hi, new notification', id: '22222' }]);
+    }
+});

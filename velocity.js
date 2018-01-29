@@ -96,6 +96,7 @@ app.use(
         outputStyle: 'compressed'
     })
 );
+app.use(helmet());
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
@@ -457,11 +458,16 @@ app.delete('/logout', handleLogoutPath);
 // </Delete Requests> -----------------------------------------------
 
 // <notificationsWS Requests> ------------------------------------------------
-notificationsWS.on('connection', function (ws, req) {
-    ws.on('message', function (message) {
+notificationsWS.on('connection', function (client, req) {
+    client.on('message', function (message) {
     });
-    ws.send('ws ok');
+    client.send('ws ok');
 });
+setInterval(function () {
+    for(var client of notificationsWS.clients){ 
+        client.send('ws ok');
+	}
+}, 60000);
 // </notificationsWS Requests> -----------------------------------------------
 
 /**

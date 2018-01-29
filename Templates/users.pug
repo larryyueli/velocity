@@ -4,7 +4,7 @@ block styles
     link(rel='stylesheet' href='/stylesheets/css/profile.css')
 
 block title
-    title #{__('profile.title')}
+    title users
 
 block content
     include navbar
@@ -100,4 +100,6 @@ block content
                             td #{user.username}
                             td #{user.fname}
                             td #{user.lname}
-                            
+
+block scripts
+    script(src='/js/users.js')
