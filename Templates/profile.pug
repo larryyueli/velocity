@@ -32,23 +32,23 @@ block content
                     .card-content.padding-0
                         img.full-width(src=`/profilePicture/${user.picture}`)
                 .card
-                    .card-content.center
-                        h5.card-title Question Creation Form
                     .card-action
                         .row
                             .input-field.s12
                                 select#theme(name='theme')
                                     each theme in themes
-                                        option(value=theme) #{theme}
-                                        //- add if statement to check selected one
+                                        option(value=theme class=(theme === user.theme) ? "selected" : "") #{theme}
                                 label #{__('userInformation.theme')}
                         .row
                             .switch
+                                label(for='lname')
+                                    | #{__('userInformation.notifications')}
+                                br
                                 label
-                                    | #{__('switch.on')}
+                                    | #{__('switch.off')}
                                     input(id='notificationSwitch', type='checkbox', name='notificationEnabled' checked=user.notificationEnabled)
                                     span.lever
-                                    | #{__('switch.off')}
+                                    | #{__('switch.on')}
 
             .col.s12.m8.l9
                 .card.form-card

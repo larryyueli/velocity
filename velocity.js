@@ -445,7 +445,7 @@ const handleprofilePicturePath = function (req, res) {
 
     const pictureId = req.params.pictureId;
     if (pictureId === 'null') {
-        const defaultImagePath = `${__dirname}/UI/img/${account_circle.png}`;
+        const defaultImagePath = `${__dirname}/UI/img/account_circle.png`;
         return res.sendFile(defaultImagePath, function (err) {
             if (err) {
                 logger.error(JSON.stringify(err));

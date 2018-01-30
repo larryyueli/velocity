@@ -107,7 +107,11 @@ exports.variableTypes = variableTypes;
 
 // all color themes
 const colorThemes = Object.freeze({
-    DEFAULT: 'theme-default'
+    c: 'theme-c',
+    DEFAULT: 'theme-default',
+    a: 'theme-a',
+    b: 'theme-b',
+    d: 'theme-d'
 });
 exports.colorThemes = colorThemes;
 

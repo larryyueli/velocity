@@ -64,15 +64,17 @@
 		"firstName": "First Name",
 		"lastName": "Last Name",
 		"newPassword": "New Password",
+		"notifications": "Notifications",
 		"password": "Password",
 		"picture": "picture",
 		"theme": "Theme",
 		"types": {
 			"0": "Mode Selector",
-			"1": "Collaborator",
-			"2": "Professor",
-			"3": "Teaching Assistant",
-			"4": "Student"
+			"1": "Collaborator Admin",
+			"2": "Collaborator",
+			"3": "Professor",
+			"4": "Teaching Assistant",
+			"5": "Student"
 		},
 		"username": "Username"
 	}
