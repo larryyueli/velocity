@@ -50,8 +50,8 @@
 		"title": "Velocity Page Not Found"
 	},
 	"profile": {
-			"selectPicture": "Select your profile picture",
-			"title": "Velocity - Profile"
+		"selectPicture": "Select your profile picture",
+		"title": "Velocity - Profile"
 	},
 	"switch": {
 		"on": "On",
