@@ -37,7 +37,7 @@ block content
                             .input-field.s12
                                 select#theme(name='theme')
                                     each theme in themes
-                                        option(value=theme class=(theme === user.theme) ? "selected" : "") #{theme}
+                                        option(value=theme selected=(theme===user.theme) ? true : false) #{theme}
                                 label #{__('userInformation.theme')}
                         .row
                             .switch

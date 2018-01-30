@@ -23,6 +23,11 @@ $(function () {
     $('select').material_select();
 });
 
+$("#theme").on('change', function() {
+    $('bodyclass').removeClass();
+    $('bodyclass').addClass($('#theme')[0].value);
+});
+
 /**
 * Submits the new updates for the profile
 */
@@ -80,9 +85,7 @@ var editProfile = function (id) {
         data: user,
         success: function (data) {
             const files = $('#profile-picture-input').get(0).files;
-            if (files.length === 1) {
-                uploadProfilePicture();
-            }
+            uploadProfilePicture();
         },
         error: function (data) {
             var jsonResponse = data.responseJSON;
