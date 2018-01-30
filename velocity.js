@@ -269,7 +269,7 @@ const handleProfilePath = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleUpdateProfilePath = function (req, res) {
+const handleProfileUpdatePath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
     }
@@ -325,7 +325,7 @@ const handleRootPath = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleSelectModePath = function (req, res) {
+const handleModeSelectPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
     }
@@ -475,6 +475,43 @@ const handleUsersAddPath = function (req, res) {
 }
 
 /**
+ * root path to create a user
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersCreatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const newUser = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        username: req.body.username,
+        password: req.body.password,
+        type: parseInt(req.body.type),
+        status: common.userStatus.ACTIVE,
+        email: req.body.email
+    };
+
+    users.addUser(newUser, function (err, userObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`user: ${req.body.username} was created.`);
+        return res.status(200).send('ok');
+    });
+}
+
+/**
  * root path to get the users edit form
  *
  * @param {object} req req object
@@ -525,8 +562,9 @@ app.get('/users/import', handleUsersImportPath);
 
 // <Post Requests> -----------------------------------------------
 app.post('/login', handleLoginPath);
-app.post('/selectMode', handleSelectModePath);
-app.post('/updateProfile', handleUpdateProfilePath);
+app.post('/mode/select', handleModeSelectPath);
+app.post('/profile/update', handleProfileUpdatePath);
+app.post('/users/create', handleUsersCreatePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
