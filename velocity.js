@@ -460,7 +460,25 @@ const handleUsersAddPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    return res.status(200).render(usersAddPage);
+    const modeType = settings.getAllSettings().mode;
+    var userTypesList = [];
+    if (modeType === common.modeTypes.CLASS) {
+        userTypesList = [
+            { value: common.userTypes.STUDENT, text: 'Student' },
+            { value: common.userTypes.TA, text: 'TA' },
+            { value: common.userTypes.PROFESSOR, text: 'Professor' }
+        ];
+    }
+    if (modeType === common.modeTypes.COLLABORATORS) {
+        userTypesList = [
+            { value: common.userTypes.COLLABORATOR, text: 'Collaborator' },
+            { value: common.userTypes.COLLABORATOR_ADMIN, text: 'Collaborator Admin' }
+        ];
+    }
+
+    return res.status(200).render(usersAddPage, {
+        userTypesList: userTypesList
+    });
 }
 
 /**

@@ -9,6 +9,9 @@ block title
 block content
     include ../navbar
     .container
+        br
+        a.waves-effect.waves-light.btn(href='/users/add') Create
+            i.material-icons.right send
         .row
             table
                 thead
@@ -102,4 +105,4 @@ block content
                             td #{user.lname}
 
 block scripts
-    script(src='/js/users.js')
+    script(src='/js/users/users.js')
