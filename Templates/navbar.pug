@@ -60,7 +60,7 @@ ul#account_nav.side-nav
         .user-view
             .background
                 img(src='img/office.jpg')
-            img.circle(src='img/account_circle.png')
+            img.circle(src=`/profilePicture/${user.picture}`)
             span.white-text.name #{user.fname} #{user.lname}
             span.white-text.email #{user.username}
             span.white-text.email #{user.email}
