@@ -527,7 +527,36 @@ const handleUsersEditPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    return res.status(200).render(usersEditPage);
+    const username = req.params.username;
+    if (typeof (username) !== common.variableTypes.STRING) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    users.getUserByUsername(username, function (err, foundUser) {
+        if (err) {
+            if (err.code === 2003) {
+                return res.status(400).render(pageNotFoundPage);
+            }
+
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        const modeType = settings.getAllSettings().mode;
+        var userTypesList = [];
+        if (modeType === common.modeTypes.CLASS) {
+            userTypesList = [common.userTypes.STUDENT, common.userTypes.TA, common.userTypes.PROFESSOR];
+        }
+        if (modeType === common.modeTypes.COLLABORATORS) {
+            userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
+        }
+
+        return res.status(200).render(usersEditPage, {
+            editUser: foundUser,
+            userTypesList: userTypesList
+        });
+    });
 }
 
 /**

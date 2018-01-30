@@ -17,40 +17,39 @@ block content
                         a.btn-floating.halfway-fab.waves-effect.waves-light.red.left#account-creation-back-button
                             i.material-icons arrow_back
                     .card-content
-                        h5.card-title Account Creation Form
-                        h6 Add a student account
+                        h5.card-title Account Edit Form
+                        h6 Edit a user's account information
                     .card-action
                         .row
-                            form.col.s12#userform
+                            form.col.s12#userAddform
                                 .row
                                     .input-field.col.s6
-                                        input#fname.validate(type='text' name='fname' required autofocus)
+                                        input#fname.validate(type='text', name='fname', value=editUser.fname, required autofocus)
                                         label(for='fname') First Name
                                     .input-field.col.s6
-                                        input#lname.validate(type='text' name='lname' required)
+                                        input#lname.validate(type='text', name='lname', value=editUser.lname, required)
                                         label(for='lname') Last Name
                                 .row
                                     .input-field.col.s12
-                                        input#userid.validate(type='text' name='username' required)
-                                        label(for='userid') Username
+                                        input#username.validate(type='text', name='username', value=editUser.username, required)
+                                        label(for='username') Username
                                 .row
                                     .input-field.col.s12
-                                        input#passwd.validate(type='password' name='password' required)
-                                        label(for='passwd') Password
+                                        input#passwword.validate(type='password', name='password', required)
+                                        label(for='passwword') Password
                                 .row
                                     .input-field.col.s12
-                                        input#email.validate(type='email' name='email' required)
+                                        input#email.validate(type='email', name='email', value=editUser.email, required)
                                         label(for='email') Email
                                 .row
                                     .input-field.col.s4
-                                        label(for='email') Email
+                                        label(for='userType') User type:
                                     .input-field.col.s8
-                                        a.dropdown-button.btn(href='#', data-activates='dropdown1') Drop Me!
-                                        ul#dropdown1.dropdown-content
-                                            li
-                                                a(href='#!') one
-                                            li
-                                                a(href='#!') two
+                                        select#userType
+                                            each userType in userTypesList
+                                                option(value=userType.value, selected=editUser.type===userType.value) #{userType.text}
                                 .row
-                                    button.waves-effect.waves-light.btn(type='submit') Create
+                                    button.waves-effect.waves-light.btn(type='submit') Submit
                                         i.material-icons.right send
+block scripts
+    script(src='/js/users/users-edit.js')
