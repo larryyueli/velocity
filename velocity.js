@@ -66,6 +66,7 @@ const profilePage = 'profile';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
+const usersImportPage = 'users/users-import';
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -238,7 +239,7 @@ const handleLogoutPath = function (req, res) {
  */
 const handleMePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     var meObject = JSON.parse(JSON.stringify(req.session.user));
@@ -254,7 +255,7 @@ const handleMePath = function (req, res) {
  */
 const handleProfilePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     return res.status(200).render(profilePage, {
@@ -270,7 +271,7 @@ const handleProfilePath = function (req, res) {
  */
 const handleUpdateProfilePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     var updateObject = {};
@@ -326,7 +327,7 @@ const handleRootPath = function (req, res) {
  */
 const handleSelectModePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     if (req.session.user.type !== common.userTypes.MODE_SELECTOR) {
@@ -379,7 +380,7 @@ const handleSelectModePath = function (req, res) {
  */
 const handleUsersPath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     const fullUsersList = users.getFullUsersList();
@@ -480,6 +481,25 @@ const handleUsersEditPath = function (req, res) {
 
     return res.status(200).render(usersEditPage);
 }
+
+/**
+ * root path to get the users import form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersImportPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN
+        && req.session.user.type !== common.userTypes.PROFESSOR) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(usersImportPage);
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -489,6 +509,7 @@ app.get('/profile', handleProfilePath);
 app.get('/users', handleUsersPath);
 app.get('/users/add', handleUsersAddPath);
 app.get('/users/edit/:username', handleUsersEditPath);
+app.get('/users/import', handleUsersImportPath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
