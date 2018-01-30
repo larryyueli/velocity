@@ -64,7 +64,7 @@ const setupAdminAccount = function () {
         password: password,
         fname: fname,
         lname: lname,
-        type: common.userTypes.MODE_SELECTOR,
+        type: common.userTypes.MODE_SELECTOR.value,
         status: common.userStatus.ACTIVE
     };
 

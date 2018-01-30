@@ -83,12 +83,12 @@ exports.defaultError = defaultError;
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({
-    MODE_SELECTOR: 0,
-    COLLABORATOR_ADMIN: 1,
-    COLLABORATOR: 2,
-    PROFESSOR: 3,
-    TA: 4,
-    STUDENT: 5
+    MODE_SELECTOR: { value: 0, text: 'Mode Selector' },
+    COLLABORATOR_ADMIN: { value: 1, text: 'Collaborator Admin' },
+    COLLABORATOR: { value: 2, text: 'Collaborator' },
+    PROFESSOR: { value: 3, text: 'Professor' },
+    TA: { value: 4, text: 'TA' },
+    STUDENT: { value: 5, text: 'Student' }
 });
 exports.userTypes = userTypes;
 
@@ -154,6 +154,12 @@ const cfsMainDirectories = Object.freeze({
     USERS: 'Users'
 });
 exports.cfsMainDirectories = cfsMainDirectories;
+
+// common languages
+const languages = Object.freeze({
+    English: 'en'
+});
+exports.languages = languages;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -199,6 +205,24 @@ const isValueInObject = function (value, obj) {
     return false;
 }
 exports.isValueInObject = isValueInObject;
+
+/**
+ * check if value in the object
+ *
+ * @param {any} value value to check
+ * @param {string} key key of inner object
+ * @param {object} obj object to check
+ * @return {boolean}
+ */
+const isValueInObjectWithKeys = function (value, key, obj) {
+    for (var i in obj) {
+        if (obj[i][key] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isValueInObjectWithKeys = isValueInObjectWithKeys;
 
 /**
  * return boolean from boolean string if possible, otherwise undefined

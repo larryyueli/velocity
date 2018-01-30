@@ -21,7 +21,7 @@ block content
                         h6 Add a user account
                     .card-action
                         .row
-                            form.col.s12#userform
+                            form.col.s12#userAddform
                                 .row
                                     .input-field.col.s6
                                         input#fname.validate(type='text' name='fname' required autofocus)
@@ -32,18 +32,18 @@ block content
                                 .row
                                     .input-field.col.s12
                                         input#username.validate(type='text' name='username' required)
-                                        label(for='userid') Username
+                                        label(for='username') Username
                                 .row
                                     .input-field.col.s12
                                         input#passwword.validate(type='password' name='password' required)
-                                        label(for='passwd') Password
+                                        label(for='passwword') Password
                                 .row
                                     .input-field.col.s12
                                         input#email.validate(type='email' name='email' required)
                                         label(for='email') Email
                                 .row
                                     .input-field.col.s4
-                                        label User type:
+                                        label(for='userType') User type:
                                     .input-field.col.s8
                                         select#userType
                                             each userType in userTypesList

@@ -59,7 +59,7 @@ const addUser = function (user, callback) {
         || typeof (user.lname) !== common.variableTypes.STRING
         || typeof (user.username) !== common.variableTypes.STRING
         || typeof (user.password) !== common.variableTypes.STRING
-        || !common.isValueInObject(user.type, common.userTypes)
+        || !common.isValueInObjectWithKeys(user.type, 'value', common.userTypes)
         || !common.isValueInObject(user.status, common.userStatus)) {
         return callback(common.getError(2000), null);
     }
@@ -86,12 +86,13 @@ const addUser = function (user, callback) {
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
         userToAdd.notificationEnabled = true;
-        userToAdd.canAccessUsers = (user.type === common.userTypes.PROFESSOR
-            || user.type === common.userTypes.COLLABORATOR_ADMIN);
-        userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR
-            || user.type === common.userTypes.COLLABORATOR_ADMIN);
-        userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR
-            || user.type === common.userTypes.TA);
+        userToAdd.language = common.languages.English;
+        userToAdd.canAccessUsers = (user.type === common.userTypes.PROFESSOR.value
+            || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
+        userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR.value
+            || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
+        userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR.value
+            || user.type === common.userTypes.TA.value);
 
         db.addUser(userToAdd, function (err, obj) {
             if (err) {
@@ -224,18 +225,22 @@ const updateUser = function (newUser, callback) {
         updateQuery.$set.theme = newUser.theme;
     }
 
+    if (common.isValueInObject(newUser.language, common.languages)) {
+        updateQuery.$set.language = newUser.language;
+    }
+
     if (typeof (newUser.notificationEnabled) === common.variableTypes.BOOLEAN) {
         updateQuery.$set.notificationEnabled = newUser.notificationEnabled;
     }
 
-    if (common.isValueInObject(newUser.type, common.userTypes)) {
+    if (common.isValueInObjectWithKeys(newUser.type, 'value', common.userTypes)) {
         updateQuery.$set.type = newUser.type;
-        updateQuery.$set.canAccessUsers = (newUser.type === common.userTypes.PROFESSOR
-            || newUser.type === common.userTypes.COLLABORATOR_ADMIN);
-        updateQuery.$set.canAccessSettings = (newUser.type === common.userTypes.PROFESSOR
-            || newUser.type === common.userTypes.COLLABORATOR_ADMIN);
-        updateQuery.$set.canAccessGrades = (newUser.type === common.userTypes.PROFESSOR
-            || newUser.type === common.userTypes.TA);
+        updateQuery.$set.canAccessUsers = (newUser.type === common.userTypes.PROFESSOR.value
+            || newUser.type === common.userTypes.COLLABORATOR_ADMIN.value);
+        updateQuery.$set.canAccessSettings = (newUser.type === common.userTypes.PROFESSOR.value
+            || newUser.type === common.userTypes.COLLABORATOR_ADMIN.value);
+        updateQuery.$set.canAccessGrades = (newUser.type === common.userTypes.PROFESSOR.value
+            || newUser.type === common.userTypes.TA.value);
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {

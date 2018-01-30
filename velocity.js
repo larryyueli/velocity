@@ -204,8 +204,8 @@ const handleLoginPath = function (req, res) {
         }
 
         if (!settings.getAllSettings().active
-            && userObject.type !== common.userTypes.PROFESSOR
-            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN) {
+            && userObject.type !== common.userTypes.PROFESSOR.value
+            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN.value) {
             logger.error(JSON.stringify(common.getError(3007)));
             return res.status(403).send(common.getError(3007));
         }
@@ -312,7 +312,7 @@ const handleRootPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
         return res.status(200).render(modeSelectorPage);
     }
 
@@ -330,7 +330,7 @@ const handleSelectModePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.MODE_SELECTOR) {
+    if (req.session.user.type !== common.userTypes.MODE_SELECTOR.value) {
         return res.status(400).send(common.getError(1000));
     }
 
@@ -348,11 +348,11 @@ const handleSelectModePath = function (req, res) {
 
         var newType;
         if (parsedSelectedMode === common.modeTypes.CLASS) {
-            newType = common.userTypes.PROFESSOR
+            newType = common.userTypes.PROFESSOR.value
         }
 
         if (parsedSelectedMode === common.modeTypes.COLLABORATORS) {
-            newType = common.userTypes.COLLABORATOR_ADMIN
+            newType = common.userTypes.COLLABORATOR_ADMIN.value
         }
 
         const updateObject = {
@@ -405,19 +405,19 @@ const handleUsersPath = function (req, res) {
                 break;
             case common.userStatus.ACTIVE:
                 switch (user.type) {
-                    case common.userTypes.COLLABORATOR_ADMIN:
+                    case common.userTypes.COLLABORATOR_ADMIN.value:
                         collaboratorAdminsList.push(user);
                         break;
-                    case common.userTypes.COLLABORATOR:
+                    case common.userTypes.COLLABORATOR.value:
                         collaboratorsList.push(user);
                         break;
-                    case common.userTypes.PROFESSOR:
+                    case common.userTypes.PROFESSOR.value:
                         professorsList.push(user);
                         break;
-                    case common.userTypes.TA:
+                    case common.userTypes.TA.value:
                         TAsList.push(user);
                         break;
-                    case common.userTypes.STUDENT:
+                    case common.userTypes.STUDENT.value:
                         studentsList.push(user);
                         break;
                     default:
@@ -455,25 +455,18 @@ const handleUsersAddPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN
-        && req.session.user.type !== common.userTypes.PROFESSOR) {
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         return res.status(403).render(pageNotFoundPage);
     }
 
     const modeType = settings.getAllSettings().mode;
     var userTypesList = [];
     if (modeType === common.modeTypes.CLASS) {
-        userTypesList = [
-            { value: common.userTypes.STUDENT, text: 'Student' },
-            { value: common.userTypes.TA, text: 'TA' },
-            { value: common.userTypes.PROFESSOR, text: 'Professor' }
-        ];
+        userTypesList = [common.userTypes.STUDENT, common.userTypes.TA, common.userTypes.PROFESSOR];
     }
     if (modeType === common.modeTypes.COLLABORATORS) {
-        userTypesList = [
-            { value: common.userTypes.COLLABORATOR, text: 'Collaborator' },
-            { value: common.userTypes.COLLABORATOR_ADMIN, text: 'Collaborator Admin' }
-        ];
+        userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
     }
 
     return res.status(200).render(usersAddPage, {
@@ -492,8 +485,8 @@ const handleUsersEditPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN
-        && req.session.user.type !== common.userTypes.PROFESSOR) {
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         return res.status(403).render(pageNotFoundPage);
     }
 
@@ -511,8 +504,8 @@ const handleUsersImportPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN
-        && req.session.user.type !== common.userTypes.PROFESSOR) {
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         return res.status(403).render(pageNotFoundPage);
     }
 

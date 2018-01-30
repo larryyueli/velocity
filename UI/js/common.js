@@ -33,6 +33,7 @@ function getMeObject() {
     $.ajax({
         type: 'GET',
         url: '/me',
+        async: false,
         success: function (data) {
             meObject = data;
         },
