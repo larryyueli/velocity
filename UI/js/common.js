@@ -1,4 +1,59 @@
 /*
+Copyright (C) 2016
+Developed at University of Toronto
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+// common colour varianles
+const colours = Object.freeze({
+    green          : 'green',
+    orangeDark     : 'orange accent-4',
+    redDark        : 'red darken-4',
+});
+
+const snack = Object.freeze({
+    success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
+    warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
+    fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+});
+
+/* This function slides down a success snakbar */
+function successSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.success + msg + snack.close, 5000, colours.green);
+}
+
+/* This function slides down a warning snakbar */
+function warningSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.warning + msg + snack.close, 5000, colours.orangeDark);
+}
+
+/* This function slides down a fail snakbar */
+function failSnackbar(msg) {
+    // runs the toast function for 5s with given msg and colour
+    Materialize.toast(snack.fail + msg + snack.close, 5000, colours.redDark);
+}
+
+/* Listener for the `x` on the snackbar/toasts */
+$(document).on('click', '#closeSnack', function() {
+    $(this).parent().fadeOut();
+});
+
+/*
 UI errors for user display
 
 1000 -> user errors
@@ -16,7 +71,16 @@ const errors = Object.freeze({
     2004: 'Invalid username or password',
     2005: 'Account is not active',
     2006: 'Session timed out',
-    2007: 'Failed to update user, missing information'
+    2007: 'Failed to update user, missing information',
+    2008: 'invalid profile picture extension',
+
+    //3000 settings
+    3005: 'could not update the selected mode',
+    3006: 'invalid mode',
+    3007: 'website is not active',
+
+    //4000 custom file system
+    4010: 'permission denied'
 });
 const defaultError = 'Something went wrong, please try again!';
 

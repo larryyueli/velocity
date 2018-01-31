@@ -137,11 +137,11 @@ const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callbac
  * @param {function} callback callback function
  */
 const getUserByUsername = function (username, callback) {
-    cachedUsersList.forEach(user => {
+    for (var user in cachedUsersList) {
         if (user.username === username) {
             return callback(null, user);
         }
-    });
+    }
 
     getUser({ username: username }, callback);
 }
@@ -219,12 +219,20 @@ const updateUser = function (newUser, callback) {
         updateQuery.$set.email = newUser.email;
     }
 
-    if (common.isValueInObject(newUser.theme, common.colorThemes)) {
-        updateQuery.$set.theme = newUser.theme;
+    if (typeof (newUser.picture) === common.variableTypes.STRING) {
+        updateQuery.$set.picture = newUser.picture;
+    }
+
+    if (typeof (newUser.password) === common.variableTypes.STRING) {
+        updateQuery.$set.password = newUser.password;
     }
 
     if (typeof (newUser.notificationEnabled) === common.variableTypes.BOOLEAN) {
         updateQuery.$set.notificationEnabled = newUser.notificationEnabled;
+    }
+
+    if (common.isValueInObject(newUser.theme, common.colorThemes)) {
+        updateQuery.$set.theme = newUser.theme;
     }
 
     if (common.isValueInObject(newUser.type, common.userTypes)) {
@@ -247,19 +255,34 @@ const updateUser = function (newUser, callback) {
 
     updateQuery.$set.mtime = common.getDate();
 
-    db.updateUser(searchQuery, updateQuery, function (err, result) {
-        if (err) {
-            return callback(err, null);
-        }
-
-        updateCachedList(function (err, res) {
+    const updateFun = function () {
+        db.updateUser(searchQuery, updateQuery, function (err, result) {
             if (err) {
                 return callback(err, null);
             }
 
-            return callback(null, result);
+            updateCachedList(function (err, res) {
+                if (err) {
+                    return callback(err, null);
+                }
+
+                return callback(null, result);
+            });
         });
-    });
+    }
+
+    if (typeof (newUser.password) === common.variableTypes.STRING) {
+        bcrypt.hash(newUser.password, 11, function (err, hash) {
+            if (err) {
+                return callback(common.getError(1002), null);
+            }
+
+            updateQuery.$set.password = hash;
+            return updateFun();
+        });
+    } else {
+        return updateFun();
+    }
 }
 
 // <exports> -----------------------------------

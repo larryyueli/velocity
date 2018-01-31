@@ -51,6 +51,7 @@ const errors = Object.freeze({
     2005: 'user account is not active',
     2006: 'user\'s session is not valid or timed out',
     2007: 'failed to update user, missing information',
+    2008: 'invalid profile picture extension',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -72,7 +73,8 @@ const errors = Object.freeze({
     4006: 'entry does not exist in the virtual file system',
     4007: 'entry does not exist in the physical file system',
     4008: 'failed to write file into the physical file system',
-    4009: 'failed to remove the custom file system root from the physical file system'
+    4009: 'failed to remove the custom file system root from the physical file system',
+    4010: 'permission denied'
 });
 exports.errors = errors;
 
@@ -105,7 +107,7 @@ exports.variableTypes = variableTypes;
 
 // all color themes
 const colorThemes = Object.freeze({
-    DEFAULT: 'default'
+    DEFAULT: 'theme-default'
 });
 exports.colorThemes = colorThemes;
 
@@ -199,11 +201,15 @@ exports.isValueInObject = isValueInObject;
  * @return {boolean}
  */
 const convertStringToBoolean = function (value) {
-    if (value.toLowerCase() === 'false') {
+    if (typeof (value) === variableTypes.BOOLEAN) {
+        return value;
+    }
+
+    if (value && value.toLowerCase() === 'false') {
         return false;
     }
 
-    if (value.toLowerCase() === 'true') {
+    if (value && value.toLowerCase() === 'true') {
         return true;
     }
 

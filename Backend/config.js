@@ -65,3 +65,14 @@ exports.rollingSession = rollingSession;
 exports.secureSessionCookie = secureSessionCookie;
 exports.languageOptions = languageOptions;
 exports.defaultLanguage = defaultLanguage;
+
+// files upload settings
+const filesSizeLimit = 50 * 1024 * 1024;
+const safeFileNames = true;
+const preserveFileExtension = true;
+const abortOnExceedLimit = true;
+
+exports.filesSizeLimit = filesSizeLimit;
+exports.safeFileNames = safeFileNames;
+exports.preserveFileExtension = preserveFileExtension;
+exports.abortOnExceedLimit = abortOnExceedLimit;
