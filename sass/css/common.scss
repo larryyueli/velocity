@@ -41,3 +41,27 @@
 .noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
     text-decoration: none;
 }
+
+.select-wrapper span.caret {
+    color: initial;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 10px;
+    margin: auto 0;
+    font-size: 10px;
+    line-height: 10px;
+}
+
+.caret {
+    display: inline-block;
+    width: auto;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 0px dashed;
+    border-top: 4px solid\9;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
