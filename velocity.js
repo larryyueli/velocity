@@ -415,63 +415,10 @@ const handleUsersPath = function (req, res) {
     }
 
     const fullUsersList = users.getFullUsersList();
-    var modeSelectorsList = [];
-    var collaboratorAdminsList = [];
-    var collaboratorsList = [];
-    var professorsList = [];
-    var TAsList = [];
-    var studentsList = [];
-    var disabledUsersList = [];
-    var pendingUsersList = [];
-    var unknownUsers = [];
-
-    for (var i = 0; i < fullUsersList.length; i++) {
-        var user = fullUsersList[i];
-        switch (user.status) {
-            case common.userStatus.DISABLED.value:
-                disabledUsersList.push(user);
-                break;
-            case common.userStatus.PENDING.value:
-                pendingUsersList.push(user);
-                break;
-            case common.userStatus.ACTIVE.value:
-                switch (user.type) {
-                    case common.userTypes.COLLABORATOR_ADMIN.value:
-                        collaboratorAdminsList.push(user);
-                        break;
-                    case common.userTypes.COLLABORATOR.value:
-                        collaboratorsList.push(user);
-                        break;
-                    case common.userTypes.PROFESSOR.value:
-                        professorsList.push(user);
-                        break;
-                    case common.userTypes.TA.value:
-                        TAsList.push(user);
-                        break;
-                    case common.userTypes.STUDENT.value:
-                        studentsList.push(user);
-                        break;
-                    default:
-                        unknownUsers.push(user);
-                        break;
-                }
-                break;
-            default:
-                unknownUsers.push(user);
-                break;
-        }
-
-    }
 
     return res.status(200).render(usersPage, {
         user: req.session.user,
-        collaboratorAdminsList: collaboratorAdminsList,
-        collaboratorsList: collaboratorsList,
-        professorsList: professorsList,
-        TAsList: TAsList,
-        studentsList: studentsList,
-        pendingUsersList: pendingUsersList,
-        disabledUsersList: disabledUsersList
+        usersList: fullUsersList
     });
 }
 
@@ -590,6 +537,44 @@ const handleUsersEditPath = function (req, res) {
             editUser: foundUser,
             userTypesList: userTypesList
         });
+    });
+}
+
+/**
+ * path to update a user
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const newUser = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        username: req.body.username,
+        password: req.body.password,
+        type: parseInt(req.body.type),
+        status: parseInt(req.body.status),
+        email: req.body.email
+    };
+
+    users.updateUser(newUser, function (err, userObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`user: ${req.body.username} was created.`);
+        return res.status(200).send('ok');
+
     });
 }
 
@@ -726,6 +711,7 @@ app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/users/create', handleUsersCreatePath);
+app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
