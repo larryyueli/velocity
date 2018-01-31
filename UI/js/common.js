@@ -124,13 +124,21 @@ function getErrorMessageFromResponse(data) {
  * @returns {String} HTML of notification
  */
 function getNotification(notification) {
-    return `<li>
-            <a class="navbarLinkHidden waves-effect" href="${notification.link}">
-                <i class="material-icons">${notification.type}</i>
-                ${notification.name}
-                <span class="right pointer clear-notification" onclick="clearNotification($(this), ${notification.id})">X</span>
-            </a>
-        </li>`
+    return `<span>
+                <li>
+                    <a class="navbarLinkHidden waves-effect padding-right-0 truncate" href="${notification.link}">
+                        <i class="material-icons margin-right-10">${notification.type}</i>
+                        ${notification.name}
+                    </a>
+                    <span class="right right-icons">
+                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), ${notification.id})">keyboard_arrow_down</i>
+                        <span class="pointer clear-notification padding-right-10" id="${notification.id}-clear" onclick="clearNotification($(this), ${notification.id})">X</span>
+                    </span>
+                </li>
+                <li class="full-description hidden" id="${notification.id}-desc">
+                    ${notification.name}
+                </li>
+            </span>`;
 }
 
 /**

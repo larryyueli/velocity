@@ -60,7 +60,7 @@ const addUser = function (user, callback) {
         || typeof (user.username) !== common.variableTypes.STRING
         || typeof (user.password) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(user.type, 'value', common.userTypes)
-        || !common.isValueInObject(user.status, common.userStatus)) {
+        || !common.isValueInObjectWithKeys(user.status, 'value', common.userStatus)) {
         return callback(common.getError(2000), null);
     }
 
@@ -166,7 +166,7 @@ const login = function (username, password, callback) {
             return callback(err, null);
         }
 
-        if (userObj.status !== common.userStatus.ACTIVE) {
+        if (userObj.status !== common.userStatus.ACTIVE.value) {
             return callback(common.getError(2005), null);
         }
 

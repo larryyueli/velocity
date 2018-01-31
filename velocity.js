@@ -269,7 +269,8 @@ const handleProfilePath = function (req, res) {
     return res.status(200).render(profilePage, {
         user: req.session.user,
         themes: common.colorThemes,
-        languages: common.languages
+        languages: common.languages,
+        notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
     });
 }
 
@@ -420,13 +421,13 @@ const handleUsersPath = function (req, res) {
     for (var i = 0; i < fullUsersList.length; i++) {
         var user = fullUsersList[i];
         switch (user.status) {
-            case common.userStatus.DISABLED:
+            case common.userStatus.DISABLED.value:
                 disabledUsersList.push(user);
                 break;
-            case common.userStatus.PENDING:
+            case common.userStatus.PENDING.value:
                 pendingUsersList.push(user);
                 break;
-            case common.userStatus.ACTIVE:
+            case common.userStatus.ACTIVE.value:
                 switch (user.type) {
                     case common.userTypes.COLLABORATOR_ADMIN.value:
                         collaboratorAdminsList.push(user);
@@ -493,6 +494,7 @@ const handleUsersAddPath = function (req, res) {
     }
 
     return res.status(200).render(usersAddPage, {
+        user: req.session.user,
         userTypesList: userTypesList
     });
 }
@@ -519,7 +521,7 @@ const handleUsersCreatePath = function (req, res) {
         username: req.body.username,
         password: req.body.password,
         type: parseInt(req.body.type),
-        status: common.userStatus.ACTIVE,
+        status: common.userStatus.ACTIVE.value,
         email: req.body.email
     };
 
@@ -577,6 +579,7 @@ const handleUsersEditPath = function (req, res) {
         }
 
         return res.status(200).render(usersEditPage, {
+            user: req.session.user,
             editUser: foundUser,
             userTypesList: userTypesList
         });
@@ -599,7 +602,9 @@ const handleUsersImportPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    return res.status(200).render(usersImportPage);
+    return res.status(200).render(usersImportPage,{
+        user: req.session.user,
+    });
 }
 
 /**
@@ -733,7 +738,7 @@ setInterval(function () {
     for (var client of notificationsWS.clients) {
         client.send('ws ok');
     }
-}, 60000);
+}, 1000);
 // </notificationsWS Requests> -----------------------------------------------
 
 /**

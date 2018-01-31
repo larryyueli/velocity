@@ -96,9 +96,9 @@ exports.userTypes = userTypes;
 
 // user status
 const userStatus = Object.freeze({
-    DISABLED: 0,
-    PENDING: 1,
-    ACTIVE: 2
+    DISABLED: { value: 0, text: 'Disabled' },
+    PENDING: { value: 1, text: 'Pending' },
+    ACTIVE: { value: 2, text: 'Active' }
 });
 exports.userStatus = userStatus;
 

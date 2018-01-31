@@ -65,7 +65,7 @@ const setupAdminAccount = function () {
         fname: fname,
         lname: lname,
         type: common.userTypes.MODE_SELECTOR.value,
-        status: common.userStatus.ACTIVE
+        status: common.userStatus.ACTIVE.value
     };
 
     fs.readFile(pathToConfigFile, 'utf8', function (err, data) {
