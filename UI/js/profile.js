@@ -34,7 +34,7 @@ $(function () {
     $('select').material_select();
 });
 
-$(theme).on('change', function() {
+$(theme).on('change', function () {
     $('bodyclass').removeClass();
     $('bodyclass').addClass($(theme)[0].value);
 });
@@ -99,13 +99,14 @@ const editProfile = function (id) {
             uploadProfilePicture();
         },
         error: function (data) {
-            var jsonResponse = data.responseJSON;
-
             if (data['status'] === 401) {
                 window.location.href = '/';
-            } else {
-                failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            } else if (data['status'] === 404) {
+                window.location.href = '/pageNotFound';
             }
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }
@@ -139,15 +140,14 @@ const uploadProfilePicture = function () {
             location.reload();
         },
         error: function (data) {
-            var jsonResponse = data.responseJSON;
-
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else if (data['status'] === 404) {
-                window.location.href = '/page-not-found';
-            } else {
-                failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                window.location.href = '/pageNotFound';
             }
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }

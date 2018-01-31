@@ -22,6 +22,8 @@ var notificationList = $('#notifications_nav');
 var noNotifications = $('#noNotifications');
 var clearNotifications = $('#clearNotifications');
 
+const logoutButton = $('#nav-logout');
+
 $('.button-collapse').sideNav({
     closeOnClick: true
 });
@@ -123,6 +125,26 @@ function addNotification(notifList) {
         notificationList.append(getNotification(notification));
     });
 }
+
+logoutButton.click(function () {
+    $.ajax({
+        type: 'DELETE',
+        url: '/logout',
+        success: function (data) {
+            window.location.href = '/';
+        },
+        error: function (data) {
+            if (data['status'] === 401) {
+                window.location.href = '/';
+            } else if (data['status'] === 404) {
+                window.location.href = '/pageNotFound';
+            }
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+});
 
 $(function () {
     var socket = new WebSocket(`ws://${window.location.hostname}:8001`);

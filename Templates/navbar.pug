@@ -9,7 +9,7 @@
                     a.navbarLink(href='#!') #{__('pageNames.projects')}
                 if user.canAccessUsers
                     li#nav-users
-                        a.navbarLink(href='#!') #{__('pageNames.users')}
+                        a.navbarLink(href='/users') #{__('pageNames.users')}
                 if user.canAccessSettings
                     li#nav-settings
                         a.navbarLink(href='#!') #{__('pageNames.settings')}
@@ -37,7 +37,7 @@ ul#mobile.side-nav
             | #{__('pageNames.projects')}
     if user.canAccessUsers
         li#navm-users
-            a.navbarLinkHidden(href='#!')
+            a.navbarLinkHidden(href='/users')
                 i.material-icons people
                 | #{__('pageNames.users')}
     if user.canAccessSettings
