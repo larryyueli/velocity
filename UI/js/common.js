@@ -71,7 +71,16 @@ const errors = Object.freeze({
     2004: 'Invalid username or password',
     2005: 'Account is not active',
     2006: 'Session timed out',
-    2007: 'Failed to update user, missing information'
+    2007: 'Failed to update user, missing information',
+    2008: 'invalid profile picture extension',
+
+    //3000 settings
+    3005: 'could not update the selected mode',
+    3006: 'invalid mode',
+    3007: 'website is not active',
+
+    //4000 custom file system
+    4010: 'permission denied'
 });
 const defaultError = 'Something went wrong, please try again!';
 
