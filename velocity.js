@@ -390,8 +390,15 @@ const handleModeSelectPath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            req.session.user.type = newType;
-            return res.status(200).send('mode updated successfully');
+            users.getUserById(req.session.user._id, function (err, userObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                req.session.user = userObj;
+                return res.status(200).send('mode updated successfully');
+            });
         });
     });
 }
@@ -602,7 +609,7 @@ const handleUsersImportPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    return res.status(200).render(usersImportPage,{
+    return res.status(200).render(usersImportPage, {
         user: req.session.user,
     });
 }

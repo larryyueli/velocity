@@ -139,13 +139,29 @@ const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callbac
  * @param {function} callback callback function
  */
 const getUserByUsername = function (username, callback) {
-    for (var user in cachedUsersList) {
-        if (user.username === username) {
-            return callback(null, user);
+    for (var i = 0; i < cachedUsersList.length; i++) {
+        if (cachedUsersList[i].username === username) {
+            return callback(null, cachedUsersList[i]);
         }
     }
 
     getUser({ username: username }, callback);
+}
+
+/**
+ * find a single user by its id
+ * 
+ * @param {string} id id
+ * @param {function} callback callback function
+ */
+const getUserById = function (id, callback) {
+    for (var i = 0; i < cachedUsersList.length; i++) {
+        if (cachedUsersList[i]._id === id) {
+            return callback(null, cachedUsersList[i]);
+        }
+    }
+
+    getUser({ _id: id }, callback);
 }
 
 /**
@@ -188,67 +204,67 @@ const login = function (username, password, callback) {
 /**
  * update the user information
  *
- * @param {object} newUser user object to add
+ * @param {object} updateParams modify parameters
  * @param {function} callback callback function
  */
-const updateUser = function (newUser, callback) {
+const updateUser = function (updateParams, callback) {
     var searchQuery = {};
     var updateQuery = {};
     updateQuery.$set = {};
 
-    if (typeof (newUser._id) === common.variableTypes.STRING) {
-        searchQuery = { _id: newUser._id };
+    if (typeof (updateParams._id) === common.variableTypes.STRING) {
+        searchQuery = { _id: updateParams._id };
     }
 
     if (common.isEmptyObject(searchQuery)) {
         return callback(common.getError(2007), null);
     }
 
-    if (typeof (newUser.fname) === common.variableTypes.STRING) {
-        updateQuery.$set.fname = newUser.fname;
+    if (typeof (updateParams.fname) === common.variableTypes.STRING) {
+        updateQuery.$set.fname = updateParams.fname;
     }
 
-    if (typeof (newUser.lname) === common.variableTypes.STRING) {
-        updateQuery.$set.lname = newUser.lname;
+    if (typeof (updateParams.lname) === common.variableTypes.STRING) {
+        updateQuery.$set.lname = updateParams.lname;
     }
 
-    if (typeof (newUser.username) === common.variableTypes.STRING) {
-        updateQuery.$set.username = newUser.username;
-        searchQuery = { $and: [{ _id: newUser._id }, { username: { $ne: newUser.username } }] };
+    if (typeof (updateParams.username) === common.variableTypes.STRING) {
+        updateQuery.$set.username = updateParams.username;
+        searchQuery = { $and: [{ _id: updateParams._id }, { username: { $ne: updateParams.username } }] };
     }
 
-    if (typeof (newUser.email) === common.variableTypes.STRING) {
-        updateQuery.$set.email = newUser.email;
+    if (typeof (updateParams.email) === common.variableTypes.STRING) {
+        updateQuery.$set.email = updateParams.email;
     }
 
-    if (typeof (newUser.picture) === common.variableTypes.STRING) {
-        updateQuery.$set.picture = newUser.picture;
+    if (typeof (updateParams.picture) === common.variableTypes.STRING) {
+        updateQuery.$set.picture = updateParams.picture;
     }
 
-    if (typeof (newUser.password) === common.variableTypes.STRING) {
-        updateQuery.$set.password = newUser.password;
+    if (typeof (updateParams.password) === common.variableTypes.STRING) {
+        updateQuery.$set.password = updateParams.password;
     }
 
-    if (common.isValueInObjectWithKeys(newUser.language, 'value', common.languages)) {
-        updateQuery.$set.language = newUser.language;
+    if (common.isValueInObjectWithKeys(updateParams.language, 'value', common.languages)) {
+        updateQuery.$set.language = updateParams.language;
     }
 
-    if (typeof (newUser.notificationEnabled) === common.variableTypes.BOOLEAN) {
-        updateQuery.$set.notificationEnabled = newUser.notificationEnabled;
+    if (typeof (updateParams.notificationEnabled) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set.notificationEnabled = updateParams.notificationEnabled;
     }
 
-    if (common.isValueInObject(newUser.theme, common.colorThemes)) {
-        updateQuery.$set.theme = newUser.theme;
+    if (common.isValueInObject(updateParams.theme, common.colorThemes)) {
+        updateQuery.$set.theme = updateParams.theme;
     }
 
-    if (common.isValueInObjectWithKeys(newUser.type, 'value', common.userTypes)) {
-        updateQuery.$set.type = newUser.type;
-        updateQuery.$set.canAccessUsers = (newUser.type === common.userTypes.PROFESSOR.value
-            || newUser.type === common.userTypes.COLLABORATOR_ADMIN.value);
-        updateQuery.$set.canAccessSettings = (newUser.type === common.userTypes.PROFESSOR.value
-            || newUser.type === common.userTypes.COLLABORATOR_ADMIN.value);
-        updateQuery.$set.canAccessGrades = (newUser.type === common.userTypes.PROFESSOR.value
-            || newUser.type === common.userTypes.TA.value);
+    if (common.isValueInObjectWithKeys(updateParams.type, 'value', common.userTypes)) {
+        updateQuery.$set.type = updateParams.type;
+        updateQuery.$set.canAccessUsers = (updateParams.type === common.userTypes.PROFESSOR.value
+            || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
+        updateQuery.$set.canAccessSettings = (updateParams.type === common.userTypes.PROFESSOR.value
+            || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
+        updateQuery.$set.canAccessGrades = (updateParams.type === common.userTypes.PROFESSOR.value
+            || updateParams.type === common.userTypes.TA.value);
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {
@@ -277,8 +293,8 @@ const updateUser = function (newUser, callback) {
         });
     }
 
-    if (typeof (newUser.password) === common.variableTypes.STRING) {
-        bcrypt.hash(newUser.password, 11, function (err, hash) {
+    if (typeof (updateParams.password) === common.variableTypes.STRING) {
+        bcrypt.hash(updateParams.password, 11, function (err, hash) {
             if (err) {
                 return callback(common.getError(1002), null);
             }
@@ -304,6 +320,7 @@ exports.addUser = addUser;
 exports.getFullUsersList = getFullUsersList;
 exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;
+exports.getUserById = getUserById;
 exports.getUserByUsername = getUserByUsername;
 exports.initialize = initialize;
 exports.login = login;
