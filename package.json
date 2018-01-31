@@ -9,6 +9,7 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "express": "^4.16.2",
+    "express-fileupload": "^0.4.0",
     "express-force-ssl": "^0.3.2",
     "express-session": "^1.15.6",
     "helmet": "^3.9.0",

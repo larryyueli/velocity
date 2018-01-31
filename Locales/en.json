@@ -1,10 +1,13 @@
 {
+	"actions": {
+		"cancel": "cancel",
+		"edit": "edit"
+	},
 	"app": {
 		"name": "Velocity"
 	},
 	"login": {
 		"signIn": "Sign In",
-		"confirmPassword": "Confirm Password",
 		"signup": "Sign Up",
 		"title": "Velocity - Login"
 	},
@@ -46,11 +49,33 @@
 		"prompt": "Return to your main page",
 		"title": "Velocity Page Not Found"
 	},
+	"profile": {
+		"selectPicture": "Select your profile picture",
+		"title": "Velocity - Profile"
+	},
+	"switch": {
+		"on": "On",
+		"off": "Off"
+	},
 	"userInformation": {
-		"password": "Password",
-		"username": "Username",
+		"confirmPassword": "Confirm Password",
+		"currentPassword": "Current Password",
+		"email": "Email",
 		"firstName": "First Name",
 		"lastName": "Last Name",
-		"email": "Email"
+		"newPassword": "New Password",
+		"notifications": "Notifications",
+		"password": "Password",
+		"picture": "picture",
+		"theme": "Theme",
+		"types": {
+			"0": "Mode Selector",
+			"1": "Collaborator Admin",
+			"2": "Collaborator",
+			"3": "Professor",
+			"4": "Teaching Assistant",
+			"5": "Student"
+		},
+		"username": "Username"
 	}
 }

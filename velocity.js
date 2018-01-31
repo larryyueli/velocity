@@ -18,11 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const bodyParser = require('body-parser');
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const forceSSL = require('express-force-ssl');
 const helmet = require('helmet');
 const http = require('http');
 const https = require('https');
 const i18n = require('i18n');
+const path = require('path');
 const pug = require('pug');
 const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
@@ -100,6 +102,12 @@ app.use(
     })
 );
 app.use(helmet());
+app.use(fileUpload({
+    limits: { fileSize: config.filesSizeLimit },
+    safeFileNames: config.safeFileNames,
+    preserveExtension: config.preserveFileExtension,
+    abortOnLimit: config.abortOnExceedLimit
+}));
 app.use(express.static(`${__dirname}/UI`));
 app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
@@ -195,8 +203,8 @@ const handleLoginPath = function (req, res) {
 
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
-    logger.info(`Login request by user: ${username}`);
 
+    logger.info(`Login request by user: ${username}`);
     users.login(username, password, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -259,7 +267,8 @@ const handleProfilePath = function (req, res) {
     }
 
     return res.status(200).render(profilePage, {
-        user: req.session.user
+        user: req.session.user,
+        themes: common.colorThemes
     });
 }
 
@@ -274,30 +283,43 @@ const handleProfileUpdatePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    var updateObject = {};
-    updateObject._id = req.session.user._id;
-    updateObject.fname = req.body.fname || req.session.user.fname;
-    updateObject.lname = req.body.lname || req.session.user.lname;
-    updateObject.username = req.body.username || req.session.user.username;
-    updateObject.email = req.body.email || req.session.user.email;
-    updateObject.theme = req.body.theme || req.session.user.theme;
-    updateObject.notificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled)
-        || req.session.user.notificationEnabled;
+    if (!req.body.currentPassword || req.body.newPassword !== req.body.confirmPassword) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
 
-    users.updateUser(updateObject, function (err, result) {
+    users.login(req.session.user.username, req.body.currentPassword, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
+            return res.status(403).send(err);
         }
 
-        req.session.user.fname = updateObject.fname;
-        req.session.user.lname = updateObject.lname;
-        req.session.user.username = updateObject.username;
-        req.session.user.theme = updateObject.theme;
-        req.session.user.email = updateObject.email;
-        req.session.user.notificationEnabled = updateObject.notificationEnabled;
+        const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
-        return res.status(200).send('profile has been updated successfully');
+        var updateObject = {};
+        updateObject._id = req.session.user._id;
+        updateObject.fname = req.body.fname || req.session.user.fname;
+        updateObject.lname = req.body.lname || req.session.user.lname;
+        updateObject.email = req.body.email || req.session.user.email;
+        updateObject.password = req.body.newPassword;
+        updateObject.theme = req.body.theme || req.session.user.theme;
+        updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
+            updateNotificationEnabled : req.session.user.notificationEnabled;
+
+        users.updateUser(updateObject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            req.session.user.fname = updateObject.fname;
+            req.session.user.lname = updateObject.lname;
+            req.session.user.theme = updateObject.theme;
+            req.session.user.email = updateObject.email;
+            req.session.user.notificationEnabled = updateObject.notificationEnabled;
+
+            return res.status(200).send('profile has been updated successfully');
+        });
     });
 }
 
@@ -508,6 +530,7 @@ const handleUsersCreatePath = function (req, res) {
 
         logger.info(`user: ${req.body.username} was created.`);
         return res.status(200).send('ok');
+
     });
 }
 
@@ -577,12 +600,107 @@ const handleUsersImportPath = function (req, res) {
 
     return res.status(200).render(usersImportPage);
 }
+
+/**
+ * path to fetch the users profile picture
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleprofilePicturePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    const pictureId = req.params.pictureId;
+    if (pictureId === 'null') {
+        const defaultImagePath = `${__dirname}/UI/img/account_circle.png`;
+        return res.sendFile(defaultImagePath, function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    }
+
+    cfs.fileExists(pictureId, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        if (fileObj.permission !== common.cfsPermission.PUBLIC) {
+            logger.error(JSON.stringify(common.getError(4010)));
+            return res.status(403).send(common.getError(4010));
+        }
+
+        const validImageExtensions = ['jpeg', 'png'];
+        if (validImageExtensions.indexOf(fileObj.extension) === -1) {
+            logger.error(JSON.stringify(common.getError(2008)));
+            return res.status(400).send(common.getError(2008));
+        }
+
+        return res.sendFile(path.resolve(fileObj.path), function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    });
+}
+
+/**
+ * path to udpate the users profile picture
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUpdateProfilePicturePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    const validImageExtensions = ['image/jpeg', 'image/png'];
+    const uploadedFile = req.files.userpicture;
+    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        logger.error(JSON.stringify(common.getError(2008)));
+        return res.status(400).send(common.getError(2008));
+    }
+
+    const fileName = common.getUUID();
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileName: fileName,
+        filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common.cfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err) + JSON.stringify(fileObject));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`Updated user: ${req.session.user._id} to file: ${fileName}`);
+        users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            req.session.user.picture = fileName;
+            return res.status(200).send(fileName);
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
+app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/users', handleUsersPath);
 app.get('/users/add', handleUsersAddPath);
 app.get('/users/edit/:username', handleUsersEditPath);
@@ -593,6 +711,7 @@ app.get('/users/import', handleUsersImportPath);
 app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
+app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/users/create', handleUsersCreatePath);
 // </Post Requests> -----------------------------------------------
 
