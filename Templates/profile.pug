@@ -23,7 +23,7 @@ block content
                         h5 #{__(`userInformation.types.${user.type}`)}
                         br
                         br
-                        a.waves-effect.waves-light.btn.theme-button(onclick='enableEdit()')
+                        a.waves-effect.waves-light.btn.theme-button.theme-text(onclick='enableEdit()')
                             i.material-icons.left edit
                             | #{__('actions.edit')}
         .row.hidden#editMode
@@ -37,7 +37,7 @@ block content
                             .input-field.s12
                                 select#theme(name='theme')
                                     each theme in themes
-                                        option(value=theme selected=(theme===user.theme) ? true : false) #{theme}
+                                        option(value=theme selected=theme===user.theme) #{theme}
                                 label #{__('userInformation.theme')}
                         .row
                             .switch
@@ -79,7 +79,7 @@ block content
                                     | #{__('userInformation.email')}
                         .row
                             .file-field.input-field
-                                .btn.theme-button
+                                .btn.theme-button.theme-text
                                     span 
                                         | #{__('userInformation.picture')}
                                         i.material-icons.right insert_photo
@@ -94,7 +94,7 @@ block content
                                 label(for='currentpasswd')
                                     | #{__('userInformation.currentPassword')}
                         .row.center
-                            button.waves-effect.waves-light.btn.theme-button(type='submit')
+                            button.waves-effect.waves-light.btn.theme-button.theme-text(type='submit')
                                 | #{__('actions.edit')}
                                 i.material-icons.right send
                             span.padding-right-10

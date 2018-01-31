@@ -16,6 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// variable definitions
+const theme = '#theme';
+const editForm = '#editForm';
+const password = '#passwd';
+const confirmPassword = '#confirmpasswd';
+const userId = '#userId';
+const viewForm = '#viewForm';
+const editMode = '#editMode';
+const notificationSwitch = '#notificationSwitch';
+const profilePicIn = '#profile-picture-input';
+
 /**
 * Init function
 */
@@ -23,19 +34,19 @@ $(function () {
     $('select').material_select();
 });
 
-$("#theme").on('change', function() {
+$(theme).on('change', function() {
     $('bodyclass').removeClass();
-    $('bodyclass').addClass($('#theme')[0].value);
+    $('bodyclass').addClass($(theme)[0].value);
 });
 
 /**
 * Submits the new updates for the profile
 */
-$('#editForm').submit(function (evt) {
+$(editForm).submit(function (evt) {
     evt.preventDefault();
 
-    if ($('#passwd').val() === $('#confirmpasswd').val()) {
-        var id = $('#userId').html();
+    if ($(password).val() === $(confirmPassword).val()) {
+        var id = $(userId).html();
         editProfile(id);
     } else {
         failSnackbar('Passwords do not match');
@@ -47,9 +58,9 @@ $('#editForm').submit(function (evt) {
 *
 * @method enableEdit
 */
-var enableEdit = function () {
-    $('#viewForm').addClass('hidden');
-    $('#editMode').removeClass('hidden');
+const enableEdit = function () {
+    $(viewForm).addClass('hidden');
+    $(editMode).removeClass('hidden');
 }
 
 /**
@@ -57,7 +68,7 @@ var enableEdit = function () {
 *
 * @method disableEdit
 */
-var disableEdit = function () {
+const disableEdit = function () {
     location.reload();
 }
 
@@ -66,8 +77,8 @@ var disableEdit = function () {
  *
  * @param {string} id
  */
-var editProfile = function (id) {
-    var fields = $('#editForm').serializeArray();
+const editProfile = function (id) {
+    var fields = $(editForm).serializeArray();
     var user = {};
 
     jQuery.each(fields, function (i, field) {
@@ -76,15 +87,15 @@ var editProfile = function (id) {
         }
     });
 
-    user['notificationEnabled'] = $('#notificationSwitch')[0].checked;
-    user['theme'] = $('#theme')[0].value;
+    user['notificationEnabled'] = $(notificationSwitch)[0].checked;
+    user['theme'] = $(theme)[0].value;
 
     $.ajax({
         type: 'POST',
         url: '/updateProfile',
         data: user,
         success: function (data) {
-            const files = $('#profile-picture-input').get(0).files;
+            const files = $(profilePicIn).get(0).files;
             uploadProfilePicture();
         },
         error: function (data) {
@@ -93,7 +104,7 @@ var editProfile = function (id) {
             if (data['status'] === 401) {
                 window.location.href = '/';
             } else {
-                failSnackbar(getErrorFromResponse(jsonResponse));
+                failSnackbar(getErrorMessageFromResponse(jsonResponse));
             }
         }
     });
@@ -102,8 +113,8 @@ var editProfile = function (id) {
 /**
  * upload profile picture
  */
-var uploadProfilePicture = function () {
-    var files = $('#profile-picture-input').get(0).files;
+const uploadProfilePicture = function () {
+    var files = $(profilePicIn).get(0).files;
 
     if (files.length < 1) {
         location.reload();
@@ -135,7 +146,7 @@ var uploadProfilePicture = function () {
             } else if (data['status'] === 404) {
                 window.location.href = '/page-not-found';
             } else {
-                failSnackbar(getErrorFromResponse(jsonResponse));
+                failSnackbar(getErrorMessageFromResponse(jsonResponse));
             }
         }
     });

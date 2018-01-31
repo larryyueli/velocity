@@ -33,9 +33,27 @@
     text-align: center;
 }
 
+.switch label input[type=checkbox]:checked+.lever {
+    @include themify($themes) {
+        background-color: themed('secondaryColour') !important;
+    }
+}
+
+.switch label input[type=checkbox]:checked+.lever:after {
+    @include themify($themes) {
+        background-color: themed('primaryColour') !important;
+    }
+}
+
 .theme-button {
     @include themify($themes) {
         background-color: themed('primaryColour') !important;
+    }
+}
+
+.theme-text {
+    @include themify($themes) {
+        color: themed('primaryTextOnPrimary') !important;
     }
 }
 
