@@ -159,7 +159,7 @@ exports.cfsMainDirectories = cfsMainDirectories;
 
 // common languages
 const languages = Object.freeze({
-    English: 'en'
+    English: { value: 'en', text: 'English' }
 });
 exports.languages = languages;
 // </Global Constants> ------------------------------------------

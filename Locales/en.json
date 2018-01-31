@@ -76,6 +76,7 @@
 			"4": "Teaching Assistant",
 			"5": "Student"
 		},
-		"username": "Username"
+		"username": "Username",
+		"language": "Language"
 	}
 }

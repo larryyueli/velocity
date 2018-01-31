@@ -40,6 +40,12 @@ block content
                                         option(value=theme selected=theme===user.theme) #{theme}
                                 label #{__('userInformation.theme')}
                         .row
+                            .input-field.s12
+                                select#language(name='language')
+                                    each language in languages
+                                        option(value=language.value selected=language.value===user.language) #{language.text}
+                                label #{__('userInformation.language')}
+                        .row
                             .switch
                                 label(for='lname')
                                     | #{__('userInformation.notifications')}

@@ -86,7 +86,7 @@ const addUser = function (user, callback) {
         userToAdd.picture = null;
         userToAdd.theme = common.colorThemes.DEFAULT;
         userToAdd.notificationEnabled = true;
-        userToAdd.language = common.languages.English;
+        userToAdd.language = common.languages.English.value;
         userToAdd.canAccessUsers = (user.type === common.userTypes.PROFESSOR.value
             || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
         userToAdd.canAccessSettings = (user.type === common.userTypes.PROFESSOR.value
@@ -229,7 +229,7 @@ const updateUser = function (newUser, callback) {
         updateQuery.$set.password = newUser.password;
     }
 
-    if (common.isValueInObject(newUser.language, common.languages)) {
+    if (common.isValueInObjectWithKeys(newUser.language, 'value', common.languages)) {
         updateQuery.$set.language = newUser.language;
     }
 
