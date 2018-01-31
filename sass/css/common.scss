@@ -1,3 +1,5 @@
+@import 'app.scss';
+
 .full-width {
     width: 100% !important;
 }
@@ -68,4 +70,51 @@
 
 .scroll-auto {
     overflow: auto;
+}
+
+// Theme related
+.primaryColour-background-colour {
+    @include themify($themes) {
+        background-color: themed('primaryColour') !important;
+    }
+}
+
+.primaryTextOnPrimary-colour {
+    @include themify($themes) {
+        color: themed('primaryTextOnPrimary') !important;
+    }
+}
+
+.secondaryColour-background-colour {
+    @include themify($themes) {
+        background-color: themed('secondaryColour') !important;
+    }
+}
+
+.primaryTextOnSecondary-colour {
+    @include themify($themes) {
+        color: themed('primaryTextOnSecondary') !important;
+    }
+}
+
+.notificationBackground-background-colour {
+    @include themify($themes) {
+        background-color: themed('notificationBackground') !important;
+    }
+}
+
+.notificationNumber-colour {
+    @include themify($themes) {
+        color: themed('notificationNumber');
+    }
+}
+
+// Themed elements
+// Switch
+.switch label input[type=checkbox]:checked+.lever {
+    @extend .secondaryColour-background-colour;
+}
+
+.switch label input[type=checkbox]:checked+.lever:after {
+    @extend .primaryColour-background-colour;
 }

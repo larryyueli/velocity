@@ -1,5 +1,5 @@
 .navbar-fixed
-    nav.nav-colour
+    nav.primaryColour-background-colour
         .nav-wrapper
             a.navbarLink.brand-logo.center(href='/') #{__('app.name')}
             a.navbarLink.button-collapse(href='#', data-activates='mobile')
@@ -23,7 +23,7 @@
                     a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications
                         .hide-on-small-only
-                            span.new.badge.notifBadgeColour#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
+                            span.new.badge.notificationBackground-background-colour#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
                         .hide-on-med-and-up
                             span.mobile-badge#mobileNotifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '') #{notifications? notifications.length : 0}
                 li

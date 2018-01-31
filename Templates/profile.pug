@@ -23,7 +23,7 @@ block content
                         h5 #{__(`userInformation.types.${user.type}`)}
                         br
                         br
-                        a.waves-effect.waves-light.btn.theme-button.theme-text(onclick='enableEdit()')
+                        a.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='enableEdit()')
                             i.material-icons.left edit
                             | #{__('actions.edit')}
         .row.hidden#editMode
@@ -85,7 +85,7 @@ block content
                                     | #{__('userInformation.email')}
                         .row
                             .file-field.input-field
-                                .btn.theme-button.theme-text
+                                .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
                                     span 
                                         | #{__('userInformation.picture')}
                                         i.material-icons.right insert_photo
@@ -100,7 +100,7 @@ block content
                                 label(for='currentpasswd')
                                     | #{__('userInformation.currentPassword')}
                         .row.center
-                            button.waves-effect.waves-light.btn.theme-button.theme-text(type='submit')
+                            button.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(type='submit')
                                 | #{__('actions.edit')}
                                 i.material-icons.right send
                             span.padding-right-10

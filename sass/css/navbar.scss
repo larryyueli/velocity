@@ -1,11 +1,10 @@
-@import 'app.scss';
+@import 'common.scss';
 
 .navbarLink {
-    @include themify($themes) {
-        &:link, &:visited, &:hover, &:active {
-            color: themed('primaryTextOnPrimary') !important;
-            text-decoration: none;
-        }
+    &:link, &:visited, &:hover, &:active {
+        @extend .primaryTextOnPrimary-colour;
+
+        text-decoration: none;
     }
 }
 
@@ -16,26 +15,12 @@
     }
 }
 
-.nav-colour {
-    @include themify($themes) {
-        background-color: themed('primaryColour');
-    }
-}
-
 .notification-item {
     display: -webkit-inline-box !important;
 }
 
-.notifBadgeColour {
-    @include themify($themes) {
-        background-color: themed('notificationBackground') !important;
-    }
-}
-
 .mobile-badge {
-    @include themify($themes) {
-        color: themed('notificationNumber');
-    }
+    @extend .notificationNumber-colour;
 
     display: block;
     font-size: 11px;
@@ -45,7 +30,7 @@
 }
 
 #notifications_nav li {
-    -webkit-animation-duration: 0.3s; 
+    -webkit-animation-duration: 0.3s;
 }
 
 .blue-text {
