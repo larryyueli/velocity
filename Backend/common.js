@@ -41,6 +41,7 @@ const errors = Object.freeze({
     1006: 'failed create user session',
     1007: 'failed to update user object, database issue',
     1008: 'failed to get the users list, database issue',
+    1009: 'failed to parse csv file',
 
     //2000 users
     2000: 'missing requirement',

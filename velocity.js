@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const bodyParser = require('body-parser');
+const csv2json = require('csvtojson');
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const forceSSL = require('express-force-ssl');
@@ -688,7 +689,66 @@ const handleUsersImportFilePath = function (req, res) {
         }
 
         logger.info(`Uploaded users list file by user: ${req.session.user._id}`);
-        return res.status(200).send(fileName);
+
+        const fullFilePath = path.resolve(`${fileObject.filePath}/${fileObject.fileName}.${fileObject.fileExtension}`);
+        var importedList = [];
+        csv2json().fromFile(fullFilePath).on('json', function (jsonObj) {
+            var userObj = {};
+            userObj['username'] = jsonObj['Username'];
+            userObj['password'] = jsonObj['Password'];
+            userObj['fname'] = jsonObj['First Name'];
+            userObj['lname'] = jsonObj['Last Name'];
+            userObj['email'] = jsonObj['Email'];
+            importedList.push(userObj);
+        }).on('done', function (err) {
+            if (err) {
+                logger.error(JSON.stringify(common.getError(1009)));
+                return res.status(500).send(common.getError(1009));
+            }
+
+            var added = 0;
+            var failed = 0;
+            var exist = 0;
+            var total = 0;
+
+            for (var i = 0; i < importedList.length; i++) {
+                var inputUser = importedList[i];
+                var userToAdd = {
+                    fname: inputUser.fname,
+                    lname: inputUser.lname,
+                    username: inputUser.username,
+                    email: inputUser.email,
+                    password: inputUser.password,
+                    type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+                        common.userTypes.STUDENT.value : common.userTypes.COLLABORATOR.value,
+                    status: common.userStatus.ACTIVE.value
+                };
+                users.addUser(userToAdd, function (err, userObj) {
+                    total++;
+
+                    if (err) {
+                        if (err.code === 2001) {
+                            exist++;
+                        } else {
+                            failed++;
+                        }
+
+                        logger.error(JSON.stringify(err));
+                    } else {
+                        added++;
+                    }
+
+                    if (total === importedList.length) {
+                        return res.status(200).send({
+                            added: added,
+                            failed: failed,
+                            exist: exist,
+                            total: total
+                        });
+                    }
+                });
+            }
+        });
     });
 }
 
@@ -804,12 +864,12 @@ app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
-app.post('/users/create', handleUsersCreatePath);
 app.post('/users/update', handleUsersUpdatePath);
-app.post('/users/import/file', handleUsersImportFilePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
+app.put('/users/create', handleUsersCreatePath);
+app.put('/users/import/file', handleUsersImportFilePath);
 // </Put Requests> -----------------------------------------------
 
 // <Delete Requests> ------------------------------------------------

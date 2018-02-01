@@ -36,7 +36,7 @@ $(function () {
         formData.append('usersImpotFile', files[0]);
 
         $.ajax({
-            type: 'POST',
+            type: 'PUT',
             url: '/users/import/file',
             processData: false,
             contentType: false,
