@@ -23,17 +23,22 @@ $(function () {
     $('select').material_select();
 
     $('#typeFilter').on('change', function () {
+        startLoad('#usersLoad', '#usersList');
         displayList();
     });
 
     $('#statusFilter').on('change', function () {
+        startLoad('#usersLoad', '#usersList');
         displayList();
     });
 
     $('#searchFilter').on('keyup', function () {
+        startLoad('#usersLoad', '#usersList');
         displayList();
     });
 
+    getUsersList();
+    startLoad('#usersLoad', '#usersList');
     getUsersList();
 });
 
@@ -47,6 +52,7 @@ function getUsersList() {
             displayList();
         },
         error: function (data) {
+            //TODO: add fail snackbar
         }
     });
 }
@@ -64,6 +70,8 @@ function displayList() {
     if ($('#usersList').find('li').length === 0) {
         $('#usersList').append('<p class="center"><i>No results found based on your search</i></p>')
     }
+
+    endLoad('#usersLoad', '#usersList');
 }
 
 function fillRow(user) {
@@ -102,9 +110,9 @@ function passFilter(user) {
     }
 
     // User search filter
-    if (filterText !== '' && 
+    if (filterText !== '' &&
         `${user.fname} ${user.lname}`.indexOf(filterText) === -1 &&
-        user.username.indexOf(filterText) === -1 &&        
+        user.username.indexOf(filterText) === -1 &&
         user.email.indexOf(filterText) === -1 &&
         userTypes[user.type].indexOf(filterText) === -1) {
             return false;

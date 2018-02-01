@@ -172,6 +172,37 @@ function getErrorPill(jsonResponse) {
 }
 
 /**
+ * Returns the HTML for the loading animation
+ *
+ * @returns {String} HTML of loading animation
+ */
+function getLoading() {
+    return '<div class="progress"><div class="indeterminate"></div></div>';
+}
+
+/**
+ * starts the loader
+ *
+ * @param {String} loading id of loader
+ * @param {String} hiding section to be loaded
+ */
+function startLoad(loading, hiding) {
+    $(loading).html(getLoading());
+    $(hiding).addClass('hidden');
+}
+
+/**
+ * ends the loader
+ *
+ * @param {String} loading id of loader
+ * @param {String} showing section to be loaded
+ */
+function endLoad(loading, showing) {
+    $(loading).html('');
+    $(showing).removeClass('hidden');
+}
+
+/**
  * Allows us to call an animate function with a callback
  */
 $.fn.extend({
