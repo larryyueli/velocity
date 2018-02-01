@@ -16,6 +16,53 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var userRow = null;
+var userList = null;
+
 $(function () {
     $('select').material_select();
+    getUsersList();
 });
+
+function getUsersList() {
+    $.ajax({
+        type: 'GET',
+        url: '/usersListComponent',
+        success: function (data) {
+            userRow = $(data.usersEntryHTML);
+            userList = data.usersList;
+            displayList();
+        },
+        error: function (data) {
+        }
+    });
+}
+
+function displayList() {
+    $('#usersList').html('');
+    var rowPopulate = '';
+
+    userList.forEach(user => {
+        $('#usersList').append(fillRow(user));
+    });
+}
+
+function fillRow(user) {
+    var bindedRow = userRow;
+    var color = colours.green;
+    var status = user.status;
+
+    if (status === 0) {
+        color = colours.red;
+    } else if (status === 1) {
+        color = colours.yellow;
+    }
+
+    bindedRow.find('#icon')[0].style.backgroundColor = color;
+    bindedRow.find('#icon').html(userIcons[user.type]);
+    bindedRow.find('#name').html(`${user.fname} ${user.lname} - ${user.username}`);
+    bindedRow.find('#type').html(`${userTypes[user.type]}`);
+    bindedRow.find('#email').html(user.email);
+    bindedRow.find('#editLink')[0].href = `users/edit/${user.username}`;
+    return bindedRow[0].outerHTML;
+}

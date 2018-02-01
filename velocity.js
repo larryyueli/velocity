@@ -68,7 +68,10 @@ const profilePage = 'profile';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
+//const usersEntryComponent = 'users/users-entry';
 const usersImportPage = 'users/users-import';
+
+const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -404,7 +407,7 @@ const handleModeSelectPath = function (req, res) {
 }
 
 /**
- * path to get the users list
+ * path to get the users page
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -417,8 +420,27 @@ const handleUsersPath = function (req, res) {
     const fullUsersList = users.getFullUsersList();
 
     return res.status(200).render(usersPage, {
-        user: req.session.user,
-        usersList: fullUsersList
+        user: req.session.user
+    });
+}
+
+/**
+ * path to get the users list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersListComponentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    //const usersEntryHTML = pug.compileFile(`Templates/${usersEntryComponent}.pug`);
+    const fullUsersList = users.getFullUsersList();
+
+    return res.status(200).send({
+        usersList: fullUsersList,
+        usersEntryHTML: usersEntryComponent()
     });
 }
 
@@ -700,6 +722,7 @@ app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/users', handleUsersPath);
+app.get('/usersListComponent', handleUsersListComponentPath);
 app.get('/users/add', handleUsersAddPath);
 app.get('/users/edit/:username', handleUsersEditPath);
 app.get('/users/import', handleUsersImportPath);
