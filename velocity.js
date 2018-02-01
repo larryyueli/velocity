@@ -648,6 +648,51 @@ const handleUsersImportPath = function (req, res) {
 }
 
 /**
+ * path to import users from a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersImportFilePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const validFileExtensions = ['text/csv'];
+    const uploadedFile = req.files.usersImpotFile;
+    if (!uploadedFile || validFileExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        logger.error(JSON.stringify(common.getError(2009)));
+        return res.status(400).send(common.getError(2009));
+    }
+
+    const fileName = common.getUUID();
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileName: fileName,
+        filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common.cfsPermission.OWNER,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`Uploaded users list file by user: ${req.session.user._id}`);
+        return res.status(200).send(fileName);
+    });
+}
+
+/**
  * path to fetch the users profile picture
  *
  * @param {object} req req object
@@ -724,7 +769,7 @@ const handleUpdateProfilePicturePath = function (req, res) {
 
     cfs.writeFile(fileObject, function (err, fileObj) {
         if (err) {
-            logger.error(JSON.stringify(err) + JSON.stringify(fileObject));
+            logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
@@ -761,6 +806,7 @@ app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/users/create', handleUsersCreatePath);
 app.post('/users/update', handleUsersUpdatePath);
+app.post('/users/import/file', handleUsersImportFilePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------

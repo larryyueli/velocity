@@ -52,6 +52,7 @@ const errors = Object.freeze({
     2006: 'user\'s session is not valid or timed out',
     2007: 'failed to update user, missing information',
     2008: 'invalid profile picture extension',
+    2009: 'invalid users import file extension',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
