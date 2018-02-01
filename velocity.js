@@ -219,7 +219,11 @@ const handleLoginPath = function (req, res) {
         }
 
         logger.info(`User: ${username} logged in`);
-        req.session.user = userObject;
+
+        var meObject = JSON.parse(JSON.stringify(userObject));
+        delete meObject.password;
+        req.session.user = meObject;
+
         return res.status(200).send('ok');
     });
 }
@@ -293,7 +297,7 @@ const handleProfileUpdatePath = function (req, res) {
     users.login(req.session.user.username, req.body.currentPassword, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(403).send(err);
+            return res.status(500).send(err);
         }
 
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
@@ -305,6 +309,7 @@ const handleProfileUpdatePath = function (req, res) {
         updateObject.email = req.body.email || req.session.user.email;
         updateObject.password = req.body.newPassword;
         updateObject.theme = req.body.theme || req.session.user.theme;
+        updateObject.language = req.body.language || req.session.user.language;
         updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
             updateNotificationEnabled : req.session.user.notificationEnabled;
 
@@ -318,6 +323,7 @@ const handleProfileUpdatePath = function (req, res) {
             req.session.user.lname = updateObject.lname;
             req.session.user.theme = updateObject.theme;
             req.session.user.email = updateObject.email;
+            req.session.user.language = updateObject.language;
             req.session.user.notificationEnabled = updateObject.notificationEnabled;
 
             return res.status(200).send('profile has been updated successfully');
@@ -412,6 +418,11 @@ const handleModeSelectPath = function (req, res) {
 const handleUsersPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
     }
 
     const fullUsersList = users.getFullUsersList();
@@ -532,10 +543,13 @@ const handleUsersEditPath = function (req, res) {
             userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
         }
 
+        const userStatusList = [common.userStatus.ACTIVE, common.userStatus.PENDING, common.userStatus.DISABLED];
+
         return res.status(200).render(usersEditPage, {
             user: req.session.user,
             editUser: foundUser,
-            userTypesList: userTypesList
+            userTypesList: userTypesList,
+            userStatusList: userStatusList
         });
     });
 }
@@ -556,25 +570,37 @@ const handleUsersUpdatePath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    const newUser = {
-        fname: req.body.fname,
-        lname: req.body.lname,
-        username: req.body.username,
-        password: req.body.password,
-        type: parseInt(req.body.type),
-        status: parseInt(req.body.status),
-        email: req.body.email
-    };
-
-    users.updateUser(newUser, function (err, userObj) {
+    const oldUsername = req.body.oldUsername;
+    users.getUserByUsername(oldUsername, function (err, userObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
+            return res.status(400).send(err);
         }
 
-        logger.info(`user: ${req.body.username} was created.`);
-        return res.status(200).send('ok');
+        var newUser = {
+            _id: userObj._id,
+            fname: req.body.fname,
+            lname: req.body.lname,
+            password: req.body.password,
+            type: parseInt(req.body.type),
+            status: parseInt(req.body.status),
+            email: req.body.email
+        };
 
+        if (req.body.username !== oldUsername) {
+            newUser[username] = req.body.username;
+        }
+
+        users.updateUser(newUser, function (err, userObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            logger.info(`user: ${req.body.username} was created.`);
+            return res.status(200).send('ok');
+
+        });
     });
 }
 

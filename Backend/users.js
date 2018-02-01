@@ -195,7 +195,6 @@ const login = function (username, password, callback) {
                 return callback(common.getError(2004), null);
             }
 
-            delete userObj.password;
             return callback(null, userObj);
         });
     });
@@ -247,6 +246,10 @@ const updateUser = function (updateParams, callback) {
 
     if (common.isValueInObjectWithKeys(updateParams.language, 'value', common.languages)) {
         updateQuery.$set.language = updateParams.language;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.userStatus)) {
+        updateQuery.$set.status = updateParams.status;
     }
 
     if (typeof (updateParams.notificationEnabled) === common.variableTypes.BOOLEAN) {
