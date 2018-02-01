@@ -79,6 +79,12 @@
     }
 }
 
+.primaryColour-colour {
+    @include themify($themes) {
+        color: themed('primaryColour') !important;
+    }
+}
+
 .primaryTextOnPrimary-colour {
     @include themify($themes) {
         color: themed('primaryTextOnPrimary') !important;

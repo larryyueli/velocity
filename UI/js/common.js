@@ -20,7 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const colours = Object.freeze({
     green          : 'green',
     orangeDark     : 'orange accent-4',
+    red            : 'red',
     redDark        : 'red darken-4',
+    yellow         : 'yellow'
 });
 
 const snack = Object.freeze({
@@ -84,6 +86,24 @@ const errors = Object.freeze({
 });
 const defaultError = 'Something went wrong, please try again!';
 
+const userTypes = Object.freeze({
+    0: 'Mode Selector',
+    1: 'Collaborator Admin',
+    2: 'Collaborator',
+    3: 'Professor',
+    4: 'Teaching Assistant',
+    5: 'Student'
+});
+
+const userIcons = Object.freeze({
+    0: 'security',
+    1: 'security',
+    2: 'people',
+    3: 'security',
+    4: 'people',
+    5: 'person'
+});
+
 var meObject;
 
 $(function () {
@@ -109,9 +129,9 @@ function getMeObject() {
 /**
  * Returns the correct error message to use, if no errors match returns
  * the default error message
- * 
+ *
  * @param {Object} data
- * @returns {String} Error message 
+ * @returns {String} Error message
  */
 function getErrorMessageFromResponse(data) {
     return data ? errors[data['code']] || defaultError : defaultError;

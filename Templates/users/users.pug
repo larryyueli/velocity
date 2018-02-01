@@ -32,25 +32,11 @@ block content
                         label Materialize Select
         .row
             .col.s12
-                a.waves-effect.waves-light.btn.right(href='/users/add') Create
+                a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/users/add') Create
                     i.material-icons.right send
         .row
             .col.s12
-                ul.collection.scroll-auto.margin-0
-                    each user in usersList
-                        li.collection-item.avatar
-                            i.material-icons.circle folder
-                            span.title #{user.fname} #{user.lname} - #{user.username}
-                            p
-                                | #{__(`userInformation.types.${user.type}`)}
-                                br
-                                | #{user.email}
-                            .secondary-content
-                                a(href='#!')
-                                    i.material-icons send
-                                br
-                                a(href=`users/edit/${user.username}`)
-                                    i.material-icons mode_edit
+                ul.collection.scroll-auto.margin-0#usersList
 
 block scripts
     script(src='/js/users/users.js')
