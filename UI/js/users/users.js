@@ -21,6 +21,19 @@ var userList = null;
 
 $(function () {
     $('select').material_select();
+
+    $('#typeFilter').on('change', function () {
+        displayList();
+    });
+
+    $('#statusFilter').on('change', function () {
+        displayList();
+    });
+
+    $('#searchFilter').on('keyup', function () {
+        displayList();
+    });
+
     getUsersList();
 });
 
@@ -43,8 +56,14 @@ function displayList() {
     var rowPopulate = '';
 
     userList.forEach(user => {
-        $('#usersList').append(fillRow(user));
+        if (passFilter(user)) {
+            $('#usersList').append(fillRow(user));
+        }
     });
+
+    if ($('#usersList').find('li').length === 0) {
+        $('#usersList').append('<p class="center"><i>No results found based on your search</i></p>')
+    }
 }
 
 function fillRow(user) {
@@ -65,4 +84,31 @@ function fillRow(user) {
     bindedRow.find('#email').html(user.email);
     bindedRow.find('#editLink')[0].href = `users/edit/${user.username}`;
     return bindedRow[0].outerHTML;
+}
+
+function passFilter(user) {
+    const type = parseInt($('#typeFilter')[0].value);
+    const status = parseInt($('#statusFilter')[0].value);
+    const filterText = $('#searchFilter')[0].value.trim();
+
+    // User type filter
+    if (type !== -1 && type !== user.type) {
+        return false;
+    }
+
+    // User status filter
+    if (status !== -1 && status !== user.status) {
+        return false;
+    }
+
+    // User search filter
+    if (filterText !== '' && 
+        `${user.fname} ${user.lname}`.indexOf(filterText) === -1 &&
+        user.username.indexOf(filterText) === -1 &&        
+        user.email.indexOf(filterText) === -1 &&
+        userTypes[user.type].indexOf(filterText) === -1) {
+            return false;
+    }
+
+    return true;
 }

@@ -14,22 +14,27 @@ block content
             form.col.s10.offset-s1
                 .row
                     .input-field.col.s12.xl8
-                        input#last_name.validate(type='text')
-                        label(for='last_name') Last Name
+                        input#searchFilter.validate(type='text')
+                        label(for='searchFilter') Search Filter
                     .input-field.col.s12.m6.xl2
-                        select
-                            option(value='', disabled='', selected='') Choose your option
-                            option(value='1') Option 1
-                            option(value='2') Option 2
-                            option(value='3') Option 3
-                        label Materialize Select
+                        select#typeFilter
+                            if mode === 0
+                                option(value='-1') All
+                                option(value='5') Student
+                                option(value='4') Teaching Assistant
+                                option(value='3') Professor
+                            if mode === 1
+                                option(value='-1') All
+                                option(value='1') Collaborator Admin
+                                option(value='2') Collaborator
+                        label User Type
                     .input-field.col.s12.m6.xl2
-                        select
-                            option(value='', disabled='', selected='') Choose your option
-                            option(value='1') Option 1
-                            option(value='2') Option 2
-                            option(value='3') Option 3
-                        label Materialize Select
+                        select#statusFilter
+                            option(value='-1') All
+                            option(value='2') Active
+                            option(value='1') Pending
+                            option(value='0') Disabled
+                        label User Status
         .row
             .col.s12
                 a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/users/add') Create

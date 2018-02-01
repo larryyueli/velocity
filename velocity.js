@@ -431,7 +431,8 @@ const handleUsersPath = function (req, res) {
     const fullUsersList = users.getFullUsersList();
 
     return res.status(200).render(usersPage, {
-        user: req.session.user
+        user: req.session.user,
+        mode: settings.getAllSettings().mode
     });
 }
 
