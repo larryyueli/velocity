@@ -31,7 +31,7 @@ $(function () {
 userAddform.submit(function (evt) {
     evt.preventDefault();
     $.ajax({
-        type: 'POST',
+        type: 'PUT',
         url: '/users/create',
         data: {
             fname: fname.val(),

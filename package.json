@@ -8,6 +8,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
+    "csvtojson": "^1.1.9",
     "express": "^4.16.2",
     "express-fileupload": "^0.4.0",
     "express-force-ssl": "^0.3.2",
