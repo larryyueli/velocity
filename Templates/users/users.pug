@@ -4,7 +4,7 @@ block styles
     link(rel='stylesheet' href='/stylesheets/css/users.css')
 
 block title
-    title users
+    title Velocity - Users
 
 block content
     include ../navbar
@@ -36,11 +36,12 @@ block content
                             option(value='0') Disabled
                         label User Status
         .row
-            .col.s12
+            .col.s6
+                a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/users/import') Import
+                    i.material-icons.right cloud_upload
+            .col.s6
                 a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/users/add') Create
                     i.material-icons.right send
-                a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/users/import') Import
-                    i.material-icons.right cloud_upload
         .row
             .col.s12
                 ul.collection.scroll-auto.margin-0#usersList
