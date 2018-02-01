@@ -102,6 +102,8 @@ function getMeObject() {
             meObject = data;
         },
         error: function (data) {
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }

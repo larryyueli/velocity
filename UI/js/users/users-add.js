@@ -42,7 +42,7 @@ userAddform.submit(function (evt) {
             type: userType.val()
         },
         success: function (data) {
-            //window.location.href = '/';
+            window.location.href = '/users';
         },
         error: function (data) {
             if (data['status'] === 401) {
@@ -52,7 +52,7 @@ userAddform.submit(function (evt) {
             }
 
             const jsonResponse = data.responseJSON;
-            errorField.html(getErrorPill(jsonResponse));
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 });
