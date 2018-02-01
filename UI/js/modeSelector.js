@@ -39,7 +39,7 @@ function selectMode(mode) {
             }
 
             const jsonResponse = data.responseJSON;
-            errorField.html(getErrorPill(jsonResponse));
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }

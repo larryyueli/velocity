@@ -52,7 +52,7 @@ userAddform.submit(function (evt) {
             }
 
             const jsonResponse = data.responseJSON;
-            errorField.html(getErrorPill(jsonResponse));
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 });
