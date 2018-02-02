@@ -25,12 +25,12 @@ $(function () {
         var formData = new FormData();
 
         if (files.length !== 1) {
-            return warningSnackbar('You can only import one file!');
+            return warningSnackbar(translate('mustBeCsv'));
         }
-
+        
         var fileNameSplit = accountImportFormInput.val().split('.');
         if (fileNameSplit[fileNameSplit.length - 1] !== 'csv') {
-            return warningSnackbar('File format must be csv!');
+            return warningSnackbar(translate('mustImportOneFile'));
         }
 
         formData.append('usersImpotFile', files[0]);
@@ -42,7 +42,7 @@ $(function () {
             contentType: false,
             data: formData,
             success: function (data) {
-                successSnackbar('File uploaded successfully');
+                successSnackbar(translate('successfulFileUpload'));
             },
             error: function (data) {
                 if (data['status'] === 401) {

@@ -68,7 +68,7 @@ function displayList() {
     });
 
     if ($('#usersList').find('li').length === 0) {
-        $('#usersList').append('<p class="center"><i>No results found based on your search</i></p>')
+        $('#usersList').append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
     }
 
     endLoad('#usersLoad', '#usersList');
@@ -88,7 +88,7 @@ function fillRow(user) {
     bindedRow.find('#icon')[0].style.backgroundColor = color;
     bindedRow.find('#icon').html(userIcons[user.type]);
     bindedRow.find('#name').html(`${user.fname} ${user.lname} - ${user.username}`);
-    bindedRow.find('#type').html(`${userTypes[user.type]}`);
+    bindedRow.find('#type').html(`${translate(`user${user.type}`)}`);
     bindedRow.find('#email').html(user.email);
     bindedRow.find('#editLink')[0].href = `users/edit/${user.username}`;
     return bindedRow[0].outerHTML;
@@ -97,7 +97,7 @@ function fillRow(user) {
 function passFilter(user) {
     const type = parseInt($('#typeFilter')[0].value);
     const status = parseInt($('#statusFilter')[0].value);
-    const filterText = $('#searchFilter')[0].value.trim();
+    const filterText = $('#searchFilter')[0].value.trim().toLowerCase();
 
     // User type filter
     if (type !== -1 && type !== user.type) {
@@ -111,10 +111,10 @@ function passFilter(user) {
 
     // User search filter
     if (filterText !== '' &&
-        `${user.fname} ${user.lname}`.indexOf(filterText) === -1 &&
-        user.username.indexOf(filterText) === -1 &&
-        user.email.indexOf(filterText) === -1 &&
-        userTypes[user.type].indexOf(filterText) === -1) {
+        `${user.fname} ${user.lname}`.toLowerCase().indexOf(filterText) === -1 &&
+        user.username.toLowerCase().indexOf(filterText) === -1 &&
+        user.email.toLowerCase().indexOf(filterText) === -1 &&
+        translate(`user${user.type}`).toLowerCase().indexOf(filterText) === -1) {
             return false;
     }
 

@@ -49,7 +49,7 @@ $(editForm).submit(function (evt) {
         var id = $(userId).html();
         editProfile(id);
     } else {
-        failSnackbar('Passwords do not match');
+        failSnackbar(translate('passwordsDontMatch'));
     }
 });
 
@@ -123,7 +123,7 @@ const uploadProfilePicture = function () {
     }
 
     if (files.length !== 1) {
-        warningSnackbar('You can only upload one picture!');
+        warningSnackbar(translate('uploadOnlyPicture'));
         return;
     }
 

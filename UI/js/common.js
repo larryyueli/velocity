@@ -56,12 +56,12 @@ $(document).on('click', '#closeSnack', function() {
 });
 
 /*
-UI errors for user display
+UI Translations for user display
 
 1000 -> user errors
 2000 -> system errors
 */
-const errors = Object.freeze({
+const translations = Object.freeze({
     //1000 system errors
     1000: 'Invalid request',
 
@@ -76,23 +76,28 @@ const errors = Object.freeze({
     2007: 'Failed to update user, missing information',
     2008: 'invalid profile picture extension',
 
-    //3000 settings
+    //3000 settings errors
     3005: 'could not update the selected mode',
     3006: 'invalid mode',
     3007: 'website is not active',
 
-    //4000 custom file system
-    4010: 'permission denied'
-});
-const defaultError = 'Something went wrong, please try again!';
+    //4000 custom file system errors
+    4010: 'permission denied',
 
-const userTypes = Object.freeze({
-    0: 'Mode Selector',
-    1: 'Collaborator Admin',
-    2: 'Collaborator',
-    3: 'Professor',
-    4: 'Teaching Assistant',
-    5: 'Student'
+    defaultError: 'Something went wrong, please try again!',
+    passwordsDontMatch: 'Passwords do not match',
+    uploadOnlyPicture: 'You can only upload one picture!',
+    noResultsFoundBasedOnSearch: 'No results found based on your search',
+    mustBeCsv: 'You can only import one file!',
+    mustImportOneFile: 'File format must be csv!',
+    successfulFileUpload: 'File uploaded successfully',
+
+    user0: 'Mode Selector',
+    user1: 'Collaborator Admin',
+    user2: 'Collaborator',
+    user3: 'Professor',
+    user4: 'Teaching Assistant',
+    user5: 'Student'
 });
 
 const userIcons = Object.freeze({
@@ -134,7 +139,17 @@ function getMeObject() {
  * @returns {String} Error message
  */
 function getErrorMessageFromResponse(data) {
-    return data ? errors[data['code']] || defaultError : defaultError;
+    return data ? translations[data['code']] || translations['defaultError'] : translations['defaultError'];
+}
+
+/**
+ * Returns the correct translation based on the passed parameter
+ *
+ * @param {String} data
+ * @returns {String} translated text
+ */
+function translate(data) {
+    return translations[data];
 }
 
 /**
