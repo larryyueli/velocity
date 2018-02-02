@@ -130,3 +130,7 @@
 .switch label input[type=checkbox]:checked+.lever:after {
     @extend .primaryColour-background-colour;
 }
+
+.alignTextLeft {
+    text-align: left;
+}

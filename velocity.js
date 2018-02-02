@@ -69,7 +69,7 @@ const profilePage = 'profile';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
-//const usersEntryComponent = 'users/users-entry';
+const usersImportCompletePage = 'users/users-import-complete';
 const usersImportPage = 'users/users-import';
 
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
@@ -740,7 +740,7 @@ const handleUsersImportFilePath = function (req, res) {
                     }
 
                     if (total === importedList.length) {
-                        return res.status(200).send({
+                        return res.status(200).render(usersImportCompletePage, {
                             added: added,
                             failed: failed,
                             exist: exist,

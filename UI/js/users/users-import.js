@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const accountImportFormInput = $('#account-import-form-input');
 const accountImportFormSubmit = $('#account-import-form-submit');
+const loaderId = '#loader';
+const accountImportContainerId = '#account-import-container';
+const accountImportDivId = '#account-import-div';
 
 $(function () {
     accountImportFormSubmit.click(() => {
@@ -35,6 +38,8 @@ $(function () {
 
         formData.append('usersImpotFile', files[0]);
 
+        startLoad(loaderId, accountImportDivId);
+
         $.ajax({
             type: 'PUT',
             url: '/users/import/file',
@@ -42,6 +47,7 @@ $(function () {
             contentType: false,
             data: formData,
             success: function (data) {
+                $(accountImportContainerId).html(data);
                 successSnackbar(translate('successfulFileUpload'));
             },
             error: function (data) {
@@ -50,6 +56,8 @@ $(function () {
                 } else if (data['status'] === 404) {
                     window.location.href = '/pageNotFound';
                 }
+
+                endLoad(loaderId, accountImportDivId);
 
                 const jsonResponse = data.responseJSON;
                 failSnackbar(getErrorMessageFromResponse(jsonResponse));
