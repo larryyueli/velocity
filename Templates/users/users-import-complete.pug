@@ -5,17 +5,18 @@
 				a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/users')
 					i.material-icons arrow_back
 			.card-content
-				include ../checkmark
-				h5.card-title Import Job Completed
-				h6 The list of users' accounts has been imported
+				.row
+					include ../checkmark
+				h5.card-title #{__('users.usersImportCompleteFormTitle')}
+				h6 #{__('users.usersImportCompleteFormDescription')}
 			.card-action
 				.flow-left
-					h5.alignTextLeft &nbsp;Report:
-					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of users added: #{added}
-					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of failed attempts: #{failed}
-					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of users already exist: #{exist}
-					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;Total number of users processed: #{total}
+					h5.alignTextLeft &nbsp;#{__('users.usersImportCompleteFormReport')}:
+					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormAdded')}: #{added}
+					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormFailed')}: #{failed}
+					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormExists')}: #{exist}
+					h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormProcessed')}: #{total}
 				br
 				a.waves-effect.waves-light.btn(href='/users') 
 					i.material-icons.left cloud_done
-					| Done 
+					| #{__('users.usersImportCompleteFormDone')} 

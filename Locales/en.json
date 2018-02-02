@@ -91,6 +91,23 @@
 		"searchFilter": "Search Filter",
 		"title": "Velocity - Users",
 		"userStatus": "User Status",
-		"userType": "User Type"
+		"userType": "User Type",
+		"usersAddFormDescription": "Add a user account",
+		"usersAddFormTitle": "Account Creation Form",
+		"usersAddFormSubmit": "Submit",
+		"usersEditFormDescription": "Edit a user's account information",
+		"usersEditFormTitle": "Account Edit Form",
+		"usersEditFormSubmit": "Submit",
+		"usersImportCompleteFormAdded": "Total number of users added",
+		"usersImportCompleteFormDescription": "The list of users' accounts has been imported",
+		"usersImportCompleteFormDone": "Done",
+		"usersImportCompleteFormFailed": "Total number of failed attempts",
+		"usersImportCompleteFormExists": "Total number of users already exist",
+		"usersImportCompleteFormReport": "Report",
+		"usersImportCompleteFormTitle": "Import Job Completed",
+		"usersImportCompleteFormProcessed": "Total number of users processed",
+		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
+		"usersImportFormTitle": "Accounts Import Form",
+		"usersImportFormSubmit": "Import"
 	}
 }
