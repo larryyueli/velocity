@@ -139,16 +139,16 @@ exports.cfsTree = cfsTree;
 
 // common permissions on files
 const cfsPermission = Object.freeze({
-    PUBLIC: 0,
+    SYSTEM: 0,
     OWNER: 1,
-    SYSTEM: 2
+    PUBLIC: 2
 });
 exports.cfsPermission = cfsPermission;
 
 // common system item types
 const cfsTypes = Object.freeze({
-    FILE: 0,
-    DIRECTORY: 1
+    DIRECTORY: 0,
+    FILE: 1
 });
 exports.cfsTypes = cfsTypes;
 

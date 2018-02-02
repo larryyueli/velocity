@@ -665,7 +665,7 @@ const handleUsersImportFilePath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    const validFileExtensions = ['text/csv'];
+    const validFileExtensions = ['text/csv', 'application/vnd.ms-excel'];
     const uploadedFile = req.files.usersImpotFile;
     if (!uploadedFile || validFileExtensions.indexOf(uploadedFile.mimetype) === -1) {
         logger.error(JSON.stringify(common.getError(2009)));
