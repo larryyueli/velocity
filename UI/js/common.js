@@ -177,7 +177,7 @@ function getErrorPill(jsonResponse) {
  * @returns {String} HTML of loading animation
  */
 function getLoading() {
-    return '<div class="progress"><div class="indeterminate"></div></div>';
+    return '<div class="progress loaderBackgroundColour-background-colour"><div class="indeterminate primaryColour-background-colour"></div></div>';
 }
 
 /**

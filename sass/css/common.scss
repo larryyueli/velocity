@@ -79,6 +79,12 @@
     }
 }
 
+.loaderBackgroundColour-background-colour {
+    @include themify($themes) {
+        background-color: themed('loaderBackgroundColour') !important;
+    }
+}
+
 .primaryColour-colour {
     @include themify($themes) {
         color: themed('primaryColour') !important;
