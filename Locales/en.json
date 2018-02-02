@@ -1,7 +1,9 @@
 {
 	"actions": {
 		"cancel": "cancel",
-		"edit": "edit"
+		"create": "Create",
+		"edit": "edit",
+		"import": "import"
 	},
 	"app": {
 		"name": "Velocity"
@@ -67,6 +69,11 @@
 		"notifications": "Notifications",
 		"password": "Password",
 		"picture": "picture",
+		"status": {
+			"0": "Disabled",
+			"1": "Pending",
+			"2": "Active"
+		},
 		"theme": "Theme",
 		"types": {
 			"0": "Mode Selector",
@@ -78,5 +85,12 @@
 		},
 		"username": "Username",
 		"language": "Language"
+	},
+	"users": {
+		"all": "All",
+		"searchFilter": "Search Filter",
+		"title": "Velocity - Users",
+		"userStatus": "User Status",
+		"userType": "User Type"
 	}
 }
