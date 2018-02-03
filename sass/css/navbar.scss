@@ -3,7 +3,6 @@
 .navbarLink {
     &:link, &:visited, &:hover, &:active {
         @extend .primaryTextOnPrimary-colour;
-
         text-decoration: none;
     }
 }
@@ -21,7 +20,6 @@
 
 .mobile-badge {
     @extend .notificationNumber-colour;
-
     display: block;
     font-size: 11px;
     margin-left: -5px;

@@ -56,7 +56,7 @@ block content
                                             each userStatus in userStatusList
                                                 option(value=userStatus.value, selected=editUser.status===userStatus.value) #{userStatus.text}
                                 .row
-                                    button.waves-effect.waves-light.btn(type='submit') #{__('users.usersEditFormSubmit')}
+                                    button.waves-effect.waves-light.btn(type='submit') #{__('actions.submit')}
                                         i.material-icons.right send
 block scripts
     script(src='/js/users/users-edit.js')

@@ -26,17 +26,19 @@ const viewForm = '#viewForm';
 const editMode = '#editMode';
 const notificationSwitch = '#notificationSwitch';
 const profilePicIn = '#profile-picture-input';
+const bodyclass = 'bodyclass';
+const select = 'select';
 
 /**
 * Init function
 */
 $(function () {
-    $('select').material_select();
+    $(select).material_select();
 });
 
 $(theme).on('change', function () {
-    $('bodyclass').removeClass();
-    $('bodyclass').addClass($(theme)[0].value);
+    $(bodyclass).removeClass();
+    $(bodyclass).addClass($(theme)[0].value);
 });
 
 /**
@@ -99,11 +101,7 @@ const editProfile = function (id) {
             uploadProfilePicture();
         },
         error: function (data) {
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else if (data['status'] === 404) {
-                window.location.href = '/pageNotFound';
-            }
+            handle401And404A(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
@@ -140,11 +138,7 @@ const uploadProfilePicture = function () {
             location.reload();
         },
         error: function (data) {
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else if (data['status'] === 404) {
-                window.location.href = '/pageNotFound';
-            }
+            handle401And404A(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));

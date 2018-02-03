@@ -45,11 +45,7 @@ userAddform.submit(function (evt) {
             window.location.href = '/users';
         },
         error: function (data) {
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else if (data['status'] === 404) {
-                window.location.href = '/pageNotFound';
-            }
+            handle401And404A(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));

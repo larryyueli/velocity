@@ -30,7 +30,7 @@ $(function () {
         if (files.length !== 1) {
             return warningSnackbar(translate('mustBeCsv'));
         }
-        
+
         var fileNameSplit = accountImportFormInput.val().split('.');
         if (fileNameSplit[fileNameSplit.length - 1] !== 'csv') {
             return warningSnackbar(translate('mustImportOneFile'));
@@ -51,11 +51,7 @@ $(function () {
                 successSnackbar(translate('successfulFileUpload'));
             },
             error: function (data) {
-                if (data['status'] === 401) {
-                    window.location.href = '/';
-                } else if (data['status'] === 404) {
-                    window.location.href = '/pageNotFound';
-                }
+                handle401And404A(data);
 
                 endLoad(loaderId, accountImportDivId);
 

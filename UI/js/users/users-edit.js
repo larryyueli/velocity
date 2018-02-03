@@ -52,14 +52,10 @@ userEditform.submit(function (evt) {
         url: '/users/update',
         data: newUser,
         success: function (data) {
-            //window.location.href = '/';
+            window.location.href = '/users';
         },
         error: function (data) {
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else if (data['status'] === 404) {
-                window.location.href = '/pageNotFound';
-            }
+            handle401And404A(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));

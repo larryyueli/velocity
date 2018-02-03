@@ -18,18 +18,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // common colour varianles
 const colours = Object.freeze({
-    green          : 'green',
-    orangeDark     : 'orange accent-4',
-    red            : 'red',
-    redDark        : 'red darken-4',
-    yellow         : 'yellow'
+    green: 'green',
+    orangeDark: 'orange accent-4',
+    red: 'red',
+    redDark: 'red darken-4',
+    yellow: 'yellow'
 });
 
 const snack = Object.freeze({
-    success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
-    warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
-    fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
-    close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+    success: '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
+    warning: '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
+    fail: '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 });
 
 /* This function slides down a success snakbar */
@@ -51,7 +51,7 @@ function failSnackbar(msg) {
 }
 
 /* Listener for the `x` on the snackbar/toasts */
-$(document).on('click', '#closeSnack', function() {
+$(document).on('click', '#closeSnack', function () {
     $(this).parent().fadeOut();
 });
 
@@ -60,10 +60,13 @@ UI Translations for user display
 
 1000 -> user errors
 2000 -> system errors
+3000 -> settings errors
+4000 -> custom file system errors
 */
 const translations = Object.freeze({
     //1000 system errors
     1000: 'Invalid request',
+    1009: 'Failed to parse csv file',
 
     //2000 user errors
     2000: 'Invalid username or password',
@@ -74,15 +77,15 @@ const translations = Object.freeze({
     2005: 'Account is not active',
     2006: 'Session timed out',
     2007: 'Failed to update user, missing information',
-    2008: 'invalid profile picture extension',
+    2008: 'Invalid profile picture extension',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
-    3006: 'invalid mode',
-    3007: 'website is not active',
+    3006: 'Invalid mode',
+    3007: 'Website is not active',
 
     //4000 custom file system errors
-    4010: 'permission denied',
+    4010: 'Permission denied',
 
     defaultError: 'Something went wrong, please try again!',
     passwordsDontMatch: 'Passwords do not match',
@@ -232,3 +235,16 @@ $.fn.extend({
         return this;
     }
 });
+
+/**
+ * handle 401 and 404 erros
+ * 
+ * @param {String} data response data
+ */
+function handle401And404 (data) {
+    if (data['status'] === 401) {
+        window.location.href = '/';
+    } else if (data['status'] === 404) {
+        window.location.href = '/pageNotFound';
+    }
+}

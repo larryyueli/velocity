@@ -1,9 +1,11 @@
 {
 	"actions": {
-		"cancel": "cancel",
+		"cancel": "Cancel",
 		"create": "Create",
-		"edit": "edit",
-		"import": "import"
+		"done": "Done",
+		"edit": "Edit",
+		"import": "Import",
+		"submit": "Submit"
 	},
 	"app": {
 		"name": "Velocity"
@@ -64,6 +66,7 @@
 		"currentPassword": "Current Password",
 		"email": "Email",
 		"firstName": "First Name",
+		"language": "Language",
 		"lastName": "Last Name",
 		"newPassword": "New Password",
 		"notifications": "Notifications",
@@ -83,8 +86,7 @@
 			"4": "Teaching Assistant",
 			"5": "Student"
 		},
-		"username": "Username",
-		"language": "Language"
+		"username": "Username"
 	},
 	"users": {
 		"all": "All",
@@ -94,20 +96,18 @@
 		"userType": "User Type",
 		"usersAddFormDescription": "Add a user account",
 		"usersAddFormTitle": "Account Creation Form",
-		"usersAddFormSubmit": "Submit",
 		"usersEditFormDescription": "Edit a user's account information",
 		"usersEditFormTitle": "Account Edit Form",
-		"usersEditFormSubmit": "Submit",
 		"usersImportCompleteFormAdded": "Total number of users added",
-		"usersImportCompleteFormDescription": "The list of users' accounts has been imported",
-		"usersImportCompleteFormDone": "Done",
+		"usersImportCompleteFormDescription": "The list of user accounts has been imported",
 		"usersImportCompleteFormFailed": "Total number of failed attempts",
 		"usersImportCompleteFormExists": "Total number of users already exist",
 		"usersImportCompleteFormReport": "Report",
 		"usersImportCompleteFormTitle": "Import Job Completed",
 		"usersImportCompleteFormProcessed": "Total number of users processed",
+		"usersImportFormButton": "File",
 		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
-		"usersImportFormTitle": "Accounts Import Form",
-		"usersImportFormSubmit": "Import"
+		"usersImportFormPlaceHolder": "Select your csv file",
+		"usersImportFormTitle": "Accounts Import Form"
 	}
 }
