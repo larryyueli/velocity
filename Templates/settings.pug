@@ -1,0 +1,16 @@
+extends layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/profile.css')
+
+block title
+    title #{__('profile.title')}
+
+block content
+    include navbar
+    .container
+        .row
+            h3 settings
+
+block scripts
+  script(src='/js/profile.js')

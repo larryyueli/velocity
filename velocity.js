@@ -66,6 +66,7 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
+const settingsPage = 'settings';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
@@ -138,7 +139,7 @@ httpServer.listen(config.httpPort, function () {
     logger.info(`HTTP Server is listening on port :${config.httpPort}.`);
     httpsServer.listen(config.httpsPort, function () {
         logger.info(`HTTPs Server is listening on port :${config.httpsPort}.`);
-        logger.info(`Velocity web app is listening on port ${config.httpsPort}`);
+        logger.info(`Velocity web app is listening on port: ${config.httpsPort}`);
         db.initialize(function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
@@ -449,7 +450,6 @@ const handleUsersListComponentPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    //const usersEntryHTML = pug.compileFile(`Templates/${usersEntryComponent}.pug`);
     const fullUsersList = users.getFullUsersList();
 
     return res.status(200).send({
@@ -841,6 +841,28 @@ const handleUpdateProfilePicturePath = function (req, res) {
         });
     });
 }
+
+/**
+ * path to get the settings page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSettingsPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    logger.info(`GET request to the settings page by user: ${req.session.user._id}`);
+    return res.status(200).render(settingsPage, {
+        user: req.session.user,
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -848,6 +870,7 @@ app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
+app.get('/settings', handleSettingsPath);
 app.get('/users', handleUsersPath);
 app.get('/usersListComponent', handleUsersListComponentPath);
 app.get('/users/add', handleUsersAddPath);
