@@ -46,15 +46,21 @@ block content
                                         label(for='userType') #{__('users.userType')}:
                                     .input-field.col.s8
                                         select#userType
-                                            each userType in userTypesList
-                                                option(value=userType.value, selected=editUser.type===userType.value) #{userType.text}
+                                            if isClassMode
+                                                option(value='5', selected=editUser.type===commonUserTypes.STUDENT.value) #{__('userInformation.types.student')}
+                                                option(value='4', selected=editUser.type===commonUserTypes.TA.value) #{__('userInformation.types.ta')}
+                                                option(value='3', selected=editUser.type===commonUserTypes.PROFESSOR.value) #{__('userInformation.types.professor')}
+                                            if isCollabMode
+                                                option(value='2', selected=editUser.type===commonUserTypes.COLLABORATOR.value) #{__('userInformation.types.collaborator')}
+                                                option(value='1', selected=editUser.type===commonUserTypes.COLLABORATOR_ADMIN.value) #{__('userInformation.types.collaboratorAdmin')}
                                 .row
                                     .input-field.col.s4
                                         label(for='userStatus') #{__('users.userStatus')}:
                                     .input-field.col.s8
                                         select#userStatus
-                                            each userStatus in userStatusList
-                                                option(value=userStatus.value, selected=editUser.status===userStatus.value) #{userStatus.text}
+                                            option(value='2', selected=editUser.status===commonUserStatus.ACTIVE.value) #{__('userInformation.status.active')}
+                                            option(value='1', selected=editUser.status===commonUserStatus.PENDING.value) #{__('userInformation.status.pending')}
+                                            option(value='0', selected=editUser.status===commonUserStatus.DISABLED.value) #{__('userInformation.status.disabled')}
                                 .row
                                     button.waves-effect.waves-light.btn(type='submit') #{__('actions.submit')}
                                         i.material-icons.right send

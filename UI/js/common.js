@@ -91,8 +91,8 @@ const translations = Object.freeze({
     passwordsDontMatch: 'Passwords do not match',
     uploadOnlyPicture: 'You can only upload one picture!',
     noResultsFoundBasedOnSearch: 'No results found based on your search',
-    mustBeCsv: 'You can only import one file!',
-    mustImportOneFile: 'File format must be csv!',
+    mustBeCsv: 'File format must be csv!',
+    mustImportOneFile: 'You can only import one file!',
     successfulFileUpload: 'File uploaded successfully',
 
     user0: 'Mode Selector',

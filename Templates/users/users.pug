@@ -18,22 +18,22 @@ block content
                         label(for='searchFilter')  #{__('users.searchFilter')}
                     .input-field.col.s12.m6.xl2
                         select#typeFilter
-                            if mode === 0
+                            if isClassMode
                                 option(value='-1') #{__('users.all')}
-                                option(value='5') #{__('userInformation.types.5')}
-                                option(value='4') #{__('userInformation.types.4')}
-                                option(value='3') #{__('userInformation.types.3')}
-                            if mode === 1
+                                option(value='5') #{__('userInformation.types.student')}
+                                option(value='4') #{__('userInformation.types.ta')}
+                                option(value='3') #{__('userInformation.types.professor')}
+                            if isCollabMode
                                 option(value='-1') #{__('users.all')}
-                                option(value='1') #{__('userInformation.types.1')}
-                                option(value='2') #{__('userInformation.types.2')}
+                                option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                option(value='2') #{__('userInformation.types.collaborator')}
                         label #{__('users.userType')}
                     .input-field.col.s12.m6.xl2
                         select#statusFilter
                             option(value='-1') #{__('users.all')}
-                            option(value='2') #{__('userInformation.status.2')}
-                            option(value='1') #{__('userInformation.status.1')}
-                            option(value='0') #{__('userInformation.status.0')}
+                            option(value='2') #{__('userInformation.status.active')}
+                            option(value='1') #{__('userInformation.status.pending')}
+                            option(value='0') #{__('userInformation.status.disabled')}
                         label #{__('users.userStatus')}
         .row
             .col.s6

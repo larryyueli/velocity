@@ -46,8 +46,13 @@ block content
                                         label(for='userType') #{__('users.userType')}:
                                     .input-field.col.s8
                                         select#userType
-                                            each userType in userTypesList
-                                                option(value=userType.value) #{userType.text}
+                                            if isClassMode
+                                                option(value='5') #{__('userInformation.types.student')}
+                                                option(value='4') #{__('userInformation.types.ta')}
+                                                option(value='3') #{__('userInformation.types.professor')}
+                                            if isCollabMode
+                                                option(value='2') #{__('userInformation.types.collaborator')}
+                                                option(value='1') #{__('userInformation.types.collaboratorAdmin')}
                                 .row
                                     button.waves-effect.waves-light.btn(type='submit') #{__('actions.submit')}
                                         i.material-icons.right send

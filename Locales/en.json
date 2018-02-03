@@ -12,7 +12,8 @@
 	},
 	"login": {
 		"signIn": "Sign In",
-		"signup": "Sign Up",
+		"signUp": "Sign Up",
+		"forgotPassword": "Forgot Password",
 		"title": "Velocity - Login"
 	},
 	"modeSelector": {
@@ -73,18 +74,18 @@
 		"password": "Password",
 		"picture": "picture",
 		"status": {
-			"0": "Disabled",
-			"1": "Pending",
-			"2": "Active"
+			"active": "Active",
+			"disabled": "Disabled",
+			"pending": "Pending"
 		},
 		"theme": "Theme",
 		"types": {
-			"0": "Mode Selector",
-			"1": "Collaborator Admin",
-			"2": "Collaborator",
-			"3": "Professor",
-			"4": "Teaching Assistant",
-			"5": "Student"
+			"modeSelector": "Mode Selector",
+			"collaboratorAdmin": "Collaborator Admin",
+			"collaborator": "Collaborator",
+			"professor": "Professor",
+			"ta": "Teaching Assistant",
+			"student": "Student"
 		},
 		"username": "Username"
 	},

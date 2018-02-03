@@ -433,7 +433,8 @@ const handleUsersPath = function (req, res) {
 
     return res.status(200).render(usersPage, {
         user: req.session.user,
-        mode: settings.getAllSettings().mode
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -473,18 +474,10 @@ const handleUsersAddPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    const modeType = settings.getAllSettings().mode;
-    var userTypesList = [];
-    if (modeType === common.modeTypes.CLASS) {
-        userTypesList = [common.userTypes.STUDENT, common.userTypes.TA, common.userTypes.PROFESSOR];
-    }
-    if (modeType === common.modeTypes.COLLABORATORS) {
-        userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
-    }
-
     return res.status(200).render(usersAddPage, {
         user: req.session.user,
-        userTypesList: userTypesList
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -572,8 +565,10 @@ const handleUsersEditPath = function (req, res) {
         return res.status(200).render(usersEditPage, {
             user: req.session.user,
             editUser: foundUser,
-            userTypesList: userTypesList,
-            userStatusList: userStatusList
+            isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+            isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS,
+            commonUserTypes: common.userTypes,
+            commonUserStatus: common.userStatus
         });
     });
 }
