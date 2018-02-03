@@ -101,7 +101,7 @@ const editProfile = function (id) {
             uploadProfilePicture();
         },
         error: function (data) {
-            handle401And404A(data);
+            handle401And404(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
@@ -138,7 +138,7 @@ const uploadProfilePicture = function () {
             location.reload();
         },
         error: function (data) {
-            handle401And404A(data);
+            handle401And404(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));

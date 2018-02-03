@@ -32,7 +32,7 @@ function selectMode(mode) {
             window.location.href = '/';
         },
         error: function (data) {
-            handle401And404A(data);
+            handle401And404(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
