@@ -77,6 +77,10 @@ const resetAllSettings = function (callback) {
         defaultSettings.mtime = currentDate;
         defaultSettings.active = true;
         defaultSettings.mode = common.modeTypes.UNKNOWN;
+        defaultSettings.users = {};
+        defaultSettings.users.canEditEmail = false;
+        defaultSettings.users.canEditFirstAndLastName = false;
+        defaultSettings.users.canEditPassword = false;
 
         db.addAllSettings(defaultSettings, function (err, result) {
             if (err) {
@@ -87,6 +91,20 @@ const resetAllSettings = function (callback) {
             return callback(null, defaultSettings);
         });
     });
+}
+
+/**
+ * update the website active status
+ *
+ * @param {boolean} status active status
+ * @param {function} callback callback function
+ */
+const updateActiveStatus = function (status, callback) {
+    if (typeof (common.convertStringToBoolean(status)) !== common.variableTypes.BOOLEAN) {
+        return callback(common.getError(3009), null);
+    }
+
+    updateAllSettings({ active: status }, callback);
 }
 
 /**
@@ -104,6 +122,48 @@ const updateModeType = function (modeType, callback) {
 }
 
 /**
+ * update users can edit thier email
+ *
+ * @param {boolean} status active status
+ * @param {function} callback callback function
+ */
+const updateUsersCanEditEmail = function (status, callback) {
+    if (typeof (common.convertStringToBoolean(status)) !== common.variableTypes.BOOLEAN) {
+        return callback(common.getError(3009), null);
+    }
+
+    updateAllSettings({ canEditEmail: status }, callback);
+}
+
+/**
+ * update users can edit thier first and last name
+ *
+ * @param {boolean} status active status
+ * @param {function} callback callback function
+ */
+const updateUsersCanEditFirstAndLastName = function (status, callback) {
+    if (typeof (common.convertStringToBoolean(status)) !== common.variableTypes.BOOLEAN) {
+        return callback(common.getError(3009), null);
+    }
+
+    updateAllSettings({ canEditFirstAndLastName: status }, callback);
+}
+
+/**
+ * update users can edit thier password
+ *
+ * @param {boolean} status active status
+ * @param {function} callback callback function
+ */
+const updateUsersCanEditPassword = function (status, callback) {
+    if (typeof (common.convertStringToBoolean(status)) !== common.variableTypes.BOOLEAN) {
+        return callback(common.getError(3009), null);
+    }
+
+    updateAllSettings({ canEditPassword: status }, callback);
+}
+
+/**
  * update all settings
  *
  * @param {object} newSettings update parameters
@@ -112,9 +172,30 @@ const updateModeType = function (modeType, callback) {
 const updateAllSettings = function (newSettings, callback) {
     var updateQuery = {};
     updateQuery.$set = {};
+    updateQuery.$set.users = {};
+
+    if (typeof (common.convertStringToBoolean(newSettings.active)) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set['active'] = newSettings.active;
+    }
 
     if (common.isValueInObject(newSettings.mode, common.modeTypes)) {
-        updateQuery.$set.mode = newSettings.mode;
+        updateQuery.$set['mode'] = newSettings.mode;
+    }
+
+    if (typeof (common.convertStringToBoolean(newSettings.canEditEmail)) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set['users.canEditEmail'] = newSettings.canEditEmail;
+    }
+
+    if (typeof (common.convertStringToBoolean(newSettings.canEditFirstAndLastName)) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set['users.canEditFirstAndLastName'] = newSettings.canEditFirstAndLastName;
+    }
+
+    if (typeof (common.convertStringToBoolean(newSettings.canEditPassword)) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set['users.canEditPassword'] = newSettings.canEditPassword;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set.users)) {
+        delete updateQuery.$set.users;
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {
@@ -140,6 +221,10 @@ const updateAllSettings = function (newSettings, callback) {
 exports.getAllSettings = getAllSettings;
 exports.initialize = initialize;
 exports.resetAllSettings = resetAllSettings;
+exports.updateActiveStatus = updateActiveStatus;
 exports.updateAllSettings = updateAllSettings;
+exports.updateUsersCanEditEmail = updateUsersCanEditEmail;
+exports.updateUsersCanEditFirstAndLastName = updateUsersCanEditFirstAndLastName;
+exports.updateUsersCanEditPassword = updateUsersCanEditPassword;
 exports.updateModeType = updateModeType;
 // </exports> ----------------------------------
