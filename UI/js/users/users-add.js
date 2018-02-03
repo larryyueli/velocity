@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2016
+Copyright (C) 2018
 Developed at University of Toronto
 
 This program is free software: you can redistribute it and/or modify
@@ -16,20 +16,33 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * Saves the user mode ICP to the backend
- * 0 -> collaborator mode
- * 1 -> class mode
- * 
- * @param {Integer} mode 
- */
-function selectMode(mode) {
+const userAddform = $('#userAddform');
+const fname = $('#fname');
+const lname = $('#lname');
+const username = $('#username');
+const passwword = $('#passwword');
+const email = $('#email');
+const userType = $('#userType');
+
+$(function () {
+    $('select').material_select();
+});
+
+userAddform.submit(function (evt) {
+    evt.preventDefault();
     $.ajax({
-        type: 'POST',
-        url: '/mode/select',
-        data: { selectedMode: mode },
+        type: 'PUT',
+        url: '/users/create',
+        data: {
+            fname: fname.val(),
+            lname: lname.val(),
+            username: username.val(),
+            password: passwword.val(),
+            email: email.val(),
+            type: userType.val()
+        },
         success: function (data) {
-            window.location.href = '/';
+            window.location.href = '/users';
         },
         error: function (data) {
             handle401And404(data);
@@ -38,4 +51,4 @@ function selectMode(mode) {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
-}
+});

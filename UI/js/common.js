@@ -18,16 +18,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // common colour varianles
 const colours = Object.freeze({
-    green          : 'green',
-    orangeDark     : 'orange accent-4',
-    redDark        : 'red darken-4',
+    green: 'green',
+    orangeDark: 'orange accent-4',
+    red: 'red',
+    redDark: 'red darken-4',
+    yellow: 'yellow'
 });
 
 const snack = Object.freeze({
-    success     :   '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
-    warning     :   '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
-    fail        :   '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
-    close       :   '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+    success: '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
+    warning: '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
+    fail: '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 });
 
 /* This function slides down a success snakbar */
@@ -49,19 +51,22 @@ function failSnackbar(msg) {
 }
 
 /* Listener for the `x` on the snackbar/toasts */
-$(document).on('click', '#closeSnack', function() {
+$(document).on('click', '#closeSnack', function () {
     $(this).parent().fadeOut();
 });
 
 /*
-UI errors for user display
+UI Translations for user display
 
 1000 -> user errors
 2000 -> system errors
+3000 -> settings errors
+4000 -> custom file system errors
 */
-const errors = Object.freeze({
+const translations = Object.freeze({
     //1000 system errors
     1000: 'Invalid request',
+    1009: 'Failed to parse csv file',
 
     //2000 user errors
     2000: 'Invalid username or password',
@@ -72,17 +77,40 @@ const errors = Object.freeze({
     2005: 'Account is not active',
     2006: 'Session timed out',
     2007: 'Failed to update user, missing information',
-    2008: 'invalid profile picture extension',
+    2008: 'Invalid profile picture extension',
 
-    //3000 settings
+    //3000 settings errors
     3005: 'could not update the selected mode',
-    3006: 'invalid mode',
-    3007: 'website is not active',
+    3006: 'Invalid mode',
+    3007: 'Website is not active',
 
-    //4000 custom file system
-    4010: 'permission denied'
+    //4000 custom file system errors
+    4010: 'Permission denied',
+
+    defaultError: 'Something went wrong, please try again!',
+    passwordsDontMatch: 'Passwords do not match',
+    uploadOnlyPicture: 'You can only upload one picture!',
+    noResultsFoundBasedOnSearch: 'No results found based on your search',
+    mustBeCsv: 'File format must be csv!',
+    mustImportOneFile: 'You can only import one file!',
+    successfulFileUpload: 'File uploaded successfully',
+
+    user0: 'Mode Selector',
+    user1: 'Collaborator Admin',
+    user2: 'Collaborator',
+    user3: 'Professor',
+    user4: 'Teaching Assistant',
+    user5: 'Student'
 });
-const defaultError = 'Something went wrong, please try again!';
+
+const userIcons = Object.freeze({
+    0: 'security',
+    1: 'security',
+    2: 'people',
+    3: 'security',
+    4: 'people',
+    5: 'person'
+});
 
 var meObject;
 
@@ -97,6 +125,7 @@ function getMeObject() {
     $.ajax({
         type: 'GET',
         url: '/me',
+        async: false,
         success: function (data) {
             meObject = data;
         },
@@ -108,12 +137,22 @@ function getMeObject() {
 /**
  * Returns the correct error message to use, if no errors match returns
  * the default error message
- * 
+ *
  * @param {Object} data
- * @returns {String} Error message 
+ * @returns {String} Error message
  */
 function getErrorMessageFromResponse(data) {
-    return data ? errors[data['code']] || defaultError : defaultError;
+    return data ? translations[data['code']] || translations['defaultError'] : translations['defaultError'];
+}
+
+/**
+ * Returns the correct translation based on the passed parameter
+ *
+ * @param {String} data
+ * @returns {String} translated text
+ */
+function translate(data) {
+    return translations[data];
 }
 
 /**
@@ -123,13 +162,21 @@ function getErrorMessageFromResponse(data) {
  * @returns {String} HTML of notification
  */
 function getNotification(notification) {
-    return `<li>
-            <a class="navbarLinkHidden waves-effect" href="${notification.link}">
-                <i class="material-icons">${notification.type}</i>
-                ${notification.name}
-                <span class="right pointer clear-notification" onclick="clearNotification($(this), ${notification.id})">X</span>
-            </a>
-        </li>`
+    return `<span>
+                <li>
+                    <a class="navbarLinkHidden waves-effect padding-right-0 truncate" href="${notification.link}">
+                        <i class="material-icons margin-right-10">${notification.type}</i>
+                        ${notification.name}
+                    </a>
+                    <span class="right right-icons">
+                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), ${notification.id})">keyboard_arrow_down</i>
+                        <span class="pointer clear-notification padding-right-10" id="${notification.id}-clear" onclick="clearNotification($(this), ${notification.id})">X</span>
+                    </span>
+                </li>
+                <li class="full-description hidden" id="${notification.id}-desc">
+                    ${notification.name}
+                </li>
+            </span>`;
 }
 
 /**
@@ -140,6 +187,37 @@ function getNotification(notification) {
  */
 function getErrorPill(jsonResponse) {
     return `<div class="chip white-text red darken-4">${getErrorMessageFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`
+}
+
+/**
+ * Returns the HTML for the loading animation
+ *
+ * @returns {String} HTML of loading animation
+ */
+function getLoading() {
+    return '<div class="progress loaderBackgroundColour-background-colour"><div class="indeterminate primaryColour-background-colour"></div></div>';
+}
+
+/**
+ * starts the loader
+ *
+ * @param {String} loading id of loader
+ * @param {String} hiding section to be loaded
+ */
+function startLoad(loading, hiding) {
+    $(loading).html(getLoading());
+    $(hiding).addClass('hidden');
+}
+
+/**
+ * ends the loader
+ *
+ * @param {String} loading id of loader
+ * @param {String} showing section to be loaded
+ */
+function endLoad(loading, showing) {
+    $(loading).html('');
+    $(showing).removeClass('hidden');
 }
 
 /**
@@ -157,3 +235,16 @@ $.fn.extend({
         return this;
     }
 });
+
+/**
+ * handle 401 and 404 erros
+ * 
+ * @param {String} data response data
+ */
+function handle401And404 (data) {
+    if (data['status'] === 401) {
+        window.location.href = '/';
+    } else if (data['status'] === 404) {
+        window.location.href = '/pageNotFound';
+    }
+}

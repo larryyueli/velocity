@@ -1,8 +1,5 @@
 extends layout
 
-block styles
-    link(rel='stylesheet' href='/stylesheets/css/modeSelector.css')
-
 block title
     title #{__('modeSelector.title')}
 
@@ -18,7 +15,7 @@ block content
         br
         .row
             .col.s12.l6
-                .card.cardColor.darken-1
+                .card.primaryColour-background-colour.primaryTextOnPrimary-colour
                     .card-content
                         .center-align
                             i.material-icons.md-80 people
@@ -28,11 +25,11 @@ block content
                         br
                         p
                             | #{__('modeSelector.collaboratorMode.features')}
-                    .card-action.cardAction.pointer
+                    .card-action.cardAction.secondaryColour-background-colour.pointer
                         .center-align
-                            a.pointer.noLineLink.linkColor(onClick='selectMode(1)') #{__('modeSelector.collaboratorMode.usage')}
+                            a.pointer.noLineLink.primaryTextOnSecondary-colour(onClick='selectMode(1)') #{__('modeSelector.collaboratorMode.usage')}
             .col.s12.l6
-                .card.cardColor.darken-1
+                .card.primaryColour-background-colour.primaryTextOnPrimary-colour
                     .card-content
                         .center-align
                             i.material-icons.md-80 school
@@ -42,9 +39,9 @@ block content
                         br
                         p
                             | #{__('modeSelector.classMode.features')}
-                    .card-action.cardAction.pointer
+                    .card-action.cardAction.secondaryColour-background-colour.pointer
                         .center-align
-                            a.pointer.noLineLink.linkColor(onClick='selectMode(0)') #{__('modeSelector.classMode.usage')}
+                            a.pointer.noLineLink.primaryTextOnSecondary-colour(onClick='selectMode(0)') #{__('modeSelector.classMode.usage')}
 
 block scripts
     script(src='/js/modeSelector.js')

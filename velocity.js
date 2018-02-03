@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const bodyParser = require('body-parser');
+const csv2json = require('csvtojson');
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const forceSSL = require('express-force-ssl');
@@ -65,6 +66,13 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
+const usersPage = 'users/users';
+const usersAddPage = 'users/users-add';
+const usersEditPage = 'users/users-edit';
+const usersImportCompletePage = 'users/users-import-complete';
+const usersImportPage = 'users/users-import';
+
+const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -97,6 +105,7 @@ app.use(
         outputStyle: 'compressed'
     })
 );
+app.use(helmet());
 app.use(fileUpload({
     limits: { fileSize: config.filesSizeLimit },
     safeFileNames: config.safeFileNames,
@@ -185,6 +194,11 @@ const isActiveSession = function (req) {
  * @param {object} res res object
  */
 const handleLoginPath = function (req, res) {
+    if (isActiveSession(req)) {
+        logger.info(`User ${req.session.user.username} logged out.`);
+        req.session.destroy();
+    }
+
     if (typeof (req.body.username) !== common.variableTypes.STRING
         || typeof (req.body.password) !== common.variableTypes.STRING) {
         logger.error(JSON.stringify(common.getError(2002)));
@@ -202,14 +216,18 @@ const handleLoginPath = function (req, res) {
         }
 
         if (!settings.getAllSettings().active
-            && userObject.type !== common.userTypes.PROFESSOR
-            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN) {
+            && userObject.type !== common.userTypes.PROFESSOR.value
+            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN.value) {
             logger.error(JSON.stringify(common.getError(3007)));
             return res.status(403).send(common.getError(3007));
         }
 
         logger.info(`User: ${username} logged in`);
-        req.session.user = userObject;
+
+        var meObject = JSON.parse(JSON.stringify(userObject));
+        delete meObject.password;
+        req.session.user = meObject;
+
         return res.status(200).send('ok');
     });
 }
@@ -237,7 +255,7 @@ const handleLogoutPath = function (req, res) {
  */
 const handleMePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     var meObject = JSON.parse(JSON.stringify(req.session.user));
@@ -253,12 +271,14 @@ const handleMePath = function (req, res) {
  */
 const handleProfilePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     return res.status(200).render(profilePage, {
         user: req.session.user,
-        themes: common.colorThemes
+        themes: common.colorThemes,
+        languages: common.languages,
+        notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
     });
 }
 
@@ -268,9 +288,9 @@ const handleProfilePath = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleUpdateProfilePath = function (req, res) {
+const handleProfileUpdatePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     if (!req.body.currentPassword || req.body.newPassword !== req.body.confirmPassword) {
@@ -281,7 +301,7 @@ const handleUpdateProfilePath = function (req, res) {
     users.login(req.session.user.username, req.body.currentPassword, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(403).send(err);
+            return res.status(500).send(err);
         }
 
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
@@ -293,6 +313,7 @@ const handleUpdateProfilePath = function (req, res) {
         updateObject.email = req.body.email || req.session.user.email;
         updateObject.password = req.body.newPassword;
         updateObject.theme = req.body.theme || req.session.user.theme;
+        updateObject.language = req.body.language || req.session.user.language;
         updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
             updateNotificationEnabled : req.session.user.notificationEnabled;
 
@@ -306,6 +327,7 @@ const handleUpdateProfilePath = function (req, res) {
             req.session.user.lname = updateObject.lname;
             req.session.user.theme = updateObject.theme;
             req.session.user.email = updateObject.email;
+            req.session.user.language = updateObject.language;
             req.session.user.notificationEnabled = updateObject.notificationEnabled;
 
             return res.status(200).send('profile has been updated successfully');
@@ -324,7 +346,7 @@ const handleRootPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR) {
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
         return res.status(200).render(modeSelectorPage);
     }
 
@@ -337,12 +359,12 @@ const handleRootPath = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleSelectModePath = function (req, res) {
+const handleModeSelectPath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.MODE_SELECTOR) {
+    if (req.session.user.type !== common.userTypes.MODE_SELECTOR.value) {
         return res.status(400).send(common.getError(1000));
     }
 
@@ -360,11 +382,11 @@ const handleSelectModePath = function (req, res) {
 
         var newType;
         if (parsedSelectedMode === common.modeTypes.CLASS) {
-            newType = common.userTypes.PROFESSOR
+            newType = common.userTypes.PROFESSOR.value
         }
 
         if (parsedSelectedMode === common.modeTypes.COLLABORATORS) {
-            newType = common.userTypes.COLLABORATOR_ADMIN
+            newType = common.userTypes.COLLABORATOR_ADMIN.value
         }
 
         const updateObject = {
@@ -378,28 +400,271 @@ const handleSelectModePath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            req.session.user.type = newType;
-            return res.status(200).send('mode updated successfully');
+            users.getUserById(req.session.user._id, function (err, userObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                req.session.user = userObj;
+                return res.status(200).send('mode updated successfully');
+            });
         });
     });
 }
 
 /**
- * path to update the profile pictures
+ * path to get the users page
  *
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleUpdateProfilePicturePath = function (req, res) {
+const handleUsersPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const fullUsersList = users.getFullUsersList();
+
+    return res.status(200).render(usersPage, {
+        user: req.session.user,
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+    });
+}
+
+/**
+ * path to get the users list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersListComponentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    //const usersEntryHTML = pug.compileFile(`Templates/${usersEntryComponent}.pug`);
+    const fullUsersList = users.getFullUsersList();
+
+    return res.status(200).send({
+        usersList: fullUsersList,
+        usersEntryHTML: usersEntryComponent()
+    });
+}
+
+/**
+ * root path to get the users creation form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersAddPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(usersAddPage, {
+        user: req.session.user,
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+    });
+}
+
+/**
+ * root path to create a user
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersCreatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const newUser = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        username: req.body.username,
+        password: req.body.password,
+        type: parseInt(req.body.type),
+        status: common.userStatus.ACTIVE.value,
+        email: req.body.email
+    };
+
+    users.addUser(newUser, function (err, userObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`user: ${req.body.username} was created.`);
+        return res.status(200).send('ok');
+
+    });
+}
+
+/**
+ * root path to get the users edit form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersEditPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const username = req.params.username;
+    if (typeof (username) !== common.variableTypes.STRING) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    users.getUserByUsername(username, function (err, foundUser) {
+        if (err) {
+            if (err.code === 2003) {
+                return res.status(400).render(pageNotFoundPage);
+            }
+
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        const modeType = settings.getAllSettings().mode;
+        var userTypesList = [];
+        if (modeType === common.modeTypes.CLASS) {
+            userTypesList = [common.userTypes.STUDENT, common.userTypes.TA, common.userTypes.PROFESSOR];
+        }
+        if (modeType === common.modeTypes.COLLABORATORS) {
+            userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
+        }
+
+        const userStatusList = [common.userStatus.ACTIVE, common.userStatus.PENDING, common.userStatus.DISABLED];
+
+        return res.status(200).render(usersEditPage, {
+            user: req.session.user,
+            editUser: foundUser,
+            isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+            isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS,
+            commonUserTypes: common.userTypes,
+            commonUserStatus: common.userStatus
+        });
+    });
+}
+
+/**
+ * path to update a user
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const oldUsername = req.body.oldUsername;
+    users.getUserByUsername(oldUsername, function (err, userObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        var newUser = {
+            _id: userObj._id,
+            fname: req.body.fname,
+            lname: req.body.lname,
+            password: req.body.password,
+            type: parseInt(req.body.type),
+            status: parseInt(req.body.status),
+            email: req.body.email
+        };
+
+        if (req.body.username !== oldUsername) {
+            newUser[username] = req.body.username;
+        }
+
+        users.updateUser(newUser, function (err, userObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            logger.info(`user: ${req.body.username} was created.`);
+            return res.status(200).send('ok');
+
+        });
+    });
+}
+
+/**
+ * root path to get the users import form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersImportPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(usersImportPage, {
+        user: req.session.user,
+    });
+}
+
+/**
+ * path to import users from a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersImportFilePath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(403).send(common.getError(2006));
     }
 
-    const validImageExtensions = ['image/jpeg', 'image/png'];
-    const uploadedFile = req.files.userpicture;
-    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
-        logger.error(JSON.stringify(common.getError(2008)));
-        return res.status(400).send(common.getError(2008));
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const validFileExtensions = ['text/csv', 'application/vnd.ms-excel'];
+    const uploadedFile = req.files.usersImpotFile;
+    if (!uploadedFile || validFileExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        logger.error(JSON.stringify(common.getError(2009)));
+        return res.status(400).send(common.getError(2009));
     }
 
     const fileName = common.getUUID();
@@ -409,31 +674,82 @@ const handleUpdateProfilePicturePath = function (req, res) {
         filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
         fileData: uploadedFile.data,
-        filePermissions: common.cfsPermission.PUBLIC,
+        filePermissions: common.cfsPermission.OWNER,
         fileCreator: req.session.user._id
     };
 
     cfs.writeFile(fileObject, function (err, fileObj) {
         if (err) {
-            logger.error(JSON.stringify(err) + JSON.stringify(fileObject));
+            logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
-        logger.info(`Updated user: ${req.session.user._id} to file: ${fileName}`);
-        users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
+        logger.info(`Uploaded users list file by user: ${req.session.user._id}`);
+
+        const fullFilePath = path.resolve(`${fileObject.filePath}/${fileObject.fileName}.${fileObject.fileExtension}`);
+        var importedList = [];
+        csv2json().fromFile(fullFilePath).on('json', function (jsonObj) {
+            var userObj = {};
+            userObj['username'] = jsonObj['Username'];
+            userObj['password'] = jsonObj['Password'];
+            userObj['fname'] = jsonObj['First Name'];
+            userObj['lname'] = jsonObj['Last Name'];
+            userObj['email'] = jsonObj['Email'];
+            importedList.push(userObj);
+        }).on('done', function (err) {
             if (err) {
-                logger.error(JSON.stringify(err));
-                return res.status(500).send(err);
+                logger.error(JSON.stringify(common.getError(1009)));
+                return res.status(500).send(common.getError(1009));
             }
 
-            req.session.user.picture = fileName;
-            return res.status(200).send(fileName);
+            var added = 0;
+            var failed = 0;
+            var exist = 0;
+            var total = 0;
+
+            for (var i = 0; i < importedList.length; i++) {
+                var inputUser = importedList[i];
+                var userToAdd = {
+                    fname: inputUser.fname,
+                    lname: inputUser.lname,
+                    username: inputUser.username,
+                    email: inputUser.email,
+                    password: inputUser.password,
+                    type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+                        common.userTypes.STUDENT.value : common.userTypes.COLLABORATOR.value,
+                    status: common.userStatus.ACTIVE.value
+                };
+                users.addUser(userToAdd, function (err, userObj) {
+                    total++;
+
+                    if (err) {
+                        if (err.code === 2001) {
+                            exist++;
+                        } else {
+                            failed++;
+                        }
+
+                        logger.error(JSON.stringify(err));
+                    } else {
+                        added++;
+                    }
+
+                    if (total === importedList.length) {
+                        return res.status(200).render(usersImportCompletePage, {
+                            added: added,
+                            failed: failed,
+                            exist: exist,
+                            total: total
+                        });
+                    }
+                });
+            }
         });
     });
 }
 
 /**
- * fetch the profile picture
+ * path to fetch the users profile picture
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -477,6 +793,54 @@ const handleprofilePicturePath = function (req, res) {
         });
     });
 }
+
+/**
+ * path to udpate the users profile picture
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUpdateProfilePicturePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(403).send(common.getError(2006));
+    }
+
+    const validImageExtensions = ['image/jpeg', 'image/png'];
+    const uploadedFile = req.files.userpicture;
+    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        logger.error(JSON.stringify(common.getError(2008)));
+        return res.status(400).send(common.getError(2008));
+    }
+
+    const fileName = common.getUUID();
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileName: fileName,
+        filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common.cfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`Updated user: ${req.session.user._id} to file: ${fileName}`);
+        users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            req.session.user.picture = fileName;
+            return res.status(200).send(fileName);
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -484,16 +848,24 @@ app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
+app.get('/users', handleUsersPath);
+app.get('/usersListComponent', handleUsersListComponentPath);
+app.get('/users/add', handleUsersAddPath);
+app.get('/users/edit/:username', handleUsersEditPath);
+app.get('/users/import', handleUsersImportPath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
 app.post('/login', handleLoginPath);
-app.post('/selectMode', handleSelectModePath);
-app.post('/updateProfile', handleUpdateProfilePath);
-app.post('/updateProfilePicture', handleUpdateProfilePicturePath);
+app.post('/mode/select', handleModeSelectPath);
+app.post('/profile/update', handleProfileUpdatePath);
+app.post('/profile/update/picture', handleUpdateProfilePicturePath);
+app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
+app.put('/users/create', handleUsersCreatePath);
+app.put('/users/import/file', handleUsersImportFilePath);
 // </Put Requests> -----------------------------------------------
 
 // <Delete Requests> ------------------------------------------------
@@ -501,11 +873,16 @@ app.delete('/logout', handleLogoutPath);
 // </Delete Requests> -----------------------------------------------
 
 // <notificationsWS Requests> ------------------------------------------------
-notificationsWS.on('connection', function (ws, req) {
-    ws.on('message', function (message) {
+notificationsWS.on('connection', function (client, req) {
+    client.on('message', function (message) {
     });
-    ws.send('ws ok');
+    client.send('ws ok');
 });
+setInterval(function () {
+    for (var client of notificationsWS.clients) {
+        client.send('ws ok');
+    }
+}, 1000);
 // </notificationsWS Requests> -----------------------------------------------
 
 /**

@@ -1,14 +1,19 @@
 {
 	"actions": {
-		"cancel": "cancel",
-		"edit": "edit"
+		"cancel": "Cancel",
+		"create": "Create",
+		"done": "Done",
+		"edit": "Edit",
+		"import": "Import",
+		"submit": "Submit"
 	},
 	"app": {
 		"name": "Velocity"
 	},
 	"login": {
 		"signIn": "Sign In",
-		"signup": "Sign Up",
+		"signUp": "Sign Up",
+		"forgotPassword": "Forgot Password",
 		"title": "Velocity - Login"
 	},
 	"modeSelector": {
@@ -62,20 +67,48 @@
 		"currentPassword": "Current Password",
 		"email": "Email",
 		"firstName": "First Name",
+		"language": "Language",
 		"lastName": "Last Name",
 		"newPassword": "New Password",
 		"notifications": "Notifications",
 		"password": "Password",
 		"picture": "picture",
+		"status": {
+			"active": "Active",
+			"disabled": "Disabled",
+			"pending": "Pending"
+		},
 		"theme": "Theme",
 		"types": {
-			"0": "Mode Selector",
-			"1": "Collaborator Admin",
-			"2": "Collaborator",
-			"3": "Professor",
-			"4": "Teaching Assistant",
-			"5": "Student"
+			"modeSelector": "Mode Selector",
+			"collaboratorAdmin": "Collaborator Admin",
+			"collaborator": "Collaborator",
+			"professor": "Professor",
+			"ta": "Teaching Assistant",
+			"student": "Student"
 		},
 		"username": "Username"
+	},
+	"users": {
+		"all": "All",
+		"searchFilter": "Search Filter",
+		"title": "Velocity - Users",
+		"userStatus": "User Status",
+		"userType": "User Type",
+		"usersAddFormDescription": "Add a user account",
+		"usersAddFormTitle": "Account Creation Form",
+		"usersEditFormDescription": "Edit a user's account information",
+		"usersEditFormTitle": "Account Edit Form",
+		"usersImportCompleteFormAdded": "Total number of users added",
+		"usersImportCompleteFormDescription": "The list of user accounts has been imported",
+		"usersImportCompleteFormFailed": "Total number of failed attempts",
+		"usersImportCompleteFormExists": "Total number of users already exist",
+		"usersImportCompleteFormReport": "Report",
+		"usersImportCompleteFormTitle": "Import Job Completed",
+		"usersImportCompleteFormProcessed": "Total number of users processed",
+		"usersImportFormButton": "File",
+		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
+		"usersImportFormPlaceHolder": "Select your csv file",
+		"usersImportFormTitle": "Accounts Import Form"
 	}
 }

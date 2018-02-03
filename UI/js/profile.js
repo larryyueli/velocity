@@ -26,17 +26,19 @@ const viewForm = '#viewForm';
 const editMode = '#editMode';
 const notificationSwitch = '#notificationSwitch';
 const profilePicIn = '#profile-picture-input';
+const bodyclass = 'bodyclass';
+const select = 'select';
 
 /**
 * Init function
 */
 $(function () {
-    $('select').material_select();
+    $(select).material_select();
 });
 
-$(theme).on('change', function() {
-    $('bodyclass').removeClass();
-    $('bodyclass').addClass($(theme)[0].value);
+$(theme).on('change', function () {
+    $(bodyclass).removeClass();
+    $(bodyclass).addClass($(theme)[0].value);
 });
 
 /**
@@ -49,7 +51,7 @@ $(editForm).submit(function (evt) {
         var id = $(userId).html();
         editProfile(id);
     } else {
-        failSnackbar('Passwords do not match');
+        failSnackbar(translate('passwordsDontMatch'));
     }
 });
 
@@ -92,20 +94,17 @@ const editProfile = function (id) {
 
     $.ajax({
         type: 'POST',
-        url: '/updateProfile',
+        url: '/profile/update',
         data: user,
         success: function (data) {
             const files = $(profilePicIn).get(0).files;
             uploadProfilePicture();
         },
         error: function (data) {
-            var jsonResponse = data.responseJSON;
+            handle401And404(data);
 
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else {
-                failSnackbar(getErrorMessageFromResponse(jsonResponse));
-            }
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }
@@ -122,7 +121,7 @@ const uploadProfilePicture = function () {
     }
 
     if (files.length !== 1) {
-        warningSnackbar('You can only upload one picture!');
+        warningSnackbar(translate('uploadOnlyPicture'));
         return;
     }
 
@@ -131,7 +130,7 @@ const uploadProfilePicture = function () {
 
     $.ajax({
         type: 'POST',
-        url: '/updateProfilePicture',
+        url: '/profile/update/picture',
         processData: false,
         contentType: false,
         data: formData,
@@ -139,15 +138,10 @@ const uploadProfilePicture = function () {
             location.reload();
         },
         error: function (data) {
-            var jsonResponse = data.responseJSON;
+            handle401And404(data);
 
-            if (data['status'] === 401) {
-                window.location.href = '/';
-            } else if (data['status'] === 404) {
-                window.location.href = '/page-not-found';
-            } else {
-                failSnackbar(getErrorMessageFromResponse(jsonResponse));
-            }
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }

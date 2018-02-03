@@ -1,5 +1,5 @@
 .navbar-fixed
-    nav.nav-colour
+    nav.primaryColour-background-colour
         .nav-wrapper
             a.navbarLink.brand-logo.center(href='/') #{__('app.name')}
             a.navbarLink.button-collapse(href='#', data-activates='mobile')
@@ -9,7 +9,7 @@
                     a.navbarLink(href='#!') #{__('pageNames.projects')}
                 if user.canAccessUsers
                     li#nav-users
-                        a.navbarLink(href='#!') #{__('pageNames.users')}
+                        a.navbarLink(href='/users') #{__('pageNames.users')}
                 if user.canAccessSettings
                     li#nav-settings
                         a.navbarLink(href='#!') #{__('pageNames.settings')}
@@ -23,7 +23,7 @@
                     a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications
                         .hide-on-small-only
-                            span.new.badge.notifBadgeColour#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
+                            span.new.badge.notificationBackground-background-colour#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
                         .hide-on-med-and-up
                             span.mobile-badge#mobileNotifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '') #{notifications? notifications.length : 0}
                 li
@@ -37,7 +37,7 @@ ul#mobile.side-nav
             | #{__('pageNames.projects')}
     if user.canAccessUsers
         li#navm-users
-            a.navbarLinkHidden(href='#!')
+            a.navbarLinkHidden(href='/users')
                 i.material-icons people
                 | #{__('pageNames.users')}
     if user.canAccessSettings
@@ -59,7 +59,7 @@ ul#account_nav.side-nav
     li#nav-info
         .user-view
             .background
-                img(src='img/office.jpg')
+                img(src='/img/office.jpg')
             img.circle(src=`/profilePicture/${user.picture}`)
             span.white-text.name #{user.fname} #{user.lname}
             span.white-text.email #{user.username}

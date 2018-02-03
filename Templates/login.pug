@@ -4,21 +4,21 @@ block styles
     link(rel='stylesheet' href='/stylesheets/css/login.css')
 
 block title
-    title Velocity - Login
+    title #{__('login.title')}
 
 block content
     .container
         .card.max500px.whiteRectangleTransparent
             .card-content
-                img#logo(src='img/logo.png')
+                img#logo(src='/img/logo.png')
             .card-tabs
                 ul.tabs.tabs-fixed-width
                     li.tab
-                        a.noLineLink.active(href='#loginDiv') Login
+                        a.noLineLink.active(href='#loginDiv') #{__('login.signIn')}
                     li.tab
-                        a.noLineLink(href='#signupDiv') Sign Up
+                        a.noLineLink(href='#signupDiv') #{__('login.signUp')}
                     li.tab
-                        a.noLineLink(href='#forgotPasswordDiv') Forgot Password
+                        a.noLineLink(href='#forgotPasswordDiv') #{__('login.forgotPassword')}
             .card-content.grey.lighten-4
                 #loginDiv
                     form.form-login#loginForm
@@ -28,12 +28,12 @@ block content
                             .input-field
                                 i.material-icons.prefix person
                                 input.form-control#loginForm_username(type='text' name='username' placeholder=__('userInformation.username') required autofocus)
-                                label.sr-only(for='username') Username
+                                label.sr-only(for='username') #{__('userInformation.username')}
                         .row
                             .input-field
                                 i.material-icons.prefix vpn_key
                                 input.form-control#loginForm_password(type='password' name='password' placeholder=__('userInformation.password') required)
-                                label.sr-only(for='password') Password
+                                label.sr-only(for='password') #{__('userInformation.password')}
                         button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signIn')}
                 #signupDiv
                     form.form-login#signupForm
@@ -43,33 +43,33 @@ block content
                             .input-field
                                 i.material-icons.prefix person
                                 input.form-control#signupForm_fname(type='text' name='fname' placeholder=__('userInformation.firstName') required autofocus)
-                                label.sr-only(for='fname') First Name
+                                label.sr-only(for='fname') #{__('userInformation.firstName')}
                         .row
                             .input-field
                                 i.material-icons.prefix person
                                 input.form-control#signupForm_lname(type='text' name='lname' placeholder=__('userInformation.lastName') required)
-                                label.sr-only(for='lname') Last Name
+                                label.sr-only(for='lname') #{__('userInformation.lastName')}
                         .row
                             .input-field
                                 i.material-icons.prefix person
                                 input.form-control#signupForm_username(type='text' name='username' placeholder=__('userInformation.username') required)
-                                label.sr-only(for='username') Username
+                                label.sr-only(for='username') #{__('userInformation.username')}
                         .row
                             .input-field
                                 i.material-icons.prefix email
                                 input.form-control#signupForm_email(type='text' name='email' placeholder=__('userInformation.email') required)
-                                label.sr-only(for='email') Email
+                                label.sr-only(for='email') #{__('userInformation.email')}
                         .row
                             .input-field
                                 i.material-icons.prefix vpn_key
                                 input.form-control#signupForm_password(type='password' name='password' placeholder=__('userInformation.password') required)
-                                label.sr-only(for='password') Password
+                                label.sr-only(for='password') #{__('userInformation.password')}
                         .row
                             .input-field
                                 i.material-icons.prefix vpn_key
                                 input.form-control#signupForm_confirmPassword(type='password' name='confirmPassword' placeholder=__('userInformation.confirmPassword') required)
-                                label.sr-only(for='confirmPassword') Confirm Password
-                        button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signup')}
+                                label.sr-only(for='confirmPassword') #{__('userInformation.confirmPassword')}
+                        button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signUp')}
                 #forgotPasswordDiv Forgot Password
 block scripts
     script(src='/js/login.js')

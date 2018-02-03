@@ -1,0 +1,36 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/users.css')
+
+block title
+    title #{__('users.title')}
+
+block content
+    include ../navbar
+    br
+    .container#account-import-container
+        #loader
+        .row#account-import-div
+            .col.s12
+                .card.center
+                    .card-image
+                        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/users')
+                            i.material-icons arrow_back
+                    .card-content
+                        h5.card-title #{__('users.usersImportFormTitle')}
+                        h6 #{__('users.usersImportFormDescription')}
+                    .card-action
+                        form(encType='multipart/form-data')#account-import-form
+                            .file-field.input-field
+                                .btn
+                                    span #{__('users.usersImportFormButton')}
+                                    input(type='file', accept='.csv')#account-import-form-input
+                                .file-path-wrapper
+                                    input.file-path.validate(type='text', placeholder=__('users.usersImportFormPlaceHolder'))
+                        br
+                        a.waves-effect.waves-light.btn#account-import-form-submit
+                            i.material-icons.left cloud_upload
+                            | #{__('actions.import')}
+block scripts
+    script(src='/js/users/users-import.js')

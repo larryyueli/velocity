@@ -41,6 +41,7 @@ const errors = Object.freeze({
     1006: 'failed create user session',
     1007: 'failed to update user object, database issue',
     1008: 'failed to get the users list, database issue',
+    1009: 'failed to parse csv file',
 
     //2000 users
     2000: 'missing requirement',
@@ -52,6 +53,7 @@ const errors = Object.freeze({
     2006: 'user\'s session is not valid or timed out',
     2007: 'failed to update user, missing information',
     2008: 'invalid profile picture extension',
+    2009: 'invalid users import file extension',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -85,14 +87,22 @@ exports.defaultError = defaultError;
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({
-    MODE_SELECTOR: 0,
-    COLLABORATOR_ADMIN: 1,
-    COLLABORATOR: 2,
-    PROFESSOR: 3,
-    TA: 4,
-    STUDENT: 5
+    MODE_SELECTOR: { value: 0, text: 'Mode Selector' },
+    COLLABORATOR_ADMIN: { value: 1, text: 'Collaborator Admin' },
+    COLLABORATOR: { value: 2, text: 'Collaborator' },
+    PROFESSOR: { value: 3, text: 'Professor' },
+    TA: { value: 4, text: 'TA' },
+    STUDENT: { value: 5, text: 'Student' }
 });
 exports.userTypes = userTypes;
+
+// user status
+const userStatus = Object.freeze({
+    DISABLED: { value: 0, text: 'Disabled' },
+    PENDING: { value: 1, text: 'Pending' },
+    ACTIVE: { value: 2, text: 'Active' }
+});
+exports.userStatus = userStatus;
 
 // all variable types
 const variableTypes = Object.freeze({
@@ -129,16 +139,16 @@ exports.cfsTree = cfsTree;
 
 // common permissions on files
 const cfsPermission = Object.freeze({
-    PUBLIC: 0,
+    SYSTEM: 0,
     OWNER: 1,
-    SYSTEM: 2
+    PUBLIC: 2
 });
 exports.cfsPermission = cfsPermission;
 
 // common system item types
 const cfsTypes = Object.freeze({
-    FILE: 0,
-    DIRECTORY: 1
+    DIRECTORY: 0,
+    FILE: 1
 });
 exports.cfsTypes = cfsTypes;
 
@@ -148,6 +158,12 @@ const cfsMainDirectories = Object.freeze({
     USERS: 'Users'
 });
 exports.cfsMainDirectories = cfsMainDirectories;
+
+// common languages
+const languages = Object.freeze({
+    English: { value: 'en', text: 'English' }
+});
+exports.languages = languages;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -193,6 +209,24 @@ const isValueInObject = function (value, obj) {
     return false;
 }
 exports.isValueInObject = isValueInObject;
+
+/**
+ * check if value in the object
+ *
+ * @param {any} value value to check
+ * @param {string} key key of inner object
+ * @param {object} obj object to check
+ * @return {boolean}
+ */
+const isValueInObjectWithKeys = function (value, key, obj) {
+    for (var i in obj) {
+        if (obj[i][key] === value) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.isValueInObjectWithKeys = isValueInObjectWithKeys;
 
 /**
  * return boolean from boolean string if possible, otherwise undefined

@@ -1,0 +1,22 @@
+.row
+    .col.s12
+        .card.center
+            .card-image
+                a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/users')
+                    i.material-icons arrow_back
+            .card-content
+                .row
+                    include ../checkmark
+                h5.card-title #{__('users.usersImportCompleteFormTitle')}
+                h6 #{__('users.usersImportCompleteFormDescription')}
+            .card-action
+                .flow-left
+                    h5.alignTextLeft &nbsp;#{__('users.usersImportCompleteFormReport')}:
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormAdded')}: #{added}
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormFailed')}: #{failed}
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormExists')}: #{exist}
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('users.usersImportCompleteFormProcessed')}: #{total}
+                br
+                a.waves-effect.waves-light.btn(href='/users') 
+                    i.material-icons.left cloud_done
+                    | #{__('actions.done')} 

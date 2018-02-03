@@ -65,6 +65,7 @@ const mkdir = function (parentPath, directoryName, directoryPermissions, callbac
         _id: directoryName,
         path: fullPath,
         type: common.cfsTypes.DIRECTORY,
+        ctime: common.getDate(),
         permission: directoryPermissions
     };
 
@@ -165,6 +166,7 @@ const writeFile = function (fileObj, callback) {
         type: common.cfsTypes.FILE,
         extension: fileObj.fileExtension,
         creator: fileObj.fileCreator,
+        ctime: common.getDate(),
         permission: fileObj.filePermissions
     };
 

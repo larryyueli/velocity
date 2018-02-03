@@ -22,6 +22,8 @@ var notificationList = $('#notifications_nav');
 var noNotifications = $('#noNotifications');
 var clearNotifications = $('#clearNotifications');
 
+const logoutButton = $('#nav-logout');
+
 $('.button-collapse').sideNav({
     closeOnClick: true
 });
@@ -59,7 +61,7 @@ function viewFullNotificationToggle(item, id, action = true) {
  */
 function clearNotification(item, id) {
     // Remove the notification from view
-    const itemToRemove = item.parent().parent();    
+    const itemToRemove = item.parent().parent();
     viewFullNotificationToggle(item, id, false);
 
     itemToRemove.animateCss('fadeOutRight', function () {
@@ -95,7 +97,7 @@ function clearAllNotifications() {
             inner = outer.getElementsByTagName('span');
 
             if (inner) {
-                    inner[0].onclick();
+                inner[0].onclick();
             }
         }
     }
@@ -123,3 +125,26 @@ function addNotification(notifList) {
         notificationList.append(getNotification(notification));
     });
 }
+
+logoutButton.click(function () {
+    $.ajax({
+        type: 'DELETE',
+        url: '/logout',
+        success: function (data) {
+            window.location.href = '/';
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+});
+
+$(function () {
+    var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
+    socket.onmessage = function (event) {
+        addNotification([{ link: '/', type: 'account_circle', name: 'Hi, new notification', id: '22222' }]);
+    }
+});
