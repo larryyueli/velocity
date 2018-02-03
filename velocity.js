@@ -277,8 +277,12 @@ const handleProfilePath = function (req, res) {
 
     return res.status(200).render(profilePage, {
         user: req.session.user,
+        userType: common.getValueInObjectByKey(req.session.user.type, 'value', 'text', common.userTypes),
         themes: common.colorThemes,
         languages: common.languages,
+        canEditEmail: settings.getAllSettings().users.canEditEmail,
+        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
+        canEditPassword: settings.getAllSettings().users.canEditPassword,
         notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
     });
 }
