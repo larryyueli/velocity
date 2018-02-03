@@ -27,6 +27,24 @@ var settingsObject;
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
+    updateCachedSettings(callback);
+}
+
+/**
+ * get all settings
+ *
+ * @returns {object}
+ */
+const getAllSettings = function () {
+    return settingsObject;
+}
+
+/**
+ * fetch the latest settings object from the database
+ *
+ * @param {function} callback callback function
+ */
+const updateCachedSettings = function (callback) {
     db.getAllSettings(function (err, obj) {
         if (err) {
             if (err.code === 3001) {
@@ -37,17 +55,8 @@ const initialize = function (callback) {
         }
 
         settingsObject = obj;
-        return callback(null, 'ok');
+        return callback(null, obj);
     });
-}
-
-/**
- * get all settings
- *
- * @returns {object}
- */
-const getAllSettings = function () {
-    return settingsObject;
 }
 
 /**
@@ -61,8 +70,11 @@ const resetAllSettings = function (callback) {
             return callback(err, null);
         }
 
+        const currentDate = common.getDate();;
         var defaultSettings = {};
         defaultSettings._id = common.getUUID();
+        defaultSettings.ctime = currentDate;
+        defaultSettings.mtime = currentDate;
         defaultSettings.active = true;
         defaultSettings.mode = common.modeTypes.UNKNOWN;
 
@@ -72,7 +84,7 @@ const resetAllSettings = function (callback) {
             }
 
             settingsObject = defaultSettings;
-            return callback(null, 'ok');
+            return callback(null, defaultSettings);
         });
     });
 }
@@ -88,14 +100,39 @@ const updateModeType = function (modeType, callback) {
         return callback(common.getError(3006), null);
     }
 
-    const updateQuery = { $set: { mode: modeType } };
+    updateAllSettings({ mode: modeType }, callback);
+}
+
+/**
+ * update all settings
+ *
+ * @param {object} newSettings update parameters
+ * @param {function} callback callback function
+ */
+const updateAllSettings = function (newSettings, callback) {
+    var updateQuery = {};
+    updateQuery.$set = {};
+
+    if (common.isValueInObject(newSettings.mode, common.modeTypes)) {
+        updateQuery.$set.mode = newSettings.mode;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set)) {
+        delete updateQuery.$set;
+    }
+
+    if (common.isEmptyObject(updateQuery)) {
+        return callback(common.getError(3008), null);
+    }
+
+    updateQuery.$set.mtime = common.getDate();
+
     db.updateAllSettings(updateQuery, function (err, result) {
         if (err) {
             return callback(err, null);
         }
 
-        settingsObject.mode = modeType;
-        return callback(null, result);
+        updateCachedSettings(callback);
     });
 }
 
@@ -103,5 +140,6 @@ const updateModeType = function (modeType, callback) {
 exports.getAllSettings = getAllSettings;
 exports.initialize = initialize;
 exports.resetAllSettings = resetAllSettings;
+exports.updateAllSettings = updateAllSettings;
 exports.updateModeType = updateModeType;
 // </exports> ----------------------------------

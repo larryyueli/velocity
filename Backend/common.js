@@ -64,6 +64,7 @@ const errors = Object.freeze({
     3005: 'could not update the selected mode',
     3006: 'invalid mode',
     3007: 'website is not active',
+    3008: 'failed to update the settings, missing parameters',
 
     //4000 custom file system
     4000: 'failed to add entry to the virtual file system, database issue',
