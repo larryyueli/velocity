@@ -260,11 +260,11 @@ const convertStringToBoolean = function (value) {
         return value;
     }
 
-    if (value && value.toLowerCase() === 'false') {
+    if (typeof (value) === variableTypes.STRING && value.toLowerCase() === 'false') {
         return false;
     }
 
-    if (value && value.toLowerCase() === 'true') {
+    if (typeof (value) === variableTypes.STRING && value.toLowerCase() === 'true') {
         return true;
     }
 

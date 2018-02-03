@@ -862,9 +862,43 @@ const handleSettingsPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    logger.info(`GET request to the settings page by user: ${req.session.user._id}`);
+    logger.info(`GET request to the settings page, by user: ${req.session.user._id}`);
     return res.status(200).render(settingsPage, {
         user: req.session.user,
+    });
+}
+
+/**
+ * path to update the settings object
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSettingsUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    logger.info(`POST request to the update settings object, by user: ${req.session.user._id}`);
+    const updateObject = {
+        active: req.body.active,
+        canEditEmail: common.convertStringToBoolean(req.body.canEditEmail),
+        canEditFirstAndLastName: common.convertStringToBoolean(req.body.canEditFirstAndLastName),
+        canEditPassword: common.convertStringToBoolean(req.body.canEditPassword)
+    };
+
+    settings.updateAllSettings(updateObject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('ok');
     });
 }
 // </Requests Function> -----------------------------------------------
@@ -887,6 +921,7 @@ app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
+app.post('/settings/update', handleSettingsUpdatePath);
 app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
