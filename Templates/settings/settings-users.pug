@@ -1,30 +1,30 @@
 li
     .collapsible-header
         i.material-icons person
-        | User Settings
+        | #{__('settings.users.title')}
     .collapsible-body
-        h5 Users can edit:
-        span First and last name:
+        h5 #{__('settings.users.permissionsEdit')}
+        span #{__('settings.users.fullName')}
         .switch
             label
-                | Don't allow
+                | #{__('switch.off')}
                 input(type='checkbox', id='allowEditName', name='allowEditName', checked=studentEditNames)
                 span.lever
-                | Allow
+                | #{__('switch.on')}
         br
-        span Email:
+        span #{__('settings.users.email')}
         .switch
             label
-                | Don't allow
+                | #{__('switch.off')}
                 input(type='checkbox', id='allowEditEmail', name='allowEditEmail', checked=studentEditEmail)
                 span.lever
-                | Allow
+                | #{__('switch.on')}
         br
-        span Password:
+        span #{__('settings.users.password')}
         .switch
             label
-                | Don't allow
+                | #{__('switch.off')}
                 input(type='checkbox', id='allowEditPassword', name='allowEditPassword', checked=studentEditPassword)
                 span.lever
-                | Allow
+                | #{__('switch.on')}
         br

@@ -1,12 +1,12 @@
 li
     .collapsible-header
         i.material-icons settings
-        | General Settings
+        | #{__('settings.general.title')}
     .collapsible-body
-        span Class active (if students can log in)
+        span #{__('settings.general.classActive')}
         .switch
             label
-                | Disabled
+                | #{__('switch.off')}
                 input(type='checkbox', name='classActive' , checked=generalActive)
                 span.lever
-                | Enabled
+                | #{__('switch.on')}

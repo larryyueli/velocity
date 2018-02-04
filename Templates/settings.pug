@@ -13,7 +13,8 @@ block content
             include settings/settings-general
             include settings/settings-users
     .container
-        button.waves-effect.waves-light.btn.col.s12.m4.customSettingsButton(type='submit') Save
+        button.waves-effect.waves-light.btn.col.s12.m4.customSettingsButton(type='submit')
+            | #{__('actions.update')}
             i.material-icons.right save
 
 block scripts
