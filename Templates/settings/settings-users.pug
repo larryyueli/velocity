@@ -1,0 +1,30 @@
+li
+    .collapsible-header
+        i.material-icons person
+        | User Settings
+    .collapsible-body
+        h5 Users can edit:
+        span First and last name:
+        .switch
+            label
+                | Don't allow
+                input(type='checkbox', id='allowEditName', name='allowEditName', checked=studentEditNames)
+                span.lever
+                | Allow
+        br
+        span Email:
+        .switch
+            label
+                | Don't allow
+                input(type='checkbox', id='allowEditEmail', name='allowEditEmail', checked=studentEditEmail)
+                span.lever
+                | Allow
+        br
+        span Password:
+        .switch
+            label
+                | Don't allow
+                input(type='checkbox', id='allowEditPassword', name='allowEditPassword', checked=studentEditPassword)
+                span.lever
+                | Allow
+        br

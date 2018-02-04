@@ -9,8 +9,12 @@ block title
 block content
     include navbar
     .container
-        .row
-            h3 settings
+        ul.collapsible.popout(data-collapsible='expandable')
+            include settings/settings-general
+            include settings/settings-users
+    .container
+        button.waves-effect.waves-light.btn.col.s12.m4.customSettingsButton(type='submit') Save
+            i.material-icons.right save
 
 block scripts
   script(src='/js/profile.js')
