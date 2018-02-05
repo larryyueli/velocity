@@ -17,44 +17,36 @@ block content
                         a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/projects')
                             i.material-icons arrow_back
                     .card-content
-                        h5.card-title #{__('users.usersAddFormTitle')}
-                        h6 #{__('users.usersAddFormDescription')}
+                        h5.card-title #{__('projects.form.title')}
+                        h6 #{__('projects.form.description')}
                     .card-action
                         .row
-                            form.col.s12#userAddform
-                                .row
-                                    .input-field.col.s6
-                                        input#fname.validate(type='text', name='fname', required autofocus)
-                                        label(for='fname') #{__('userInformation.firstName')}
-                                    .input-field.col.s6
-                                        input#lname.validate(type='text', name='lname', required)
-                                        label(for='lname') #{__('userInformation.lastName')}
+                            form.col.s12#projectAddform
                                 .row
                                     .input-field.col.s12
-                                        input#username.validate(type='text', name='username', required)
-                                        label(for='username') #{__('userInformation.username')}
+                                        input#title.validate(type='text', name='title', required, autofocus)
+                                        label(for='title') #{__('projects.form.fields.title')}
                                 .row
                                     .input-field.col.s12
-                                        input#passwword.validate(type='password', name='password', required)
-                                        label(for='passwword') #{__('userInformation.password')}
-                                .row
-                                    .input-field.col.s12
-                                        input#email.validate(type='email', name='email', required)
-                                        label(for='email') #{__('userInformation.email')}
+                                        input#description.validate(type='text', name='description', required)
+                                        label(for='description') #{__('projects.form.fields.description')}
                                 .row
                                     .input-field.col.s4
-                                        label(for='userType') #{__('users.userType')}:
+                                        label(for='type') #{__('projects.type.label')}:
                                     .input-field.col.s8
-                                        select#userType
-                                            if isClassMode
-                                                option(value='5') #{__('userInformation.types.student')}
-                                                option(value='4') #{__('userInformation.types.ta')}
-                                                option(value='3') #{__('userInformation.types.professor')}
-                                            if isCollabMode
-                                                option(value='2') #{__('userInformation.types.collaborator')}
-                                                option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                        select#type
+                                            option(value='0') #{__('projects.type.kanban')}
+                                            option(value='1') #{__('projects.type.scrum')}
                                 .row
-                                    button.waves-effect.waves-light.btn(type='submit') #{__('actions.submit')}
+                                    .input-field.col.s4
+                                        label(for='status') #{__('projects.status.label')}:
+                                    .input-field.col.s8
+                                        select#status
+                                            option(value='2') #{__('projects.status.active')}
+                                            option(value='1') #{__('projects.status.draft')}
+                                            option(value='0') #{__('projects.status.closed')}
+                                .row
+                                    button.waves-effect.waves-light.btn.primaryColour-background-colour(type='submit') #{__('actions.submit')}
                                         i.material-icons.right send
 block scripts
     script(src='/js/projects/projects-add.js')

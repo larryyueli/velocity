@@ -23,13 +23,13 @@ block content
                     .card-action
                         form(encType='multipart/form-data')#account-import-form
                             .file-field.input-field
-                                .btn
+                                .btn.primaryColour-background-colour
                                     span #{__('users.usersImportFormButton')}
                                     input(type='file', accept='.csv')#account-import-form-input
                                 .file-path-wrapper
                                     input.file-path.validate(type='text', placeholder=__('users.usersImportFormPlaceHolder'))
                         br
-                        a.waves-effect.waves-light.btn#account-import-form-submit
+                        a.waves-effect.waves-light.btn.primaryColour-background-colour#account-import-form-submit
                             i.material-icons.left cloud_upload
                             | #{__('actions.import')}
 block scripts

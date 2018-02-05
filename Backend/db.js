@@ -20,6 +20,7 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
+const db_projects = require('./dbs/db-projects.js');
 const db_settings = require('./dbs/db-settings.js');
 const db_users = require('./dbs/db-users.js');
 const db_vfs = require('./dbs/db-virtualFileSystem.js');
@@ -36,6 +37,7 @@ const initialize = function (callback) {
             return callback(common.getError(1001), null);
         }
 
+        db_projects.initialize(client.db(config.default_db_name).collection('projects'));
         db_settings.initialize(client.db(config.default_db_name).collection('settings'));
         db_users.initialize(client.db(config.default_db_name).collection('users'));
         db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
@@ -63,4 +65,8 @@ exports.updateAllSettings = db_settings.updateAllSettings;
 exports.addToVirtualFileSystem = db_vfs.addToVirtualFileSystem;
 exports.removeFromVirtualFileSystem = db_vfs.removeFromVirtualFileSystem;
 exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
+// </Virtual File System Collection> ----------------------------------
+
+// <Virtual File System Collection> -----------------------------------
+exports.addProject = db_vfs.addProject;
 // </Virtual File System Collection> ----------------------------------

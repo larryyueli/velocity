@@ -19,15 +19,15 @@ block content
                     .input-field.col.s12.m6.xl2
                         select#typeFilter
                             option(value='-1') #{__('projects.all')}
-                            option(value='0') #{__('projects.boardTypes.kanban')}
-                            option(value='1') #{__('projects.boardTypes.scrum')}
-                        label #{__('projects.boardTypes.label')}
+                            option(value='0') #{__('projects.type.kanban')}
+                            option(value='1') #{__('projects.type.scrum')}
+                        label #{__('projects.type.label')}
                     .input-field.col.s12.m6.xl2
                         select#statusFilter
                             option(value='-1') #{__('users.all')}
                             option(value='2') #{__('projects.status.active')}
-                            option(value='1') #{__('projects.status.pending')}
-                            option(value='0') #{__('projects.status.disabled')}
+                            option(value='1') #{__('projects.status.draft')}
+                            option(value='0') #{__('projects.status.closed')}
                         label #{__('projects.status.label')}
         .row
             .col.s6

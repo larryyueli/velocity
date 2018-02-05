@@ -318,6 +318,7 @@ const updateUser = function (updateParams, callback) {
 const getFullUsersList = function () {
     return cachedUsersList;
 }
+
 // <exports> -----------------------------------
 exports.addUser = addUser;
 exports.getFullUsersList = getFullUsersList;

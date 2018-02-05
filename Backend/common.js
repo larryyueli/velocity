@@ -28,6 +28,7 @@ const uuidv1 = require('uuid/v1');
  * 2000 -> user
  * 3000 -> settings
  * 4000 -> custom file system
+ * 5000 -> projects
  */
 
 const errors = Object.freeze({
@@ -76,7 +77,11 @@ const errors = Object.freeze({
     4007: 'entry does not exist in the physical file system',
     4008: 'failed to write file into the physical file system',
     4009: 'failed to remove the custom file system root from the physical file system',
-    4010: 'permission denied'
+    4010: 'permission denied',
+
+    //5000 projects
+    5000: 'missing requirement',
+    5001: 'failed to add a project, database issue',
 });
 exports.errors = errors;
 
@@ -164,6 +169,21 @@ const languages = Object.freeze({
     English: { value: 'en', text: 'English' }
 });
 exports.languages = languages;
+
+// common languages
+const projectTypes = Object.freeze({
+    KANBAN: { value: 0, text: 'Kanban' },
+    SCRUM: { value: 1, text: 'Scrum' }
+});
+exports.projectTypes = projectTypes;
+
+// common languages
+const projectStatus = Object.freeze({
+    CLOSED: { value: 0, text: 'Closed' },
+    DRAFT: { value: 1, text: 'Draft' },
+    ACTIVE: { value: 2, text: 'Active' }
+});
+exports.projectStatus = projectStatus;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

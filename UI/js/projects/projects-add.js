@@ -22,4 +22,6 @@ const navmProjectsId = '#navm-projects';
 $(function () {
     $(navProjectsId).addClass('active');
     $(navmProjectsId).addClass('active');
+
+    $('select').material_select();
 });
