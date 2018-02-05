@@ -112,6 +112,18 @@
 		"usersImportFormTitle": "Accounts Import Form"
 	},
 	"projects": {
-		"title": "projects.title"
+		"title": "Velocity - Projects",
+		"all": "All",
+		"boardTypes": {
+			"kanban": "Kanban",
+			"scrum": "Scrum",
+			"label": "Board Type"
+		},
+		"status": {
+			"active": "Active",
+			"pending": "Pending",
+			"disabled": "Disabled",
+			"label": "Status"
+		}
 	}
 }

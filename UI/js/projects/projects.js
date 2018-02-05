@@ -22,4 +22,7 @@ const navmProjectsId = '#navm-projects';
 $(function () {
     $(navProjectsId).addClass('active');
     $(navmProjectsId).addClass('active');
+
+    $('.collapsible').collapsible();
+    $('select').material_select();
 });

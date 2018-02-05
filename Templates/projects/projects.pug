@@ -8,53 +8,54 @@ block title
 
 block content
     include ../navbar
+    br
     .container
-        br
         .row
-            .col.s12
-                .card.center
-                    .card-image
-                        a.btn-floating.halfway-fab.waves-effect.waves-light.red.left(href='/projects')
-                            i.material-icons arrow_back
-                    .card-content
-                        h5.card-title #{__('users.usersAddFormTitle')}
-                        h6 #{__('users.usersAddFormDescription')}
-                    .card-action
-                        .row
-                            form.col.s12#userAddform
-                                .row
-                                    .input-field.col.s6
-                                        input#fname.validate(type='text', name='fname', required autofocus)
-                                        label(for='fname') #{__('userInformation.firstName')}
-                                    .input-field.col.s6
-                                        input#lname.validate(type='text', name='lname', required)
-                                        label(for='lname') #{__('userInformation.lastName')}
-                                .row
-                                    .input-field.col.s12
-                                        input#username.validate(type='text', name='username', required)
-                                        label(for='username') #{__('userInformation.username')}
-                                .row
-                                    .input-field.col.s12
-                                        input#passwword.validate(type='password', name='password', required)
-                                        label(for='passwword') #{__('userInformation.password')}
-                                .row
-                                    .input-field.col.s12
-                                        input#email.validate(type='email', name='email', required)
-                                        label(for='email') #{__('userInformation.email')}
-                                .row
-                                    .input-field.col.s4
-                                        label(for='userType') #{__('users.userType')}:
-                                    .input-field.col.s8
-                                        select#userType
-                                            if isClassMode
-                                                option(value='5') #{__('userInformation.types.student')}
-                                                option(value='4') #{__('userInformation.types.ta')}
-                                                option(value='3') #{__('userInformation.types.professor')}
-                                            if isCollabMode
-                                                option(value='2') #{__('userInformation.types.collaborator')}
-                                                option(value='1') #{__('userInformation.types.collaboratorAdmin')}
-                                .row
-                                    button.waves-effect.waves-light.btn(type='submit') #{__('actions.submit')}
-                                        i.material-icons.right send
+            form.col.s10.offset-s1
+                .row
+                    .input-field.col.s12.xl8
+                        input#searchFilter.validate(type='text')
+                        label(for='searchFilter')  #{__('users.searchFilter')}
+                    .input-field.col.s12.m6.xl2
+                        select#typeFilter
+                            option(value='-1') #{__('projects.all')}
+                            option(value='0') #{__('projects.boardTypes.kanban')}
+                            option(value='1') #{__('projects.boardTypes.scrum')}
+                        label #{__('projects.boardTypes.label')}
+                    .input-field.col.s12.m6.xl2
+                        select#statusFilter
+                            option(value='-1') #{__('users.all')}
+                            option(value='2') #{__('projects.status.active')}
+                            option(value='1') #{__('projects.status.pending')}
+                            option(value='0') #{__('projects.status.disabled')}
+                        label #{__('projects.status.label')}
+        .row
+            .col.s6
+                a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/projects/import', disabled) #{__('actions.import')}
+                    i.material-icons.right cloud_upload
+            .col.s6
+                a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('actions.create')}
+                    i.material-icons.right send
+        .row
+            ul.collapsible(data-collapsible='accordion')
+                li
+                    .collapsible-header
+                        i.material-icons filter_drama
+                        | First
+                    .collapsible-body
+                        span Lorem ipsum dolor sit amet.
+                li
+                    .collapsible-header
+                        i.material-icons place
+                        | Second
+                    .collapsible-body
+                        span Lorem ipsum dolor sit amet.
+                li
+                    .collapsible-header
+                        i.material-icons whatshot
+                        | Third
+                    .collapsible-body
+                        span Lorem ipsum dolor sit amet.
+
 block scripts
     script(src='/js/projects/projects.js')
