@@ -110,5 +110,8 @@
 		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
 		"usersImportFormPlaceHolder": "Select your csv file",
 		"usersImportFormTitle": "Accounts Import Form"
+	},
+	"projects": {
+		"title": "projects.title"
 	}
 }

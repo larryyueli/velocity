@@ -66,6 +66,8 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
+const projectsPage = 'projects/projects';
+const projectsAddPage = 'projects/projects-add';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
@@ -135,9 +137,9 @@ httpServer.listen(config.httpPort, function () {
     const localDebugMode = config.debugMode;
     config.debugMode = true;
 
-    logger.info(`HTTP Server is listening on port :${config.httpPort}.`);
+    logger.info(`HTTP Server is listening on port :${config.httpPort}`);
     httpsServer.listen(config.httpsPort, function () {
-        logger.info(`HTTPs Server is listening on port :${config.httpsPort}.`);
+        logger.info(`HTTPs Server is listening on port :${config.httpsPort}`);
         logger.info(`Velocity web app is listening on port ${config.httpsPort}`);
         db.initialize(function (err, result) {
             if (err) {
@@ -350,7 +352,7 @@ const handleRootPath = function (req, res) {
         return res.status(200).render(modeSelectorPage);
     }
 
-    return res.status(200).send(`user type: ${req.session.user.type}`); // TO DO: replace with proper pages
+    return res.redirect('/projects');
 }
 
 /**
@@ -410,6 +412,56 @@ const handleModeSelectPath = function (req, res) {
                 return res.status(200).send('mode updated successfully');
             });
         });
+    });
+}
+
+/**
+ * path to get the projects page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const fullUsersList = users.getFullUsersList();
+
+    return res.status(200).render(projectsPage, {
+        user: req.session.user,
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+    });
+}
+
+/**
+ * path to get the projects add page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsAddPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const fullUsersList = users.getFullUsersList();
+
+    return res.status(200).render(projectsAddPage, {
+        user: req.session.user,
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -652,7 +704,7 @@ const handleUsersImportPath = function (req, res) {
  */
 const handleUsersImportFilePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
@@ -756,7 +808,7 @@ const handleUsersImportFilePath = function (req, res) {
  */
 const handleprofilePicturePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     const pictureId = req.params.pictureId;
@@ -802,7 +854,7 @@ const handleprofilePicturePath = function (req, res) {
  */
 const handleUpdateProfilePicturePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     const validImageExtensions = ['image/jpeg', 'image/png'];
@@ -848,6 +900,8 @@ app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
+app.get('/projects', handleProjectsPath);
+app.get('/projects/add', handleProjectsAddPath);
 app.get('/users', handleUsersPath);
 app.get('/usersListComponent', handleUsersListComponentPath);
 app.get('/users/add', handleUsersAddPath);

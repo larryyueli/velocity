@@ -6,7 +6,7 @@
                 i.material-icons menu
             ul.left.hide-on-med-and-down
                 li#nav-projects
-                    a.navbarLink(href='#!') #{__('pageNames.projects')}
+                    a.navbarLink(href='/projects') #{__('pageNames.projects')}
                 if user.canAccessUsers
                     li#nav-users
                         a.navbarLink(href='/users') #{__('pageNames.users')}
@@ -32,7 +32,7 @@
 
 ul#mobile.side-nav
     li#navm-projects
-        a.navbarLinkHidden(href='#!')
+        a.navbarLinkHidden(href='/projects')
             i.material-icons folder
             | #{__('pageNames.projects')}
     if user.canAccessUsers
