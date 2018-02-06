@@ -1,0 +1,22 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/profile.css')
+
+block title
+    title #{__('settings.title')}
+
+block content
+    include ../navbar
+    br
+    .container
+        ul.collapsible(data-collapsible='expandable')
+            include settings-general
+            include settings-users
+    .container
+        button.waves-effect.waves-light.btn.col.s12.m4.customSettingsButton#saveButton
+            | #{__('actions.save')}
+            i.material-icons.right save
+
+block scripts
+  script(src='/js/settings.js')

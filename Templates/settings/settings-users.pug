@@ -8,7 +8,7 @@ li
         .switch
             label
                 | #{__('switch.off')}
-                input(type='checkbox', id='allowEditName', name='allowEditName', checked=studentEditNames)
+                input(type='checkbox', name='canEditFirstAndLastName', checked=canEditFirstAndLastName)#canEditNameSwitch
                 span.lever
                 | #{__('switch.on')}
         br
@@ -16,7 +16,7 @@ li
         .switch
             label
                 | #{__('switch.off')}
-                input(type='checkbox', id='allowEditEmail', name='allowEditEmail', checked=studentEditEmail)
+                input(type='checkbox', name='canEditEmail', checked=canEditEmail)#canEditEmailSwitch
                 span.lever
                 | #{__('switch.on')}
         br
@@ -24,7 +24,7 @@ li
         .switch
             label
                 | #{__('switch.off')}
-                input(type='checkbox', id='allowEditPassword', name='allowEditPassword', checked=studentEditPassword)
+                input(type='checkbox', name='canEditPassword', checked=canEditPassword)#canEditPasswordwitch
                 span.lever
                 | #{__('switch.on')}
         br

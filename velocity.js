@@ -66,7 +66,7 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
-const settingsPage = 'settings';
+const settingsPage = 'settings/settings';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
@@ -865,6 +865,10 @@ const handleSettingsPath = function (req, res) {
     logger.info(`GET request to the settings page, by user: ${req.session.user._id}`);
     return res.status(200).render(settingsPage, {
         user: req.session.user,
+        generalActive: settings.getAllSettings().active,
+        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
+        canEditEmail: settings.getAllSettings().users.canEditEmail,
+        canEditPassword: settings.getAllSettings().users.canEditPassword
     });
 }
 
@@ -886,7 +890,7 @@ const handleSettingsUpdatePath = function (req, res) {
 
     logger.info(`POST request to the update settings object, by user: ${req.session.user._id}`);
     const updateObject = {
-        active: req.body.active,
+        active: common.convertStringToBoolean(req.body.active),
         canEditEmail: common.convertStringToBoolean(req.body.canEditEmail),
         canEditFirstAndLastName: common.convertStringToBoolean(req.body.canEditFirstAndLastName),
         canEditPassword: common.convertStringToBoolean(req.body.canEditPassword)
