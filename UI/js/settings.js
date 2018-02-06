@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const cancelButton = $('#cancelButton');
+const resetButton = $('#resetButton');
 const saveButton = $('#saveButton');
 const activeSwitch = $('#generalActive')[0];
 const canEditNameSwitch = $('#canEditNameSwitch')[0];
@@ -23,6 +25,26 @@ const canEditEmailSwitch = $('#canEditEmailSwitch')[0];
 const canEditPasswordwitch = $('#canEditPasswordwitch')[0];
 
 $(function () {
+    cancelButton.click(() => {
+        window.location.reload();
+    });
+
+    resetButton.click(() => {
+        $.ajax({
+            type: 'POST',
+            url: '/settings/reset',
+            success: function (data) {
+                window.location.reload();
+            },
+            error: function (data) {
+                handle401And404(data);
+
+                const jsonResponse = data.responseJSON;
+                failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            }
+        });
+    });
+
     saveButton.click(() => {
         $.ajax({
             type: 'POST',
@@ -34,7 +56,7 @@ $(function () {
                 canEditPassword: canEditPasswordwitch.checked
             },
             success: function (data) {
-                //window.location.href = '/';
+                window.location.reload();
             },
             error: function (data) {
                 handle401And404(data);

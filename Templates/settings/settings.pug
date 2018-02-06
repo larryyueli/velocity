@@ -13,10 +13,17 @@ block content
         ul.collapsible(data-collapsible='expandable')
             include settings-general
             include settings-users
-    .container
-        button.waves-effect.waves-light.btn.col.s12.m4.customSettingsButton#saveButton
-            | #{__('actions.save')}
-            i.material-icons.right save
+    .row.center
+        .container
+            button.waves-effect.waves-light.grey.btn.col.s12.m4.customSettingsButton#resetButton
+                | #{__('actions.reset')}
+                i.material-icons.right replay
+            button.waves-effect.waves-light.red.btn.col.s12.m4.customSettingsButton#cancelButton
+                | #{__('actions.cancel')}
+                i.material-icons.right close
+            button.waves-effect.waves-light.btn.col.s12.m4.customSettingsButton#saveButton
+                | #{__('actions.save')}
+                i.material-icons.right save
 
 block scripts
   script(src='/js/settings.js')

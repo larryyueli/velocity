@@ -873,6 +873,34 @@ const handleSettingsPath = function (req, res) {
 }
 
 /**
+ * path to reset the settings object
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSettingsResetPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    logger.info(`POST request to the reset settings object, by user: ${req.session.user._id}`);
+
+    settings.resetAllSettings(function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
+/**
  * path to update the settings object
  *
  * @param {object} req req object
@@ -925,6 +953,7 @@ app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
+app.post('/settings/reset', handleSettingsResetPath);
 app.post('/settings/update', handleSettingsUpdatePath);
 app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
