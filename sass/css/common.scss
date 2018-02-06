@@ -121,6 +121,30 @@
     }
 }
 
+.cancelButtonBackground-colour {
+    @include themify($themes) {
+        background-color: themed('cancelButtonBackground') !important;
+    }
+}
+
+.cancelButtonText-colour {
+    @include themify($themes) {
+        color: themed('cancelButtonText') !important;
+    }
+}
+
+.resetButtonBackground-colour {
+    @include themify($themes) {
+        background-color: themed('resetButtonBackground') !important;
+    }
+}
+
+.resetButtonText-colour {
+    @include themify($themes) {
+        color: themed('resetButtonText') !important;
+    }
+}
+
 // Themed elements
 // Switch
 .switch label input[type=checkbox]:checked+.lever {
