@@ -67,6 +67,7 @@ exports.removeFromVirtualFileSystem = db_vfs.removeFromVirtualFileSystem;
 exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
 // </Virtual File System Collection> ----------------------------------
 
-// <Virtual File System Collection> -----------------------------------
-exports.addProject = db_vfs.addProject;
-// </Virtual File System Collection> ----------------------------------
+// <Projects Collection> ----------------------------------------------
+exports.addProject = db_projects.addProject;
+exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
+// </Projects Collection> ---------------------------------------------

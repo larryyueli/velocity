@@ -2,6 +2,7 @@ extends ../layout
 
 block styles
     link(rel='stylesheet' href='/stylesheets/css/projects.css')
+    link(rel='stylesheet' href='/summernote/summernote.css')
 
 block title
     title #{__('projects.title')}
@@ -27,9 +28,7 @@ block content
                                         input#title.validate(type='text', name='title', required, autofocus)
                                         label(for='title') #{__('projects.form.fields.title')}
                                 .row
-                                    .input-field.col.s12
-                                        input#description.validate(type='text', name='description', required)
-                                        label(for='description') #{__('projects.form.fields.description')}
+                                    #description
                                 .row
                                     .input-field.col.s4
                                         label(for='type') #{__('projects.type.label')}:
@@ -50,3 +49,4 @@ block content
                                         i.material-icons.right send
 block scripts
     script(src='/js/projects/projects-add.js')
+    script(src='/summernote/summernote.js')

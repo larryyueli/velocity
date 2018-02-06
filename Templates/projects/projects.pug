@@ -35,27 +35,16 @@ block content
                     i.material-icons.right cloud_upload
             .col.s6
                 a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('actions.create')}
-                    i.material-icons.right send
+                    i.material-icons.right note_add
         .row
-            ul.collapsible(data-collapsible='accordion')
-                li
-                    .collapsible-header
-                        i.material-icons filter_drama
-                        | First
-                    .collapsible-body
-                        span Lorem ipsum dolor sit amet.
-                li
-                    .collapsible-header
-                        i.material-icons place
-                        | Second
-                    .collapsible-body
-                        span Lorem ipsum dolor sit amet.
-                li
-                    .collapsible-header
-                        i.material-icons whatshot
-                        | Third
-                    .collapsible-body
-                        span Lorem ipsum dolor sit amet.
+            ul.collapsible(data-collapsible='expandable')
+                each project in projectsList
+                    li
+                        .collapsible-header
+                            i.material-icons folder
+                            | #{project.title}
+                        .collapsible-body
+                            span #{project.description}
 
 block scripts
     script(src='/js/projects/projects.js')

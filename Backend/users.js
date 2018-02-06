@@ -112,7 +112,7 @@ const addUser = function (user, callback) {
 
 /**
  * find a single user by the search parameters
- * 
+ *
  * @param {object} searchQuery search parameters
  * @param {function} callback callback function
  */
@@ -122,7 +122,7 @@ const getUser = function (searchQuery, callback) {
 
 /**
  * get the full list of users from the users collection
- * 
+ *
  * @param {object} searchQuery search parameters
  * @param {object} sortQuery sort parameters
  * @param {number} lim limit
@@ -134,7 +134,7 @@ const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callbac
 
 /**
  * find a single user by its username
- * 
+ *
  * @param {string} username username
  * @param {function} callback callback function
  */
@@ -150,7 +150,7 @@ const getUserByUsername = function (username, callback) {
 
 /**
  * find a single user by its id
- * 
+ *
  * @param {string} id id
  * @param {function} callback callback function
  */
@@ -166,7 +166,7 @@ const getUserById = function (id, callback) {
 
 /**
  * verify if the user can login
- * 
+ *
  * @param {string} username username
  * @param {string} password password
  * @param {function} callback callback function
@@ -312,7 +312,7 @@ const updateUser = function (updateParams, callback) {
 
 /**
  * get the full users list (cached)
- * 
+ *
  * @return {array} full users list
  */
 const getFullUsersList = function () {

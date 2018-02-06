@@ -37,6 +37,7 @@ const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
 const logger = require('./Backend/logger.js');
+const projects = require('./Backend/projects.js');
 const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
@@ -94,6 +95,7 @@ i18n.configure({
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/Templates`);
 
+app.use('/summernote', express.static(`${__dirname}/node_modules/summernote/dist`));
 app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
@@ -431,12 +433,16 @@ const handleProjectsPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    const fullUsersList = users.getFullUsersList();
-
-    return res.status(200).render(projectsPage, {
-        user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+    projects.getProjectsList(function (err, projectsList) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+console.log(projectsList);
+        return res.status(200).render(projectsPage, {
+            user: req.session.user,
+            projectsList: projectsList
+        });
     });
 }
 
@@ -893,6 +899,40 @@ const handleUpdateProfilePicturePath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to create a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsCreatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const newProject = {
+        title: req.body.title,
+        description: req.body.description,
+        type: common.projectTypes.KANBAN.value,
+        status: parseInt(req.body.status)
+    };
+
+    projects.addProject(newProject, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`project: ${projectObj._id} was created.`);
+        return res.status(200).send(projectObj._id);
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -918,6 +958,7 @@ app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
+app.put('/projects/create', handleProjectsCreatePath);
 app.put('/users/create', handleUsersCreatePath);
 app.put('/users/import/file', handleUsersImportFilePath);
 // </Put Requests> -----------------------------------------------

@@ -94,6 +94,7 @@ const translations = Object.freeze({
     mustBeCsv: 'File format must be csv!',
     mustImportOneFile: 'You can only import one file!',
     successfulFileUpload: 'File uploaded successfully',
+    emptyProjectDescription: 'Please enter your description in the editor.',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

@@ -25,7 +25,7 @@ var dateStamp;
 
 /**
  * log an info message
- * 
+ *
  * @param {string} text info text to log
  */
 const info = function (text) {
@@ -35,7 +35,7 @@ const info = function (text) {
 
 /**
  * log a warning message
- * 
+ *
  * @param {string} text warning text to log
  */
 const warning = function (text) {
@@ -45,7 +45,7 @@ const warning = function (text) {
 
 /**
  * log an error message
- * 
+ *
  * @param {string} text error text to log
  */
 const error = function (text) {

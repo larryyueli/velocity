@@ -56,6 +56,16 @@ const addProject = function (project, callback) {
     db.addProject(projectToAdd, callback);
 }
 
+/**
+ * get projects list
+ *
+ * @param {function} callback callback function
+ */
+const getProjectsList = function (callback) {
+    db.getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
+exports.getProjectsList = getProjectsList;
 // </exports> ----------------------------------

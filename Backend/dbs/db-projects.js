@@ -45,7 +45,26 @@ const addProject = function (projectObj, callback) {
     });
 }
 
+/**
+ * get the limited list of projects from the database
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} sortQuery sort parameters
+ * @param {number} lim limit
+ * @param {function} callback callback function
+ */
+const getLimitedProjectsListSorted = function (searchQuery, sortQuery, lim, callback) {
+    projectsCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
+        if (err) {
+            return callback(common.getError(5002), null);
+        }
+
+        return callback(null, list);
+    });
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
+exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.initialize = initialize;
 // </exports> ----------------------------------
