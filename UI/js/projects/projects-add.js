@@ -50,7 +50,7 @@ $(function () {
                 status: status
             },
             success: function (data) {
-                window.location.href = '/projects';
+                window.location.href = `/project/${data}`;
             },
             error: function (data) {
                 handle401And404(data);

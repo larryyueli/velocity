@@ -63,8 +63,29 @@ const getLimitedProjectsListSorted = function (searchQuery, sortQuery, lim, call
     });
 }
 
+/**
+ * find a single project by the search parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const getProject = function (searchQuery, callback) {
+    projectsCollection.findOne(searchQuery, function (err, obj) {
+        if (err) {
+            return callback(common.getError(5003), null);
+        }
+
+        if (!obj) {
+            return callback(common.getError(5004), null);
+        }
+
+        return callback(null, obj);
+    });
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
+exports.getProject = getProject;
 exports.initialize = initialize;
 // </exports> ----------------------------------

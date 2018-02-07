@@ -85,6 +85,8 @@ const errors = Object.freeze({
     5000: 'missing requirement',
     5001: 'failed to add a project, database issue',
     5002: 'failed to get projects list, database issue',
+    5003: 'failed to get a project, database issue',
+    5004: 'project not found',
 });
 exports.errors = errors;
 

@@ -954,8 +954,7 @@ const handleProjectsPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
         return res.status(403).render(pageNotFoundPage);
     }
 
@@ -964,7 +963,7 @@ const handleProjectsPath = function (req, res) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
-        console.log(projectsList);
+
         return res.status(200).render(projectsPage, {
             user: req.session.user,
             projectsList: projectsList
@@ -1030,6 +1029,32 @@ const handleProjectsCreatePath = function (req, res) {
         return res.status(200).send(projectObj._id);
     });
 }
+
+/**
+ * path to get a project page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectByIdPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const projectId = req.params.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).render(pageNotFoundPage);
+        }
+
+        return res.status(200).send(projectId);
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
@@ -1037,6 +1062,7 @@ app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
+app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projects/add', handleProjectsAddPath);
 app.get('/settings', handleSettingsPath);

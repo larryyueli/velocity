@@ -70,4 +70,5 @@ exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
 // <Projects Collection> ----------------------------------------------
 exports.addProject = db_projects.addProject;
 exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
+exports.getProject = db_projects.getProject;
 // </Projects Collection> ---------------------------------------------

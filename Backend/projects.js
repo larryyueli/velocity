@@ -65,7 +65,29 @@ const getProjectsList = function (callback) {
     db.getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
 }
 
+/**
+ * find a single project by the search parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const getProject = function (searchQuery, callback) {
+    db.getProject(searchQuery, callback);
+}
+
+/**
+ * find a single project by its Id
+ *
+ * @param {string} projectId project id
+ * @param {function} callback callback function
+ */
+const getProjectById = function (projectId, callback) {
+    getProject({ _id: projectId }, callback);
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
+exports.getProject = getProject;
+exports.getProjectById = getProjectById;
 exports.getProjectsList = getProjectsList;
 // </exports> ----------------------------------
