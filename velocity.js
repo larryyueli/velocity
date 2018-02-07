@@ -309,14 +309,17 @@ const handleProfileUpdatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
+        const canEditEmail = settings.getAllSettings().users.canEditEmail;
+        const canEditFirstAndLastName = settings.getAllSettings().users.canEditFirstAndLastName;
+        const canEditPassword = settings.getAllSettings().users.canEditPassword;
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
         var updateObject = {};
         updateObject._id = req.session.user._id;
-        updateObject.fname = req.body.fname || req.session.user.fname;
-        updateObject.lname = req.body.lname || req.session.user.lname;
-        updateObject.email = req.body.email || req.session.user.email;
-        updateObject.password = req.body.newPassword;
+        updateObject.fname = (canEditFirstAndLastName && typeof (req.body.fname) === common.variableTypes.STRING) ? req.body.fname : req.session.user.fname;
+        updateObject.lname = (canEditFirstAndLastName && typeof (req.body.lname) === common.variableTypes.STRING) ? req.body.lname : req.session.user.lname;
+        updateObject.email = (canEditEmail && typeof (req.body.email) === common.variableTypes.STRING) ? req.body.email : req.session.user.email;
+        updateObject.password = (canEditPassword && typeof (req.body.newPassword) === common.variableTypes.STRING) ? req.body.newPassword : null;
         updateObject.theme = req.body.theme || req.session.user.theme;
         updateObject.language = req.body.language || req.session.user.language;
         updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
