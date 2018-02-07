@@ -69,6 +69,7 @@ const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
 const projectsPage = 'projects/projects';
 const projectsAddPage = 'projects/projects-add';
+const settingsPage = 'settings/settings';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
@@ -141,8 +142,9 @@ httpServer.listen(config.httpPort, function () {
 
     logger.info(`HTTP Server is listening on port :${config.httpPort}`);
     httpsServer.listen(config.httpsPort, function () {
+
         logger.info(`HTTPs Server is listening on port :${config.httpsPort}`);
-        logger.info(`Velocity web app is listening on port ${config.httpsPort}`);
+        logger.info(`Velocity web app is listening on port: ${config.httpsPort}`);
         db.initialize(function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
@@ -280,8 +282,12 @@ const handleProfilePath = function (req, res) {
 
     return res.status(200).render(profilePage, {
         user: req.session.user,
+        userType: common.getValueInObjectByKey(req.session.user.type, 'value', 'text', common.userTypes),
         themes: common.colorThemes,
         languages: common.languages,
+        canEditEmail: settings.getAllSettings().users.canEditEmail,
+        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
+        canEditPassword: settings.getAllSettings().users.canEditPassword,
         notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
     });
 }
@@ -308,14 +314,17 @@ const handleProfileUpdatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
+        const canEditEmail = settings.getAllSettings().users.canEditEmail;
+        const canEditFirstAndLastName = settings.getAllSettings().users.canEditFirstAndLastName;
+        const canEditPassword = settings.getAllSettings().users.canEditPassword;
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
         var updateObject = {};
         updateObject._id = req.session.user._id;
-        updateObject.fname = req.body.fname || req.session.user.fname;
-        updateObject.lname = req.body.lname || req.session.user.lname;
-        updateObject.email = req.body.email || req.session.user.email;
-        updateObject.password = req.body.newPassword;
+        updateObject.fname = (canEditFirstAndLastName && typeof (req.body.fname) === common.variableTypes.STRING) ? req.body.fname : req.session.user.fname;
+        updateObject.lname = (canEditFirstAndLastName && typeof (req.body.lname) === common.variableTypes.STRING) ? req.body.lname : req.session.user.lname;
+        updateObject.email = (canEditEmail && typeof (req.body.email) === common.variableTypes.STRING) ? req.body.email : req.session.user.email;
+        updateObject.password = (canEditPassword && typeof (req.body.newPassword) === common.variableTypes.STRING) ? req.body.newPassword : null;
         updateObject.theme = req.body.theme || req.session.user.theme;
         updateObject.language = req.body.language || req.session.user.language;
         updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
@@ -418,60 +427,6 @@ const handleModeSelectPath = function (req, res) {
 }
 
 /**
- * path to get the projects page
- *
- * @param {object} req req object
- * @param {object} res res object
- */
-const handleProjectsPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
-    }
-
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
-    projects.getProjectsList(function (err, projectsList) {
-        if (err) {
-            logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
-        }
-console.log(projectsList);
-        return res.status(200).render(projectsPage, {
-            user: req.session.user,
-            projectsList: projectsList
-        });
-    });
-}
-
-/**
- * path to get the projects add page
- *
- * @param {object} req req object
- * @param {object} res res object
- */
-const handleProjectsAddPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
-    }
-
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
-    const fullUsersList = users.getFullUsersList();
-
-    return res.status(200).render(projectsAddPage, {
-        user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
-    });
-}
-
-/**
  * path to get the users page
  *
  * @param {object} req req object
@@ -507,7 +462,6 @@ const handleUsersListComponentPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    //const usersEntryHTML = pug.compileFile(`Templates/${usersEntryComponent}.pug`);
     const fullUsersList = users.getFullUsersList();
 
     return res.status(200).send({
@@ -901,6 +855,149 @@ const handleUpdateProfilePicturePath = function (req, res) {
 }
 
 /**
+ * path to get the settings page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSettingsPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    logger.info(`GET request to the settings page, by user: ${req.session.user._id}`);
+    return res.status(200).render(settingsPage, {
+        user: req.session.user,
+        generalActive: settings.getAllSettings().active,
+        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
+        canEditEmail: settings.getAllSettings().users.canEditEmail,
+        canEditPassword: settings.getAllSettings().users.canEditPassword
+    });
+}
+
+/**
+ * path to reset the settings object
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSettingsResetPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    logger.info(`POST request to the reset settings object, by user: ${req.session.user._id}`);
+
+    settings.resetAllSettings(function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
+/**
+ * path to update the settings object
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSettingsUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    logger.info(`POST request to the update settings object, by user: ${req.session.user._id}`);
+    const updateObject = {
+        active: common.convertStringToBoolean(req.body.active),
+        canEditEmail: common.convertStringToBoolean(req.body.canEditEmail),
+        canEditFirstAndLastName: common.convertStringToBoolean(req.body.canEditFirstAndLastName),
+        canEditPassword: common.convertStringToBoolean(req.body.canEditPassword)
+    };
+
+    settings.updateAllSettings(updateObject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        logger.info(`settings have been updated by user: ${require.session.user._id}`);
+        return res.status(200).send('ok');
+    });
+}
+
+/**
+ * path to get the projects page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    projects.getProjectsList(function (err, projectsList) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+        console.log(projectsList);
+        return res.status(200).render(projectsPage, {
+            user: req.session.user,
+            projectsList: projectsList
+        });
+    });
+}
+
+/**
+ * path to get the projects add page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsAddPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const fullUsersList = users.getFullUsersList();
+
+    return res.status(200).render(projectsAddPage, {
+        user: req.session.user,
+        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+    });
+}
+
+/**
  * root path to create a project
  *
  * @param {object} req req object
@@ -929,7 +1026,7 @@ const handleProjectsCreatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`project: ${projectObj._id} was created.`);
+        logger.info(`project: ${projectObj._id} was created by user: ${req.session.user._id}`);
         return res.status(200).send(projectObj._id);
     });
 }
@@ -942,6 +1039,7 @@ app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/projects', handleProjectsPath);
 app.get('/projects/add', handleProjectsAddPath);
+app.get('/settings', handleSettingsPath);
 app.get('/users', handleUsersPath);
 app.get('/usersListComponent', handleUsersListComponentPath);
 app.get('/users/add', handleUsersAddPath);
@@ -954,6 +1052,8 @@ app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
+app.post('/settings/reset', handleSettingsResetPath);
+app.post('/settings/update', handleSettingsUpdatePath);
 app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
