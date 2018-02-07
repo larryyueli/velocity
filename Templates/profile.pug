@@ -8,6 +8,7 @@ block title
 
 block content
     include navbar
+    br
     .container
         .row#viewForm
             .col.s12.m10.l8.xl6.offset-m1.offset-l2.offset-xl3
@@ -20,7 +21,7 @@ block content
                     .some
                         h3 #{user.fname} #{user.lname}
                         h5 #{user.username}
-                        h5 #{__(`userInformation.types.${user.type}`)}
+                        h5 #{__(`userInformation.types.${userType}`)}
                         br
                         br
                         a.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='enableEdit()')
@@ -37,13 +38,13 @@ block content
                             .input-field.s12
                                 select#theme(name='theme')
                                     each theme in themes
-                                        option(value=theme selected=theme===user.theme) #{theme}
+                                        option(value=theme, selected=theme===user.theme) #{theme}
                                 label #{__('userInformation.theme')}
                         .row
                             .input-field.s12
                                 select#language(name='language')
                                     each language in languages
-                                        option(value=language.value selected=language.value===user.language) #{language.text}
+                                        option(value=language.value, selected=language.value===user.language) #{language.text}
                                 label #{__('userInformation.language')}
                         .row
                             .switch
@@ -61,26 +62,26 @@ block content
                     form#editForm
                         .row
                             .input-field.col.s6
-                                input#fname(type='text', name='fname', value=user.fname)
+                                input#fname(type='text', name='fname', value=user.fname, disabled=!canEditFirstAndLastName)
                                 label(for='fname')
                                     | #{__('userInformation.firstName')}
                             .input-field.col.s6
-                                input#lname(type='text', name='lname', value=user.lname)
+                                input#lname(type='text', name='lname', value=user.lname, disabled=!canEditFirstAndLastName)
                                 label(for='lname')
                                     | #{__('userInformation.firstName')}
                         .row
                             .input-field.col.s12
-                                input#passwd.validate(type='password', name='newPassword')
+                                input#passwd.validate(type='password', name='newPassword', disabled=!canEditPassword)
                                 label(for='passwd')
                                     | #{__('userInformation.newPassword')}
                         .row
                             .input-field.col.s12
-                                input#confirmpasswd.validate(type='password', name='confirmPassword')
+                                input#confirmpasswd.validate(type='password', name='confirmPassword', disabled=!canEditPassword)
                                 label(for='confirmpasswd')
                                     | #{__('userInformation.confirmPassword')}
                         .row
                             .input-field.col.s12
-                                input#email.validate(type='email', name='email', value=user.email)
+                                input#email.validate(type='email', name='email', value=user.email, disabled=!canEditEmail)
                                 label(for='email')
                                     | #{__('userInformation.email')}
                         .row
@@ -106,7 +107,7 @@ block content
                             span.padding-right-10
                             .hide-on-med-and-up
                                 br
-                            button.waves-effect.waves-light.btn.red(onClick='disableEdit()')
+                            button.waves-effect.waves-light.btn.cancelButtonBackground-colour.cancelButtonText-colour(onClick='disableEdit()')
                                 | #{__('actions.cancel')}
                                 i.material-icons.right clear
 

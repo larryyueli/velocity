@@ -64,6 +64,8 @@ const errors = Object.freeze({
     3005: 'could not update the selected mode',
     3006: 'invalid mode',
     3007: 'website is not active',
+    3008: 'failed to update the settings, missing parameters',
+    3009: 'failed to update the website active status, invalid status type',
 
     //4000 custom file system
     4000: 'failed to add entry to the virtual file system, database issue',
@@ -87,12 +89,12 @@ exports.defaultError = defaultError;
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({
-    MODE_SELECTOR: { value: 0, text: 'Mode Selector' },
-    COLLABORATOR_ADMIN: { value: 1, text: 'Collaborator Admin' },
-    COLLABORATOR: { value: 2, text: 'Collaborator' },
-    PROFESSOR: { value: 3, text: 'Professor' },
-    TA: { value: 4, text: 'TA' },
-    STUDENT: { value: 5, text: 'Student' }
+    MODE_SELECTOR: { value: 0, text: 'modeSelector' },
+    COLLABORATOR_ADMIN: { value: 1, text: 'collaboratorAdmin' },
+    COLLABORATOR: { value: 2, text: 'collaborator' },
+    PROFESSOR: { value: 3, text: 'professor' },
+    TA: { value: 4, text: 'ta' },
+    STUDENT: { value: 5, text: 'student' }
 });
 exports.userTypes = userTypes;
 
@@ -229,6 +231,25 @@ const isValueInObjectWithKeys = function (value, key, obj) {
 exports.isValueInObjectWithKeys = isValueInObjectWithKeys;
 
 /**
+ * get the object value using its key
+ *
+ * @param {string} key key of inner object
+ * @param {string} keyField name key field of inner object
+ * @param {string} valueField name value field of inner object
+ * @param {object} obj object to check
+ * @return {*}
+ */
+const getValueInObjectByKey = function (key, keyField, valueField, obj) {
+    for (var i in obj) {
+        if (obj[i][keyField] === key) {
+            return obj[i][valueField];
+        }
+    }
+    return variableTypes.UNDEFINED;
+}
+exports.getValueInObjectByKey = getValueInObjectByKey;
+
+/**
  * return boolean from boolean string if possible, otherwise undefined
  *
  * @param {string} value value to convert
@@ -239,11 +260,11 @@ const convertStringToBoolean = function (value) {
         return value;
     }
 
-    if (value && value.toLowerCase() === 'false') {
+    if (typeof (value) === variableTypes.STRING && value.toLowerCase() === 'false') {
         return false;
     }
 
-    if (value && value.toLowerCase() === 'true') {
+    if (typeof (value) === variableTypes.STRING && value.toLowerCase() === 'true') {
         return true;
     }
 

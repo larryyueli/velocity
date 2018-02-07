@@ -12,7 +12,7 @@
                         a.navbarLink(href='/users') #{__('pageNames.users')}
                 if user.canAccessSettings
                     li#nav-settings
-                        a.navbarLink(href='#!') #{__('pageNames.settings')}
+                        a.navbarLink(href='/settings') #{__('pageNames.settings')}
                 if user.canAccessGrades
                     li#nav-grades
                         a.navbarLink(href='#!') #{__('pageNames.grades')}
@@ -42,7 +42,7 @@ ul#mobile.side-nav
                 | #{__('pageNames.users')}
     if user.canAccessSettings
         li#navm-settings
-            a.navbarLinkHidden(href='#!')
+            a.navbarLinkHidden(href='/settings')
                 i.material-icons settings
                 | #{__('pageNames.settings')}
     if user.canAccessGrades

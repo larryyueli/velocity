@@ -5,7 +5,10 @@
 		"done": "Done",
 		"edit": "Edit",
 		"import": "Import",
-		"submit": "Submit"
+		"reset":"Reset",
+		"save": "Save",
+		"submit": "Submit",
+		"update": "Update"
 	},
 	"app": {
 		"name": "Velocity"
@@ -57,6 +60,20 @@
 	"profile": {
 		"selectPicture": "Select your profile picture",
 		"title": "Velocity - Profile"
+	},
+	"settings": {
+		"general": {
+			"active": "Class active (if users can log in):",
+			"title": "General Settings"
+		},
+		"users": {
+			"email": "Email:",
+			"fullName": "First and last name:",
+			"password": "Password:",
+			"permissionsEdit": "Users can edit",
+			"title": "User Settings"
+		},
+		"title":"Velocity - Settings"
 	},
 	"switch": {
 		"on": "On",

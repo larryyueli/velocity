@@ -28,26 +28,26 @@ const colours = Object.freeze({
 const snack = Object.freeze({
     success: '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
     warning: '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
-    fail: '<i class="material-icons">block</i>&nbsp&nbsp&nbsp',
+    fail: '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp',
     close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
 });
 
 /* This function slides down a success snakbar */
 function successSnackbar(msg) {
     // runs the toast function for 5s with given msg and colour
-    Materialize.toast(snack.success + msg + snack.close, 5000, colours.green);
+    Materialize.toast(`${snack.success}${msg}${snack.close}`, 5000, colours.green);
 }
 
 /* This function slides down a warning snakbar */
 function warningSnackbar(msg) {
     // runs the toast function for 5s with given msg and colour
-    Materialize.toast(snack.warning + msg + snack.close, 5000, colours.orangeDark);
+    Materialize.toast(`${snack.warning}${msg}${snack.close}`, 5000, colours.orangeDark);
 }
 
 /* This function slides down a fail snakbar */
 function failSnackbar(msg) {
     // runs the toast function for 5s with given msg and colour
-    Materialize.toast(snack.fail + msg + snack.close, 5000, colours.redDark);
+    Materialize.toast(`${snack.fail}${msg}${snack.close}`, 5000, colours.redDark);
 }
 
 /* Listener for the `x` on the snackbar/toasts */
@@ -241,7 +241,7 @@ $.fn.extend({
  * 
  * @param {String} data response data
  */
-function handle401And404 (data) {
+function handle401And404(data) {
     if (data['status'] === 401) {
         window.location.href = '/';
     } else if (data['status'] === 404) {
