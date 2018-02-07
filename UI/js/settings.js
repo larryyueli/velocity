@@ -23,8 +23,13 @@ const activeSwitch = $('#generalActive')[0];
 const canEditNameSwitch = $('#canEditNameSwitch')[0];
 const canEditEmailSwitch = $('#canEditEmailSwitch')[0];
 const canEditPasswordwitch = $('#canEditPasswordwitch')[0];
+const navSettingsId = '#nav-settings';
+const navmSettingsId = '#navm-settings';
 
 $(function () {
+    $(navSettingsId).addClass('active');
+    $(navmSettingsId).addClass('active');
+
     cancelButton.click(() => {
         window.location.reload();
     });
