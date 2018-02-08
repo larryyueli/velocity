@@ -20,9 +20,9 @@ block content
                         select#statusFilter
                             option(value='-1') #{__('users.all')}
                             option(value='2') #{__('projects.status.active')}
-                            option(value='0') #{__('projects.status.closed')}
-                            if user.type === 1 || user.type === 3
+                            if user.canCreateProjects
                                 option(value='1') #{__('projects.status.draft')}
+                            option(value='0') #{__('projects.status.closed')}
                         label #{__('projects.status.label')}
         .row
             .col.s6

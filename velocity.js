@@ -76,8 +76,8 @@ const usersEditPage = 'users/users-edit';
 const usersImportCompletePage = 'users/users-import-complete';
 const usersImportPage = 'users/users-import';
 
-const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
+const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -453,7 +453,7 @@ const handleUsersPath = function (req, res) {
 }
 
 /**
- * path to get the users list
+ * path to get the users list entry
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -461,6 +461,11 @@ const handleUsersPath = function (req, res) {
 const handleUsersListComponentPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
     }
 
     const fullUsersList = users.getFullUsersList();
@@ -973,7 +978,7 @@ const handleProjectsPath = function (req, res) {
 }
 
 /**
- * path to get the projects list
+ * path to get the projects list entry
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -990,7 +995,6 @@ const handleProjectsListComponentPath = function (req, res) {
         }
 
         return res.status(200).send({
-            user: req.session.user,
             projectsList: projectsList,
             projectsEntryHTML: projectsEntryComponent()
         });

@@ -93,6 +93,8 @@ const addUser = function (user, callback) {
             || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR.value
             || user.type === common.userTypes.TA.value);
+        userToAdd.canCreateProjects = (user.type === common.userTypes.PROFESSOR.value
+            || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
 
         db.addUser(userToAdd, function (err, obj) {
             if (err) {
@@ -268,6 +270,8 @@ const updateUser = function (updateParams, callback) {
             || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
         updateQuery.$set.canAccessGrades = (updateParams.type === common.userTypes.PROFESSOR.value
             || updateParams.type === common.userTypes.TA.value);
+        updateQuery.$set.canCreateProjects = (updateParams.type === common.userTypes.PROFESSOR.value
+            || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {
