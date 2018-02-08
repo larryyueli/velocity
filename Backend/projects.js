@@ -50,7 +50,6 @@ const addProject = function (project, callback) {
     projectToAdd.ctime = currentDate;
     projectToAdd.mtime = currentDate;
     projectToAdd.description = project.description;
-    projectToAdd.type = project.type;
     projectToAdd.status = project.status;
     projectToAdd.admins = project.admins;
     projectToAdd.members = Array.isArray(project.members) ? project.members : project.admins;
@@ -64,7 +63,7 @@ const addProject = function (project, callback) {
  * @param {function} callback callback function
  */
 const getFullProjectsList = function (callback) {
-    getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
+    getLimitedProjectsListSorted({}, { title: 1, status: { $ne: common.projectStatus.DELETED.value } }, 0, callback);
 }
 
 /**
@@ -86,7 +85,7 @@ const getLimitedProjectsListSorted = function (searchQuery, sortQuery, lim, call
  * @param {function} callback callback function
  */
 const getProjectsListByUserId = function (userId, callback) {
-    getLimitedProjectsListSorted({ members: userId }, { title: 1 }, 0, callback);
+    getLimitedProjectsListSorted({ members: userId, status: { $ne: common.projectStatus.DELETED.value } }, { title: 1 }, 0, callback);
 }
 
 /**

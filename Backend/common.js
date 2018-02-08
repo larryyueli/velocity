@@ -108,9 +108,9 @@ exports.userTypes = userTypes;
 
 // user status
 const userStatus = Object.freeze({
-    DISABLED: { value: 0, text: 'Disabled' },
-    PENDING: { value: 1, text: 'Pending' },
-    ACTIVE: { value: 2, text: 'Active' }
+    DISABLED: { value: 0, text: 'disabled' },
+    PENDING: { value: 1, text: 'pending' },
+    ACTIVE: { value: 2, text: 'active' }
 });
 exports.userStatus = userStatus;
 
@@ -127,7 +127,8 @@ exports.variableTypes = variableTypes;
 
 // all color themes
 const colorThemes = Object.freeze({
-    DEFAULT: 'theme-default'
+    DEFAULT: 'theme-default',
+    AHMED: 'theme-ahmed'
 });
 exports.colorThemes = colorThemes;
 
@@ -171,22 +172,23 @@ exports.cfsMainDirectories = cfsMainDirectories;
 
 // common languages
 const languages = Object.freeze({
-    English: { value: 'en', text: 'English' }
+    English: { value: 'en', text: 'english' }
 });
 exports.languages = languages;
 
-// common languages
-const projectTypes = Object.freeze({
-    KANBAN: { value: 0, text: 'Kanban' },
-    SCRUM: { value: 1, text: 'Scrum' }
+// common board types
+const boardTypes = Object.freeze({
+    KANBAN: { value: 0, text: 'kanban' },
+    SCRUM: { value: 1, text: 'scrum' }
 });
-exports.projectTypes = projectTypes;
+exports.boardTypes = boardTypes;
 
-// common languages
+// common project status
 const projectStatus = Object.freeze({
-    CLOSED: { value: 0, text: 'Closed' },
-    DRAFT: { value: 1, text: 'Draft' },
-    ACTIVE: { value: 2, text: 'Active' }
+    CLOSED: { value: 0, text: 'closed' },
+    DRAFT: { value: 1, text: 'draft' },
+    ACTIVE: { value: 2, text: 'active' },
+    DELETED: { value: 3, text: 'deleted' }
 });
 exports.projectStatus = projectStatus;
 // </Global Constants> ------------------------------------------

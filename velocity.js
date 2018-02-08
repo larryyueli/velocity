@@ -569,17 +569,6 @@ const handleUsersEditPath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        const modeType = settings.getAllSettings().mode;
-        var userTypesList = [];
-        if (modeType === common.modeTypes.CLASS) {
-            userTypesList = [common.userTypes.STUDENT, common.userTypes.TA, common.userTypes.PROFESSOR];
-        }
-        if (modeType === common.modeTypes.COLLABORATORS) {
-            userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
-        }
-
-        const userStatusList = [common.userStatus.ACTIVE, common.userStatus.PENDING, common.userStatus.DISABLED];
-
         return res.status(200).render(usersEditPage, {
             user: req.session.user,
             editUser: foundUser,
