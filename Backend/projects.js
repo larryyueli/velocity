@@ -52,6 +52,8 @@ const addProject = function (project, callback) {
     projectToAdd.description = project.description;
     projectToAdd.type = project.type;
     projectToAdd.status = project.status;
+    projectToAdd.admins = [];
+    projectToAdd.members = [];
 
     db.addProject(projectToAdd, callback);
 }
@@ -61,8 +63,30 @@ const addProject = function (project, callback) {
  *
  * @param {function} callback callback function
  */
-const getProjectsList = function (callback) {
-    db.getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
+const getFullProjectsList = function (callback) {
+    getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
+}
+
+/**
+ * get projects list with search, sort and limit params
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} sortQuery sort parameters
+ * @param {number} lim limit on the results list length
+ * @param {function} callback callback function
+ */
+const getLimitedProjectsListSorted = function (searchQuery, sortQuery, lim, callback) {
+    db.getLimitedProjectsListSorted(searchQuery, sortQuery, lim, callback);
+}
+
+/**
+ * get projects list for a user (member of)
+ *
+ * @param {string} userId user id
+ * @param {function} callback callback function
+ */
+const getProjectsListByUserId = function (userId, callback) {
+    getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
 }
 
 /**
@@ -88,6 +112,8 @@ const getProjectById = function (projectId, callback) {
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.getProject = getProject;
+exports.getFullProjectsList = getFullProjectsList;
+exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.getProjectById = getProjectById;
-exports.getProjectsList = getProjectsList;
+exports.getProjectsListByUserId = getProjectsListByUserId;
 // </exports> ----------------------------------
