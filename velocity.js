@@ -1015,8 +1015,8 @@ const handleProjectsCreatePath = function (req, res) {
     const newProject = {
         title: req.body.title,
         description: req.body.description,
-        type: common.projectTypes.KANBAN.value,
-        status: parseInt(req.body.status)
+        status: parseInt(req.body.status),
+        admins: [req.session.user._id]
     };
 
     projects.addProject(newProject, function (err, projectObj) {

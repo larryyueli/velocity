@@ -37,8 +37,8 @@ const initialize = function (callback) {
 const addProject = function (project, callback) {
     if (typeof (project.title) !== common.variableTypes.STRING
         || typeof (project.description) !== common.variableTypes.STRING
-        || !common.isValueInObjectWithKeys(project.type, 'value', common.projectTypes)
-        || !common.isValueInObjectWithKeys(project.status, 'value', common.projectStatus)) {
+        || !common.isValueInObjectWithKeys(project.status, 'value', common.projectStatus)
+        || !Array.isArray(project.admins)) {
         return callback(common.getError(5000), null);
     }
 
@@ -52,8 +52,8 @@ const addProject = function (project, callback) {
     projectToAdd.description = project.description;
     projectToAdd.type = project.type;
     projectToAdd.status = project.status;
-    projectToAdd.admins = [];
-    projectToAdd.members = [];
+    projectToAdd.admins = project.admins;
+    projectToAdd.members = Array.isArray(project.members) ? project.members : project.admins;
 
     db.addProject(projectToAdd, callback);
 }
@@ -86,7 +86,7 @@ const getLimitedProjectsListSorted = function (searchQuery, sortQuery, lim, call
  * @param {function} callback callback function
  */
 const getProjectsListByUserId = function (userId, callback) {
-    getLimitedProjectsListSorted({}, { title: 1 }, 0, callback);
+    getLimitedProjectsListSorted({ members: userId }, { title: 1 }, 0, callback);
 }
 
 /**
