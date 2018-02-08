@@ -83,9 +83,28 @@ const getProject = function (searchQuery, callback) {
     });
 }
 
+/**
+ * find projects by the search parameters,
+ * then update their values by the update parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateProject = function (searchQuery, updateQuery, callback) {
+    projectsCollection.update(searchQuery, updateQuery, function (err, result) {
+        if (err) {
+            return callback(common.getError(5005), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.getProject = getProject;
 exports.initialize = initialize;
+exports.updateProject = updateProject;
 // </exports> ----------------------------------

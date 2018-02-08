@@ -88,6 +88,7 @@ const errors = Object.freeze({
     5002: 'failed to get projects list, database issue',
     5003: 'failed to get a project, database issue',
     5004: 'project not found',
+    5005: 'failed to update projects, database issue',
 
     //6000 teams
     6000: 'missing requirement',
@@ -95,6 +96,7 @@ const errors = Object.freeze({
     6002: 'failed to get teams list, database issue',
     6003: 'failed to get a team, database issue',
     6004: 'team not found',
+    6005: 'failed to update team, database issue',
 });
 exports.errors = errors;
 

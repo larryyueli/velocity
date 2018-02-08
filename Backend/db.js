@@ -73,10 +73,12 @@ exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
 exports.addProject = db_projects.addProject;
 exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
 exports.getProject = db_projects.getProject;
+exports.updateProject = db_projects.updateProject;
 // </Projects Collection> ---------------------------------------------
 
 // <Teams Collection> ----------------------------------------------
 exports.addTeam = db_teams.addTeam;
 exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
 exports.getTeam = db_teams.getTeam;
+exports.updateTeam = db_teams.updateTeam;
 // </Teams Collection> ---------------------------------------------
