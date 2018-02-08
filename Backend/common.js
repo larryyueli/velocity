@@ -29,6 +29,7 @@ const uuidv1 = require('uuid/v1');
  * 3000 -> settings
  * 4000 -> custom file system
  * 5000 -> projects
+ * 6000 -> teams
  */
 
 const errors = Object.freeze({
@@ -87,6 +88,13 @@ const errors = Object.freeze({
     5002: 'failed to get projects list, database issue',
     5003: 'failed to get a project, database issue',
     5004: 'project not found',
+
+    //6000 teams
+    6000: 'missing requirement',
+    6001: 'failed to add a team, database issue',
+    6002: 'failed to get teams list, database issue',
+    6003: 'failed to get a team, database issue',
+    6004: 'team not found',
 });
 exports.errors = errors;
 

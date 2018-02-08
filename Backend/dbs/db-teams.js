@@ -38,7 +38,7 @@ const initialize = function (collectionObject) {
 const addTeam = function (teamObj, callback) {
     teamsCollection.insert(teamObj, function (err, obj) {
         if (err) {
-            return callback(common.getError(5001), null);
+            return callback(common.getError(6001), null);
         }
 
         return callback(null, teamObj);
@@ -56,7 +56,7 @@ const addTeam = function (teamObj, callback) {
 const getLimitedTeamsListSorted = function (searchQuery, sortQuery, lim, callback) {
     teamsCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
         if (err) {
-            return callback(common.getError(5002), null);
+            return callback(common.getError(6002), null);
         }
 
         return callback(null, list);
@@ -72,11 +72,11 @@ const getLimitedTeamsListSorted = function (searchQuery, sortQuery, lim, callbac
 const getTeam = function (searchQuery, callback) {
     teamsCollection.findOne(searchQuery, function (err, obj) {
         if (err) {
-            return callback(common.getError(5003), null);
+            return callback(common.getError(6003), null);
         }
 
         if (!obj) {
-            return callback(common.getError(5004), null);
+            return callback(common.getError(6004), null);
         }
 
         return callback(null, obj);
