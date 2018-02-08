@@ -1060,6 +1060,9 @@ const handleProjectByIdPath = function (req, res) {
 }
 // </Requests Function> -----------------------------------------------
 
+/**
+ * Log some information about the request
+ */
 app.use(function (req, res, next) {
     logger.log(`${req.method}: ${req.url} SESSION._id:${isActiveSession(req) ? JSON.stringify(req.session.user._id) : ' NO USER'} QUERY:${JSON.stringify(req.query)} PARAMS:${JSON.stringify(req.params)} BODY:${JSON.stringify(req.body)}`);
     next();
