@@ -938,16 +938,8 @@ const handleProjectsPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {
-        if (err) {
-            logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
-        }
-
-        return res.status(200).render(projectsPage, {
-            user: req.session.user,
-            projectsList: projectsList
-        });
+    return res.status(200).render(projectsPage, {
+        user: req.session.user
     });
 }
 

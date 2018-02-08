@@ -22,6 +22,7 @@ const common = require('./common.js');
 const config = require('./config.js');
 const db_projects = require('./dbs/db-projects.js');
 const db_settings = require('./dbs/db-settings.js');
+const db_teams = require('./dbs/db-teams.js');
 const db_users = require('./dbs/db-users.js');
 const db_vfs = require('./dbs/db-virtualFileSystem.js');
 
@@ -39,6 +40,7 @@ const initialize = function (callback) {
 
         db_projects.initialize(client.db(config.default_db_name).collection('projects'));
         db_settings.initialize(client.db(config.default_db_name).collection('settings'));
+        db_teams.initialize(client.db(config.default_db_name).collection('teams'));
         db_users.initialize(client.db(config.default_db_name).collection('users'));
         db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
 
@@ -72,3 +74,9 @@ exports.addProject = db_projects.addProject;
 exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
 exports.getProject = db_projects.getProject;
 // </Projects Collection> ---------------------------------------------
+
+// <Teams Collection> ----------------------------------------------
+exports.addTeam = db_teams.addTeam;
+exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
+exports.getTeam = db_teams.getTeam;
+// </Teams Collection> ---------------------------------------------
