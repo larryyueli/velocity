@@ -54,6 +54,16 @@ const error = function (text) {
 }
 
 /**
+ * log a message
+ *
+ * @param {string} text text to log
+ */
+const log = function (text) {
+    init();
+    console.error(`[${common.getDate()}] ${text}`);
+}
+
+/**
  * initiate the logging with file
  */
 const init = function () {
@@ -73,5 +83,6 @@ const init = function () {
 // <exports> -----------------------------------
 exports.error = error;
 exports.info = info;
+exports.log = log;
 exports.warning = warning;
 // </exports> ----------------------------------

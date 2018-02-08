@@ -202,7 +202,6 @@ const isActiveSession = function (req) {
  */
 const handleLoginPath = function (req, res) {
     if (isActiveSession(req)) {
-        logger.info(`User ${req.session.user.username} logged out.`);
         req.session.destroy();
     }
 
@@ -215,7 +214,6 @@ const handleLoginPath = function (req, res) {
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
 
-    logger.info(`Login request by user: ${username}`);
     users.login(username, password, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -228,8 +226,6 @@ const handleLoginPath = function (req, res) {
             logger.error(JSON.stringify(common.getError(3007)));
             return res.status(403).send(common.getError(3007));
         }
-
-        logger.info(`User: ${username} logged in`);
 
         var meObject = JSON.parse(JSON.stringify(userObject));
         delete meObject.password;
@@ -247,7 +243,6 @@ const handleLoginPath = function (req, res) {
  */
 const handleLogoutPath = function (req, res) {
     if (isActiveSession(req)) {
-        logger.info(`User ${req.session.user.username} logged out.`);
         req.session.destroy();
     }
 
@@ -531,7 +526,6 @@ const handleUsersCreatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`user: ${req.body.username} was created.`);
         return res.status(200).send('ok');
 
     });
@@ -623,7 +617,6 @@ const handleUsersUpdatePath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            logger.info(`user: ${req.body.username} was created.`);
             return res.status(200).send('ok');
 
         });
@@ -690,8 +683,6 @@ const handleUsersImportFilePath = function (req, res) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
-
-        logger.info(`Uploaded users list file by user: ${req.session.user._id}`);
 
         const fullFilePath = path.resolve(`${fileObject.filePath}/${fileObject.fileName}.${fileObject.fileExtension}`);
         var importedList = [];
@@ -836,7 +827,6 @@ const handleUpdateProfilePicturePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`Updated user: ${req.session.user._id} to file: ${fileName}`);
         users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
@@ -865,7 +855,6 @@ const handleSettingsPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    logger.info(`GET request to the settings page, by user: ${req.session.user._id}`);
     return res.status(200).render(settingsPage, {
         user: req.session.user,
         generalActive: settings.getAllSettings().active,
@@ -890,8 +879,6 @@ const handleSettingsResetPath = function (req, res) {
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         return res.status(403).render(pageNotFoundPage);
     }
-
-    logger.info(`POST request to the reset settings object, by user: ${req.session.user._id}`);
 
     settings.resetAllSettings(function (err, result) {
         if (err) {
@@ -919,7 +906,6 @@ const handleSettingsUpdatePath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    logger.info(`POST request to the update settings object, by user: ${req.session.user._id}`);
     const updateObject = {
         active: common.convertStringToBoolean(req.body.active),
         canEditEmail: common.convertStringToBoolean(req.body.canEditEmail),
@@ -933,7 +919,6 @@ const handleSettingsUpdatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`settings have been updated by user: ${require.session.user._id}`);
         return res.status(200).send('ok');
     });
 }
@@ -1044,7 +1029,6 @@ const handleProjectsCreatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`project: ${projectObj._id} was created by user: ${req.session.user._id}`);
         return res.status(200).send(projectObj._id);
     });
 }
@@ -1075,6 +1059,11 @@ const handleProjectByIdPath = function (req, res) {
     });
 }
 // </Requests Function> -----------------------------------------------
+
+app.use(function (req, res, next) {
+    logger.log(`${req.method}: ${req.url} SESSION._id:${isActiveSession(req) ? JSON.stringify(req.session.user._id) : ' NO USER'} QUERY:${JSON.stringify(req.query)} PARAMS:${JSON.stringify(req.params)} BODY:${JSON.stringify(req.body)}`);
+    next();
+});
 
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
