@@ -53,7 +53,6 @@ $(function () {
         displayList();
     });
 
-    getUsersList();
     startLoad(usersLoadId, usersListId);
     getUsersList();
 });

@@ -16,18 +16,13 @@ block content
                     .input-field.col.s12.xl8
                         input#searchFilter.validate(type='text')
                         label(for='searchFilter')  #{__('users.searchFilter')}
-                    .input-field.col.s12.m6.xl2
-                        select#typeFilter
-                            option(value='-1') #{__('projects.all')}
-                            option(value='0') #{__('projects.type.kanban')}
-                            option(value='1') #{__('projects.type.scrum')}
-                        label #{__('projects.type.label')}
-                    .input-field.col.s12.m6.xl2
+                    .input-field.col.s12.xl4
                         select#statusFilter
                             option(value='-1') #{__('users.all')}
                             option(value='2') #{__('projects.status.active')}
-                            option(value='1') #{__('projects.status.draft')}
                             option(value='0') #{__('projects.status.closed')}
+                            if user.type === 1 || user.type === 3
+                                option(value='1') #{__('projects.status.draft')}
                         label #{__('projects.status.label')}
         .row
             .col.s6
@@ -37,14 +32,8 @@ block content
                 a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('actions.create')}
                     i.material-icons.right note_add
         .row
-            ul.collapsible(data-collapsible='expandable')
-                each project in projectsList
-                    li
-                        .collapsible-header
-                            i.material-icons folder
-                            | #{project.title}
-                        .collapsible-body
-                            span #{project.description}
+            #projectsLoad
+            ul.collection.scroll-auto.margin-0#projectsList
 
 block scripts
     script(src='/js/projects/projects.js')

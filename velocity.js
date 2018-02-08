@@ -77,6 +77,7 @@ const usersImportCompletePage = 'users/users-import-complete';
 const usersImportPage = 'users/users-import';
 
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
+const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
 
 // read input parameters
 process.argv.forEach(function (val, index, array) {
@@ -972,6 +973,31 @@ const handleProjectsPath = function (req, res) {
 }
 
 /**
+ * path to get the projects list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsListComponentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send({
+            user: req.session.user,
+            projectsList: projectsList,
+            projectsEntryHTML: projectsEntryComponent()
+        });
+    });
+}
+
+/**
  * path to get the projects add page
  *
  * @param {object} req req object
@@ -1064,6 +1090,7 @@ app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/projects', handleProjectsPath);
+app.get('/projectsListComponent', handleProjectsListComponentPath);
 app.get('/projects/add', handleProjectsAddPath);
 app.get('/settings', handleSettingsPath);
 app.get('/users', handleUsersPath);

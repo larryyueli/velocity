@@ -101,7 +101,11 @@ const translations = Object.freeze({
     user2: 'Collaborator',
     user3: 'Professor',
     user4: 'Teaching Assistant',
-    user5: 'Student'
+    user5: 'Student',
+
+    projectStatus0: 'Closed',
+    projectStatus1: 'Draft',
+    projectStatus2: 'Active'
 });
 
 const userIcons = Object.freeze({
@@ -239,7 +243,7 @@ $.fn.extend({
 
 /**
  * handle 401 and 404 erros
- * 
+ *
  * @param {String} data response data
  */
 function handle401And404(data) {
