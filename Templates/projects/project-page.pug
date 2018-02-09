@@ -33,9 +33,9 @@ block content
     .container
         .row
             .col.s12
-                .card.center
-                    .card-content
-                        #general
+                #general
+                    .card.center
+                        .card-content
                             .row
                                 include projects-add-content
                             .row
@@ -45,8 +45,10 @@ block content
                                     i.material-icons.right save
                                 button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour(type='submit') #{__('actions.activate')}
                                     i.material-icons.right send
-                        #users Test 2
-                        #groups
+                #users Test 2
+                #groups
+                    .card.center
+                        .card-content
                             .row
                                 .input-field.col.s12.m6
                                     select#groupStatus
@@ -58,8 +60,70 @@ block content
                                 .input-field.col.s6.m3
                                     input#groupSize(type='number', min=2, value=2)
                                 .input-field.col.s6.m3
-                                    button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button') #{__('actions.activate')}
+                                    button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
                                         i.material-icons.right send
+                    .card
+                        .card-content
+                            .row
+                                .col.s6
+                                    ul.collection
+                                        li.collection-item.dismissable
+                                            div
+                                            | Alvin
+                                            a.secondary-content(href='#!')
+                                                i.material-icons edit
+                                        li.collection-item.dismissable
+                                            div
+                                            | Alvin
+                                            a.secondary-content(href='#!')
+                                                i.material-icons edit
+                                        li.collection-item.dismissable
+                                            div
+                                            | Alvin
+                                            a.secondary-content(href='#!')
+                                                i.material-icons edit
+                                        li.collection-item.dismissable
+                                            div
+                                            | Alvin
+                                            a.secondary-content(href='#!')
+                                                i.material-icons edit
+                                .col.s6
+                                    ul.collapsible(data-collapsible='expandable')
+                                        li
+                                            .collapsible-header 
+                                                i.material-icons people
+                                                | group (2)
+                                            .collapsible-body.padding-0
+                                                ul.collection
+                                                    li.collection-item.dismissable
+                                                        div
+                                                        | Alvin
+                                                        a.secondary-content(href='#!')
+                                                            i.material-icons edit
+                                                    li.collection-item.dismissable
+                                                        div
+                                                        | Alvin
+                                                        a.secondary-content(href='#!')
+                                                            i.material-icons edit
+                                        li
+                                            .collapsible-header
+                                                i.material-icons people
+                                                | group (2)
+                                            .collapsible-body.padding-0
+                                                ul.collection
+                                                    li.collection-item.dismissable
+                                                        div
+                                                        | Alvin
+                                                        a.secondary-content(href='#!')
+                                                            i.material-icons edit
+                                                    li.collection-item.dismissable
+                                                        div
+                                                        | Alvin
+                                                        a.secondary-content(href='#!')
+                                                            i.material-icons edit
+                                                
+
+
 
 
 block scripts

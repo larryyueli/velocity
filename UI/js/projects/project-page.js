@@ -17,7 +17,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const descriptionId = '#description';
+const groupSelection = $('#groupSelect');
+const groupStatusId = '#groupStatus';
 
 $(function () {
     $('select').material_select();
+
+    groupSelection.click(() => {
+        const value = $(groupStatusId).val();
+
+        if (value === 0) {
+
+        } else if (value === 1 || value === 2) {
+            groupVisibility();
+        } else if (value === 3) {
+
+        }
+    });
 });
+
+function groupVisibility() {
+    
+}
