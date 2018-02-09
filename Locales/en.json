@@ -79,6 +79,11 @@
 		"on": "On",
 		"off": "Off"
 	},
+	"tickets": {
+		"create": "Create Ticket",
+		"ticketName": "Ticket name",
+		"title": "Velocity - Tickets"
+	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
 		"currentPassword": "Current Password",

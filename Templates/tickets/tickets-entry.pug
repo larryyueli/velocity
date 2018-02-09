@@ -1,0 +1,20 @@
+br
+.row
+    .col.s12
+        .card.center
+            .card-image
+                a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-colour.cancelButtonText-colour.left(href='/users')
+                    i.material-icons arrow_back
+            .card-content
+                h5.card-title #{__('tickets.create')}
+            .card-action
+                .row
+                    form.col.s12#userCreateTicket
+                        .row
+                            .col.s8
+                                .row
+                                    .input-field.col.s8
+                                        input.validate(type='text', name='title', required autofocus)
+                                        label(for='title') #{__('tickets.ticketName')}
+                            .col.s4
+                               

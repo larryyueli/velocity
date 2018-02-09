@@ -1,0 +1,12 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/profile.css')
+
+block title
+    title #{__('tickets.title')}
+
+block content
+    include ../navbar
+    .container
+        include tickets-entry
