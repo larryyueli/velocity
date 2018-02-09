@@ -1,11 +1,14 @@
 {
 	"actions": {
+		"activate": "Activate",
+		"apply": "Apply",
 		"cancel": "Cancel",
 		"create": "Create",
+		"delete": "Delete",
 		"done": "Done",
 		"edit": "Edit",
 		"import": "Import",
-		"reset":"Reset",
+		"reset": "Reset",
 		"save": "Save",
 		"submit": "Submit",
 		"update": "Update"
@@ -61,6 +64,50 @@
 		"selectPicture": "Select your profile picture",
 		"title": "Velocity - Profile"
 	},
+	"projects": {
+		"title": "Velocity - Projects",
+		"all": "All",
+		"type": {
+			"kanban": "Kanban",
+			"scrum": "Scrum",
+			"label": "Board Type"
+		},
+		"status": {
+			"active": "Active",
+			"draft": "Draft",
+			"closed": "Closed",
+			"label": "Status"
+		},
+		"form": {
+			"title": "Create a new Project",
+			"description": "Project creation form",
+			"fields": {
+				"title": "Title",
+				"description": "Description"
+			}
+		}
+	},
+	"projectPage": {
+		"tabs": {
+			"general": {
+				"title": "General"
+			},
+			"users": {
+				"title": "Users"
+			},
+			"groups": {
+				"groupStatus": "Group Status",
+				"types": {
+					"individual": "Individual",
+					"instructor": "Instructor select",
+					"randomize": "Randomize",
+					"student": "Student select"
+				},
+				"title": "Groups"
+			}
+		},
+		"title": "Velocity - Project"
+	},
 	"settings": {
 		"general": {
 			"active": "Class active (if users can log in):",
@@ -73,7 +120,7 @@
 			"permissionsEdit": "Users can edit",
 			"title": "User Settings"
 		},
-		"title":"Velocity - Settings"
+		"title": "Velocity - Settings"
 	},
 	"switch": {
 		"on": "On",
@@ -127,28 +174,5 @@
 		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
 		"usersImportFormPlaceHolder": "Select your csv file",
 		"usersImportFormTitle": "Accounts Import Form"
-	},
-	"projects": {
-		"title": "Velocity - Projects",
-		"all": "All",
-		"type": {
-			"kanban": "Kanban",
-			"scrum": "Scrum",
-			"label": "Board Type"
-		},
-		"status": {
-			"active": "Active",
-			"draft": "Draft",
-			"closed": "Closed",
-			"label": "Status"
-		},
-		"form": {
-			"title": "Create a new Project",
-			"description": "Project creation form",
-			"fields": {
-				"title": "Title",
-				"description": "Description"
-			}
-		}
 	}
 }

@@ -1,0 +1,66 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/project-page.css')
+    link(rel='stylesheet' href='/summernote/summernote.css')
+
+block title
+    title #{__('projectPage.title')}
+
+block content
+    include ../navbar
+    br
+    .container
+        .row
+            .col.s12
+                .row
+                    ul.tabs
+                        li.tab.col.s4
+                            a.noLineLink.active#option-general(href='#general')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
+                        li.tab.col.s4
+                            a.noLineLink#option-users(href='#users')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
+                        li.tab.col.s4
+                            a.noLineLink#option-groups(href='#groups')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
+    .container
+        .row
+            .col.s12
+                .card.center
+                    .card-content
+                        #general
+                            .row
+                                include projects-add-content
+                            .row
+                                button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-colour.cancelButtonText-colour(type='submit') #{__('actions.delete')}
+                                    i.material-icons.right close
+                                button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour(type='submit') #{__('actions.save')}
+                                    i.material-icons.right save
+                                button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour(type='submit') #{__('actions.activate')}
+                                    i.material-icons.right send
+                        #users Test 2
+                        #groups
+                            .row
+                                .input-field.col.s12.m6
+                                    select#groupStatus
+                                        option(value='0') #{__('projectPage.tabs.groups.types.individual')}
+                                        option(value='1') #{__('projectPage.tabs.groups.types.instructor')}
+                                        option(value='2') #{__('projectPage.tabs.groups.types.student')}
+                                        option(value='3') #{__('projectPage.tabs.groups.types.randomize')}
+                                    label  #{__('projectPage.tabs.groups.groupStatus')}
+                                .input-field.col.s6.m3
+                                    input#groupSize(type='number', min=2, value=2)
+                                .input-field.col.s6.m3
+                                    button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button') #{__('actions.activate')}
+                                        i.material-icons.right send
+
+
+block scripts
+    script(src='/js/projects/project-page.js')

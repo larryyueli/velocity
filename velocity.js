@@ -68,6 +68,7 @@ const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
 const projectsPage = 'projects/projects';
+const projectPagePage = 'projects/project-page';
 const projectsAddPage = 'projects/projects-add';
 const settingsPage = 'settings/settings';
 const usersPage = 'users/users';
@@ -1047,7 +1048,11 @@ const handleProjectByIdPath = function (req, res) {
             return res.status(500).render(pageNotFoundPage);
         }
 
-        return res.status(200).send(projectId);
+        return res.status(200).render(projectPagePage, {
+            user: req.session.user,
+            title: "dummy title",
+            description: "<p>dummy desc</p>"
+        });
     });
 }
 // </Requests Function> -----------------------------------------------

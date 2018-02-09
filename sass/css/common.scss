@@ -145,6 +145,17 @@
     }
 }
 
+.activateButtonBackground-colour {
+    @include themify($themes) {
+        background-color: themed('activateButtonBackground') !important;
+    }
+}
+
+.activateButtonText-colour {
+    @include themify($themes) {
+        color: themed('activateButtonText') !important;
+    }
+}
 // Themed elements
 // Switch
 .switch label input[type=checkbox]:checked+.lever {

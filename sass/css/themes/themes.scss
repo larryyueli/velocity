@@ -13,7 +13,9 @@ $themes: (
         cancelButtonBackground: #f44336,
         cancelButtonText: white,
         resetButtonBackground: #868686,
-        resetButtonText: white
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white
     ),
     ahmed: (
         primaryColour: #006888,
@@ -29,6 +31,8 @@ $themes: (
         cancelButtonBackground: #f44336,
         cancelButtonText: white,
         resetButtonBackground: #868686,
-        resetButtonText: white
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white
     )
 );
