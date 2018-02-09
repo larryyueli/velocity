@@ -10,54 +10,53 @@ br
             .card-action
                 .row
                     form.col.s12#userCreateTicket
-                        .row
-                            .col.s8
-                                .row
-                                    .input-field
-                                        input.validate(type='text', name='name', required autofocus)
-                                        label(for='name') #{__('tickets.ticketName')}
-                                .row
-                                    .input-field
-                                        textarea.validate(name="description")
-                                        label(for='description') #{__('tickets.ticketDescription')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.relatedTickets')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.sprints')}
-                            .col.s4
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.reporter')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.assigned')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.tags')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.points')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.release')}
-                                .row
-                                    .input-field
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.priority')}
+                        .col.s8
+                            .row
+                                .input-field
+                                    input.validate(type='text', name='name', required autofocus)
+                                    label(for='name') #{__('tickets.ticketName')}
+                            .row
+                                .input-field
+                                    input.validate(type='text', name='description')
+                                    label(for='description') #{__('tickets.ticketDescription')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.relatedTickets')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.sprints')}
+                        .col.s4
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.reporter')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.assigned')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.tags')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.points')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.release')}
+                            .row
+                                .input-field
+                                    select
+                                        option(value='' disabled selected)
+                                            | #{__('tickets.priority')}
