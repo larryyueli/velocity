@@ -5,7 +5,7 @@
 		"done": "Done",
 		"edit": "Edit",
 		"import": "Import",
-		"reset":"Reset",
+		"reset": "Reset",
 		"save": "Save",
 		"submit": "Submit",
 		"update": "Update"
@@ -73,15 +73,24 @@
 			"permissionsEdit": "Users can edit",
 			"title": "User Settings"
 		},
-		"title":"Velocity - Settings"
+		"title": "Velocity - Settings"
 	},
 	"switch": {
 		"on": "On",
 		"off": "Off"
 	},
 	"tickets": {
+		"assigned": "Assigned",
 		"create": "Create Ticket",
-		"ticketName": "Ticket name",
+		"points": "Points",
+		"priority": "Priority",
+		"relatedTickets": "Related Tickets",
+		"release": "Release",
+		"reporter": "Reporters",
+		"sprints": "Sprints",
+		"tags": "Tags",
+		"ticketDescription": "Ticket Description",
+		"ticketName": "Ticket Name",
 		"title": "Velocity - Tickets"
 	},
 	"userInformation": {
