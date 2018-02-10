@@ -98,6 +98,7 @@ const errors = Object.freeze({
     6003: 'failed to get a team, database issue',
     6004: 'team not found',
     6005: 'failed to update team, database issue',
+    6007: 'failed to create a team, missing information',
 });
 exports.errors = errors;
 
@@ -202,6 +203,13 @@ const projectStatus = Object.freeze({
     DELETED: { value: 3, text: 'deleted' }
 });
 exports.projectStatus = projectStatus;
+
+// common team status
+const teamStatus = Object.freeze({
+    DISABLED: { value: 0, text: 'disabled' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.teamStatus = teamStatus;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -342,4 +350,26 @@ const getDateFormatted = function (format) {
     return date().format(format);
 }
 exports.getDateFormatted = getDateFormatted;
+
+/**
+ * return an array of elements in the main array that are not in the secondary array
+ *
+ * @param {array} mainArray main array
+ * @param {array} secondaryArray secondary array
+ * @return {array} diff array
+ */
+const getArrayDiff = function (mainArray, secondaryArray) {
+    return mainArray.diff(secondaryArray);
+}
+exports.getArrayDiff = getArrayDiff;
+
+/**
+ * implement the diff operation on arrays
+ *
+ */
+Array.prototype.diff = function (a) {
+    return this.filter(function (i) {
+        return a.indexOf(i) < 0;
+    });
+};
 // </Global Function> -----------------------------------------------

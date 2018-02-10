@@ -15,15 +15,17 @@ block content
             include settings-users
     .row.center
         .container
-            button.waves-effect.waves-light.btn.col.s12.m4.resetButtonBackground-colour.resetButtonText-colour#resetButton
-                | #{__('actions.reset')}
-                i.material-icons.right replay
-            button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-colour.cancelButtonText-colour#cancelButton
-                | #{__('actions.cancel')}
-                i.material-icons.right close
-            button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#saveButton
-                | #{__('actions.save')}
-                i.material-icons.right save
+            .row
+                .container.center
+                    button.waves-effect.waves-light.btn.col.s12.m4.resetButtonBackground-colour.resetButtonText-colour#resetButton
+                        | #{__('actions.reset')}
+                        i.material-icons.right replay
+                    button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-colour.cancelButtonText-colour#cancelButton
+                        | #{__('actions.cancel')}
+                        i.material-icons.right close
+                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#saveButton
+                        | #{__('actions.save')}
+                        i.material-icons.right save
 
 block scripts
   script(src='/js/settings.js')

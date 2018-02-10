@@ -153,12 +153,53 @@ const updateProject = function (updateParams, callback) {
     db.updateProject(searchQuery, updateQuery,  callback);
 }
 
+/**
+ * find the list of teams under project
+ *
+ * @param {string} projectId project id
+ * @param {function} callback callback function
+ */
+const getProjectTeams = function (projectId, callback) {
+    db.getLimitedTeamsListSorted({projectId: projectId}, {}, 0, callback);
+}
+
+/**
+ * Create a team under a project
+ *
+ * @param {string} projectId project id
+ * @param {object} team team object to add
+ * @param {function} callback callback function
+ */
+const addTeamToProject = function (projectId, team, callback) {
+    if (typeof (projectId) !== common.variableTypes.STRING
+        || typeof (team.name) !== common.variableTypes.STRING
+        || !common.isValueInObjectWithKeys(team.status, 'value', common.teamStatus)
+        || !Array.isArray(team.members)) {
+        return callback(common.getError(6007), null);
+    }
+
+    const currentDate = common.getDate();
+    var teamToAdd = {};
+
+    teamToAdd._id = common.getUUID();
+    teamToAdd.projectId = projectId;
+    teamToAdd.name = team.name;
+    teamToAdd.ctime = currentDate;
+    teamToAdd.mtime = currentDate;
+    teamToAdd.status = team.status;
+    teamToAdd.members = team.members;
+
+    db.addTeam(teamToAdd, callback);
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
+exports.addTeamToProject = addTeamToProject;
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
 exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
+exports.getProjectTeams = getProjectTeams;
 exports.updateProject = updateProject;
 // </exports> ----------------------------------

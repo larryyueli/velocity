@@ -982,43 +982,32 @@ const handleProjectsGroupAssignPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    return res.status(200).send({
-        unassignedList: [
-            {
-                fname: "student",
-                lname: "test1",
-                username: "stude1",
-                type: 3
-            },
-            {
-                fname: "student",
-                lname: "test1",
-                username: "stude1",
-                type: 4
-            },
-            {
-                fname: "student",
-                lname: "test1",
-                username: "stude1",
-                type: 2
-            },
-            {
-                fname: "student",
-                lname: "test1",
-                username: "stude1",
-                type: 4
+    const projectId = req.query.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        const projectMembers = projectObj.members;
+        const fullUserObjectsList = users.getFullUsersList();
+        var usersList = [];
+        for (var i = 0; i < fullUserObjectsList.length; i++){
+            usersList.push(fullUserObjectsList[i]._id);
+        }
+        projects.getProjectTeams(projectId, function (err, teamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
             }
-        ],
-        groupList: [
-            {
-                name: "group1",
-                members: [
-                    {
-                        fname: "student",
-                        lname: "test1",
-                        username: "stude1",
-                        type: 2
-                    },
+
+            var unassignedList = common.getArrayDiff(usersList, projectMembers);
+            var groupList = teamsList;
+console.log(projectMembers); // TODO: remove
+console.log(unassignedList); // TODO: remove
+console.log(teamsList); // TODO: remove
+            return res.status(200).send({
+                unassignedList: [
                     {
                         fname: "student",
                         lname: "test1",
@@ -1035,43 +1024,80 @@ const handleProjectsGroupAssignPath = function (req, res) {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
-                        type: 3
-                    }
-                ]
-            },
-            {
-                name: "group2",
-                members: [
-                    {
-                        fname: "student",
-                        lname: "test1",
-                        username: "stude1",
                         type: 2
                     },
                     {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
-                        type: 3
-                    },
-                    {
-                        fname: "student",
-                        lname: "test1",
-                        username: "stude1",
                         type: 4
+                    }
+                ],
+                groupList: [
+                    {
+                        name: "group1",
+                        members: [
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 2
+                            },
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 3
+                            },
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 4
+                            },
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 3
+                            }
+                        ]
                     },
                     {
-                        fname: "student",
-                        lname: "test1",
-                        username: "stude1",
-                        type: 3
+                        name: "group2",
+                        members: [
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 2
+                            },
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 3
+                            },
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 4
+                            },
+                            {
+                                fname: "student",
+                                lname: "test1",
+                                username: "stude1",
+                                type: 3
+                            }
+                        ]
                     }
-                ]
-            }
-        ],
-        groupUserHTML: projectsGroupUserEntryComponent(),
-        groupHTML: projectsGroupEntryComponent(),
-        groupModalHTML: projectsGroupModalComponent()
+                ],
+                groupUserHTML: projectsGroupUserEntryComponent(),
+                groupHTML: projectsGroupEntryComponent(),
+                groupModalHTML: projectsGroupModalComponent()
+            });
+        });
     });
 }
 

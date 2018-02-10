@@ -49,7 +49,14 @@ const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
 const generalActivateButtonId = '#generalActivateButton';
 
+const navProjectsId = '#nav-projects';
+const navmProjectsId = '#navm-projects';
+
+const projectId = window.location.href.split('/project/')[1];
+
 $(function () {
+    $(navProjectsId).addClass('active');
+    $(navmProjectsId).addClass('active');
     $('select').material_select();
 
     $(typeFilterId).on('change', function () {
@@ -99,7 +106,6 @@ $(function () {
  * delete a project
  */
 function generalDeleteProject() {
-    const projectId = window.location.href.split('/project/')[1];
     $.ajax({
         type: 'DELETE',
         url: '/project/delete',
@@ -128,7 +134,6 @@ function generalSaveProject() {
 
     const titleText = $(titleId).val();
     const descriptionText = $(descriptionId).summernote('code');
-    const projectId = window.location.href.split('/project/')[1];
 
     $.ajax({
         type: 'POST',
@@ -154,7 +159,6 @@ function generalSaveProject() {
  * activate a project
  */
 function generalActivateProject() {
-    const projectId = window.location.href.split('/project/')[1];
     $.ajax({
         type: 'POST',
         url: '/project/activate',
@@ -184,6 +188,9 @@ function getGroupAssign() {
     $.ajax({
         type: 'GET',
         url: '/projectsGroupAssign',
+        data: {
+            projectId: projectId
+        },
         success: function (data) {
             groupUserRow = $(data.groupUserHTML);
             unassignedList = data.unassignedList;
