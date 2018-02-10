@@ -95,6 +95,7 @@ const translations = Object.freeze({
     mustImportOneFile: 'You can only import one file!',
     successfulFileUpload: 'File uploaded successfully',
     emptyProjectDescription: 'Please enter your description in the editor.',
+    selectGroup: 'Select Group',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

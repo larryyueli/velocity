@@ -20,6 +20,7 @@ var groupUserRow = null;
 var groupRow = null;
 var groupList = null;
 var unassignedList = null;
+var groupModalHTML = null;
 
 const assignedList = '#assignedList';
 const descriptionId = '#description';
@@ -39,6 +40,10 @@ const groupSizeFilterId = '#groupSizeFilter';
 const searchGroupFilterId = '#searchGroupFilter';
 const searchUserFilterId = '#searchUserFilter';
 const typeFilterId = '#typeFilter';
+
+const modalTriggerId = '#modalTrigger';
+const modalsSectionId = '#modals';
+const groupModalId = '#groupModal';
 
 $(function () {
     $('select').material_select();
@@ -98,7 +103,16 @@ function getGroupAssign() {
             unassignedList = data.unassignedList;
             groupRow = $(data.groupHTML);
             groupList = data.groupList;
-
+            groupModalHTML = $(data.groupModalHTML);
+            $(modalsSectionId).html(groupModalHTML);
+            $('.modal').modal({
+                dismissible: true,
+                ready: function(modal, trigger) {
+                    const username = trigger.parent().find(nameId).text();
+                    $(groupModalId).find(titleId).html(translate('selectGroup'));
+                    $(groupModalId).find(nameId).html(username);
+                }
+            });
             displayUnassignedList();
             displayGroupList();
         },
@@ -138,7 +152,7 @@ function fillUserRow(user) {
 
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
-
+    
     return bindedRow[0].outerHTML;
 }
 

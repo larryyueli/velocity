@@ -22,9 +22,10 @@ block content
                         h6 #{__('projects.form.description')}
                     .card-action
                         .row
-                            include projects-add-content
-                        .row
-                            button.waves-effect.waves-light.btn.primaryColour-background-colour(type='submit') #{__('actions.save')}
-                                i.material-icons.right save
+                            form.col.s12#projectAddform
+                                include projects-add-content
+                                .row
+                                    button.waves-effect.waves-light.btn.primaryColour-background-colour(type='submit') #{__('actions.save')}
+                                        i.material-icons.right save
 block scripts
     script(src='/js/projects/projects-add.js')

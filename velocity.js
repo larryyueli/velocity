@@ -79,6 +79,7 @@ const usersImportPage = 'users/users-import';
 
 const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
 const projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
+const projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
 const projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
@@ -1069,7 +1070,8 @@ const handleProjectsGroupAssignPath = function (req, res) {
             }
         ],
         groupUserHTML: projectsGroupUserEntryComponent(),
-        groupHTML: projectsGroupEntryComponent()
+        groupHTML: projectsGroupEntryComponent(),
+        groupModalHTML: projectsGroupModalComponent()
     });
 }
 
