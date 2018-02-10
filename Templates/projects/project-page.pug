@@ -65,10 +65,35 @@ block content
                     .card
                         .card-content
                             .row
-                                .col.s6
+                                .col.s12.m6
+                                    .row
+                                        form
+                                            .input-field.col.s12.l6.xl7
+                                                input#searchUserFilter.validate(type='text')
+                                                label(for='searchUserFilter')  #{__('users.searchFilter')}
+                                            .input-field.col.s12.l6.xl5
+                                                select#typeFilter
+                                                    if isClassMode
+                                                        option(value='-1') #{__('users.all')}
+                                                        option(value='5') #{__('userInformation.types.student')}
+                                                        option(value='4') #{__('userInformation.types.ta')}
+                                                        option(value='3') #{__('userInformation.types.professor')}
+                                                    if isCollabMode
+                                                        option(value='-1') #{__('users.all')}
+                                                        option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                                        option(value='2') #{__('userInformation.types.collaborator')}
+                                                label #{__('users.userType')}
                                     #unassignedLoad
                                     ul.collection#unassignedList
-                                .col.s6
+                                .col.s12.m6
+                                    .row
+                                        form
+                                            .input-field.col.s12.l6.xl7
+                                                input#searchGroupFilter.validate(type='text')
+                                                label(for='searchGroupFilter')  #{__('users.searchFilter')}
+                                            .input-field.col.s12.l6.xl5
+                                                input#groupSizeFilter.validate(type='number')
+                                                label(for='groupSizeFilter')  #{__('projectPage.tabs.groups.groupSize')}
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
                                         

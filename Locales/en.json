@@ -65,19 +65,7 @@
 		"title": "Velocity - Profile"
 	},
 	"projects": {
-		"title": "Velocity - Projects",
 		"all": "All",
-		"type": {
-			"kanban": "Kanban",
-			"scrum": "Scrum",
-			"label": "Board Type"
-		},
-		"status": {
-			"active": "Active",
-			"draft": "Draft",
-			"closed": "Closed",
-			"label": "Status"
-		},
 		"form": {
 			"title": "Create a new Project",
 			"description": "Project creation form",
@@ -85,6 +73,18 @@
 				"title": "Title",
 				"description": "Description"
 			}
+		},
+		"status": {
+			"active": "Active",
+			"draft": "Draft",
+			"closed": "Closed",
+			"label": "Status"
+		},
+		"title": "Velocity - Projects",
+		"type": {
+			"kanban": "Kanban",
+			"scrum": "Scrum",
+			"label": "Board Type"
 		}
 	},
 	"projectPage": {
@@ -96,6 +96,7 @@
 				"title": "Users"
 			},
 			"groups": {
+				"groupSize": "Group Size",
 				"groupStatus": "Group Status",
 				"types": {
 					"individual": "Individual",

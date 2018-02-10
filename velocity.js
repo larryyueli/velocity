@@ -984,39 +984,87 @@ const handleProjectsGroupAssignPath = function (req, res) {
     return res.status(200).send({
         unassignedList: [
           {
-            name: "student5"
+            fname: "student",
+            lname: "test1",
+            username: "stude1",
+            type: 3
           },
           {
-            name: "student6"
+            fname: "student",
+            lname: "test1",
+            username: "stude1",
+            type: 4
           },
           {
-            name: "student7"
+            fname: "student",
+            lname: "test1",
+            username: "stude1",
+            type: 2
           },
           {
-            name: "student8"
-          },
+            fname: "student",
+            lname: "test1",
+            username: "stude1",
+            type: 4
+          }
         ],
         groupList : [
             {
                 name: "group1",
                 members: [
                     {
-                        name: "student1"
-                    },
-                    {
-                        name: "student2"
-                    }
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 2
+                      },
+                      {
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 3
+                      },
+                      {
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 4
+                      },
+                      {
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 3
+                      }
                 ]
             },
             {
                 name: "group2",
                 members: [
                     {
-                        name: "student3"
-                    },
-                    {
-                        name: "student4"
-                    }
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 2
+                      },
+                      {
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 3
+                      },
+                      {
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 4
+                      },
+                      {
+                        fname: "student",
+                        lname: "test1",
+                        username: "stude1",
+                        type: 3
+                      }
                 ]
             }
         ],
@@ -1108,7 +1156,9 @@ const handleProjectByIdPath = function (req, res) {
         return res.status(200).render(projectPagePage, {
             user: req.session.user,
             title: "dummy title",
-            description: "<p>dummy desc</p>"
+            description: "<p>dummy desc</p>",
+            isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+            isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
         });
     });
 }

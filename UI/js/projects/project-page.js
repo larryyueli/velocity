@@ -27,6 +27,7 @@ const groupListId = '#groupList';
 const groupLoadId = '#groupLoad';
 const groupSelection = $('#groupSelect');
 const groupStatusId = '#groupStatus';
+const iconId = "#icon";
 const nameId = '#name';
 const titleId = '#title';
 const unassignedLoadId = '#unassignedLoad'
@@ -34,8 +35,33 @@ const unassignedUserListId = '#unassignedList';
 
 const optionGroups = $('#option-groups');
 
+const groupSizeFilterId = '#groupSizeFilter';
+const searchGroupFilterId = '#searchGroupFilter';
+const searchUserFilterId = '#searchUserFilter';
+const typeFilterId = '#typeFilter';
+
 $(function () {
     $('select').material_select();
+
+    $(typeFilterId).on('change', function () {
+        startLoad(unassignedLoadId, unassignedUserListId);
+        displayUnassignedList();
+    });
+
+    $(searchUserFilterId).on('keyup', function () {
+        startLoad(unassignedLoadId, unassignedUserListId);
+        displayUnassignedList();
+    });
+
+    $(searchGroupFilterId).on('keyup', function () {
+        startLoad(groupLoadId, groupListId);
+        displayGroupList();
+    });
+
+    $(groupSizeFilterId).on('keyup mouseup', function () {
+        startLoad(groupLoadId, groupListId);
+        displayGroupList();
+    });
 
     groupSelection.click(() => {
         const value = $(groupStatusId).val();
@@ -90,9 +116,9 @@ function displayUnassignedList() {
     var rowPopulate = '';
 
     unassignedList.forEach(user => {
-        //if (passFilter(project)) {
+        if (passUserFilter(user)) {
             $(unassignedUserListId).append(fillUserRow(user));
-        //}
+        }
     });
 
     if ($(unassignedUserListId).find('li').length === 0) {
@@ -110,23 +136,35 @@ function displayUnassignedList() {
 function fillUserRow(user) {
     var bindedRow = groupUserRow;
 
-    bindedRow.find(nameId).html(user.name);
+    bindedRow.find(iconId).html(userIcons[user.type]);
+    bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
 
     return bindedRow[0].outerHTML;
 }
 
+/**
+ * Filters a user object to match filter parameters
+ * 
+ * @param {Object} user 
+ */
+function passUserFilter(user) {
+    const type = parseInt($(typeFilterId)[0].value);
+    const filterText = $(searchUserFilterId)[0].value.trim().toLowerCase();
 
+    // User type filter
+    if (type !== -1 && type !== user.type) {
+        return false;
+    }
 
+    // User search filter
+    if (filterText !== '' &&
+        `${user.fname} ${user.lname} - ${user.username}`.toLowerCase().indexOf(filterText) === -1 &&
+        translate(`user${user.type}`).toLowerCase().indexOf(filterText) === -1) {
+        return false;
+    }
 
-
-
-
-
-
-
-
-
-
+    return true;
+}
 
 /**
  * displays the groups list
@@ -136,9 +174,9 @@ function displayGroupList() {
     var rowPopulate = '';
 
     groupList.forEach(group => {
-        //if (passFilter(project)) {
+        if (passGroupFilter(group)) {
             $(groupListId).append(fillGroupRow(group));
-        //}
+        }
     });
 
     if ($(groupListId).find('li').length === 0) {
@@ -158,11 +196,37 @@ function fillGroupRow(group) {
     bindedRow.find(assignedList).html('');
 
     bindedRow.find(titleId).html(`${group.name} (${group.members.length})`);
+
     group.members.forEach(user => {
-        //if (passFilter(project)) {
-            bindedRow.find(assignedList).append(fillUserRow(user));
-        //}
+        bindedRow.find(assignedList).append(fillUserRow(user));
     });
 
     return bindedRow[0].outerHTML;
+}
+
+/**
+ * Filters a group object to match filter parameters
+ * 
+ * @param {Object} group 
+ */
+function passGroupFilter(group) {
+    const size = parseInt($(groupSizeFilterId)[0].value);
+    const filterText = $(searchGroupFilterId)[0].value.trim().toLowerCase();
+
+    // Group size filter
+    if (size && group.members.length !== size) {
+        return false;
+    }
+
+    // Search filter
+    if (filterText !== '' &&
+        group.name.toLowerCase().indexOf(filterText) === -1 &&
+        group.members.every(user => {
+            return `${user.fname} ${user.lname} - ${user.username}`.toLowerCase().indexOf(filterText) === -1 &&
+                translate(`user${user.type}`).toLowerCase().indexOf(filterText) === -1
+        })) {
+        return false;
+    }
+
+    return true;
 }
