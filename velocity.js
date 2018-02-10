@@ -78,6 +78,7 @@ const usersImportCompletePage = 'users/users-import-complete';
 const usersImportPage = 'users/users-import';
 
 const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
+const projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
 const projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
@@ -975,7 +976,7 @@ const handleProjectsListComponentPath = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleProjectsGroupUnassignedListPath = function (req, res) {
+const handleProjectsGroupAssignPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
     }
@@ -983,19 +984,44 @@ const handleProjectsGroupUnassignedListPath = function (req, res) {
     return res.status(200).send({
         unassignedList: [
           {
-            name: "student1"
+            name: "student5"
           },
           {
-            name: "student2"
+            name: "student6"
           },
           {
-            name: "student3"
+            name: "student7"
           },
           {
-            name: "student4"
+            name: "student8"
           },
         ],
-        groupUserHTML: projectsGroupUserEntryComponent()
+        groupList : [
+            {
+                name: "group1",
+                members: [
+                    {
+                        name: "student1"
+                    },
+                    {
+                        name: "student2"
+                    }
+                ]
+            },
+            {
+                name: "group2",
+                members: [
+                    {
+                        name: "student3"
+                    },
+                    {
+                        name: "student4"
+                    }
+                ]
+            }
+        ],
+        groupUserHTML: projectsGroupUserEntryComponent(),
+        groupHTML: projectsGroupEntryComponent()
     });
 }
 
@@ -1104,7 +1130,7 @@ app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projectsListComponent', handleProjectsListComponentPath);
-app.get('/projectsGroupUnassignedList', handleProjectsGroupUnassignedListPath);
+app.get('/projectsGroupAssign', handleProjectsGroupAssignPath);
 app.get('/projects/add', handleProjectsAddPath);
 app.get('/settings', handleSettingsPath);
 app.get('/users', handleUsersPath);

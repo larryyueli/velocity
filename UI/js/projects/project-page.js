@@ -17,13 +17,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var groupUserRow = null;
+var groupRow = null;
+var groupList = null;
 var unassignedList = null;
 
+const assignedList = '#assignedList';
 const descriptionId = '#description';
+const groupListId = '#groupList';
+const groupLoadId = '#groupLoad';
 const groupSelection = $('#groupSelect');
 const groupStatusId = '#groupStatus';
+const nameId = '#name';
+const titleId = '#title';
+const unassignedLoadId = '#unassignedLoad'
 const unassignedUserListId = '#unassignedList';
-const nameId = "#name";
+
+const optionGroups = $('#option-groups');
 
 $(function () {
     $('select').material_select();
@@ -40,21 +49,32 @@ $(function () {
         }
     });
 
-    getUnassignedUsersList();
+    optionGroups.click(() => {
+        getGroupAssign();
+        startLoad(groupLoadId, groupListId);
+        startLoad(unassignedLoadId, unassignedUserListId);
+    });
 });
 
 function groupVisibility() {
 
 }
 
-function getUnassignedUsersList() {
+/**
+ * Gets the list on unassigned users and groups
+ */
+function getGroupAssign() {
     $.ajax({
         type: 'GET',
-        url: '/projectsGroupUnassignedList',
+        url: '/projectsGroupAssign',
         success: function (data) {
             groupUserRow = $(data.groupUserHTML);
             unassignedList = data.unassignedList;
-            displayList();
+            groupRow = $(data.groupHTML);
+            groupList = data.groupList;
+
+            displayUnassignedList();
+            displayGroupList();
         },
         error: function (data) {
             //TODO: add fail snackbar
@@ -62,7 +82,10 @@ function getUnassignedUsersList() {
     });
 }
 
-function displayList() {
+/**
+ * Displays the unassigned users list
+ */
+function displayUnassignedList() {
     $(unassignedUserListId).html('');
     var rowPopulate = '';
 
@@ -76,13 +99,70 @@ function displayList() {
         $(unassignedUserListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
     }
 
-    //endLoad(projectsLoadId, unassignedUserListId);
+    endLoad(unassignedLoadId, unassignedUserListId);
 }
 
+/**
+ * Fills a row entry of a user
+ * 
+ * @param {Object} user 
+ */
 function fillUserRow(user) {
     var bindedRow = groupUserRow;
 
     bindedRow.find(nameId).html(user.name);
+
+    return bindedRow[0].outerHTML;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * displays the groups list
+ */
+function displayGroupList() {
+    $(groupListId).html('');
+    var rowPopulate = '';
+
+    groupList.forEach(group => {
+        //if (passFilter(project)) {
+            $(groupListId).append(fillGroupRow(group));
+        //}
+    });
+
+    if ($(groupListId).find('li').length === 0) {
+        $(groupListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
+    }
+
+    endLoad(groupLoadId, groupListId);
+}
+
+/**
+ * fills an entry of a group
+ * 
+ * @param {Object} group 
+ */
+function fillGroupRow(group) {
+    var bindedRow = groupRow;
+    bindedRow.find(assignedList).html('');
+
+    bindedRow.find(titleId).html(`${group.name} (${group.members.length})`);
+    group.members.forEach(user => {
+        //if (passFilter(project)) {
+            bindedRow.find(assignedList).append(fillUserRow(user));
+        //}
+    });
 
     return bindedRow[0].outerHTML;
 }
