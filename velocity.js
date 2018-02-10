@@ -78,6 +78,7 @@ const usersImportCompletePage = 'users/users-import-complete';
 const usersImportPage = 'users/users-import';
 
 const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
+const projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
 // read input parameters
@@ -969,6 +970,36 @@ const handleProjectsListComponentPath = function (req, res) {
 }
 
 /**
+ * path to get the projects unassigned users list entry
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsGroupUnassignedListPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    return res.status(200).send({
+        unassignedList: [
+          {
+            name: "student1"
+          },
+          {
+            name: "student2"
+          },
+          {
+            name: "student3"
+          },
+          {
+            name: "student4"
+          },
+        ],
+        groupUserHTML: projectsGroupUserEntryComponent()
+    });
+}
+
+/**
  * path to get the projects add page
  *
  * @param {object} req req object
@@ -1073,6 +1104,7 @@ app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projectsListComponent', handleProjectsListComponentPath);
+app.get('/projectsGroupUnassignedList', handleProjectsGroupUnassignedListPath);
 app.get('/projects/add', handleProjectsAddPath);
 app.get('/settings', handleSettingsPath);
 app.get('/users', handleUsersPath);

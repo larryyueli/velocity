@@ -96,7 +96,7 @@ function fillRow(project) {
 
     bindedRow.find(iconId)[0].style.backgroundColor = color;
     bindedRow.find(iconId).html('assignment');
-    bindedRow.find(editLinkId)[0].href = `/project/${project._id}`;;
+    bindedRow.find(editLinkId)[0].href = `/project/${project._id}`;
     bindedRow.find(nameId).html(project.title);
     bindedRow.find(statusId).html(translate(`projectStatus${project.status}`));
     return bindedRow[0].outerHTML;
