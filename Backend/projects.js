@@ -108,6 +108,51 @@ const getProjectById = function (projectId, callback) {
     getProject({ _id: projectId }, callback);
 }
 
+
+/**
+ * update the projects information
+ *
+ * @param {object} updateParams modify parameters
+ * @param {function} callback callback function
+ */
+const updateProject = function (updateParams, callback) {
+    var searchQuery = {};
+    var updateQuery = {};
+    updateQuery.$set = {};
+
+    if (typeof (updateParams._id) === common.variableTypes.STRING) {
+        searchQuery = { _id: updateParams._id };
+    }
+
+    if (common.isEmptyObject(searchQuery)) {
+        return callback(common.getError(5006), null);
+    }
+
+    if (typeof (updateParams.title) === common.variableTypes.STRING) {
+        updateQuery.$set.title = updateParams.title;
+    }
+
+    if (typeof (updateParams.description) === common.variableTypes.STRING) {
+        updateQuery.$set.description = updateParams.description;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.projectStatus)) {
+        updateQuery.$set.status = updateParams.status;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set)) {
+        delete updateQuery.$set;
+    }
+
+    if (common.isEmptyObject(updateQuery)) {
+        return callback(common.getError(5006), null);
+    }
+
+    updateQuery.$set.mtime = common.getDate();
+
+    db.updateProject(searchQuery, updateQuery,  callback);
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.getProject = getProject;
@@ -115,4 +160,5 @@ exports.getFullProjectsList = getFullProjectsList;
 exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
+exports.updateProject = updateProject;
 // </exports> ----------------------------------

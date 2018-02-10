@@ -37,15 +37,13 @@ $(function () {
 
         const titleText = $(titleId).val();
         const descriptionText = $(descriptionId).summernote('code');
-        const status = 1;
 
         $.ajax({
             type: 'PUT',
             url: '/projects/create',
             data: {
                 title: titleText,
-                description: descriptionText,
-                status: status
+                description: descriptionText
             },
             success: function (data) {
                 window.location.href = `/project/${data}`;

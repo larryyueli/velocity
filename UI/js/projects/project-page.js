@@ -45,6 +45,10 @@ const modalTriggerId = '#modalTrigger';
 const modalsSectionId = '#modals';
 const groupModalId = '#groupModal';
 
+const generalDeleteButtonId = '#generalDeleteButton';
+const generalSaveButtonId = '#generalSaveButton';
+const generalActivateButtonId = '#generalActivateButton';
+
 $(function () {
     $('select').material_select();
 
@@ -80,12 +84,94 @@ $(function () {
         }
     });
 
+    $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
+    $(generalSaveButtonId).click(() => { generalSaveProject(); });
+    $(generalActivateButtonId).click(() => { generalActivateProject(); });
+
     optionGroups.click(() => {
         getGroupAssign();
         startLoad(groupLoadId, groupListId);
         startLoad(unassignedLoadId, unassignedUserListId);
     });
 });
+
+/**
+ * delete a project
+ */
+function generalDeleteProject() {
+    const projectId = window.location.href.split('/project/')[1];
+    $.ajax({
+        type: 'DELETE',
+        url: '/project/delete',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            //window.location.href = `/project/${data}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * update a project
+ */
+function generalSaveProject() {
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('emptyProjectDescription'));
+    }
+
+    const titleText = $(titleId).val();
+    const descriptionText = $(descriptionId).summernote('code');
+    const projectId = window.location.href.split('/project/')[1];
+
+    $.ajax({
+        type: 'POST',
+        url: '/project/update',
+        data: {
+            projectId: projectId,
+            title: titleText,
+            description: descriptionText
+        },
+        success: function (data) {
+            //window.location.href = `/project/${data}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * activate a project
+ */
+function generalActivateProject() {
+    const projectId = window.location.href.split('/project/')[1];
+    $.ajax({
+        type: 'POST',
+        url: '/project/activate',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            //window.location.href = `/project/${data}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
 
 function groupVisibility() {
 
@@ -107,7 +193,7 @@ function getGroupAssign() {
             $(modalsSectionId).html(groupModalHTML);
             $('.modal').modal({
                 dismissible: true,
-                ready: function(modal, trigger) {
+                ready: function (modal, trigger) {
                     const username = trigger.parent().find(nameId).text();
                     $(groupModalId).find(titleId).html(translate('selectGroup'));
                     $(groupModalId).find(nameId).html(username);
@@ -152,7 +238,7 @@ function fillUserRow(user) {
 
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
-    
+
     return bindedRow[0].outerHTML;
 }
 

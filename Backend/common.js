@@ -89,6 +89,7 @@ const errors = Object.freeze({
     5003: 'failed to get a project, database issue',
     5004: 'project not found',
     5005: 'failed to update projects, database issue',
+    5006: 'failed to update project, missing information',
 
     //6000 teams
     6000: 'missing requirement',

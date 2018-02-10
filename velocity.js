@@ -984,32 +984,32 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
     return res.status(200).send({
         unassignedList: [
-          {
-            fname: "student",
-            lname: "test1",
-            username: "stude1",
-            type: 3
-          },
-          {
-            fname: "student",
-            lname: "test1",
-            username: "stude1",
-            type: 4
-          },
-          {
-            fname: "student",
-            lname: "test1",
-            username: "stude1",
-            type: 2
-          },
-          {
-            fname: "student",
-            lname: "test1",
-            username: "stude1",
-            type: 4
-          }
+            {
+                fname: "student",
+                lname: "test1",
+                username: "stude1",
+                type: 3
+            },
+            {
+                fname: "student",
+                lname: "test1",
+                username: "stude1",
+                type: 4
+            },
+            {
+                fname: "student",
+                lname: "test1",
+                username: "stude1",
+                type: 2
+            },
+            {
+                fname: "student",
+                lname: "test1",
+                username: "stude1",
+                type: 4
+            }
         ],
-        groupList : [
+        groupList: [
             {
                 name: "group1",
                 members: [
@@ -1018,25 +1018,25 @@ const handleProjectsGroupAssignPath = function (req, res) {
                         lname: "test1",
                         username: "stude1",
                         type: 2
-                      },
-                      {
+                    },
+                    {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
                         type: 3
-                      },
-                      {
+                    },
+                    {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
                         type: 4
-                      },
-                      {
+                    },
+                    {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
                         type: 3
-                      }
+                    }
                 ]
             },
             {
@@ -1047,25 +1047,25 @@ const handleProjectsGroupAssignPath = function (req, res) {
                         lname: "test1",
                         username: "stude1",
                         type: 2
-                      },
-                      {
+                    },
+                    {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
                         type: 3
-                      },
-                      {
+                    },
+                    {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
                         type: 4
-                      },
-                      {
+                    },
+                    {
                         fname: "student",
                         lname: "test1",
                         username: "stude1",
                         type: 3
-                      }
+                    }
                 ]
             }
         ],
@@ -1157,11 +1157,105 @@ const handleProjectByIdPath = function (req, res) {
 
         return res.status(200).render(projectPagePage, {
             user: req.session.user,
-            title: "dummy title",
-            description: "<p>dummy desc</p>",
+            title: projectObj.title,
+            description: projectObj.description,
             isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
             isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
         });
+    });
+}
+
+/**
+ * path to update a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const projectId = req.body.projectId;
+    var newProject = {
+        _id: req.body.projectId,
+        title: req.body.title,
+        description: req.body.description
+    };
+    projects.updateProject(newProject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
+/**
+ * path to activate a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectActivatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const projectId = req.body.projectId;
+    var newProject = {
+        _id: req.body.projectId,
+        status: common.projectStatus.ACTIVE.value
+    };
+    projects.updateProject(newProject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
+/**
+ * path to delete a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectDeletePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const projectId = req.body.projectId;
+    var newProject = {
+        _id: req.body.projectId,
+        status: common.projectStatus.DELETED.value
+    };
+    projects.updateProject(newProject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        return res.status(200).send('ok');
     });
 }
 // </Requests Function> -----------------------------------------------
@@ -1197,6 +1291,8 @@ app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
+app.post('/project/activate', handleProjectActivatePath);
+app.post('/project/update', handleProjectUpdatePath);
 app.post('/settings/reset', handleSettingsResetPath);
 app.post('/settings/update', handleSettingsUpdatePath);
 app.post('/users/update', handleUsersUpdatePath);
@@ -1210,6 +1306,7 @@ app.put('/users/import/file', handleUsersImportFilePath);
 
 // <Delete Requests> ------------------------------------------------
 app.delete('/logout', handleLogoutPath);
+app.delete('/project/delete', handleProjectDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 // <notificationsWS Requests> ------------------------------------------------

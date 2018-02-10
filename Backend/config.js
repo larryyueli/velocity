@@ -41,7 +41,7 @@ exports.ssl_options = ssl_options;
 // database related configuration
 const default_db_host = process.env.DB_HOST || 'localhost';
 const default_db_port = process.env.DB_PORT || 27017;
-var default_db_name = process.env.DB_NAME || 'velocity_db_972154c0-0c6e-11e8-b39f-91511441d1cd';
+var default_db_name = process.env.DB_NAME || 'velocity_db_caa22a10-0e83-11e8-8b7c-813af375b811';
 
 exports.default_db_host = default_db_host;
 exports.default_db_port = default_db_port;

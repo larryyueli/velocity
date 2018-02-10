@@ -40,12 +40,13 @@ block content
                                 form.col.s12#projectAddform
                                     include projects-add-content
                                 .row
-                                    button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-colour.cancelButtonText-colour(type='submit') #{__('actions.delete')}
-                                        i.material-icons.right close
-                                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour(type='submit') #{__('actions.save')}
-                                        i.material-icons.right save
-                                    button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour(type='submit') #{__('actions.activate')}
-                                        i.material-icons.right send
+                                    .container.center
+                                        button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                            i.material-icons.right close
+                                        button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
+                                            i.material-icons.right save
+                                        button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
+                                            i.material-icons.right send
                 #users Test 2
                 #groups
                     .card.center
