@@ -442,8 +442,6 @@ const handleUsersPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    const fullUsersList = users.getFullUsersList();
-
     return res.status(200).render(usersPage, {
         user: req.session.user,
         isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
@@ -990,9 +988,9 @@ const handleProjectsGroupAssignPath = function (req, res) {
         }
 
         const projectMembers = projectObj.members;
-        const fullUserObjectsList = users.getFullUsersList();
+        const fullUserObjectsList = users.getActiveUsersList();
         var usersList = [];
-        for (var i = 0; i < fullUserObjectsList.length; i++){
+        for (var i = 0; i < fullUserObjectsList.length; i++) {
             usersList.push(fullUserObjectsList[i]._id);
         }
         projects.getProjectTeams(projectId, function (err, teamsList) {
@@ -1002,10 +1000,26 @@ const handleProjectsGroupAssignPath = function (req, res) {
             }
 
             var unassignedList = common.getArrayDiff(usersList, projectMembers);
+            var unassignedObjectsList = [];
             var groupList = teamsList;
-console.log(projectMembers); // TODO: remove
-console.log(unassignedList); // TODO: remove
-console.log(teamsList); // TODO: remove
+
+            for (var i = 0; i < fullUserObjectsList.length; i++) {
+                var innerUser = fullUserObjectsList[i];
+                if (unassignedList.indexOf(innerUser._id) !== -1) {
+                    unassignedObjectsList.push({
+                        fname: innerUser.fname,
+                        lname: innerUser.lname,
+                        username: innerUser.username,
+                        type: innerUser.type
+                    });
+                }
+            }
+
+            console.log(projectMembers); // TODO: remove
+            console.log(unassignedList); // TODO: remove
+            console.log(unassignedObjectsList); // TODO: remove
+            console.log(teamsList); // TODO: remove
+
             return res.status(200).send({
                 unassignedList: [
                     {
@@ -1116,8 +1130,6 @@ const handleProjectsAddPath = function (req, res) {
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         return res.status(403).render(pageNotFoundPage);
     }
-
-    const fullUsersList = users.getFullUsersList();
 
     return res.status(200).render(projectsAddPage, {
         user: req.session.user,

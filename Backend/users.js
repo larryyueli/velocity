@@ -323,8 +323,24 @@ const getFullUsersList = function () {
     return cachedUsersList;
 }
 
+/**
+ * get the active users list (cached)
+ *
+ * @return {array} full users list
+ */
+const getActiveUsersList = function () {
+    var activeUserList = [];
+    for (var i = 0; i < cachedUsersList.length; i++) {
+        if (cachedUsersList[i].status === common.userStatus.ACTIVE.value) {
+            activeUserList.push(cachedUsersList[i]);
+        }
+    }
+    return activeUserList;
+}
+
 // <exports> -----------------------------------
 exports.addUser = addUser;
+exports.getActiveUsersList = getActiveUsersList;
 exports.getFullUsersList = getFullUsersList;
 exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;
