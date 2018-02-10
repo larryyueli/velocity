@@ -96,6 +96,9 @@ const translations = Object.freeze({
     successfulFileUpload: 'File uploaded successfully',
     emptyProjectDescription: 'Please enter your description in the editor.',
     selectGroup: 'Select Group',
+    activatedProject: 'Project has been activated',
+    deletedProject: 'Project has been deleted',
+    updatedProject: 'Project has been updated',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

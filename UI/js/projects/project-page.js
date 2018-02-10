@@ -107,7 +107,7 @@ function generalDeleteProject() {
             projectId: projectId
         },
         success: function (data) {
-            //window.location.href = `/project/${data}`;
+            window.location.href = '/projects';
         },
         error: function (data) {
             handle401And404(data);
@@ -139,7 +139,7 @@ function generalSaveProject() {
             description: descriptionText
         },
         success: function (data) {
-            //window.location.href = `/project/${data}`;
+            successSnackbar(translate('updatedProject'));
         },
         error: function (data) {
             handle401And404(data);
@@ -162,7 +162,7 @@ function generalActivateProject() {
             projectId: projectId
         },
         success: function (data) {
-            //window.location.href = `/project/${data}`;
+            successSnackbar(translate('activatedProject'));
         },
         error: function (data) {
             handle401And404(data);

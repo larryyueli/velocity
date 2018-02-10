@@ -1119,7 +1119,7 @@ const handleProjectsCreatePath = function (req, res) {
     const newProject = {
         title: req.body.title,
         description: req.body.description,
-        status: parseInt(req.body.status),
+        status: common.projectStatus.DRAFT.value,
         admins: [req.session.user._id]
     };
 

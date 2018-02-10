@@ -62,7 +62,7 @@ block content
                                             option(value='1', selected=editUser.status===commonUserStatus.PENDING.value) #{__('userInformation.status.pending')}
                                             option(value='0', selected=editUser.status===commonUserStatus.DISABLED.value) #{__('userInformation.status.disabled')}
                                 .row
-                                    button.waves-effect.waves-light.btn.primaryColour-background-colour(type='submit') #{__('actions.submit')}
-                                        i.material-icons.right send
+                                    button.waves-effect.waves-light.btn.primaryColour-background-colour(type='submit') #{__('actions.save')}
+                                        i.material-icons.right save
 block scripts
     script(src='/js/users/users-edit.js')
