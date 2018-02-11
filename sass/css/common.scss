@@ -44,6 +44,10 @@
     vertical-align: middle;
 }
 
+.multiline {
+    white-space: pre-wrap;
+}
+
 .noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
     text-decoration: none;
 }

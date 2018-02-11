@@ -1,5 +1,7 @@
 li.collection-item.dismissable
     i.material-icons.circle.vertical-align-middle.padding-right-5#icon
     span.vertical-align-middle#name
-    a.secondary-content.modal-trigger(href='#groupModal')#modalTrigger
+    a.secondary-content.pointer(onclick='removeFromGroup($(this))')#remove
+        i.material-icons close
+    a.secondary-content.modal-trigger.pointer(href='#groupModal', onclick='displayGroupsModalList($(this))')#modalTrigger
         i.material-icons edit

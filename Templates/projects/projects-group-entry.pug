@@ -1,6 +1,7 @@
-li
-    .collapsible-header
+li#groupMembersList
+    .collapsible-header#header(onclick='setActive($(this))')
         i.material-icons assignment_ind
         #title
-    .collapsible-body.padding-0
+        #groupSize
+    .collapsible-body.padding-0#groupBody
         ul.collection#assignedList

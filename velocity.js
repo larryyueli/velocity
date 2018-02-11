@@ -80,6 +80,7 @@ const usersImportPage = 'users/users-import';
 const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
 const projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
 const projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
+const projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
 const projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
@@ -1030,20 +1031,20 @@ const handleProjectsGroupAssignPath = function (req, res) {
                     },
                     {
                         fname: "student",
-                        lname: "test1",
-                        username: "stude1",
+                        lname: "test2",
+                        username: "stude2",
                         type: 4
                     },
                     {
                         fname: "student",
-                        lname: "test1",
-                        username: "stude1",
+                        lname: "test3",
+                        username: "stude3",
                         type: 2
                     },
                     {
                         fname: "student",
-                        lname: "test1",
-                        username: "stude1",
+                        lname: "test4",
+                        username: "stude4",
                         type: 4
                     }
                 ],
@@ -1053,26 +1054,26 @@ const handleProjectsGroupAssignPath = function (req, res) {
                         members: [
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test5",
+                                username: "stude5",
                                 type: 2
                             },
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test6",
+                                username: "stude6",
                                 type: 3
                             },
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test7",
+                                username: "stude7",
                                 type: 4
                             },
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test8",
+                                username: "stude8",
                                 type: 3
                             }
                         ]
@@ -1082,34 +1083,30 @@ const handleProjectsGroupAssignPath = function (req, res) {
                         members: [
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test9",
+                                username: "stude9",
                                 type: 2
                             },
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test10",
+                                username: "stude10",
                                 type: 3
                             },
                             {
                                 fname: "student",
-                                lname: "test1",
-                                username: "stude1",
+                                lname: "test11",
+                                username: "stude11",
                                 type: 4
-                            },
-                            {
-                                fname: "student",
-                                lname: "test1",
-                                username: "stude1",
-                                type: 3
                             }
                         ]
                     }
                 ],
+                groupSize: 4,
                 groupUserHTML: projectsGroupUserEntryComponent(),
                 groupHTML: projectsGroupEntryComponent(),
-                groupModalHTML: projectsGroupModalComponent()
+                groupModalHTML: projectsGroupModalComponent(),
+                groupModalEntryHTML: projectsGroupModalEntryComponent()
             });
         });
     });
