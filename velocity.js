@@ -102,6 +102,7 @@ i18n.configure({
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/Templates`);
 
+app.use('/sweetalert', express.static(`${__dirname}/node_modules/sweetalert/dist`));
 app.use('/summernote', express.static(`${__dirname}/node_modules/summernote/dist`));
 app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));

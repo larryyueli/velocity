@@ -27,3 +27,31 @@
         right: 15px;
     }
 }
+
+#deleteGroup {
+    color: black;
+    position: absolute;
+    right: 20px !important;
+
+    &:hover {
+        color: rgb(63, 63, 63);
+    }
+}
+
+.swal-overlay {
+    background-color: rgba(182, 58, 58, 0.212);
+  }
+
+.swal-button--cancel {
+    @extend .resetButtonBackground-background-colour;
+    @extend .resetButtonText-colour;
+}
+
+.swal-button--confirm {
+    @extend .cancelButtonBackground-background-colour;
+    @extend .cancelButtonText-colour;
+}
+
+.swal-text {
+    text-align: center;
+}

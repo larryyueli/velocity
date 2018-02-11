@@ -1,7 +1,9 @@
 li#groupMembersList
     .collapsible-header#header(onclick='setActive($(this))')
         i.material-icons assignment_ind
-        #title
+        .padding-right-5#title
         #groupSize
+        a.right.pointer.deleteGroup(onclick='deleteGroup($(this))')#deleteGroup
+            i.material-icons close
     .collapsible-body.padding-0#groupBody
         ul.collection#assignedList
