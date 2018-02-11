@@ -1272,19 +1272,23 @@ const handleProjectTeamsUpdatePath = function (req, res) {
     }
 
     const projectId = req.body.projectId;
-    var newProject = {
-        _id: req.body.projectId,
-        title: req.body.title,
-        description: req.body.description
-    };
-    projects.updateProjectTeams(newProject, function (err, result) {
-        if (err) {
-            logger.error(JSON.stringify(err));
-            return res.status(400).send(err);
-        }
+    const teamsList = req.body.teamsList;
 
-        return res.status(200).send('ok');
-    });
+    if (!Array.isArray(teamsList)) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    var updateTeamsCounter = 0;
+    for (var i = 0; i < teamsList.length; i++) {
+        const team = teamsList[i];
+        projects.updateTeamInProject(projectId, team, function (err, result) {
+            updateTeamsCounter++;
+            if (updateTeamsCounter === teamsList.length) {
+                return res.status(200).send('ok');
+            }
+        });
+    }
 }
 
 /**

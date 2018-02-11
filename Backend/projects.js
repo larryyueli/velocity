@@ -164,21 +164,6 @@ const getProjectTeams = function (projectId, callback) {
 }
 
 /**
- * update a project's teams
- *
- * @param {string} projectId project id
- * @param {array} teamsList teams list
- * @param {function} callback callback function
- */
-const updateProjectTeams = function (projectId, teamsList, callback) {
-    var members = [];
-    for (var i = 0; i < teamsList.length; i++) {
-        var team = teamsList[i];
-        
-    }
-}
-
-/**
  * Create a team under a project
  *
  * @param {string} projectId project id
@@ -190,7 +175,7 @@ const addTeamToProject = function (projectId, team, callback) {
         || typeof (team.name) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(team.status, 'value', common.teamStatus)
         || !Array.isArray(team.members)) {
-        return callback(common.getError(6007), null);
+        return callback(common.getError(6006), null);
     }
 
     const currentDate = common.getDate();
@@ -207,6 +192,57 @@ const addTeamToProject = function (projectId, team, callback) {
     db.addTeam(teamToAdd, callback);
 }
 
+/**
+ * Update a team under a project
+ *
+ * @param {string} projectId project id
+ * @param {object} updateQuery team object to add
+ * @param {function} callback callback function
+ */
+const updateTeamInProject = function (projectId, updateQuery, callback) {
+    var searchQuery = {};
+    searchQuery.$and = {};
+    var updateQuery = {};
+    updateQuery.$set = {};
+
+    if (typeof (projectId) === common.variableTypes.STRING) {
+        searchQuery.projectId = projectId;
+    }
+
+    if (common.isEmptyObject(searchQuery)) {
+        return callback(common.getError(6007), null);
+    }
+
+    searchQuery.$and = {
+        projectId: projectId,
+        '_id': (typeof (updateQuery._id) === common.variableTypes.STRING) ? updateQuery._id : common.getUUID()
+    };
+
+    if (typeof (updateQuery.name) === common.variableTypes.STRING) {
+        updateQuery.$set.name = updateParams.name;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.teamStatus)) {
+        updateQuery.$set.status = updateParams.status;
+    }
+
+    if (Array.isArray(updateParams.members)) {
+        updateQuery.$set.members = updateParams.members;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set)) {
+        delete updateQuery.$set;
+    }
+
+    if (common.isEmptyObject(updateQuery)) {
+        return callback(common.getError(6007), null);
+    }
+
+    updateQuery.$set.mtime = common.getDate();
+
+    db.updateTeam(searchQuery, updateQuery, callback);
+}
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.addTeamToProject = addTeamToProject;
@@ -217,5 +253,5 @@ exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.getProjectTeams = getProjectTeams;
 exports.updateProject = updateProject;
-exports.updateProjectTeams = updateProjectTeams;
+exports.updateTeamInProject = updateTeamInProject;
 // </exports> ----------------------------------

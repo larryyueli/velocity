@@ -98,7 +98,8 @@ const errors = Object.freeze({
     6003: 'failed to get a team, database issue',
     6004: 'team not found',
     6005: 'failed to update team, database issue',
-    6007: 'failed to create a team, missing information',
+    6006: 'failed to create a team, missing information',
+    6007: 'failed to update a team, missing information',
 });
 exports.errors = errors;
 
