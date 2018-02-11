@@ -52,16 +52,20 @@ block content
                     .card.center
                         .card-content
                             .row
-                                .input-field.col.s12.m6
+                                .input-field.col.s12.m5
                                     select#groupStatus
-                                        option(value='0') #{__('projectPage.tabs.groups.types.individual')}
-                                        option(value='1') #{__('projectPage.tabs.groups.types.instructor')}
-                                        option(value='2') #{__('projectPage.tabs.groups.types.student')}
-                                        option(value='3') #{__('projectPage.tabs.groups.types.randomize')}
+                                        option(value='0')#groupType0 #{__('projectPage.tabs.groups.types.individual')}
+                                        option(value='1')#groupType1 #{__('projectPage.tabs.groups.types.instructor')}
+                                        option(value='2')#groupType2 #{__('projectPage.tabs.groups.types.student')}
+                                        option(value='3')#groupType3 #{__('projectPage.tabs.groups.types.randomize')}
                                     label  #{__('projectPage.tabs.groups.groupStatus')}
-                                .input-field.col.s6.m3
-                                    input#groupSize(type='number', min=2, value=2)
-                                .input-field.col.s6.m3
+                                .input-field.col.s6.m2
+                                    input#groupSize(type='number', min=2, value)
+                                    label#groupSizeLabel  #{__('projectPage.tabs.groups.groupSize')}
+                                .input-field.col.s6.m2
+                                    input#groupPrefix(type='text')
+                                    label#groupPrefixLabel  #{__('projectPage.tabs.groups.groupPrefix')}
+                                .input-field.col.s12.m3
                                     button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
                                         i.material-icons.right send
                     .card
@@ -85,20 +89,19 @@ block content
                                                         option(value='1') #{__('userInformation.types.collaboratorAdmin')}
                                                         option(value='2') #{__('userInformation.types.collaborator')}
                                                 label #{__('users.userType')}
+                                    button.center.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
                                     #unassignedLoad
                                     ul.collection#unassignedList
                                 .col.s12.l6
                                     .row
                                         form
-                                            .input-field.col.s12.l5.xl6
+                                            .input-field.col.s12.l6
                                                 input#searchGroupFilter.validate(type='text')
                                                 label(for='searchGroupFilter')  #{__('users.searchFilter')}
-                                            .input-field.col.s12.m10.l5.xl4
+                                            .input-field.col.s12.l6
                                                 input#groupSizeFilter.validate(type='number')
                                                 label(for='groupSizeFilter')  #{__('projectPage.tabs.groups.groupSize')}
-                                            .col.s2.m2.offset-s5.offset-m0
-                                                a.btn-floating.btn-large.waves-effect.waves-light.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(href='#groupCreateModal')
-                                                    i.material-icons add
+                                    button.center.waves-effect.waves-light.btn.col.s12.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
 
