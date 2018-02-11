@@ -1104,6 +1104,8 @@ const handleProjectsGroupAssignPath = function (req, res) {
                     }
                 ],
                 groupSize: 4,
+                groupSelectionType: 2,
+                groupPrefix: 'group-',
                 groupUserHTML: projectsGroupUserEntryComponent(),
                 groupHTML: projectsGroupEntryComponent(),
                 groupModalHTML: projectsGroupModalComponent(),

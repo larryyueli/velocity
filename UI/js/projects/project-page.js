@@ -23,6 +23,8 @@ var unassignedList = null;
 var groupModalHTML = null;
 var groupModalEntryHTML = null;
 var groupSize = null;
+var groupPrefix = '';
+var groupSelectType = null;
 
 const assignedList = '#assignedList';
 const createGroupButtonId = '#createGroupButton';
@@ -35,14 +37,18 @@ const groupLoadId = '#groupLoad';
 const groupMembersList = '#groupMembersList';
 const groupModalListId = '#groupModalList';
 const groupNameId = '#groupName';
+const groupPrefixId = '#groupPrefix';
+const groupPrefixLabelId = '#groupPrefixLabel';
 const groupSelection = $('#groupSelect');
 const groupSizeId = '#groupSize';
+const groupSizeLabelId = '#groupSizeLabel';
 const groupStatusId = '#groupStatus';
 const headerId = '#header';
 const iconId = "#icon";
 const joinLinkId = '#joinLink';
 const membersId = '#members';
 const nameId = '#name';
+const randomizeRemainingId = '#randomizeRemaining';
 const removeId = '#remove';
 const newGroupNameId = '#newGroupName';
 const sizeId = '#size'
@@ -96,14 +102,62 @@ $(function () {
         displayGroupList();
     });
 
+    $(randomizeRemainingId).click(() => {
+        if (!groupSize || groupSize < 1) {
+            failSnackbar(translate('groupSizeCantBeZero'));
+        } else {
+            swal({
+                text: translate('randomizeRemainingWarning'),
+                icon: 'warning',
+                dangerMode: false,
+                buttons: [translate('cancel'), translate('randomize')]
+            }).then((randomize) => {
+                if (randomize) {
+                    randomizeRemaining();
+                }
+            });
+        }
+    });
+
+    $(groupStatusId).on('change', function() {
+        groupSelectType = parseInt($(groupStatusId).val());
+
+        if (groupSelectType === 0) {
+            $(groupSizeId).val(1);
+            $(groupSizeId).prop('disabled', true);
+        } else if (groupSelectType === 1 || groupSelectType === 2) {
+            $(groupSizeId).prop('disabled', false);
+        } else if (groupSelectType === 3) {
+            $(groupSizeId).prop('disabled', false);
+        }
+    });
+
     groupSelection.click(() => {
-        const value = $(groupStatusId).val();
+        groupSelectType = parseInt($(groupStatusId).val());
+        groupSize = parseInt($(groupSizeId).val());
+        groupPrefix = $(groupPrefixId).val();
+    
+        if (!groupSize || groupSize < 1) {
+            failSnackbar(translate('groupSizeCantBeZero'));
+        } else {
+            swal({
+                text: translate('deletePremadeGroups'),
+                icon: 'warning',
+                dangerMode: true,
+                buttons: [translate('cancel'), translate('delete')]
+            }).then((deleteGroups) => {
+                if (deleteGroups) {
+                    emptyGroups();
+                }
 
-        if (value === 0) {
-
-        } else if (value === 1 || value === 2) {
-            groupVisibility();
-        } else if (value === 3) {
+                if (groupSelectType === 0) {
+                    individualMode();
+                } else if (groupSelectType === 1 || groupSelectType === 2) {
+                    groupVisibility();
+                } else if (groupSelectType === 3) {
+                    randomizeRemaining();
+                }
+            });
 
         }
     });
@@ -120,11 +174,7 @@ $(function () {
         } else if (groupList.find(group => group.name === groupName)) {
             failSnackbar(translate('groupNamealreadyExists'));
         } else {
-            groupList.push({
-                isActive: false,
-                members: [],
-                name: groupName
-            });
+            groupList.push(makeGroupObject(false, [], groupName));
 
             $(groupCreateModalId).modal('close');
             startLoad(groupLoadId, groupListId);
@@ -142,6 +192,21 @@ $(function () {
         startLoad(unassignedLoadId, unassignedUserListId);
     });
 });
+
+/**
+ * Returns a group object based on the given parameters
+ * 
+ * @param {Boolean} active 
+ * @param {List} members 
+ * @param {String} groupName 
+ */
+function makeGroupObject(active, members, groupName) {
+    return {
+        isActive: active,
+        members: members,
+        name: groupName
+    }
+}
 
 /**
  * delete a project
@@ -218,8 +283,73 @@ function generalActivateProject() {
     });
 }
 
-function groupVisibility() {
+function emptyGroups() {
+    groupList.forEach(group => {
+        group.members.forEach(user => {
+            unassignedList.push(user);
+        });
+    });
 
+    groupList = [];
+}
+
+function individualMode() {
+    groupSize = 1;
+    var tempGroup = [];
+    var random = null;
+    var groupNumber = 0;
+
+    while (unassignedList.length) {
+        groupNumber += 1;
+        random = unassignedList[Math.floor(Math.random() * unassignedList.length)];
+        unassignedList.splice(unassignedList.indexOf(random), 1);
+        groupList.push(makeGroupObject(false, [random], getUntakenName(`${groupPrefix}${groupNumber}`)));
+    }
+
+    reloadAllLists();
+}
+
+function getUntakenName(name) {
+    var customName = name;
+    var counter = 0;
+
+    while (groupList.find(group => group.name === customName)) {
+        customName = `${name} (${++counter})`;
+    }
+
+    return customName;
+}
+
+function groupVisibility() {
+    reloadAllLists();
+}
+
+function randomizeRemaining() {
+    randomizeUnassigned();
+    reloadAllLists();
+}
+
+function randomizeUnassigned() {
+    var tempGroup = [];
+    var random = null;
+    var groupNumber = 0;
+
+    while (unassignedList.length) {
+        tempGroup = [];
+        groupNumber += 1;
+
+        for (var i = 0; i < groupSize; i++) {
+            if (unassignedList.length === 0) {
+                break;
+            }
+
+            random = unassignedList[Math.floor(Math.random() * unassignedList.length)];
+            tempGroup.push(random)
+            unassignedList.splice(unassignedList.indexOf(random), 1);
+        }
+
+        groupList.push(makeGroupObject(false, tempGroup, `${groupPrefix}${groupNumber}`));
+    }
 }
 
 /**
@@ -243,6 +373,15 @@ function getGroupAssign() {
             groupModalHTML = $(data.groupModalHTML);
             groupModalEntryHTML = $(data.groupModalEntryHTML);
             groupSize = data.groupSize;
+            $(groupSizeId).val(groupSize);
+            $(groupSizeLabelId).addClass('active');
+            groupSelectType = data.groupSelectionType;
+            $(groupStatusId).val(groupSelectType);
+            $(groupStatusId).material_select();
+            groupPrefix = data.groupPrefix
+            $(groupPrefixId).val(groupPrefix);
+            $(groupPrefixLabelId).addClass('active');
+
             $(modalsSectionId).html(groupModalHTML);
             $('.modal').modal({
                 dismissible: true,
@@ -372,7 +511,7 @@ function fillGroupRow(group) {
 
     bindedRow.find(headerId)[0].style.backgroundColor = color;
     bindedRow.find(titleId).html(group.name);
-    bindedRow.find(groupSizeId).html(`(${group.members.length})`);
+    bindedRow.find(groupSizeId).html(`(${group.members.length}/${groupSize})`);
     
     group.members.forEach(user => {
         bindedRow.find(assignedList).append(fillUserRow(user, false));
@@ -577,7 +716,7 @@ function setActive(clicked) {
         return group.name === groupName;
     });
 
-    if (clickedGroup && clickedGroup.isActive) {
+    if (clickedGroup) {
         clickedGroup.isActive = !clicked.hasClass('active');
     }
 }
@@ -597,11 +736,11 @@ function deleteGroup(clicked) {
     if (groupToDelete.members.length) {
         swal({
             text: translate('groupMembersDelete'),
-            icon: "warning",
+            icon: 'warning',
             dangerMode: true,
             buttons: [translate('cancel'), translate('delete')]
-        }).then(willSearch => {
-            if (willSearch) {
+        }).then(canDelete => {
+            if (canDelete) {
                 groupToDelete.members.forEach(user => {
                     unassignedList.push(user);
                 });
@@ -609,7 +748,7 @@ function deleteGroup(clicked) {
                 groupList.splice(groupList.indexOf(groupToDelete), 1);
                 reloadAllLists();
             }
-        })
+        });
     } else {
         groupList.splice(groupList.indexOf(groupToDelete), 1);
         reloadAllLists();

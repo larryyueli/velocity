@@ -8,6 +8,7 @@
 		"done": "Done",
 		"edit": "Edit",
 		"import": "Import",
+		"randomizeRemaining": "Randomize remaining",
 		"reset": "Reset",
 		"save": "Save",
 		"submit": "Submit",
@@ -96,6 +97,7 @@
 				"title": "Users"
 			},
 			"groups": {
+				"groupPrefix": "Group Prefix",
 				"groupName": "Group Name",
 				"groupSize": "Group Size",
 				"groupStatus": "Group Status",

@@ -104,8 +104,12 @@ const translations = Object.freeze({
     groupNameCantBeEmpty: 'Group name can\'t be empty',
     groupNamealreadyExists: 'Group name already Exists',
     groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
+    groupSizeCantBeZero: 'Group size must be a positive integer',
+    deletePremadeGroups: 'Would you like to delete the groups that are already made?',
+    randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
     delete: 'Delete',
     cancel: 'Cancel',
+    randomize: 'Randomize',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',
