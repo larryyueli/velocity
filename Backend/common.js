@@ -372,4 +372,21 @@ Array.prototype.diff = function (a) {
         return a.indexOf(i) < 0;
     });
 };
+
+/**
+ * return a jason object from a list of json objects
+ *
+ * @param {string} key key inside each of the object entries
+ * @param {array} jasonList secondary array
+ * @return {object} result object
+ */
+const convertListToJason = function (key, jasonList) {
+    var jasonResult = {};
+    for (var i = 0; i < jasonList.length; i++) {
+        var item = jasonList[i];
+        jasonResult[item[key]] = item;
+    }
+    return jasonResult;
+}
+exports.convertListToJason = convertListToJason;
 // </Global Function> -----------------------------------------------

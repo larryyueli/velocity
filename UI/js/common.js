@@ -102,7 +102,7 @@ const translations = Object.freeze({
     updatedProject: 'Project has been updated',
     alreadyInGroup: 'This user is already in this group',
     groupNameCantBeEmpty: 'Group name can\'t be empty',
-    groupNamealreadyExists: 'Group name already Exists',
+    groupNamealreadyExists: 'Group name already exists',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

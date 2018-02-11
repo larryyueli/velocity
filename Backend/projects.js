@@ -150,7 +150,7 @@ const updateProject = function (updateParams, callback) {
 
     updateQuery.$set.mtime = common.getDate();
 
-    db.updateProject(searchQuery, updateQuery,  callback);
+    db.updateProject(searchQuery, updateQuery, callback);
 }
 
 /**
@@ -160,7 +160,22 @@ const updateProject = function (updateParams, callback) {
  * @param {function} callback callback function
  */
 const getProjectTeams = function (projectId, callback) {
-    db.getLimitedTeamsListSorted({projectId: projectId}, {}, 0, callback);
+    db.getLimitedTeamsListSorted({ projectId: projectId }, {}, 0, callback);
+}
+
+/**
+ * update a project's teams
+ *
+ * @param {string} projectId project id
+ * @param {array} teamsList teams list
+ * @param {function} callback callback function
+ */
+const updateProjectTeams = function (projectId, teamsList, callback) {
+    var members = [];
+    for (var i = 0; i < teamsList.length; i++) {
+        var team = teamsList[i];
+        
+    }
 }
 
 /**
@@ -202,4 +217,5 @@ exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.getProjectTeams = getProjectTeams;
 exports.updateProject = updateProject;
+exports.updateProjectTeams = updateProjectTeams;
 // </exports> ----------------------------------

@@ -990,6 +990,7 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
         const projectMembers = projectObj.members;
         const fullUserObjectsList = users.getActiveUsersList();
+        const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
         var usersList = [];
         for (var i = 0; i < fullUserObjectsList.length; i++) {
             usersList.push(fullUserObjectsList[i]._id);
@@ -1002,11 +1003,11 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
             var unassignedList = common.getArrayDiff(usersList, projectMembers);
             var unassignedObjectsList = [];
-            var groupList = teamsList;
+            var teamsObjectList = teamsList;
 
-            for (var i = 0; i < fullUserObjectsList.length; i++) {
-                var innerUser = fullUserObjectsList[i];
-                if (unassignedList.indexOf(innerUser._id) !== -1) {
+            for (var i = 0; i < unassignedList.length; i++) {
+                var innerUser = fullUsersListObject[unassignedList[i]];
+                if (innerUser) {
                     unassignedObjectsList.push({
                         fname: innerUser.fname,
                         lname: innerUser.lname,
@@ -1016,10 +1017,31 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 }
             }
 
-            console.log(projectMembers); // TODO: remove
-            console.log(unassignedList); // TODO: remove
-            console.log(unassignedObjectsList); // TODO: remove
-            console.log(teamsList); // TODO: remove
+            var teamsList = [];
+            for (var i = 0; i < teamsObjectList.length; i++) {
+                var teamObject = teamsObjectList[i];
+                var teamMembers = [];
+                for (var j = 0; j < teamObject.members.length; j++) {
+                    var teamUser = fullUsersListObject[teamObject['members'][j]];
+                    if (teamUser) {
+                        teamMembers.push({
+                            fname: teamUser.fname,
+                            lname: teamUser.lname,
+                            username: teamUser.username,
+                            type: teamUser.type
+                        });
+                    }
+                }
+                teamsList.push({
+                    name: teamObject.name,
+                    members: teamMembers
+                });
+            }
+
+            //console.log(projectMembers); // TODO: remove
+            //console.log(unassignedList); // TODO: remove
+            //console.log(unassignedObjectsList); // TODO: remove
+            //console.log(teamsList); // TODO: remove
 
             return res.status(200).send({
                 unassignedList: [
@@ -1233,6 +1255,38 @@ const handleProjectUpdatePath = function (req, res) {
 }
 
 /**
+ * path to update a project's teams
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamsUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const projectId = req.body.projectId;
+    var newProject = {
+        _id: req.body.projectId,
+        title: req.body.title,
+        description: req.body.description
+    };
+    projects.updateProjectTeams(newProject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
+/**
  * path to activate a project
  *
  * @param {object} req req object
@@ -1327,6 +1381,7 @@ app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/project/activate', handleProjectActivatePath);
+app.post('/project/teams/update', handleProjectTeamsUpdatePath);
 app.post('/project/update', handleProjectUpdatePath);
 app.post('/settings/reset', handleSettingsResetPath);
 app.post('/settings/update', handleSettingsUpdatePath);
