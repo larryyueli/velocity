@@ -48,6 +48,7 @@ const iconId = "#icon";
 const joinLinkId = '#joinLink';
 const membersId = '#members';
 const nameId = '#name';
+const saveGroupConfigurationId = '#saveGroupConfiguration';
 const randomizeRemainingId = '#randomizeRemaining';
 const removeId = '#remove';
 const newGroupNameId = '#newGroupName';
@@ -119,16 +120,23 @@ $(function () {
         }
     });
 
+    $(saveGroupConfigurationId).click(() => {
+        saveGroupConfiguration();
+    });
+
     $(groupStatusId).on('change', function() {
         groupSelectType = parseInt($(groupStatusId).val());
 
         if (groupSelectType === 0) {
             $(groupSizeId).val(1);
             $(groupSizeId).prop('disabled', true);
+            $(groupPrefixId).prop('disabled', false);
         } else if (groupSelectType === 1 || groupSelectType === 2) {
             $(groupSizeId).prop('disabled', false);
+            $(groupPrefixId).prop('disabled', true);
         } else if (groupSelectType === 3) {
             $(groupSizeId).prop('disabled', false);
+            $(groupPrefixId).prop('disabled', false);
         }
     });
 
@@ -220,6 +228,26 @@ function generalDeleteProject() {
         },
         success: function (data) {
             window.location.href = '/projects';
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+function saveGroupConfiguration() {
+    $.ajax({
+        type: 'POST',
+        url: '/project/teams/update',
+        data: {
+            projectId: projectId,
+            teamsList: groupList
+        },
+        success: function (data) {
+            successSnackbar('groupConfigurationSuccess');
         },
         error: function (data) {
             handle401And404(data);
@@ -334,21 +362,26 @@ function randomizeUnassigned() {
     var random = null;
     var groupNumber = 0;
 
-    while (unassignedList.length) {
+    const filteredList = unassignedList.filter(user => {
+        return passUserFilter(user);
+    });
+
+    while (filteredList.length) {
         tempGroup = [];
         groupNumber += 1;
 
         for (var i = 0; i < groupSize; i++) {
-            if (unassignedList.length === 0) {
+            if (filteredList.length === 0) {
                 break;
             }
 
-            random = unassignedList[Math.floor(Math.random() * unassignedList.length)];
+            random = filteredList[Math.floor(Math.random() * filteredList.length)];
             tempGroup.push(random)
             unassignedList.splice(unassignedList.indexOf(random), 1);
+            filteredList.splice(filteredList.indexOf(random), 1);
         }
 
-        groupList.push(makeGroupObject(false, tempGroup, `${groupPrefix}${groupNumber}`));
+        groupList.push(makeGroupObject(false, tempGroup, getUntakenName(`${groupPrefix}${groupNumber}`)));
     }
 }
 
@@ -381,6 +414,17 @@ function getGroupAssign() {
             groupPrefix = data.groupPrefix
             $(groupPrefixId).val(groupPrefix);
             $(groupPrefixLabelId).addClass('active');
+
+            if (groupSelectType === 0) {
+                $(groupSizeId).prop('disabled', true);
+                $(groupPrefixId).prop('disabled', false);
+            } else if (groupSelectType === 1 || groupSelectType === 2) {
+                $(groupSizeId).prop('disabled', false);
+                $(groupPrefixId).prop('disabled', true);
+            } else if (groupSelectType === 3) {
+                $(groupSizeId).prop('disabled', false);
+                $(groupPrefixId).prop('disabled', false);
+            }
 
             $(modalsSectionId).html(groupModalHTML);
             $('.modal').modal({
@@ -557,9 +601,9 @@ function displayGroupsModalList(clicked) {
     var rowPopulate = '';
 
     groupList.forEach(group => {
-        // if (group.name !== groupName) {
+        if (passGroupFilter(group)) {
             $(groupModalListId).append(fillGroupModalRow(group));
-        // }
+        }
     });
 
     if ($(groupModalListId).find('li').length === 0) {
