@@ -25,7 +25,9 @@ var groupModalEntryHTML = null;
 var groupSize = null;
 
 const assignedList = '#assignedList';
+const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
+const groupCreateModalId = '#groupCreateModal';
 const groupBodyId = '#groupBody';
 const groupIconId = '#groupIcon';
 const groupListId = '#groupList';
@@ -42,6 +44,7 @@ const joinLinkId = '#joinLink';
 const membersId = '#members';
 const nameId = '#name';
 const removeId = '#remove';
+const newGroupNameId = '#newGroupName';
 const sizeId = '#size'
 const titleId = '#title';
 const unassignedLoadId = '#unassignedLoad'
@@ -102,6 +105,30 @@ $(function () {
             groupVisibility();
         } else if (value === 3) {
 
+        }
+    });
+
+    $('.modal').modal({
+        dismissible: true
+    });
+
+    $(createGroupButtonId).click(() => {
+        const groupName = $(newGroupNameId).val().trim();
+
+        if (groupName === '') {
+            failSnackbar(translate('groupNameCantBeEmpty'));
+        } else if (groupList.find(group => group.name === groupName)) {
+            failSnackbar(translate('groupNamealreadyExists'));
+        } else {
+            groupList.push({
+                isActive: false,
+                members: [],
+                name: groupName
+            });
+
+            $(groupCreateModalId).modal('close');
+            startLoad(groupLoadId, groupListId);
+            displayGroupList();
         }
     });
 

@@ -96,8 +96,10 @@
 				"title": "Users"
 			},
 			"groups": {
+				"groupName": "Group Name",
 				"groupSize": "Group Size",
 				"groupStatus": "Group Status",
+				"newGroup": "New Group",
 				"types": {
 					"individual": "Individual",
 					"instructor": "Instructor select",

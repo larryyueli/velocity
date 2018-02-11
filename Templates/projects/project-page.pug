@@ -90,14 +90,32 @@ block content
                                 .col.s12.l6
                                     .row
                                         form
-                                            .input-field.col.s12.l6.xl7
+                                            .input-field.col.s12.l5.xl6
                                                 input#searchGroupFilter.validate(type='text')
                                                 label(for='searchGroupFilter')  #{__('users.searchFilter')}
-                                            .input-field.col.s12.l6.xl5
+                                            .input-field.col.s12.m10.l5.xl4
                                                 input#groupSizeFilter.validate(type='number')
                                                 label(for='groupSizeFilter')  #{__('projectPage.tabs.groups.groupSize')}
+                                            .col.s2.m2.offset-s5.offset-m0
+                                                a.btn-floating.btn-large.waves-effect.waves-light.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(href='#groupCreateModal')
+                                                    i.material-icons add
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
+
+    #groupCreateModal.modal
+        .modal-content
+            i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+            h3 #{__('projectPage.tabs.groups.groupName')}
+                .row
+                    .col.s12
+                        .row
+                            .input-field.col.s12
+                                i.material-icons.prefix label_outline
+                                input#newGroupName(placeholder=__('projectPage.tabs.groups.groupName'), type='text')
+                                label(for='newGroupName') #{__('projectPage.tabs.groups.groupName')}
+                        .row.right
+                            button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour#createGroupButton #{__('actions.create')}
+                                i.material-icons.right create_new_folder
 
     #modals
 block scripts
