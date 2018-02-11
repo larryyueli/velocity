@@ -594,29 +594,13 @@ function deleteGroup(clicked) {
         return group.name === groupName;
     });
 
-    // swal({
-    //     title: 'Confirm Deactivation',
-    //     text: 'account will be deactivated.',
-    //     type: 'warning',
-    //     showCancelButton: true,
-    //     confirmButtonColor: colours.red,
-    //     confirmButtonText: 'Deactivate',
-    //     cancelButtonText: 'asdfasdf',
-    //     closeOnConfirm: true
-    // }, function () {
-    //     alert('asdfasdfsdaf');
-    // });
-
-
-
     if (groupToDelete.members.length) {
         swal({
             text: translate('groupMembersDelete'),
             icon: "warning",
             dangerMode: true,
             buttons: [translate('cancel'), translate('delete')]
-        })
-          .then(willSearch => {
+        }).then(willSearch => {
             if (willSearch) {
                 groupToDelete.members.forEach(user => {
                     unassignedList.push(user);
@@ -625,8 +609,7 @@ function deleteGroup(clicked) {
                 groupList.splice(groupList.indexOf(groupToDelete), 1);
                 reloadAllLists();
             }
-          })
-
+        })
     } else {
         groupList.splice(groupList.indexOf(groupToDelete), 1);
         reloadAllLists();
