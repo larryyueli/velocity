@@ -103,6 +103,9 @@ const translations = Object.freeze({
     alreadyInGroup: 'This user is already in this group',
     groupNameCantBeEmpty: 'Group name can\'t be empty',
     groupNamealreadyExists: 'Group name already exists',
+    groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
+    delete: 'Delete',
+    cancel: 'Cancel',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

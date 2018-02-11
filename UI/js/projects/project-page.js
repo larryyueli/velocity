@@ -573,7 +573,46 @@ function reloadAllLists() {
 function setActive(clicked) {
     const groupName = clicked.parent().find('#title').text();
 
-    groupList.find(group => {
+    const clickedGroup = groupList.find(group => {
         return group.name === groupName;
-    }).isActive = !clicked.hasClass('active');
+    });
+
+    if (clickedGroup && clickedGroup.isActive) {
+        clickedGroup.isActive = !clicked.hasClass('active');
+    }
+}
+
+/**
+ * Deletes a group and moves group members to unassigned list
+ * 
+ * @param {Object} clicked
+ */
+function deleteGroup(clicked) {
+    const groupName = clicked.parent().find('#title').text().trim();
+
+    const groupToDelete = groupList.find(group => {
+        return group.name === groupName;
+    });
+
+    if (groupToDelete.members.length) {
+        swal({
+            text: translate('groupMembersDelete'),
+            icon: "warning",
+            dangerMode: true,
+            buttons: [translate('cancel'), translate('delete')]
+        }).then(willSearch => {
+            if (willSearch) {
+                groupToDelete.members.forEach(user => {
+                    unassignedList.push(user);
+                });
+                
+                groupList.splice(groupList.indexOf(groupToDelete), 1);
+                reloadAllLists();
+            }
+        })
+    } else {
+        groupList.splice(groupList.indexOf(groupToDelete), 1);
+        reloadAllLists();
+    }
+
 }
