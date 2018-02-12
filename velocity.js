@@ -1052,7 +1052,7 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 groupHTML: projectsGroupEntryComponent(),
                 groupModalHTML: projectsGroupModalComponent(),
                 groupModalEntryHTML: projectsGroupModalEntryComponent(),
-                isProjectAdmin: true,
+                isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
                 isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
                 isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
             });
@@ -1141,7 +1141,7 @@ const handleProjectByIdPath = function (req, res) {
         return res.status(200).render(projectPagePage, {
             user: req.session.user,
             title: projectObj.title,
-            isProjectAdmin: true,
+            isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
             description: projectObj.description,
             isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
             isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
