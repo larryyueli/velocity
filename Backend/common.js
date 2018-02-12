@@ -392,4 +392,27 @@ const convertListToJason = function (key, jasonList) {
     return jasonResult;
 }
 exports.convertListToJason = convertListToJason;
+
+/**
+ * return a list of the unique join of two lists
+ *
+ * @param {array} list1 first list
+ * @param {array} list2 second list
+ * @return {list} result object
+ */
+const joinSets = function (list1, list2, jasonList) {
+    let result = [];
+    for (let i = 0; i < list1.length; i++) {
+        if (result.indexOf(list1[i]) === -1){
+            result.push(list1[i]);
+        }
+    }
+    for (let i = 0; i < list2.length; i++) {
+        if (result.indexOf(list2[i]) === -1){
+            result.push(list2[i]);
+        }
+    }
+    return result;
+}
+exports.joinSets = joinSets;
 // </Global Function> -----------------------------------------------

@@ -138,6 +138,14 @@ const updateProject = function (updateParams, callback) {
         updateQuery.$set.description = updateParams.description;
     }
 
+    if (Array.isArray(updateParams.admins)) {
+        updateQuery.$set.admins = updateParams.admins;
+    }
+
+    if (Array.isArray(updateParams.members)) {
+        updateQuery.$set.members = updateParams.members;
+    }
+
     if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.projectStatus)) {
         updateQuery.$set.status = updateParams.status;
     }

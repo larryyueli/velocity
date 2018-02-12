@@ -993,68 +993,79 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
         // TODO: check membership
 
-        const projectMembers = projectObj.members;
-        const fullUserObjectsList = users.getActiveUsersList();
-        const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
-        let usersList = [];
-        for (let i = 0; i < fullUserObjectsList.length; i++) {
-            usersList.push(fullUserObjectsList[i]._id);
-        }
-        projects.getProjectTeams(projectId, function (err, teamsObjectList) {
+        projects.getProjectTeams(projectId, function (err, teamsList) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
 
-            let unassignedList = common.getArrayDiff(usersList, projectMembers);
-            let unassignedObjectsList = [];
-
-            for (let i = 0; i < unassignedList.length; i++) {
-                let innerUser = fullUsersListObject[unassignedList[i]];
-                if (innerUser) {
-                    unassignedObjectsList.push({
-                        fname: innerUser.fname,
-                        lname: innerUser.lname,
-                        username: innerUser.username,
-                        type: innerUser.type
-                    });
-                }
+            let projectMembers = [];
+            for (let i = 0; i < teamsList.length; i++) {
+                projectMembers = common.joinSets(projectMembers, teamsList[i].members);
             }
 
-            let resolvedTeamsList = [];
-            for (let i = 0; i < teamsObjectList.length; i++) {
-                let teamObject = teamsObjectList[i];
-                let teamMembers = [];
-                for (let j = 0; j < teamObject.members.length; j++) {
-                    let teamUser = fullUsersListObject[teamObject['members'][j]];
-                    if (teamUser) {
-                        teamMembers.push({
-                            fname: teamUser.fname,
-                            lname: teamUser.lname,
-                            username: teamUser.username,
-                            type: teamUser.type
+            const fullUserObjectsList = users.getActiveUsersList();
+            const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
+            let usersList = [];
+            for (let i = 0; i < fullUserObjectsList.length; i++) {
+                usersList.push(fullUserObjectsList[i]._id);
+            }
+            projects.getProjectTeams(projectId, function (err, teamsObjectList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let unassignedList = common.getArrayDiff(usersList, projectMembers);
+                let unassignedObjectsList = [];
+
+                for (let i = 0; i < unassignedList.length; i++) {
+                    let innerUser = fullUsersListObject[unassignedList[i]];
+                    if (innerUser) {
+                        unassignedObjectsList.push({
+                            fname: innerUser.fname,
+                            lname: innerUser.lname,
+                            username: innerUser.username,
+                            type: innerUser.type
                         });
                     }
                 }
-                resolvedTeamsList.push({
-                    name: teamObject.name,
-                    members: teamMembers
-                });
-            }
 
-            return res.status(200).send({
-                unassignedList: unassignedObjectsList,
-                groupList: resolvedTeamsList,
-                groupSize: 4,
-                groupSelectionType: 2,
-                groupPrefix: 'group-',
-                groupUserHTML: projectsGroupUserEntryComponent(),
-                groupHTML: projectsGroupEntryComponent(),
-                groupModalHTML: projectsGroupModalComponent(),
-                groupModalEntryHTML: projectsGroupModalEntryComponent(),
-                isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
-                isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-                isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+                let resolvedTeamsList = [];
+                for (let i = 0; i < teamsObjectList.length; i++) {
+                    let teamObject = teamsObjectList[i];
+                    let teamMembers = [];
+                    for (let j = 0; j < teamObject.members.length; j++) {
+                        let teamUser = fullUsersListObject[teamObject['members'][j]];
+                        if (teamUser) {
+                            teamMembers.push({
+                                fname: teamUser.fname,
+                                lname: teamUser.lname,
+                                username: teamUser.username,
+                                type: teamUser.type
+                            });
+                        }
+                    }
+                    resolvedTeamsList.push({
+                        name: teamObject.name,
+                        members: teamMembers
+                    });
+                }
+
+                return res.status(200).send({
+                    unassignedList: unassignedObjectsList,
+                    groupList: resolvedTeamsList,
+                    groupSize: 4,
+                    groupSelectionType: 2,
+                    groupPrefix: 'group-',
+                    groupUserHTML: projectsGroupUserEntryComponent(),
+                    groupHTML: projectsGroupEntryComponent(),
+                    groupModalHTML: projectsGroupModalComponent(),
+                    groupModalEntryHTML: projectsGroupModalEntryComponent(),
+                    isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
+                    isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+                    isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+                });
             });
         });
     });
@@ -1282,17 +1293,37 @@ const handleProjectActivatePath = function (req, res) {
     }
 
     const projectId = req.body.projectId;
-    let newProject = {
-        _id: req.body.projectId,
-        status: common.projectStatus.ACTIVE.value
-    };
-    projects.updateProject(newProject, function (err, result) {
+    projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(400).send(err);
+            return res.status(500).send(err);
         }
 
-        return res.status(200).send('ok');
+        projects.getProjectTeams(projectId, function (err, teamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            let members = projectObj.admins;
+            for (let i = 0; i < teamsList.length; i++) {
+                members = common.joinSets(members, teamsList[i].members);
+            }
+
+            let newProject = {
+                _id: req.body.projectId,
+                status: common.projectStatus.ACTIVE.value,
+                members: members
+            };
+            projects.updateProject(newProject, function (err, result) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(400).send(err);
+                }
+
+                return res.status(200).send('ok');
+            });
+        });
     });
 }
 
