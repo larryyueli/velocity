@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const fs = require('fs');
 const rimraf = require('rimraf');
 
@@ -227,9 +229,9 @@ const removeCustomFileSystem = function (callback) {
  * @param {function} callback callback function
  */
 const createCustomFileSystem = function (callback) {
-    var dParent = common.cfsTree.ROOT;
-    var dName = common.cfsMainDirectories.FILESYSTEM;
-    var dPermissions = common.cfsPermission.SYSTEM;
+    let dParent = common.cfsTree.ROOT;
+    let dName = common.cfsMainDirectories.FILESYSTEM;
+    let dPermissions = common.cfsPermission.SYSTEM;
     mkdir(dParent, dName, dPermissions, function (err, result) {
         if (err) {
             return callback(err, null);

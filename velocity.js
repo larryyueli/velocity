@@ -1021,7 +1021,7 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 }
             }
 
-            let teamsList = [];
+            let resolvedTeamsList = [];
             for (let i = 0; i < teamsObjectList.length; i++) {
                 let teamObject = teamsObjectList[i];
                 let teamMembers = [];
@@ -1036,20 +1036,15 @@ const handleProjectsGroupAssignPath = function (req, res) {
                         });
                     }
                 }
-                teamsList.push({
+                resolvedTeamsList.push({
                     name: teamObject.name,
                     members: teamMembers
                 });
             }
 
-            //console.log(projectMembers); // TODO: remove
-            //console.log(unassignedList); // TODO: remove
-            console.log(unassignedObjectsList); // TODO: remove
-            console.log(teamsList); // TODO: remove
-
             return res.status(200).send({
                 unassignedList: unassignedObjectsList,
-                groupList: teamsList,
+                groupList: resolvedTeamsList,
                 groupSize: 4,
                 groupSelectionType: 2,
                 groupPrefix: 'group-',

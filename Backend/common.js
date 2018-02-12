@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const date = require('moment');
 const uuidv1 = require('uuid/v1');
 
@@ -231,7 +233,7 @@ exports.getUUID = getUUID;
  * @return {boolean}
  */
 const isEmptyObject = function (obj) {
-    for (var key in obj) {
+    for (let key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             return false;
         }
@@ -248,7 +250,7 @@ exports.isEmptyObject = isEmptyObject;
  * @return {boolean}
  */
 const isValueInObject = function (value, obj) {
-    for (var key in obj) {
+    for (let key in obj) {
         if (obj[key] === value) {
             return true;
         }
@@ -266,7 +268,7 @@ exports.isValueInObject = isValueInObject;
  * @return {boolean}
  */
 const isValueInObjectWithKeys = function (value, key, obj) {
-    for (var i in obj) {
+    for (let i in obj) {
         if (obj[i][key] === value) {
             return true;
         }
@@ -285,7 +287,7 @@ exports.isValueInObjectWithKeys = isValueInObjectWithKeys;
  * @return {*}
  */
 const getValueInObjectByKey = function (key, keyField, valueField, obj) {
-    for (var i in obj) {
+    for (let i in obj) {
         if (obj[i][keyField] === key) {
             return obj[i][valueField];
         }
@@ -382,9 +384,9 @@ Array.prototype.diff = function (a) {
  * @return {object} result object
  */
 const convertListToJason = function (key, jasonList) {
-    var jasonResult = {};
-    for (var i = 0; i < jasonList.length; i++) {
-        var item = jasonList[i];
+    let jasonResult = {};
+    for (let i = 0; i < jasonList.length; i++) {
+        let item = jasonList[i];
         jasonResult[item[key]] = item;
     }
     return jasonResult;

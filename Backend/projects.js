@@ -212,7 +212,7 @@ const addTeamToProject = function (projectId, team, callback) {
     teamToAdd.mtime = currentDate;
     teamToAdd.status = team.status;
     teamToAdd.members = team.members;
-    //console.log(teamToAdd);
+
     db.addTeam(teamToAdd, callback);
 }
 

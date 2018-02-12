@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const bcrypt = require('bcryptjs');
 
 const common = require('./common.js');
@@ -70,7 +72,7 @@ const addUser = function (user, callback) {
         }
 
         const currentDate = common.getDate();
-        var userToAdd = {};
+        let userToAdd = {};
 
         userToAdd._id = common.getUUID();
         userToAdd.username = user.username.toLowerCase();
@@ -141,7 +143,7 @@ const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callbac
  * @param {function} callback callback function
  */
 const getUserByUsername = function (username, callback) {
-    for (var i = 0; i < cachedUsersList.length; i++) {
+    for (let i = 0; i < cachedUsersList.length; i++) {
         if (cachedUsersList[i].username === username) {
             return callback(null, cachedUsersList[i]);
         }
@@ -157,7 +159,7 @@ const getUserByUsername = function (username, callback) {
  * @param {function} callback callback function
  */
 const getUserById = function (id, callback) {
-    for (var i = 0; i < cachedUsersList.length; i++) {
+    for (let i = 0; i < cachedUsersList.length; i++) {
         if (cachedUsersList[i]._id === id) {
             return callback(null, cachedUsersList[i]);
         }
@@ -209,8 +211,8 @@ const login = function (username, password, callback) {
  * @param {function} callback callback function
  */
 const updateUser = function (updateParams, callback) {
-    var searchQuery = {};
-    var updateQuery = {};
+    let searchQuery = {};
+    let updateQuery = {};
     updateQuery.$set = {};
 
     if (typeof (updateParams._id) === common.variableTypes.STRING) {
@@ -329,8 +331,8 @@ const getFullUsersList = function () {
  * @return {array} full users list
  */
 const getActiveUsersList = function () {
-    var activeUserList = [];
-    for (var i = 0; i < cachedUsersList.length; i++) {
+    let activeUserList = [];
+    for (let i = 0; i < cachedUsersList.length; i++) {
         if (cachedUsersList[i].status === common.userStatus.ACTIVE.value) {
             activeUserList.push(cachedUsersList[i]);
         }

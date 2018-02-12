@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const fs = require('fs');
 
 // server related configuration
@@ -41,7 +43,7 @@ exports.ssl_options = ssl_options;
 // database related configuration
 const default_db_host = process.env.DB_HOST || 'localhost';
 const default_db_port = process.env.DB_PORT || 27017;
-var default_db_name = process.env.DB_NAME || 'velocity_db_db0f4f70-0f89-11e8-8b60-71ed0aed2b0f';
+var default_db_name = process.env.DB_NAME || 'velocity_db_64e675e0-0f9c-11e8-a8ea-f94f5ebd69c1';
 
 exports.default_db_host = default_db_host;
 exports.default_db_port = default_db_port;
