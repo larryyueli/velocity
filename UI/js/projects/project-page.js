@@ -190,7 +190,11 @@ $(function () {
             failSnackbar(translate('groupNamealreadyExists'));
         } else {
             groupList.push(makeGroupObject(false, [], groupName));
-            joinGroup(null, groupName);
+
+            if (!isProjectAdmin) {
+                joinGroup(null, groupName);
+            }
+
             $(groupCreateModalId).modal('close');
             startLoad(groupLoadId, groupListId);
             displayGroupList();
