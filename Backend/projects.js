@@ -55,7 +55,7 @@ const addProject = function (project, callback) {
     projectToAdd.status = project.status;
     projectToAdd.admins = project.admins;
     projectToAdd.members = Array.isArray(project.members) ? project.members : project.admins;
-    projectToAdd.teamSize = 1;
+    projectToAdd.teamSize = common.defaultTeamSize;
     projectToAdd.teamSelectionType = common.teamSelectionTypes.ADMIN.value;
     projectToAdd.teamPrefix = common.defaultTeamPrefix;
 

@@ -223,8 +223,14 @@ const teamSelectionTypes = Object.freeze({
 });
 exports.teamSelectionTypes = teamSelectionTypes;
 
+
+// default team prefix
 const defaultTeamPrefix = 'group-';
 exports.defaultTeamPrefix = defaultTeamPrefix;
+
+// default team size
+const defaultTeamSize = 1;
+exports.defaultTeamSize = defaultTeamSize;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

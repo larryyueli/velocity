@@ -1370,13 +1370,15 @@ const handleProjectTeamsConfigPath = function (req, res) {
     }
 
     if (settings.getAllSettings().mode !== common.modeTypes.CLASS) {
-        return res.status(400).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+    if (req.session.user.type !== common.userTypes.PROFESSOR.value
         && req.session.user.type !== common.userTypes.TA.value
         && req.session.user.type !== common.userTypes.STUDENT.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(403).send(common.getError(1000));
     }
 
     const projectId = req.body.projectId;
