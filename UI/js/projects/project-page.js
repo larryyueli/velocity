@@ -16,16 +16,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var groupUserRow = null;
-var groupRow = null;
-var groupList = null;
-var unassignedList = null;
-var groupModalHTML = null;
-var groupModalEntryHTML = null;
-var groupSize = null;
-var groupPrefix = '';
-var groupSelectType = null;
+// Project ID from the path
+const projectId = window.location.href.split('/project/')[1];
 
+// Global variables from the request
+var groupList = null;
+var groupModalEntryHTML = null;
+var groupModalHTML = null;
+var groupPrefix = '';
+var groupRow = null;
+var groupSize = null;
+var groupSelectType = null;
+var groupUserRow = null;
+var unassignedList = null;
+
+// Permissions
+var isProjectAdmin = null;
+var isClassMode = null;
+var isCollabMode = null;
+
+// Element Ids
 const assignedList = '#assignedList';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
@@ -51,10 +61,10 @@ const joinLinkId = '#joinLink';
 const leaveGroupId = '#leaveGroup';
 const membersId = '#members';
 const nameId = '#name';
-const saveGroupConfigurationId = '#saveGroupConfiguration';
+const newGroupNameId = '#newGroupName';
 const randomizeRemainingId = '#randomizeRemaining';
 const removeId = '#remove';
-const newGroupNameId = '#newGroupName';
+const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
 const titleId = '#title';
 const unassignedLoadId = '#unassignedLoad'
@@ -62,34 +72,39 @@ const unassignedUserListId = '#unassignedList';
 const unassignedUserListName = 'unassignedList';
 const userGroupId = '#userGroup';
 
+// Options in the select
 const optionGroups = $('#option-groups');
 
+// Filter Ids
 const groupSizeFilterId = '#groupSizeFilter';
 const searchGroupFilterId = '#searchGroupFilter';
 const searchUserFilterId = '#searchUserFilter';
 const typeFilterId = '#typeFilter';
 
-const modalTriggerId = '#modalTrigger';
-const modalsSectionId = '#modals';
+// Modal Ids
 const groupModalId = '#groupModal';
+const modalsSectionId = '#modals';
+const modalTriggerId = '#modalTrigger';
 
+// General settings Ids
+const generalActivateButtonId = '#generalActivateButton';
 const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
-const generalActivateButtonId = '#generalActivateButton';
 
-const navProjectsId = '#nav-projects';
+// Navbar Ids
 const navmProjectsId = '#navm-projects';
-
-const projectId = window.location.href.split('/project/')[1];
-var isProjectAdmin = null;
-var isClassMode = null;
-var isCollabMode = null;
+const navProjectsId = '#nav-projects';
 
 $(function () {
+    // Navbar highlight
     $(navProjectsId).addClass('active');
     $(navmProjectsId).addClass('active');
+
+    // Dropdown setup
     $('select').material_select();
 
+    // Event listeners
+    // Filters
     $(typeFilterId).on('change', function () {
         startLoad(unassignedLoadId, unassignedUserListId);
         displayUnassignedList();
@@ -110,6 +125,7 @@ $(function () {
         displayGroupList();
     });
 
+    // Actions
     $(randomizeRemainingId).click(() => {
         if (!groupSize || groupSize < 1) {
             failSnackbar(translate('groupSizeCantBeZero'));
@@ -151,7 +167,7 @@ $(function () {
         groupSelectType = parseInt($(groupStatusId).val());
         groupSize = parseInt($(groupSizeId).val());
         groupPrefix = $(groupPrefixId).val();
-    
+
         if (!groupSize || groupSize < 1) {
             failSnackbar(translate('groupSizeCantBeZero'));
         } else {
@@ -187,7 +203,7 @@ $(function () {
                     },
                     error: function (data) {
                         handle401And404(data);
-    
+
                         const jsonResponse = data.responseJSON;
                         failSnackbar(getErrorMessageFromResponse(jsonResponse));
                     }
@@ -220,21 +236,25 @@ $(function () {
         }
     });
 
+    // General actions
     $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
 
+    // Loads the groups and unassigned users, and starts the loaders
     getGroupAssign();
     startLoad(groupLoadId, groupListId);
     startLoad(unassignedLoadId, unassignedUserListId);
 });
 
+// ----------------------- Begin general helpers section -----------------------
+
 /**
  * Returns a group object based on the given parameters
- * 
- * @param {Boolean} active 
- * @param {List} members 
- * @param {String} groupName 
+ *
+ * @param {Boolean} active
+ * @param {List} members
+ * @param {String} groupName
  */
 function makeGroupObject(active, members, groupName) {
     return {
@@ -242,6 +262,134 @@ function makeGroupObject(active, members, groupName) {
         members: members,
         name: groupName
     }
+}
+
+/**
+ * Empties all the groups that are already made
+*/
+function emptyGroups() {
+    groupList.forEach(group => {
+        group.members.forEach(user => {
+            unassignedList.push(user);
+        });
+    });
+
+    groupList = [];
+}
+
+/**
+ * Returns a name of a group that has not been taken before
+ */
+function getUntakenName(name) {
+    var customName = name;
+    var counter = 0;
+
+    while (groupList.find(group => group.name === customName)) {
+        customName = `${name} (${++counter})`;
+    }
+
+    return customName;
+}
+
+/**
+ * Reloads all visible lists
+ */
+function reloadAllLists() {
+    $(groupModalId).modal('close');
+    startLoad(groupLoadId, groupListId);
+    startLoad(unassignedLoadId, unassignedUserListId);
+    displayUnassignedList();
+    displayGroupList();
+}
+
+/**
+ * Sets the status of a group to opened or closed to save in memory
+ *
+ * @param {Object} clicked
+ */
+function setActive(clicked) {
+    const groupName = clicked.parent().find('#title').text();
+
+    const clickedGroup = groupList.find(group => {
+        return group.name === groupName;
+    });
+
+    if (clickedGroup) {
+        clickedGroup.isActive = !clicked.hasClass('active');
+    }
+}
+
+// ----------------------- End general helpers section -----------------------
+
+// ----------------------- Begin Requests section -----------------------
+
+/**
+ * Gets the list on unassigned users and groups along with all the HTML
+  * needed for the binding
+ */
+function getGroupAssign() {
+    $.ajax({
+        type: 'GET',
+        url: '/projectsGroupAssign',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            // Permissions
+            isProjectAdmin = data.isProjectAdmin;
+            isClassMode = data.isClassMode;
+            isCollabMode = data.isClassMode;
+
+            // Variables
+            groupUserRow = $(data.groupUserHTML);
+            unassignedList = data.unassignedList;
+            groupRow = $(data.groupHTML);
+            groupList = data.groupList;
+            groupList.forEach(group => {
+                group.isActive = false;
+            });
+            groupModalHTML = $(data.groupModalHTML);
+            groupModalEntryHTML = $(data.groupModalEntryHTML);
+            groupSize = data.groupSize;
+            $(groupSizeId).val(groupSize);
+            $(groupSizeLabelId).addClass('active');
+            groupSelectType = data.groupSelectionType;
+            $(groupStatusId).val(groupSelectType);
+            $(groupStatusId).material_select();
+            groupPrefix = data.groupPrefix
+            $(groupPrefixId).val(groupPrefix);
+            $(groupPrefixLabelId).addClass('active');
+
+            if (groupSelectType === 0) {
+                $(groupSizeId).prop('disabled', true);
+                $(groupPrefixId).prop('disabled', false);
+            } else if (groupSelectType === 1 || groupSelectType === 2) {
+                $(groupSizeId).prop('disabled', false);
+                $(groupPrefixId).prop('disabled', true);
+            } else if (groupSelectType === 3) {
+                $(groupSizeId).prop('disabled', false);
+                $(groupPrefixId).prop('disabled', false);
+            }
+
+            // Group modal setup
+            $(modalsSectionId).html(groupModalHTML);
+            $('.modal').modal({
+                dismissible: true,
+                ready: function (modal, trigger) {
+                    const username = trigger.parent().find(nameId).text();
+                    $(groupModalId).find(titleId).html(translate('selectGroup'));
+                    $(groupModalId).find(nameId).html(username);
+                }
+            });
+
+            // Displays the lists
+            displayUnassignedList();
+            displayGroupList();
+        },
+        error: function (data) {
+            //TODO: add fail snackbar
+        }
+    });
 }
 
 /**
@@ -266,6 +414,9 @@ function generalDeleteProject() {
     });
 }
 
+/**
+ * Updates the group assignment
+ */
 function saveGroupConfiguration() {
     $.ajax({
         type: 'POST',
@@ -339,16 +490,13 @@ function generalActivateProject() {
     });
 }
 
-function emptyGroups() {
-    groupList.forEach(group => {
-        group.members.forEach(user => {
-            unassignedList.push(user);
-        });
-    });
+// ------------------------ End Requests section -----------------------
 
-    groupList = [];
-}
+// ------------------------ Begin Mode Selection section -----------------------
 
+/**
+ * Sets the mode to be individual and populates the individual groups
+ */
 function individualMode() {
     groupSize = 1;
     var tempGroup = [];
@@ -365,26 +513,17 @@ function individualMode() {
     reloadAllLists();
 }
 
-function getUntakenName(name) {
-    var customName = name;
-    var counter = 0;
-
-    while (groupList.find(group => group.name === customName)) {
-        customName = `${name} (${++counter})`;
-    }
-
-    return customName;
-}
-
-function groupVisibility() {
-    reloadAllLists();
-}
-
+/**
+ * randomizes the remaining users in the unassigned list
+ */
 function randomizeRemaining() {
     randomizeUnassigned();
     reloadAllLists();
 }
 
+/**
+ * Randomizes the users in the unassigned list based on the users filter
+ */
 function randomizeUnassigned() {
     var tempGroup = [];
     var random = null;
@@ -414,67 +553,15 @@ function randomizeUnassigned() {
 }
 
 /**
- * Gets the list on unassigned users and groups
+ * Sets up group visibility mode
  */
-function getGroupAssign() {
-    $.ajax({
-        type: 'GET',
-        url: '/projectsGroupAssign',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-            isProjectAdmin = data.isProjectAdmin;
-            isClassMode = data.isClassMode;
-            isCollabMode = data.isClassMode;
-
-            groupUserRow = $(data.groupUserHTML);
-            unassignedList = data.unassignedList;
-            groupRow = $(data.groupHTML);
-            groupList = data.groupList;
-            groupList.forEach(group => {
-                group.isActive = false;
-            });
-            groupModalHTML = $(data.groupModalHTML);
-            groupModalEntryHTML = $(data.groupModalEntryHTML);
-            groupSize = data.groupSize;
-            $(groupSizeId).val(groupSize);
-            $(groupSizeLabelId).addClass('active');
-            groupSelectType = data.groupSelectionType;
-            $(groupStatusId).val(groupSelectType);
-            $(groupStatusId).material_select();
-            groupPrefix = data.groupPrefix
-            $(groupPrefixId).val(groupPrefix);
-            $(groupPrefixLabelId).addClass('active');
-
-            if (groupSelectType === 0) {
-                $(groupSizeId).prop('disabled', true);
-                $(groupPrefixId).prop('disabled', false);
-            } else if (groupSelectType === 1 || groupSelectType === 2) {
-                $(groupSizeId).prop('disabled', false);
-                $(groupPrefixId).prop('disabled', true);
-            } else if (groupSelectType === 3) {
-                $(groupSizeId).prop('disabled', false);
-                $(groupPrefixId).prop('disabled', false);
-            }
-
-            $(modalsSectionId).html(groupModalHTML);
-            $('.modal').modal({
-                dismissible: true,
-                ready: function (modal, trigger) {
-                    const username = trigger.parent().find(nameId).text();
-                    $(groupModalId).find(titleId).html(translate('selectGroup'));
-                    $(groupModalId).find(nameId).html(username);
-                }
-            });
-            displayUnassignedList();
-            displayGroupList();
-        },
-        error: function (data) {
-            //TODO: add fail snackbar
-        }
-    });
+function groupVisibility() {
+    reloadAllLists();
 }
+
+// ------------------------ End Mode Selection section -----------------------
+
+// ------------------------ Begin User Binding section -----------------------
 
 /**
  * Displays the unassigned users list
@@ -500,8 +587,8 @@ function displayUnassignedList() {
 
 /**
  * Fills a row entry of a user
- * 
- * @param {Object} user 
+ *
+ * @param {Object} user
  */
 function fillUserRow(user, isUnassigned) {
     var bindedRow = groupUserRow;
@@ -526,8 +613,8 @@ function fillUserRow(user, isUnassigned) {
 
 /**
  * Filters a user object to match filter parameters
- * 
- * @param {Object} user 
+ *
+ * @param {Object} user
  */
 function passUserFilter(user) {
     const type = parseInt($(typeFilterId)[0].value);
@@ -547,6 +634,10 @@ function passUserFilter(user) {
 
     return true;
 }
+
+// ------------------------ End User Binding section -----------------------
+
+// ------------------------ Begin Group Binding section -----------------------
 
 /**
  * displays the groups list
@@ -590,8 +681,8 @@ function displayGroupList() {
 
 /**
  * fills an entry of a group
- * 
- * @param {Object} group 
+ *
+ * @param {Object} group
  */
 function fillGroupRow(group, isInGroup) {
     var bindedRow = groupRow;
@@ -612,7 +703,7 @@ function fillGroupRow(group, isInGroup) {
     if (isInGroup) {
         bindedRow.find(leaveGroupId).removeClass('hidden');
         bindedRow.find(deleteGroupId).addClass('hidden');
-        bindedRow.find(joinGroupId).addClass('hidden');        
+        bindedRow.find(joinGroupId).addClass('hidden');
     } else {
         bindedRow.find(leaveGroupId).addClass('hidden');
 
@@ -629,16 +720,18 @@ function fillGroupRow(group, isInGroup) {
         bindedRow.find(headerId).addClass('active');
         bindedRow.find(groupBodyId)[0].style.display = 'block';
     } else {
-        bindedRow.find(headerId).removeClass('active');    
-        bindedRow.find(groupBodyId)[0].style.display = 'none';    
+        bindedRow.find(headerId).removeClass('active');
+        bindedRow.find(groupBodyId)[0].style.display = 'none';
     }
 
     bindedRow.find(titleId).html(group.name);
 
     if (isClassMode) {
         bindedRow.find(groupSizeId).html(`(${group.members.length}/${groupSize})`);
+    } else {
+        bindedRow.find(groupSizeId).html(`(${group.members.length})`);
     }
-    
+
     group.members.forEach(user => {
         bindedRow.find(assignedList).append(fillUserRow(user, false));
     });
@@ -648,8 +741,8 @@ function fillGroupRow(group, isInGroup) {
 
 /**
  * Filters a group object to match filter parameters
- * 
- * @param {Object} group 
+ *
+ * @param {Object} group
  */
 function passGroupFilter(group) {
     const size = parseInt($(groupSizeFilterId)[0].value);
@@ -675,8 +768,8 @@ function passGroupFilter(group) {
 
 /**
  * Displays the groups in the modal
- * 
- * @param {Object} clicked 
+ *
+ * @param {Object} clicked
  */
 function displayGroupsModalList(clicked) {
     $(groupModalListId).html('');
@@ -697,8 +790,8 @@ function displayGroupsModalList(clicked) {
 
 /**
  * Fills a group row in the modal
- * 
- * @param {Object} group 
+ *
+ * @param {Object} group
  */
 function fillGroupModalRow(group) {
     var bindedRow = groupModalEntryHTML;
@@ -716,7 +809,12 @@ function fillGroupModalRow(group) {
     }
 
     bindedRow.find(groupNameId).html(group.name);
-    bindedRow.find(sizeId).html(`${translate('size')}: ${group.members.length}`);
+    if (isClassMode) {
+        bindedRow.find(sizeId).html(`(${group.members.length}/${groupSize})`);
+    } else {
+        bindedRow.find(sizeId).html(`${translate('size')}: ${group.members.length}`);
+    }
+
     group.members.forEach(user => {
         membersList = (`${membersList}${user.fname} ${user.lname} - ${user.username}\n`);
     });
@@ -725,10 +823,14 @@ function fillGroupModalRow(group) {
     return bindedRow[0].outerHTML;
 }
 
+// ------------------------ End Group Binding section -----------------------
+
+// ------------------------ Begin User Movement section -----------------------
+
 /**
  * Finds if the user is in a group or not
- * 
- * @param {Object} clicked 
+ *
+ * @param {Object} clicked
  */
 function moveUser(clicked) {
     const nameSplit = $(groupModalId).find(nameId).text().split('-');
@@ -748,9 +850,9 @@ function moveUser(clicked) {
 
 /**
  * Moves an unassigned user to a group
- * 
- * @param {String} groupName 
- * @param {String} userName 
+ *
+ * @param {String} groupName
+ * @param {String} userName
  */
 function moveFromUnassignedToGroup(groupName, userName) {
     const userObject = unassignedList.find(user => {
@@ -767,9 +869,9 @@ function moveFromUnassignedToGroup(groupName, userName) {
 
 /**
  * Moves a user from one group to another group
- * 
- * @param {String} groupName 
- * @param {String} userName 
+ *
+ * @param {String} groupName
+ * @param {String} userName
  */
 function moveFromGroupToGroup(groupName, userName) {
     const oldGroup = groupList.find(group => {
@@ -784,14 +886,14 @@ function moveFromGroupToGroup(groupName, userName) {
         const userObject = oldGroup.members.find(user => {
             return user.username === userName;
         });
-    
+
         groupList.find(group => {
             return group.name === groupName;
         }).members.push(userObject);
-    
+
         oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
-        
-        if (isProjectAdmin && oldGroup.members.length === 0) {
+
+        if (!isProjectAdmin && oldGroup.members.length === 0) {
             groupList.splice(groupList.indexOf(oldGroup), 1);
         }
         reloadAllLists();
@@ -800,8 +902,8 @@ function moveFromGroupToGroup(groupName, userName) {
 
 /**
  * Removes a user from a group and puts them in the unassigned list
- * 
- * @param {Object} clicked 
+ *
+ * @param {Object} clicked
  */
 function removeFromGroup(clicked) {
     const nameSplit = clicked.parent().find(nameId).text().split('-');
@@ -818,42 +920,14 @@ function removeFromGroup(clicked) {
     });
 
     unassignedList.push(userObject);
-    
+
     oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
     reloadAllLists();
 }
 
 /**
- * Reloads all visible lists
- */
-function reloadAllLists() {
-    $(groupModalId).modal('close');
-    startLoad(groupLoadId, groupListId);
-    startLoad(unassignedLoadId, unassignedUserListId);
-    displayUnassignedList();
-    displayGroupList();
-}
-
-/**
- * Sets the status of a group to opened or closed to save in memory
- * 
- * @param {Object} clicked 
- */
-function setActive(clicked) {
-    const groupName = clicked.parent().find('#title').text();
-
-    const clickedGroup = groupList.find(group => {
-        return group.name === groupName;
-    });
-
-    if (clickedGroup) {
-        clickedGroup.isActive = !clicked.hasClass('active');
-    }
-}
-
-/**
  * Deletes a group and moves group members to unassigned list
- * 
+ *
  * @param {Object} clicked
  */
 function deleteGroup(clicked) {
@@ -874,7 +948,7 @@ function deleteGroup(clicked) {
                 groupToDelete.members.forEach(user => {
                     unassignedList.push(user);
                 });
-                
+
                 groupList.splice(groupList.indexOf(groupToDelete), 1);
                 reloadAllLists();
             }
@@ -886,6 +960,9 @@ function deleteGroup(clicked) {
 
 }
 
+/**
+ * Removes the current user from a group
+ */
 function leaveGroup() {
     const userName = meObject.username;
 
@@ -900,7 +977,7 @@ function leaveGroup() {
     });
 
     unassignedList.push(userObject);
-    
+
     oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
 
     if (oldGroup.members.length === 0) {
@@ -909,6 +986,12 @@ function leaveGroup() {
     reloadAllLists();
 }
 
+/**
+ * joins the current user in a group
+ *
+ * {Object} clicked
+ * {String} createdGroup
+ */
 function joinGroup(clicked, createdGroup) {
     const userName = meObject.username;
     const groupName = createdGroup || clicked.parent().find(titleId).text();
@@ -923,3 +1006,5 @@ function joinGroup(clicked, createdGroup) {
         moveFromGroupToGroup(groupName, userName);
     }
 }
+
+// ------------------------ End User Movement section -----------------------
