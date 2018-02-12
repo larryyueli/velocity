@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const projectId = window.location.href.split('/project/')[1];
 
 // Global variables from the request
-var groupList = null;
+var groupList = [];
 var groupModalEntryHTML = null;
 var groupModalHTML = null;
 var groupPrefix = '';
@@ -423,7 +423,7 @@ function saveGroupConfiguration() {
         url: '/project/teams/update',
         data: {
             projectId: projectId,
-            teamsList: groupList
+            teamsList: groupList ? groupList : []
         },
         success: function (data) {
             successSnackbar(translate('groupConfigurationSuccess'));

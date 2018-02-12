@@ -172,7 +172,7 @@
 // Themed elements
 // Switch
 .switch label input[type=checkbox]:checked+.lever {
-    @extend .secondaryColour-background-colour;
+    @extend .loaderBackgroundColour-background-colour;
 }
 
 .switch label input[type=checkbox]:checked+.lever:after {

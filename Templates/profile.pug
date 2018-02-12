@@ -87,7 +87,7 @@ block content
                         .row
                             .file-field.input-field
                                 .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
-                                    span 
+                                    span
                                         | #{__('userInformation.picture')}
                                         i.material-icons.right insert_photo
                                     input(type='file', accept='.jpg, .jpeg, .png')#profile-picture-input
@@ -107,7 +107,7 @@ block content
                             span.padding-right-10
                             .hide-on-med-and-up
                                 br
-                            button.waves-effect.waves-light.btn.cancelButtonBackground-background-colour.cancelButtonText-colour(onClick='disableEdit()')
+                            button.waves-effect.waves-light.btn.cancelButtonBackground-background-colour.cancelButtonText-colour(type='button', onClick='disableEdit()')
                                 | #{__('actions.cancel')}
                                 i.material-icons.right clear
 
