@@ -213,6 +213,18 @@ const teamStatus = Object.freeze({
     ACTIVE: { value: 1, text: 'active' }
 });
 exports.teamStatus = teamStatus;
+
+// common team selectino types
+const teamSelectionTypes = Object.freeze({
+    INDIVIDUAL: { value: 0, text: 'individual' },
+    ADMIN: { value: 1, text: 'admin' },
+    USER: { value: 2, text: 'user' },
+    RANDOM: { value: 3, text: 'random' }
+});
+exports.teamSelectionTypes = teamSelectionTypes;
+
+const defaultTeamPrefix = 'group-';
+exports.defaultTeamPrefix = defaultTeamPrefix;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -403,12 +415,12 @@ exports.convertListToJason = convertListToJason;
 const joinSets = function (list1, list2, jasonList) {
     let result = [];
     for (let i = 0; i < list1.length; i++) {
-        if (result.indexOf(list1[i]) === -1){
+        if (result.indexOf(list1[i]) === -1) {
             result.push(list1[i]);
         }
     }
     for (let i = 0; i < list2.length; i++) {
-        if (result.indexOf(list2[i]) === -1){
+        if (result.indexOf(list2[i]) === -1) {
             result.push(list2[i]);
         }
     }

@@ -55,6 +55,9 @@ const addProject = function (project, callback) {
     projectToAdd.status = project.status;
     projectToAdd.admins = project.admins;
     projectToAdd.members = Array.isArray(project.members) ? project.members : project.admins;
+    projectToAdd.teamSize = 1;
+    projectToAdd.teamSelectionType = common.teamSelectionTypes.ADMIN.value;
+    projectToAdd.teamPrefix = common.defaultTeamPrefix;
 
     db.addProject(projectToAdd, callback);
 }
@@ -146,8 +149,21 @@ const updateProject = function (updateParams, callback) {
         updateQuery.$set.members = updateParams.members;
     }
 
+    if (typeof (updateParams.teamSize) === common.variableTypes.NUMBER
+        && updateParams.teamSize > 0) {
+        updateQuery.$set.teamSize = updateParams.teamSize;
+    }
+
     if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.projectStatus)) {
         updateQuery.$set.status = updateParams.status;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.teamSelectionType, 'value', common.teamSelectionTypes)) {
+        updateQuery.$set.teamSelectionType = updateParams.teamSelectionType;
+    }
+
+    if (typeof (updateParams.teamPrefix) === common.variableTypes.STRING) {
+        updateQuery.$set.teamPrefix = updateParams.teamPrefix;
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {
@@ -170,7 +186,7 @@ const updateProject = function (updateParams, callback) {
  * @param {function} callback callback function
  */
 const getProjectTeams = function (projectId, callback) {
-    db.getLimitedTeamsListSorted({ projectId: projectId }, {}, 0, callback);
+    db.getLimitedTeamsListSorted({ projectId: projectId }, { name: 1 }, 0, callback);
 }
 
 /**

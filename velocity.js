@@ -1055,9 +1055,9 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 return res.status(200).send({
                     unassignedList: unassignedObjectsList,
                     groupList: resolvedTeamsList,
-                    groupSize: 4,
-                    groupSelectionType: 2,
-                    groupPrefix: 'group-',
+                    groupSize: projectObj.teamSize,
+                    groupSelectionType: projectObj.teamSelectionType,
+                    groupPrefix: projectObj.teamPrefix,
                     groupUserHTML: projectsGroupUserEntryComponent(),
                     groupHTML: projectsGroupEntryComponent(),
                     groupModalHTML: projectsGroupModalComponent(),
@@ -1357,6 +1357,44 @@ const handleProjectDeletePath = function (req, res) {
         return res.status(200).send('ok');
     });
 }
+
+/**
+ * path to update a project teams configuration
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamsConfigPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (settings.getAllSettings().mode !== common.modeTypes.CLASS) {
+        return res.status(400).render(pageNotFoundPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.TA.value
+        && req.session.user.type !== common.userTypes.STUDENT.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    const projectId = req.body.projectId;
+    let newProject = {
+        _id: projectId,
+        teamSize: parseInt(req.body.groupsSize),
+        teamSelectionType: parseInt(req.body.groupsSelectionType),
+        teamPrefix: req.body.groupsPrefix
+    };
+    projects.updateProject(newProject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(400).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 /**
@@ -1392,6 +1430,7 @@ app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/project/activate', handleProjectActivatePath);
 app.post('/project/teams/update', handleProjectTeamsUpdatePath);
+app.post('/project/teams/config', handleProjectTeamsConfigPath);
 app.post('/project/update', handleProjectUpdatePath);
 app.post('/settings/reset', handleSettingsResetPath);
 app.post('/settings/update', handleSettingsUpdatePath);
