@@ -1382,9 +1382,9 @@ const handleProjectTeamsConfigPath = function (req, res) {
     const projectId = req.body.projectId;
     let newProject = {
         _id: projectId,
-        teamSize: parseInt(req.body.groupsSize),
-        teamSelectionType: parseInt(req.body.groupsSelectionType),
-        teamPrefix: req.body.groupsPrefix
+        teamSize: parseInt(req.body.groupSize),
+        teamSelectionType: parseInt(req.body.groupSelectionType),
+        teamPrefix: req.body.groupPrefix
     };
     projects.updateProject(newProject, function (err, result) {
         if (err) {
