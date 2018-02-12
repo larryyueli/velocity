@@ -172,8 +172,27 @@ $(function () {
                 } else if (groupSelectType === 3) {
                     randomizeRemaining();
                 }
-            });
 
+                $.ajax({
+                    type: 'POST',
+                    url: '/project/teams/config',
+                    data: {
+                        projectId: projectId,
+                        groupSelectType: groupSelectType,
+                        groupSize: groupSize,
+                        groupPrefix: groupPrefix
+                    },
+                    success: function (data) {
+                        successSnackbar(translate('groupSelectionConfigurationSuccess'));
+                    },
+                    error: function (data) {
+                        handle401And404(data);
+    
+                        const jsonResponse = data.responseJSON;
+                        failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                    }
+                });
+            });
         }
     });
 
