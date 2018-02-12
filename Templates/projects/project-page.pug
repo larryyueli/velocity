@@ -11,7 +11,7 @@ block content
     include ../navbar
     br
     .container
-        if isProjectAdmin && isClassMode
+        if isProjectAdmin
             .row
                 .col.s12
                     .row
@@ -52,7 +52,7 @@ block content
                 if isProjectAdmin
                     #users Test 2
                 #groups
-                    if isProjectAdmin
+                    if isProjectAdmin && isClassMode
                         .card.center
                             .card-content
                                 .row
