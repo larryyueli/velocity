@@ -11,7 +11,7 @@ block content
     include ../navbar
     br
     .container
-        if user.type === 1 || user.type === 3
+        if isProjectAdmin
             .row
                 .col.s12
                     .row
@@ -34,7 +34,7 @@ block content
     .container
         .row
             .col.s12
-                if user.type === 1 || user.type === 3
+                if isProjectAdmin
                     #general
                         .card.center
                             .card-content
@@ -49,10 +49,10 @@ block content
                                                 i.material-icons.right save
                                             button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
                                                 i.material-icons.right send
-                if user.type === 1 || user.type === 3
+                if isProjectAdmin
                     #users Test 2
                 #groups
-                    if user.type === 1 || user.type === 3
+                    if isProjectAdmin
                         .card.center
                             .card-content
                                 .row
@@ -73,14 +73,14 @@ block content
                                         button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
                                             i.material-icons.right send
                     .card
-                        if user.type === 1 || user.type === 3
+                        if isProjectAdmin
                             .card-image
                                 a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveGroupConfiguration
                                     i.material-icons save
                         .card-content
                             .row
                                 .col.s12.l6
-                                    if user.type === 1 || user.type === 3
+                                    if isProjectAdmin
                                         .row
                                             form
                                                 .input-field.col.s12.l6.xl7
@@ -102,7 +102,7 @@ block content
                                             button.center.waves-effect.waves-light.left.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
                                         #unassignedLoad
                                         ul.collection#unassignedList
-                                .col.s12(class=(user.type === 1 || user.type === 3) ? 'l6' : '')
+                                .col.s12(class=(isProjectAdmin) ? 'l6' : '')
                                     .row
                                         form
                                             .input-field.col.s12.l6
@@ -111,7 +111,7 @@ block content
                                             .input-field.col.s12.l6
                                                 input#groupSizeFilter.validate(type='number')
                                                 label(for='groupSizeFilter')  #{__('projectPage.tabs.groups.groupSize')}
-                                    if user.type !== 1 && user.type !== 3
+                                    if !isProjectAdmin
                                         ul.collapsible(data-collapsible='expandable')#userGroup
                                         br
                                     .row

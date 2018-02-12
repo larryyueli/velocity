@@ -81,6 +81,7 @@ const navProjectsId = '#nav-projects';
 const navmProjectsId = '#navm-projects';
 
 const projectId = window.location.href.split('/project/')[1];
+var isProjectAdmin = null;
 
 $(function () {
     $(navProjectsId).addClass('active');
@@ -398,6 +399,8 @@ function getGroupAssign() {
             projectId: projectId
         },
         success: function (data) {
+            isProjectAdmin = data.isProjectAdmin;
+
             groupUserRow = $(data.groupUserHTML);
             unassignedList = data.unassignedList;
             groupRow = $(data.groupHTML);
@@ -450,7 +453,7 @@ function getGroupAssign() {
  * Displays the unassigned users list
  */
 function displayUnassignedList() {
-    if (meObject.type === 1 || meObject.type === 3) {
+    if (isProjectAdmin) {
         $(unassignedUserListId).html('');
         var rowPopulate = '';
 
@@ -479,13 +482,13 @@ function fillUserRow(user, isUnassigned) {
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
 
-    if (isUnassigned || (meObject.type !== 1 && meObject.type !== 3)) {
+    if (isUnassigned || !isProjectAdmin) {
         bindedRow.find(removeId).addClass('hidden');
     } else {
         bindedRow.find(removeId).removeClass('hidden');
     }
 
-    if (meObject.type !== 1 && meObject.type !== 3) {
+    if (!isProjectAdmin) {
         bindedRow.find(modalTriggerId).addClass('hidden');
     } else {
         bindedRow.find(modalTriggerId).removeClass('hidden');
@@ -529,7 +532,7 @@ function displayGroupList() {
     groupList.forEach(group => {
         var inGroup = null;
         if (passGroupFilter(group)) {
-            if (meObject.type !== 1 && meObject.type !== 3) {
+            if (isProjectAdmin) {
                 inGroup = groupList.find(groupSearch => {
                     return group.name === groupSearch.name && groupSearch.members.find(user => {
                         return user.username === meObject.username;
@@ -582,7 +585,7 @@ function fillGroupRow(group, isInGroup) {
     } else {
         bindedRow.find(leaveGroupId).addClass('hidden');
 
-        if (meObject.type !== 1 && meObject.type !== 3) {
+        if (!isProjectAdmin) {
             bindedRow.find(deleteGroupId).addClass('hidden');
             bindedRow.find(joinGroupId).removeClass('hidden');
         } else {
@@ -752,7 +755,7 @@ function moveFromGroupToGroup(groupName, userName) {
     
         oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
         
-        if (meObject.type !== 1 && meObject !== 3 && oldGroup.members.length === 0) {
+        if (isProjectAdmin && oldGroup.members.length === 0) {
             groupList.splice(groupList.indexOf(oldGroup), 1);
         }
         reloadAllLists();
