@@ -82,6 +82,8 @@ const navmProjectsId = '#navm-projects';
 
 const projectId = window.location.href.split('/project/')[1];
 var isProjectAdmin = null;
+var isClassMode = null;
+var isCollabMode = null;
 
 $(function () {
     $(navProjectsId).addClass('active');
@@ -400,6 +402,8 @@ function getGroupAssign() {
         },
         success: function (data) {
             isProjectAdmin = data.isProjectAdmin;
+            isClassMode = data.isClassMode;
+            isCollabMode = data.isClassMode;
 
             groupUserRow = $(data.groupUserHTML);
             unassignedList = data.unassignedList;
@@ -572,10 +576,14 @@ function fillGroupRow(group, isInGroup) {
     var isActive = false;
     bindedRow.find(assignedList).html('');
 
-    if (group.members.length < groupSize) {
-        color = colours.yellow;
-    } else if (group.members.length === groupSize) {
-        color = colours.green
+    if (isClassMode) {
+        if (group.members.length < groupSize) {
+            color = colours.yellow;
+        } else if (group.members.length === groupSize) {
+            color = colours.green
+        }
+
+        bindedRow.find(headerId)[0].style.backgroundColor = color;
     }
 
     if (isInGroup) {
@@ -602,9 +610,11 @@ function fillGroupRow(group, isInGroup) {
         bindedRow.find(groupBodyId)[0].style.display = 'none';    
     }
 
-    bindedRow.find(headerId)[0].style.backgroundColor = color;
     bindedRow.find(titleId).html(group.name);
-    bindedRow.find(groupSizeId).html(`(${group.members.length}/${groupSize})`);
+
+    if (isClassMode) {
+        bindedRow.find(groupSizeId).html(`(${group.members.length}/${groupSize})`);
+    }
     
     group.members.forEach(user => {
         bindedRow.find(assignedList).append(fillUserRow(user, false));
@@ -672,13 +682,16 @@ function fillGroupModalRow(group) {
     var membersList = '';
     var color = colours.red;
 
-    if (group.members.length < groupSize) {
-        color = colours.yellow;
-    } else if (group.members.length === groupSize) {
-        color = colours.green
+    if (isClassMode) {
+        if (group.members.length < groupSize) {
+            color = colours.yellow;
+        } else if (group.members.length === groupSize) {
+            color = colours.green
+        }
+
+        bindedRow.find(groupIconId)[0].style.backgroundColor = color;
     }
 
-    bindedRow.find(groupIconId)[0].style.backgroundColor = color;
     bindedRow.find(groupNameId).html(group.name);
     bindedRow.find(sizeId).html(`${translate('size')}: ${group.members.length}`);
     group.members.forEach(user => {

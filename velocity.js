@@ -1131,7 +1131,10 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 groupUserHTML: projectsGroupUserEntryComponent(),
                 groupHTML: projectsGroupEntryComponent(),
                 groupModalHTML: projectsGroupModalComponent(),
-                groupModalEntryHTML: projectsGroupModalEntryComponent()
+                groupModalEntryHTML: projectsGroupModalEntryComponent(),
+                isProjectAdmin: true,
+                isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+                isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
             });
         });
     });
@@ -1218,6 +1221,7 @@ const handleProjectByIdPath = function (req, res) {
         return res.status(200).render(projectPagePage, {
             user: req.session.user,
             title: projectObj.title,
+            isProjectAdmin: true,
             description: projectObj.description,
             isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
             isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
