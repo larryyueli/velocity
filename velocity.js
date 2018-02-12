@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const bodyParser = require('body-parser');
 const csv2json = require('csvtojson');
 const express = require('express');
@@ -233,7 +235,7 @@ const handleLoginPath = function (req, res) {
             return res.status(403).send(common.getError(3007));
         }
 
-        var meObject = JSON.parse(JSON.stringify(userObject));
+        let meObject = JSON.parse(JSON.stringify(userObject));
         delete meObject.password;
         req.session.user = meObject;
 
@@ -266,7 +268,7 @@ const handleMePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    var meObject = JSON.parse(JSON.stringify(req.session.user));
+    let meObject = JSON.parse(JSON.stringify(req.session.user));
     delete meObject._id;
     return res.status(200).send(meObject);
 }
@@ -321,7 +323,7 @@ const handleProfileUpdatePath = function (req, res) {
         const canEditPassword = settings.getAllSettings().users.canEditPassword;
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
-        var updateObject = {};
+        let updateObject = {};
         updateObject._id = req.session.user._id;
         updateObject.fname = (canEditFirstAndLastName && typeof (req.body.fname) === common.variableTypes.STRING) ? req.body.fname : req.session.user.fname;
         updateObject.lname = (canEditFirstAndLastName && typeof (req.body.lname) === common.variableTypes.STRING) ? req.body.lname : req.session.user.lname;
@@ -395,7 +397,7 @@ const handleModeSelectPath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        var newType;
+        let newType;
         if (parsedSelectedMode === common.modeTypes.CLASS) {
             newType = common.userTypes.PROFESSOR.value
         }
@@ -601,7 +603,7 @@ const handleUsersUpdatePath = function (req, res) {
             return res.status(400).send(err);
         }
 
-        var newUser = {
+        let newUser = {
             _id: userObj._id,
             fname: req.body.fname,
             lname: req.body.lname,
@@ -689,9 +691,9 @@ const handleUsersImportFilePath = function (req, res) {
         }
 
         const fullFilePath = path.resolve(`${fileObject.filePath}/${fileObject.fileName}.${fileObject.fileExtension}`);
-        var importedList = [];
+        let importedList = [];
         csv2json().fromFile(fullFilePath).on('json', function (jsonObj) {
-            var userObj = {};
+            let userObj = {};
             userObj['username'] = jsonObj['Username'];
             userObj['password'] = jsonObj['Password'];
             userObj['fname'] = jsonObj['First Name'];
@@ -704,14 +706,14 @@ const handleUsersImportFilePath = function (req, res) {
                 return res.status(500).send(common.getError(1009));
             }
 
-            var added = 0;
-            var failed = 0;
-            var exist = 0;
-            var total = 0;
+            let added = 0;
+            let failed = 0;
+            let exist = 0;
+            let total = 0;
 
-            for (var i = 0; i < importedList.length; i++) {
-                var inputUser = importedList[i];
-                var userToAdd = {
+            for (let i = 0; i < importedList.length; i++) {
+                let inputUser = importedList[i];
+                let userToAdd = {
                     fname: inputUser.fname,
                     lname: inputUser.lname,
                     username: inputUser.username,
@@ -989,25 +991,26 @@ const handleProjectsGroupAssignPath = function (req, res) {
             return res.status(500).send(err);
         }
 
+        // TODO: check membership
+
         const projectMembers = projectObj.members;
         const fullUserObjectsList = users.getActiveUsersList();
         const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
-        var usersList = [];
-        for (var i = 0; i < fullUserObjectsList.length; i++) {
+        let usersList = [];
+        for (let i = 0; i < fullUserObjectsList.length; i++) {
             usersList.push(fullUserObjectsList[i]._id);
         }
-        projects.getProjectTeams(projectId, function (err, teamsList) {
+        projects.getProjectTeams(projectId, function (err, teamsObjectList) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
 
-            var unassignedList = common.getArrayDiff(usersList, projectMembers);
-            var unassignedObjectsList = [];
-            var teamsObjectList = teamsList;
+            let unassignedList = common.getArrayDiff(usersList, projectMembers);
+            let unassignedObjectsList = [];
 
-            for (var i = 0; i < unassignedList.length; i++) {
-                var innerUser = fullUsersListObject[unassignedList[i]];
+            for (let i = 0; i < unassignedList.length; i++) {
+                let innerUser = fullUsersListObject[unassignedList[i]];
                 if (innerUser) {
                     unassignedObjectsList.push({
                         fname: innerUser.fname,
@@ -1018,12 +1021,12 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 }
             }
 
-            var teamsList = [];
-            for (var i = 0; i < teamsObjectList.length; i++) {
-                var teamObject = teamsObjectList[i];
-                var teamMembers = [];
-                for (var j = 0; j < teamObject.members.length; j++) {
-                    var teamUser = fullUsersListObject[teamObject['members'][j]];
+            let teamsList = [];
+            for (let i = 0; i < teamsObjectList.length; i++) {
+                let teamObject = teamsObjectList[i];
+                let teamMembers = [];
+                for (let j = 0; j < teamObject.members.length; j++) {
+                    let teamUser = fullUsersListObject[teamObject['members'][j]];
                     if (teamUser) {
                         teamMembers.push({
                             fname: teamUser.fname,
@@ -1041,90 +1044,12 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
             //console.log(projectMembers); // TODO: remove
             //console.log(unassignedList); // TODO: remove
-            //console.log(unassignedObjectsList); // TODO: remove
-            //console.log(teamsList); // TODO: remove
+            console.log(unassignedObjectsList); // TODO: remove
+            console.log(teamsList); // TODO: remove
 
             return res.status(200).send({
-                unassignedList: [
-                    {
-                        fname: "student",
-                        lname: "test1",
-                        username: "stude1",
-                        type: 3
-                    },
-                    {
-                        fname: "student",
-                        lname: "test2",
-                        username: "stude2",
-                        type: 4
-                    },
-                    {
-                        fname: "student",
-                        lname: "test3",
-                        username: "stude3",
-                        type: 2
-                    },
-                    {
-                        fname: "student",
-                        lname: "test4",
-                        username: "stude4",
-                        type: 4
-                    }
-                ],
-                groupList: [
-                    {
-                        name: "group1",
-                        members: [
-                            {
-                                fname: "student",
-                                lname: "test5",
-                                username: "stude5",
-                                type: 2
-                            },
-                            {
-                                fname: "student",
-                                lname: "test6",
-                                username: "stude6",
-                                type: 3
-                            },
-                            {
-                                fname: "student",
-                                lname: "test7",
-                                username: "stude7",
-                                type: 4
-                            },
-                            {
-                                fname: "student",
-                                lname: "test8",
-                                username: "stude8",
-                                type: 3
-                            }
-                        ]
-                    },
-                    {
-                        name: "group2",
-                        members: [
-                            {
-                                fname: "student",
-                                lname: "test9",
-                                username: "stude9",
-                                type: 2
-                            },
-                            {
-                                fname: "student",
-                                lname: "test10",
-                                username: "stude10",
-                                type: 3
-                            },
-                            {
-                                fname: "student",
-                                lname: "test11",
-                                username: "stude11",
-                                type: 4
-                            }
-                        ]
-                    }
-                ],
+                unassignedList: unassignedObjectsList,
+                groupList: teamsList,
                 groupSize: 4,
                 groupSelectionType: 2,
                 groupPrefix: 'group-',
@@ -1242,7 +1167,7 @@ const handleProjectUpdatePath = function (req, res) {
     }
 
     const projectId = req.body.projectId;
-    var newProject = {
+    let newProject = {
         _id: req.body.projectId,
         title: req.body.title,
         description: req.body.description
@@ -1281,13 +1206,61 @@ const handleProjectTeamsUpdatePath = function (req, res) {
         return res.status(400).send(common.getError(1000));
     }
 
-    var updateTeamsCounter = 0;
-    for (var i = 0; i < teamsList.length; i++) {
-        const team = teamsList[i];
-        projects.updateTeamInProject(projectId, team, function (err, result) {
-            updateTeamsCounter++;
-            if (updateTeamsCounter === teamsList.length) {
-                return res.status(200).send('ok');
+    const fullUserObjectsList = users.getActiveUsersList();
+    const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+
+    let resolvedTeamsList = [];
+    for (let i = 0; i < teamsList.length; i++) {
+        let team = teamsList[i];
+        let members = [];
+        for (let j = 0; j < team.members.length; j++) {
+            let username = team['members'][j]['username'];
+            if (fullUsersListObject[username]) {
+                members.push(fullUsersListObject[username]._id);
+            }
+        }
+        if (members.length > 0) {
+            resolvedTeamsList.push({
+                name: team.name,
+                members: members
+            });
+        }
+    }
+
+    let updateTeamsCounter = 0;
+    for (let i = 0; i < resolvedTeamsList.length; i++) {
+        let team = resolvedTeamsList[i];
+        projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
+            if (err) {
+                if (err.code === 6004) {
+                    team.status = common.teamStatus.ACTIVE.value;
+                    projects.addTeamToProject(projectId, team, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                        }
+
+                        updateTeamsCounter++;
+                        if (updateTeamsCounter === resolvedTeamsList.length) {
+                            return res.status(200).send('ok');
+                        }
+                    });
+                } else {
+                    logger.error(JSON.stringify(err));
+                }
+            }
+
+            if (teamObj) {
+                team._id = teamObj._id;
+                projects.updateTeamInProject(projectId, team, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                    }
+
+                    updateTeamsCounter++;
+                    if (updateTeamsCounter === resolvedTeamsList.length) {
+                        return res.status(200).send('ok');
+                    }
+                });
             }
         });
     }
@@ -1310,7 +1283,7 @@ const handleProjectActivatePath = function (req, res) {
     }
 
     const projectId = req.body.projectId;
-    var newProject = {
+    let newProject = {
         _id: req.body.projectId,
         status: common.projectStatus.ACTIVE.value
     };
@@ -1341,7 +1314,7 @@ const handleProjectDeletePath = function (req, res) {
     }
 
     const projectId = req.body.projectId;
-    var newProject = {
+    let newProject = {
         _id: req.body.projectId,
         status: common.projectStatus.DELETED.value
     };
@@ -1413,7 +1386,7 @@ notificationsWS.on('connection', function (client, req) {
     client.send('ws ok');
 });
 setInterval(function () {
-    for (var client of notificationsWS.clients) {
+    for (let client of notificationsWS.clients) {
         client.send('ws ok');
     }
 }, 1000);

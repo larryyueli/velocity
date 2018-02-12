@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const common = require('./common.js');
 const db = require('./db.js');
 
@@ -43,7 +45,7 @@ const addProject = function (project, callback) {
     }
 
     const currentDate = common.getDate();
-    var projectToAdd = {};
+    let projectToAdd = {};
 
     projectToAdd._id = common.getUUID();
     projectToAdd.title = project.title;
@@ -116,8 +118,8 @@ const getProjectById = function (projectId, callback) {
  * @param {function} callback callback function
  */
 const updateProject = function (updateParams, callback) {
-    var searchQuery = {};
-    var updateQuery = {};
+    let searchQuery = {};
+    let updateQuery = {};
     updateQuery.$set = {};
 
     if (typeof (updateParams._id) === common.variableTypes.STRING) {
@@ -164,6 +166,28 @@ const getProjectTeams = function (projectId, callback) {
 }
 
 /**
+ * find the a team under project by its name
+ *
+ * @param {string} projectId project id
+ * @param {string} teamName team name
+ * @param {function} callback callback function
+ */
+const getTeamInProjectByName = function (projectId, teamName, callback) {
+    db.getTeam({ $and: [{ projectId: projectId }, { name: teamName }] }, callback);
+}
+
+/**
+ * find the a team under project by its id
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getTeamInProjectById = function (projectId, teamId, callback) {
+    db.getTeam({ $and: [{ projectId: projectId }, { _id: teamId }] }, callback);
+}
+
+/**
  * Create a team under a project
  *
  * @param {string} projectId project id
@@ -179,7 +203,7 @@ const addTeamToProject = function (projectId, team, callback) {
     }
 
     const currentDate = common.getDate();
-    var teamToAdd = {};
+    let teamToAdd = {};
 
     teamToAdd._id = common.getUUID();
     teamToAdd.projectId = projectId;
@@ -188,7 +212,7 @@ const addTeamToProject = function (projectId, team, callback) {
     teamToAdd.mtime = currentDate;
     teamToAdd.status = team.status;
     teamToAdd.members = team.members;
-
+    //console.log(teamToAdd);
     db.addTeam(teamToAdd, callback);
 }
 
@@ -196,29 +220,26 @@ const addTeamToProject = function (projectId, team, callback) {
  * Update a team under a project
  *
  * @param {string} projectId project id
- * @param {object} updateQuery team object to add
+ * @param {object} updateParams team object to add
  * @param {function} callback callback function
  */
-const updateTeamInProject = function (projectId, updateQuery, callback) {
-    var searchQuery = {};
+const updateTeamInProject = function (projectId, updateParams, callback) {
+    let searchQuery = {};
     searchQuery.$and = {};
-    var updateQuery = {};
+    let updateQuery = {};
     updateQuery.$set = {};
 
-    if (typeof (projectId) === common.variableTypes.STRING) {
-        searchQuery.projectId = projectId;
-    }
-
-    if (common.isEmptyObject(searchQuery)) {
+    if (typeof (projectId) !== common.variableTypes.STRING) {
         return callback(common.getError(6007), null);
     }
 
-    searchQuery.$and = {
-        projectId: projectId,
-        '_id': (typeof (updateQuery._id) === common.variableTypes.STRING) ? updateQuery._id : common.getUUID()
-    };
+    if (typeof (updateParams._id) !== common.variableTypes.STRING) {
+        return callback(common.getError(6007), null);
+    }
 
-    if (typeof (updateQuery.name) === common.variableTypes.STRING) {
+    searchQuery.$and = [{ projectId: projectId }, { _id: updateParams._id }];
+
+    if (typeof (updateParams.name) === common.variableTypes.STRING) {
         updateQuery.$set.name = updateParams.name;
     }
 
@@ -252,6 +273,8 @@ exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.getProjectTeams = getProjectTeams;
+exports.getTeamInProjectById = getTeamInProjectById;
+exports.getTeamInProjectByName = getTeamInProjectByName;
 exports.updateProject = updateProject;
 exports.updateTeamInProject = updateTeamInProject;
 // </exports> ----------------------------------

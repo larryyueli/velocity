@@ -92,7 +92,7 @@ const getTeam = function (searchQuery, callback) {
  * @param {function} callback callback function
  */
 const updateTeam = function (searchQuery, updateQuery, callback) {
-    teamsCollection.update(searchQuery, updateQuery, { upsert: true }, function (err, result) {
+    teamsCollection.update(searchQuery, updateQuery, function (err, result) {
         if (err) {
             return callback(common.getError(6005), null);
         }
