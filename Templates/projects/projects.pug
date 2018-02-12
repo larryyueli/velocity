@@ -25,12 +25,13 @@ block content
                             option(value='0') #{__('projects.status.closed')}
                         label #{__('projects.status.label')}
         .row
-            .col.s6
-                a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/projects/import', disabled) #{__('actions.import')}
-                    i.material-icons.right cloud_upload
-            .col.s6
-                a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('actions.create')}
-                    i.material-icons.right note_add
+            if user.canCreateProjects
+                .col.s6
+                    a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/projects/import', disabled) #{__('actions.import')}
+                        i.material-icons.right cloud_upload
+                .col.s6
+                    a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('actions.create')}
+                        i.material-icons.right note_add
         .row
             #projectsLoad
             ul.collection.scroll-auto.margin-0#projectsList

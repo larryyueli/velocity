@@ -28,6 +28,27 @@
     }
 }
 
+#leaveGroup {
+    color: black;
+    position: absolute;
+    right: 20px !important;
+
+    &:hover {
+        color: rgb(63, 63, 63);
+    }
+}
+
+
+#joinGroup {
+    color: black;
+    position: absolute;
+    right: 20px !important;
+
+    &:hover {
+        color: rgb(63, 63, 63);
+    }
+}
+
 #deleteGroup {
     color: black;
     position: absolute;

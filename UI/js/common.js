@@ -111,6 +111,7 @@ const translations = Object.freeze({
     cancel: 'Cancel',
     randomize: 'Randomize',
     groupConfigurationSuccess: 'Groups have been saved successfully',
+    notInGroup: 'You are currently not in a group',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

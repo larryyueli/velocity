@@ -11,91 +11,98 @@ block content
     include ../navbar
     br
     .container
-        .row
-            .col.s12
-                .row
-                    ul.tabs
-                        li.tab.col.s4
-                            a.noLineLink.active#option-general(href='#general')
-                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
-                                |
-                                .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
-                        li.tab.col.s4
-                            a.noLineLink#option-users(href='#users')
-                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
-                                |
-                                .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
-                        li.tab.col.s4
-                            a.noLineLink#option-groups(href='#groups')
-                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
-                                |
-                                .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
+        if user.type === 1 || user.type === 3
+            .row
+                .col.s12
+                    .row
+                        ul.tabs
+                            li.tab.col.s4
+                                a.noLineLink.active#option-general(href='#general')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
+                            li.tab.col.s4
+                                a.noLineLink#option-users(href='#users')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
+                            li.tab.col.s4
+                                a.noLineLink#option-groups(href='#groups')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
     .container
         .row
             .col.s12
-                #general
-                    .card.center
-                        .card-content
-                            .row
-                                form.col.s12#projectAddform
-                                    include projects-add-content
+                if user.type === 1 || user.type === 3
+                    #general
+                        .card.center
+                            .card-content
                                 .row
-                                    .container.center
-                                        button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
-                                            i.material-icons.right close
-                                        button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
-                                            i.material-icons.right save
-                                        button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
-                                            i.material-icons.right send
-                #users Test 2
-                #groups
-                    .card.center
-                        .card-content
-                            .row
-                                .input-field.col.s12.m5
-                                    select#groupStatus
-                                        option(value='0')#groupType0 #{__('projectPage.tabs.groups.types.individual')}
-                                        option(value='1')#groupType1 #{__('projectPage.tabs.groups.types.instructor')}
-                                        option(value='2')#groupType2 #{__('projectPage.tabs.groups.types.student')}
-                                        option(value='3')#groupType3 #{__('projectPage.tabs.groups.types.randomize')}
-                                    label  #{__('projectPage.tabs.groups.groupStatus')}
-                                .input-field.col.s6.m2
-                                    input#groupSize(type='number', min=2, value)
-                                    label#groupSizeLabel  #{__('projectPage.tabs.groups.groupSize')}
-                                .input-field.col.s6.m2
-                                    input#groupPrefix(type='text')
-                                    label#groupPrefixLabel  #{__('projectPage.tabs.groups.groupPrefix')}
-                                .input-field.col.s12.m3
-                                    button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
-                                        i.material-icons.right send
-                    .card
-                        .card-image
-                            a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveGroupConfiguration
-                                i.material-icons save
-                        .card-content
-                            .row
-                                .col.s12.l6
+                                    form.col.s12#projectAddform
+                                        include projects-add-content
                                     .row
-                                        form
-                                            .input-field.col.s12.l6.xl7
-                                                input#searchUserFilter.validate(type='text')
-                                                label(for='searchUserFilter')  #{__('users.searchFilter')}
-                                            .input-field.col.s12.l6.xl5
-                                                select#typeFilter
-                                                    if isClassMode
-                                                        option(value='-1') #{__('users.all')}
-                                                        option(value='5') #{__('userInformation.types.student')}
-                                                        option(value='4') #{__('userInformation.types.ta')}
-                                                        option(value='3') #{__('userInformation.types.professor')}
-                                                    if isCollabMode
-                                                        option(value='-1') #{__('users.all')}
-                                                        option(value='1') #{__('userInformation.types.collaboratorAdmin')}
-                                                        option(value='2') #{__('userInformation.types.collaborator')}
-                                                label #{__('users.userType')}
-                                    button.center.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
-                                    #unassignedLoad
-                                    ul.collection#unassignedList
+                                        .container.center
+                                            button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                                i.material-icons.right close
+                                            button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
+                                                i.material-icons.right save
+                                            button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
+                                                i.material-icons.right send
+                if user.type === 1 || user.type === 3
+                    #users Test 2
+                #groups
+                    if user.type === 1 || user.type === 3
+                        .card.center
+                            .card-content
+                                .row
+                                    .input-field.col.s12.m5
+                                        select#groupStatus
+                                            option(value='0')#groupType0 #{__('projectPage.tabs.groups.types.individual')}
+                                            option(value='1')#groupType1 #{__('projectPage.tabs.groups.types.instructor')}
+                                            option(value='2')#groupType2 #{__('projectPage.tabs.groups.types.student')}
+                                            option(value='3')#groupType3 #{__('projectPage.tabs.groups.types.randomize')}
+                                        label  #{__('projectPage.tabs.groups.groupStatus')}
+                                    .input-field.col.s6.m2
+                                        input#groupSize(type='number', min=2, value)
+                                        label#groupSizeLabel  #{__('projectPage.tabs.groups.groupSize')}
+                                    .input-field.col.s6.m2
+                                        input#groupPrefix(type='text')
+                                        label#groupPrefixLabel  #{__('projectPage.tabs.groups.groupPrefix')}
+                                    .input-field.col.s12.m3
+                                        button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
+                                            i.material-icons.right send
+                    .card
+                        if user.type === 1 || user.type === 3
+                            .card-image
+                                a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveGroupConfiguration
+                                    i.material-icons save
+                        .card-content
+                            .row
                                 .col.s12.l6
+                                    if user.type === 1 || user.type === 3
+                                        .row
+                                            form
+                                                .input-field.col.s12.l6.xl7
+                                                    input#searchUserFilter.validate(type='text')
+                                                    label(for='searchUserFilter')  #{__('users.searchFilter')}
+                                                .input-field.col.s12.l6.xl5
+                                                    select#typeFilter
+                                                        if isClassMode
+                                                            option(value='-1') #{__('users.all')}
+                                                            option(value='5') #{__('userInformation.types.student')}
+                                                            option(value='4') #{__('userInformation.types.ta')}
+                                                            option(value='3') #{__('userInformation.types.professor')}
+                                                        if isCollabMode
+                                                            option(value='-1') #{__('users.all')}
+                                                            option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                                            option(value='2') #{__('userInformation.types.collaborator')}
+                                                    label #{__('users.userType')}
+                                        .row
+                                            button.center.waves-effect.waves-light.left.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
+                                        #unassignedLoad
+                                        ul.collection#unassignedList
+                                .col.s12(class=(user.type === 1 || user.type === 3) ? 'l6' : '')
                                     .row
                                         form
                                             .input-field.col.s12.l6
@@ -104,7 +111,11 @@ block content
                                             .input-field.col.s12.l6
                                                 input#groupSizeFilter.validate(type='number')
                                                 label(for='groupSizeFilter')  #{__('projectPage.tabs.groups.groupSize')}
-                                    button.center.waves-effect.waves-light.btn.col.s12.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
+                                    if user.type !== 1 && user.type !== 3
+                                        ul.collapsible(data-collapsible='expandable')#userGroup
+                                        br
+                                    .row
+                                        button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
 

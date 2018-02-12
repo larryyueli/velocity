@@ -29,6 +29,7 @@ var groupSelectType = null;
 const assignedList = '#assignedList';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
+const deleteGroupId = '#deleteGroup';
 const groupCreateModalId = '#groupCreateModal';
 const groupBodyId = '#groupBody';
 const groupIconId = '#groupIcon';
@@ -45,7 +46,9 @@ const groupSizeLabelId = '#groupSizeLabel';
 const groupStatusId = '#groupStatus';
 const headerId = '#header';
 const iconId = "#icon";
+const joinGroupId = '#joinGroup';
 const joinLinkId = '#joinLink';
+const leaveGroupId = '#leaveGroup';
 const membersId = '#members';
 const nameId = '#name';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
@@ -57,6 +60,7 @@ const titleId = '#title';
 const unassignedLoadId = '#unassignedLoad'
 const unassignedUserListId = '#unassignedList';
 const unassignedUserListName = 'unassignedList';
+const userGroupId = '#userGroup';
 
 const optionGroups = $('#option-groups');
 
@@ -183,7 +187,7 @@ $(function () {
             failSnackbar(translate('groupNamealreadyExists'));
         } else {
             groupList.push(makeGroupObject(false, [], groupName));
-
+            joinGroup(null, groupName);
             $(groupCreateModalId).modal('close');
             startLoad(groupLoadId, groupListId);
             displayGroupList();
@@ -194,11 +198,9 @@ $(function () {
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
 
-    optionGroups.click(() => {
-        getGroupAssign();
-        startLoad(groupLoadId, groupListId);
-        startLoad(unassignedLoadId, unassignedUserListId);
-    });
+    getGroupAssign();
+    startLoad(groupLoadId, groupListId);
+    startLoad(unassignedLoadId, unassignedUserListId);
 });
 
 /**
@@ -448,20 +450,22 @@ function getGroupAssign() {
  * Displays the unassigned users list
  */
 function displayUnassignedList() {
-    $(unassignedUserListId).html('');
-    var rowPopulate = '';
+    if (meObject.type === 1 || meObject.type === 3) {
+        $(unassignedUserListId).html('');
+        var rowPopulate = '';
 
-    unassignedList.forEach(user => {
-        if (passUserFilter(user)) {
-            $(unassignedUserListId).append(fillUserRow(user, true));
+        unassignedList.forEach(user => {
+            if (passUserFilter(user)) {
+                $(unassignedUserListId).append(fillUserRow(user, true));
+            }
+        });
+
+        if ($(unassignedUserListId).find('li').length === 0) {
+            $(unassignedUserListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`);
         }
-    });
 
-    if ($(unassignedUserListId).find('li').length === 0) {
-        $(unassignedUserListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`);
+        endLoad(unassignedLoadId, unassignedUserListId);
     }
-
-    endLoad(unassignedLoadId, unassignedUserListId);
 }
 
 /**
@@ -475,10 +479,16 @@ function fillUserRow(user, isUnassigned) {
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
 
-    if (isUnassigned) {
+    if (isUnassigned || (meObject.type !== 1 && meObject.type !== 3)) {
         bindedRow.find(removeId).addClass('hidden');
     } else {
         bindedRow.find(removeId).removeClass('hidden');
+    }
+
+    if (meObject.type !== 1 && meObject.type !== 3) {
+        bindedRow.find(modalTriggerId).addClass('hidden');
+    } else {
+        bindedRow.find(modalTriggerId).removeClass('hidden');
     }
 
     return bindedRow[0].outerHTML;
@@ -513,16 +523,36 @@ function passUserFilter(user) {
  */
 function displayGroupList() {
     $(groupListId).html('');
+    $(userGroupId).html('');
     var rowPopulate = '';
 
     groupList.forEach(group => {
+        var inGroup = null;
         if (passGroupFilter(group)) {
-            $(groupListId).append(fillGroupRow(group));
+            if (meObject.type !== 1 && meObject.type !== 3) {
+                inGroup = groupList.find(groupSearch => {
+                    return group.name === groupSearch.name && groupSearch.members.find(user => {
+                        return user.username === meObject.username;
+                    });
+                });
+
+                if (inGroup) {
+                    $(userGroupId).append(fillGroupRow(group, true));
+                } else {
+                    $(groupListId).append(fillGroupRow(group, false));
+                }
+            } else {
+                $(groupListId).append(fillGroupRow(group, false));
+            }
         }
     });
 
     if ($(groupListId).find('li').length === 0) {
         $(groupListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`);
+    }
+
+    if ($(userGroupId).find('li').length === 0) {
+        $(userGroupId).append(`<p class="center"><i>${translate('notInGroup')}</i></p>`);
     }
 
     endLoad(groupLoadId, groupListId);
@@ -533,7 +563,7 @@ function displayGroupList() {
  * 
  * @param {Object} group 
  */
-function fillGroupRow(group) {
+function fillGroupRow(group, isInGroup) {
     var bindedRow = groupRow;
     var color = colours.red;
     var isActive = false;
@@ -543,6 +573,22 @@ function fillGroupRow(group) {
         color = colours.yellow;
     } else if (group.members.length === groupSize) {
         color = colours.green
+    }
+
+    if (isInGroup) {
+        bindedRow.find(leaveGroupId).removeClass('hidden');
+        bindedRow.find(deleteGroupId).addClass('hidden');
+        bindedRow.find(joinGroupId).addClass('hidden');        
+    } else {
+        bindedRow.find(leaveGroupId).addClass('hidden');
+
+        if (meObject.type !== 1 && meObject.type !== 3) {
+            bindedRow.find(deleteGroupId).addClass('hidden');
+            bindedRow.find(joinGroupId).removeClass('hidden');
+        } else {
+            bindedRow.find(deleteGroupId).removeClass('hidden');
+            bindedRow.find(joinGroupId).addClass('hidden');
+        }
     }
 
     if (group.isActive) {
@@ -627,9 +673,6 @@ function fillGroupModalRow(group) {
         color = colours.yellow;
     } else if (group.members.length === groupSize) {
         color = colours.green
-
-        //TODO: disable for students
-        //bindedRow.find(joinLinkId).addClass('disabled');
     }
 
     bindedRow.find(groupIconId)[0].style.backgroundColor = color;
@@ -798,4 +841,42 @@ function deleteGroup(clicked) {
         reloadAllLists();
     }
 
+}
+
+function leaveGroup() {
+    const userName = meObject.username;
+
+    const oldGroup = groupList.find(group => {
+        return group.members.find(user => {
+            return user.username === userName;
+        });
+    });
+
+    const userObject = oldGroup.members.find(user => {
+        return user.username === userName;
+    });
+
+    unassignedList.push(userObject);
+    
+    oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
+
+    if (oldGroup.members.length === 0) {
+        groupList.splice(groupList.indexOf(oldGroup), 1);
+    }
+    reloadAllLists();
+}
+
+function joinGroup(clicked, createdGroup) {
+    const userName = meObject.username;
+    const groupName = createdGroup || clicked.parent().find(titleId).text();
+
+    const userObject = unassignedList.find(user => {
+        return user.username === userName;
+    });
+
+    if (userObject) {
+        moveFromUnassignedToGroup(groupName, userName);
+    } else {
+        moveFromGroupToGroup(groupName, userName);
+    }
 }

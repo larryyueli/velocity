@@ -3,7 +3,11 @@ li#groupMembersList
         i.material-icons assignment_ind
         .padding-right-5#title
         #groupSize
-        a.right.pointer.deleteGroup(onclick='deleteGroup($(this))')#deleteGroup
+        a.right.pointer(onclick='deleteGroup($(this))')#deleteGroup
             i.material-icons close
+        a.right.pointer(onclick='joinGroup($(this))')#joinGroup
+            i.material-icons person_add
+        a.right.pointer(onclick='leaveGroup()')#leaveGroup
+            i.material-icons backspace
     .collapsible-body.padding-0#groupBody
         ul.collection#assignedList
