@@ -751,6 +751,10 @@ function moveFromGroupToGroup(groupName, userName) {
         }).members.push(userObject);
     
         oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
+        
+        if (meObject.type !== 1 && meObject !== 3 && oldGroup.members.length === 0) {
+            groupList.splice(groupList.indexOf(oldGroup), 1);
+        }
         reloadAllLists();
     }
 }
