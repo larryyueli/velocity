@@ -256,7 +256,7 @@ function saveGroupConfiguration() {
             teamsList: groupList
         },
         success: function (data) {
-            successSnackbar('groupConfigurationSuccess');
+            successSnackbar(translate('groupConfigurationSuccess'));
         },
         error: function (data) {
             handle401And404(data);
@@ -540,7 +540,7 @@ function displayGroupList() {
     groupList.forEach(group => {
         var inGroup = null;
         if (passGroupFilter(group)) {
-            if (isProjectAdmin) {
+            if (!isProjectAdmin) {
                 inGroup = groupList.find(groupSearch => {
                     return group.name === groupSearch.name && groupSearch.members.find(user => {
                         return user.username === meObject.username;
