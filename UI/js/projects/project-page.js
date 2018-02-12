@@ -81,6 +81,9 @@ const navProjectsId = '#nav-projects';
 const navmProjectsId = '#navm-projects';
 
 const projectId = window.location.href.split('/project/')[1];
+var isProjectAdmin = null;
+var isClassMode = null;
+var isCollabMode = null;
 
 $(function () {
     $(navProjectsId).addClass('active');
@@ -398,6 +401,10 @@ function getGroupAssign() {
             projectId: projectId
         },
         success: function (data) {
+            isProjectAdmin = data.isProjectAdmin;
+            isClassMode = data.isClassMode;
+            isCollabMode = data.isClassMode;
+
             groupUserRow = $(data.groupUserHTML);
             unassignedList = data.unassignedList;
             groupRow = $(data.groupHTML);
@@ -450,7 +457,7 @@ function getGroupAssign() {
  * Displays the unassigned users list
  */
 function displayUnassignedList() {
-    if (meObject.type === 1 || meObject.type === 3) {
+    if (isProjectAdmin) {
         $(unassignedUserListId).html('');
         var rowPopulate = '';
 
@@ -479,13 +486,13 @@ function fillUserRow(user, isUnassigned) {
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
 
-    if (isUnassigned || (meObject.type !== 1 && meObject.type !== 3)) {
+    if (isUnassigned || !isProjectAdmin) {
         bindedRow.find(removeId).addClass('hidden');
     } else {
         bindedRow.find(removeId).removeClass('hidden');
     }
 
-    if (meObject.type !== 1 && meObject.type !== 3) {
+    if (!isProjectAdmin) {
         bindedRow.find(modalTriggerId).addClass('hidden');
     } else {
         bindedRow.find(modalTriggerId).removeClass('hidden');
@@ -529,7 +536,7 @@ function displayGroupList() {
     groupList.forEach(group => {
         var inGroup = null;
         if (passGroupFilter(group)) {
-            if (meObject.type !== 1 && meObject.type !== 3) {
+            if (isProjectAdmin) {
                 inGroup = groupList.find(groupSearch => {
                     return group.name === groupSearch.name && groupSearch.members.find(user => {
                         return user.username === meObject.username;
@@ -569,10 +576,14 @@ function fillGroupRow(group, isInGroup) {
     var isActive = false;
     bindedRow.find(assignedList).html('');
 
-    if (group.members.length < groupSize) {
-        color = colours.yellow;
-    } else if (group.members.length === groupSize) {
-        color = colours.green
+    if (isClassMode) {
+        if (group.members.length < groupSize) {
+            color = colours.yellow;
+        } else if (group.members.length === groupSize) {
+            color = colours.green
+        }
+
+        bindedRow.find(headerId)[0].style.backgroundColor = color;
     }
 
     if (isInGroup) {
@@ -582,7 +593,7 @@ function fillGroupRow(group, isInGroup) {
     } else {
         bindedRow.find(leaveGroupId).addClass('hidden');
 
-        if (meObject.type !== 1 && meObject.type !== 3) {
+        if (!isProjectAdmin) {
             bindedRow.find(deleteGroupId).addClass('hidden');
             bindedRow.find(joinGroupId).removeClass('hidden');
         } else {
@@ -599,9 +610,11 @@ function fillGroupRow(group, isInGroup) {
         bindedRow.find(groupBodyId)[0].style.display = 'none';    
     }
 
-    bindedRow.find(headerId)[0].style.backgroundColor = color;
     bindedRow.find(titleId).html(group.name);
-    bindedRow.find(groupSizeId).html(`(${group.members.length}/${groupSize})`);
+
+    if (isClassMode) {
+        bindedRow.find(groupSizeId).html(`(${group.members.length}/${groupSize})`);
+    }
     
     group.members.forEach(user => {
         bindedRow.find(assignedList).append(fillUserRow(user, false));
@@ -669,13 +682,16 @@ function fillGroupModalRow(group) {
     var membersList = '';
     var color = colours.red;
 
-    if (group.members.length < groupSize) {
-        color = colours.yellow;
-    } else if (group.members.length === groupSize) {
-        color = colours.green
+    if (isClassMode) {
+        if (group.members.length < groupSize) {
+            color = colours.yellow;
+        } else if (group.members.length === groupSize) {
+            color = colours.green
+        }
+
+        bindedRow.find(groupIconId)[0].style.backgroundColor = color;
     }
 
-    bindedRow.find(groupIconId)[0].style.backgroundColor = color;
     bindedRow.find(groupNameId).html(group.name);
     bindedRow.find(sizeId).html(`${translate('size')}: ${group.members.length}`);
     group.members.forEach(user => {
@@ -751,6 +767,10 @@ function moveFromGroupToGroup(groupName, userName) {
         }).members.push(userObject);
     
         oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
+        
+        if (isProjectAdmin && oldGroup.members.length === 0) {
+            groupList.splice(groupList.indexOf(oldGroup), 1);
+        }
         reloadAllLists();
     }
 }
