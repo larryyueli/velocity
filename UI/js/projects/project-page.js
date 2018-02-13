@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+
+
+
+
+
 // Project ID from the path
 const projectId = window.location.href.split('/project/')[1];
 
@@ -95,6 +101,10 @@ const generalSaveButtonId = '#generalSaveButton';
 const navmProjectsId = '#navm-projects';
 const navProjectsId = '#nav-projects';
 
+// Drag Variables
+var userDragged = null;
+var inDragMode = false;
+
 $(function () {
     // Navbar highlight
     $(navProjectsId).addClass('active');
@@ -153,13 +163,10 @@ $(function () {
         if (groupSelectType === 0) {
             $(groupSizeId).val(1);
             $(groupSizeId).prop('disabled', true);
-            $(groupPrefixId).prop('disabled', false);
         } else if (groupSelectType === 1 || groupSelectType === 2) {
             $(groupSizeId).prop('disabled', false);
-            $(groupPrefixId).prop('disabled', true);
         } else if (groupSelectType === 3) {
             $(groupSizeId).prop('disabled', false);
-            $(groupPrefixId).prop('disabled', false);
         }
     });
 
@@ -362,13 +369,10 @@ function getGroupAssign() {
 
             if (groupSelectType === 0) {
                 $(groupSizeId).prop('disabled', true);
-                $(groupPrefixId).prop('disabled', false);
             } else if (groupSelectType === 1 || groupSelectType === 2) {
                 $(groupSizeId).prop('disabled', false);
-                $(groupPrefixId).prop('disabled', true);
             } else if (groupSelectType === 3) {
                 $(groupSizeId).prop('disabled', false);
-                $(groupPrefixId).prop('disabled', false);
             }
 
             // Group modal setup
@@ -872,8 +876,9 @@ function moveFromUnassignedToGroup(groupName, userName) {
  *
  * @param {String} groupName
  * @param {String} userName
+ * @param {Boolean} isDrag
  */
-function moveFromGroupToGroup(groupName, userName) {
+function moveFromGroupToGroup(groupName, userName, isDrag) {
     const oldGroup = groupList.find(group => {
         return group.members.find(user => {
             return user.username === userName;
@@ -881,7 +886,9 @@ function moveFromGroupToGroup(groupName, userName) {
     });
 
     if (oldGroup.name === groupName) {
-        failSnackbar(translate('alreadyInGroup'));
+        if (!isDrag) {
+            failSnackbar(translate('alreadyInGroup'));
+        }
     } else {
         const userObject = oldGroup.members.find(user => {
             return user.username === userName;
@@ -1008,3 +1015,49 @@ function joinGroup(clicked, createdGroup) {
 }
 
 // ------------------------ End User Movement section -----------------------
+
+// ------------------------ Begin Drag Movement section -----------------------
+
+function dragfunction(event) {
+    if (!inDragMode) {
+        const nameSplit = $(event.target).find(nameId).text().split('-');
+        const userName = nameSplit[nameSplit.length - 1].trim();
+        userDragged = userName;
+
+        const groups = $(groupListId).find('li');
+        for (var i = 0; i < groups.length; i++) {
+            if(groups[i].className.indexOf('collection-item') === -1) {
+                groups[i].style.border = 'green dashed';
+            }
+        }
+
+        inDragMode = true;
+    }
+}
+
+function unDragfunction() {
+    const groups = $(groupListId).find('li');
+    for (var i = 0; i < groups.length; i++) {
+      if (groups[i].className.indexOf('collection-item') === -1) {
+            groups[i].style.border = '';
+        }
+    }
+
+    inDragMode = false;
+}
+
+function dragMovement(event) {
+    const dragToGroup = $(event.currentTarget).find(titleId).text().trim();
+
+    const userObject = unassignedList.find(user => {
+        return user.username === userDragged;
+    });
+
+    if (userObject) {
+        moveFromUnassignedToGroup(dragToGroup, userDragged);
+    } else {
+        moveFromGroupToGroup(dragToGroup, userDragged, true);
+    }
+}
+
+// ------------------------ End Drag Movement section -----------------------
