@@ -84,6 +84,7 @@ const projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects
 const projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
 const projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
 const projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
+const projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
 // read input parameters
@@ -476,6 +477,42 @@ const handleUsersListComponentPath = function (req, res) {
         usersEntryHTML: usersEntryComponent()
     });
 }
+
+/**
+ * path to get the project admins and non projects admins list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsAdminsListComponentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).send({
+        projectAdmins: [{
+          username: 'a',
+          fname: 'a',
+          lname: 'a',
+          email: 'a',
+          type: 1
+        }],
+        projectUsers: [{
+          username: 'a',
+          fname: 'a',
+          lname: 'a',
+          email: 'a',
+          type: 1
+        }],
+        usersEntryHTML: projectsUserEntryComponent()
+    });
+}
+
 
 /**
  * root path to get the users creation form
@@ -1415,6 +1452,7 @@ app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projectsListComponent', handleProjectsListComponentPath);
+app.get('/projectsAdminsListComponent', handleProjectsAdminsListComponentPath);
 app.get('/projectsGroupAssign', handleProjectsGroupAssignPath);
 app.get('/projects/add', handleProjectsAddPath);
 app.get('/settings', handleSettingsPath);

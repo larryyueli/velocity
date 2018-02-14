@@ -16,12 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
-
-
-
 // Project ID from the path
 const projectId = window.location.href.split('/project/')[1];
 
@@ -35,6 +29,9 @@ var groupSize = null;
 var groupSelectType = null;
 var groupUserRow = null;
 var unassignedList = null;
+var projectAdminsList = null;
+var projectUsersList = null;
+var adminUserRow = null;
 
 // Permissions
 var isProjectAdmin = null;
@@ -46,6 +43,7 @@ const assignedList = '#assignedList';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
 const deleteGroupId = '#deleteGroup';
+const emailId = '#email';
 const groupCreateModalId = '#groupCreateModal';
 const groupBodyId = '#groupBody';
 const groupIconId = '#groupIcon';
@@ -68,11 +66,16 @@ const leaveGroupId = '#leaveGroup';
 const membersId = '#members';
 const nameId = '#name';
 const newGroupNameId = '#newGroupName';
+const projectAdminsListId = '#projectAdminsList';
+const projectAdminsLoadId = '#projectAdminsLoad';
+const projectUsersListId = '#projectUsersList';
+const projectUsersLoadId = '#projectUsersLoad';
 const randomizeRemainingId = '#randomizeRemaining';
 const removeId = '#remove';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
 const titleId = '#title';
+const typeId = '#type';
 const unassignedLoadId = '#unassignedLoad'
 const unassignedUserListId = '#unassignedList';
 const unassignedUserListName = 'unassignedList';
@@ -83,9 +86,11 @@ const optionGroups = $('#option-groups');
 
 // Filter Ids
 const groupSizeFilterId = '#groupSizeFilter';
+const searchAdminFilterId = '#searchAdminFilter';
 const searchGroupFilterId = '#searchGroupFilter';
 const searchUserFilterId = '#searchUserFilter';
 const typeFilterId = '#typeFilter';
+const typeAdminFilterId = '#typeAdminFilter';
 
 // Modal Ids
 const groupModalId = '#groupModal';
@@ -133,6 +138,18 @@ $(function () {
     $(groupSizeFilterId).on('keyup mouseup', function () {
         startLoad(groupLoadId, groupListId);
         displayGroupList();
+    });
+
+    $(searchAdminFilterId).on('keyup', function () {
+        startLoad(projectAdminsLoadId, projectAdminsListId);
+        startLoad(projectUsersLoadId, projectUsersListId);
+        displayAdminsList();
+    });
+
+    $(typeAdminFilterId).on('change', function () {
+        startLoad(projectAdminsLoadId, projectAdminsListId);
+        startLoad(projectUsersLoadId, projectUsersListId);
+        displayAdminsList();
     });
 
     // Actions
@@ -249,9 +266,13 @@ $(function () {
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
 
     // Loads the groups and unassigned users, and starts the loaders
-    getGroupAssign();
     startLoad(groupLoadId, groupListId);
     startLoad(unassignedLoadId, unassignedUserListId);
+    getGroupAssign();
+
+    startLoad(projectAdminsLoadId, projectAdminsListId);
+    startLoad(projectUsersLoadId, projectUsersListId);
+    getUsersList();
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -788,8 +809,6 @@ function displayGroupsModalList(clicked) {
     if ($(groupModalListId).find('li').length === 0) {
         $(groupModalListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`);
     }
-
-    // endLoad(usersLoadId, usersListId);
 }
 
 /**
@@ -1061,3 +1080,84 @@ function dragMovement(event) {
 }
 
 // ------------------------ End Drag Movement section -----------------------
+
+// ------------------------ Begin User Admin section -----------------------
+
+function getUsersList() {
+    $.ajax({
+        type: 'GET',
+        url: '/projectsAdminsListComponent',
+        success: function (data) {
+            adminUserRow = $(data.usersEntryHTML);
+            projectAdminsList = data.projectAdmins;
+            projectUsersList = data.projectUsers;
+            displayAdminsList();
+        },
+        error: function (data) {
+            //TODO: add fail snackbar
+        }
+    });
+}
+
+function displayAdminsList() {
+    $(projectAdminsListId).html('');
+    $(projectUsersListId).html('');
+    var rowPopulate = '';
+
+    projectUsersList.forEach(user => {
+        if (passAdminsFilter(user)) {
+            $(projectUsersListId).append(fillAdminsRow(user));
+        }
+    });
+
+    projectAdminsList.forEach(user => {
+        if (passAdminsFilter(user)) {
+            $(projectAdminsListId).append(fillAdminsRow(user));
+        }
+    });
+
+    if ($(projectAdminsListId).find('li').length === 0) {
+        $(projectAdminsListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
+    }
+
+    if ($(projectUsersListId).find('li').length === 0) {
+        $(projectUsersListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
+    }
+
+    endLoad(projectAdminsLoadId, projectAdminsListId);
+    endLoad(projectUsersLoadId, projectUsersListId);
+}
+
+function fillAdminsRow(user) {
+    var bindedRow = adminUserRow;
+    var status = user.status;
+
+    bindedRow.find(iconId).html(userIcons[user.type]);
+    bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
+    bindedRow.find(typeId).html(`${translate(`user${user.type}`)}`);
+    bindedRow.find(emailId).html(user.email);
+    return bindedRow[0].outerHTML;
+}
+
+function passAdminsFilter(user) {
+    const type = parseInt($(typeAdminFilterId)[0].value);
+    const filterText = $(searchAdminFilterId)[0].value.trim().toLowerCase();
+
+    // User type filter
+    if (type !== -1 && type !== user.type) {
+        return false;
+    }
+
+    // User search filter
+    if (filterText !== '' &&
+        `${user.fname} ${user.lname}`.toLowerCase().indexOf(filterText) === -1 &&
+        user.username.toLowerCase().indexOf(filterText) === -1 &&
+        user.email.toLowerCase().indexOf(filterText) === -1 &&
+        translate(`user${user.type}`).toLowerCase().indexOf(filterText) === -1) {
+        return false;
+    }
+
+    return true;
+}
+
+// ------------------------ End User Admin section -----------------------
