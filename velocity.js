@@ -496,18 +496,42 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
 
     return res.status(200).send({
         projectAdmins: [{
-          username: 'a',
-          fname: 'a',
-          lname: 'a',
-          email: 'a',
-          type: 1
+          username: 'user1',
+          fname: 'user1n',
+          lname: 'user1f',
+          email: 'user1.user@user.adf',
+          type: 3
+        },{
+          username: 'user2',
+          fname: 'user2n',
+          lname: 'user2f',
+          email: 'user2.user@user.adf',
+          type: 3
+        },{
+          username: 'user3',
+          fname: 'user3n',
+          lname: 'user3f',
+          email: 'user3.user@user.adf',
+          type: 3
+        },{
+          username: 'user4',
+          fname: 'user4n',
+          lname: 'user4f',
+          email: 'user4.user@user.adf',
+          type: 3
         }],
         projectUsers: [{
-          username: 'a',
-          fname: 'a',
-          lname: 'a',
-          email: 'a',
-          type: 1
+          username: 'user5',
+          fname: 'user5n',
+          lname: 'user5f',
+          email: 'user5.user@user.adf',
+          type: 3
+        },{
+          username: 'user6',
+          fname: 'user6n',
+          lname: 'user6f',
+          email: 'user6.user@user.adf',
+          type: 3
         }],
         usersEntryHTML: projectsUserEntryComponent()
     });

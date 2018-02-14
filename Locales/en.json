@@ -94,9 +94,12 @@
 				"title": "General"
 			},
 			"users": {
+				"projectAdmins": "Project Admins",
+				"projectUsers": "Project Users",
 				"title": "Users"
 			},
 			"groups": {
+				"deleteGroups": "Delete Groups",
 				"groupPrefix": "Group Prefix",
 				"groupName": "Group Name",
 				"groupSize": "Group Size",

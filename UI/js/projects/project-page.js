@@ -42,6 +42,7 @@ var isCollabMode = null;
 const assignedList = '#assignedList';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
+const deleteAllGroupsId = '#deleteAllGroups';
 const deleteGroupId = '#deleteGroup';
 const emailId = '#email';
 const groupCreateModalId = '#groupCreateModal';
@@ -75,6 +76,7 @@ const removeId = '#remove';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
 const titleId = '#title';
+const transferId = '#transfer';
 const typeId = '#type';
 const unassignedLoadId = '#unassignedLoad'
 const unassignedUserListId = '#unassignedList';
@@ -257,6 +259,22 @@ $(function () {
             $(groupCreateModalId).modal('close');
             startLoad(groupLoadId, groupListId);
             displayGroupList();
+        }
+    });
+
+    $(deleteAllGroupsId).click(() => {
+        if (groupList.length) {
+            swal({
+                text: translate('deleteAllGroupsWarning'),
+                icon: 'warning',
+                dangerMode: true,
+                buttons: [translate('cancel'), translate('delete')]
+            }).then(canDelete => {
+                if (canDelete) {
+                    emptyGroups();
+                    reloadAllLists();
+                }
+            });
         }
     });
 
@@ -511,6 +529,26 @@ function generalActivateProject() {
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * gets the list of both project admins and non project admins along with the
+ * HTML entry to bind
+ */
+function getUsersList() {
+    $.ajax({
+        type: 'GET',
+        url: '/projectsAdminsListComponent',
+        success: function (data) {
+            adminUserRow = $(data.usersEntryHTML);
+            projectAdminsList = data.projectAdmins;
+            projectUsersList = data.projectUsers;
+            displayAdminsList();
+        },
+        error: function (data) {
+            //TODO: add fail snackbar
         }
     });
 }
@@ -1015,8 +1053,8 @@ function leaveGroup() {
 /**
  * joins the current user in a group
  *
- * {Object} clicked
- * {String} createdGroup
+ * @param {Object} clicked
+ * @param {String} createdGroup
  */
 function joinGroup(clicked, createdGroup) {
     const userName = meObject.username;
@@ -1083,22 +1121,9 @@ function dragMovement(event) {
 
 // ------------------------ Begin User Admin section -----------------------
 
-function getUsersList() {
-    $.ajax({
-        type: 'GET',
-        url: '/projectsAdminsListComponent',
-        success: function (data) {
-            adminUserRow = $(data.usersEntryHTML);
-            projectAdminsList = data.projectAdmins;
-            projectUsersList = data.projectUsers;
-            displayAdminsList();
-        },
-        error: function (data) {
-            //TODO: add fail snackbar
-        }
-    });
-}
-
+/**
+ * displays the project users list and the project admins list
+ */
 function displayAdminsList() {
     $(projectAdminsListId).html('');
     $(projectUsersListId).html('');
@@ -1128,6 +1153,11 @@ function displayAdminsList() {
     endLoad(projectUsersLoadId, projectUsersListId);
 }
 
+/**
+ * Fills a user row for the admin users page
+ *
+ * @param {Object} user
+ */
 function fillAdminsRow(user) {
     var bindedRow = adminUserRow;
     var status = user.status;
@@ -1139,6 +1169,12 @@ function fillAdminsRow(user) {
     return bindedRow[0].outerHTML;
 }
 
+/**
+ * Returns a boolean to indicate whether the user passes the admins filter or not
+ *
+ * @param {Object} user
+ * @return {Boolean} if passes filter
+ */
 function passAdminsFilter(user) {
     const type = parseInt($(typeAdminFilterId)[0].value);
     const filterText = $(searchAdminFilterId)[0].value.trim().toLowerCase();
@@ -1158,6 +1194,38 @@ function passAdminsFilter(user) {
     }
 
     return true;
+}
+
+/**
+ * Moves a user between the admins list and the users list
+ *
+ * @param {Object} clicked
+ */
+function transfer(clicked) {
+    const nameSplit = clicked.parent().find(nameId).text().split('-');
+    const userName = nameSplit[nameSplit.length - 1].trim();
+
+    var inAdminsList = projectAdminsList.find(user => {
+        return user.username === userName;
+    });
+
+    if (inAdminsList) {
+        projectAdminsList.splice(projectAdminsList.indexOf(inAdminsList), 1);
+        projectUsersList.push(inAdminsList);
+    } else {
+        var inUsersList = projectUsersList.find(user => {
+            return user.username === userName;
+        });
+
+        if (inUsersList) {
+            projectUsersList.splice(projectUsersList.indexOf(inUsersList), 1);
+            projectAdminsList.push(inUsersList);
+        }
+    }
+
+    startLoad(projectAdminsLoadId, projectAdminsListId);
+    startLoad(projectUsersLoadId, projectUsersListId);
+    displayAdminsList();
 }
 
 // ------------------------ End User Admin section -----------------------
