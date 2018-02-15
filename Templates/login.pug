@@ -38,7 +38,7 @@ block content
                 #signupDiv
                     form.form-login#signupForm
                         br
-                        p#signupForm_invalid
+                        p.center#signupForm_invalid
                         .row
                             .input-field
                                 i.material-icons.prefix person
@@ -57,7 +57,7 @@ block content
                         .row
                             .input-field
                                 i.material-icons.prefix email
-                                input.form-control#signupForm_email(type='text' name='email' placeholder=__('userInformation.email') required)
+                                input.form-control#signupForm_email(type='email' name='email' placeholder=__('userInformation.email') required)
                                 label.sr-only(for='email') #{__('userInformation.email')}
                         .row
                             .input-field

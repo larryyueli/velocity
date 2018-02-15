@@ -48,7 +48,7 @@ signupForm.submit(function (evt) {
     if (signupPasswordField.val() === signupPasswordConfirmField.val()) {
         $.ajax({
             type: 'PUT',
-            url: '/login',
+            url: '/users/request/access',
             data: signupForm.serialize(),
             success: function (data) {
                 window.location.href = '/';

@@ -522,7 +522,61 @@ const handleUsersCreatePath = function (req, res) {
 
         logger.info(`user: ${req.body.username} was created.`);
         return res.status(200).send('ok');
+    });
+}
 
+/**
+ * root path to request access
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUsersRequestAccessPath = function (req, res) {
+    if (typeof (req.body.password) === common.variableTypes.STRING
+        && typeof (req.body.confirmPassword) === common.variableTypes.STRING
+        && req.body.password !== req.body.confirmPassword) {
+        logger.error(JSON.stringify(common.getError(2010)));
+        return res.status(400).send(common.getError(2010));
+    }
+
+    if (settings.getAllSettings().mode === common.modeTypes.UNKNOWN) {
+        logger.error(JSON.stringify(common.getError(1010)));
+        return res.status(500).send(common.getError(1010));
+    }
+
+    const newUser = {
+        fname: req.body.fname,
+        lname: req.body.lname,
+        username: req.body.username,
+        password: req.body.password,
+        type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+            common.userTypes.STUDENT.value :
+            common.userTypes.COLLABORATOR.value,
+        status: common.userStatus.PENDING.value,
+        email: req.body.email
+    };
+
+    users.getUserByUsername(req.body.username, function (err, userObj) {
+        if (err) {
+            if (err.code === 2003) {
+                users.addUser(newUser, function (err, userObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            } else {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+        }
+
+        if (userObj) {
+            logger.error(JSON.stringify(common.getError(2001)));
+            return res.status(500).send(common.getError(2001));
+        }
     });
 }
 
@@ -964,6 +1018,7 @@ app.post('/users/update', handleUsersUpdatePath);
 // <Put Requests> ------------------------------------------------
 app.put('/users/create', handleUsersCreatePath);
 app.put('/users/import/file', handleUsersImportFilePath);
+app.put('/users/request/access', handleUsersRequestAccessPath);
 // </Put Requests> -----------------------------------------------
 
 // <Delete Requests> ------------------------------------------------
