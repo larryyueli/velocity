@@ -68,7 +68,7 @@ const addProject = function (project, callback) {
  * @param {function} callback callback function
  */
 const getFullProjectsList = function (callback) {
-    getLimitedProjectsListSorted({}, { title: 1, status: { $ne: common.projectStatus.DELETED.value } }, 0, callback);
+    getLimitedProjectsListSorted({ status: { $ne: common.projectStatus.DELETED.value } }, { title: 1 }, 0, callback);
 }
 
 /**
@@ -90,7 +90,7 @@ const getLimitedProjectsListSorted = function (searchQuery, sortQuery, lim, call
  * @param {function} callback callback function
  */
 const getProjectsListByUserId = function (userId, callback) {
-    getLimitedProjectsListSorted({ members: userId, status: { $ne: common.projectStatus.DELETED.value } }, { title: 1 }, 0, callback);
+    getLimitedProjectsListSorted({ $and: [{ members: userId }, { status: { $ne: common.projectStatus.DELETED.value } }] }, { title: 1 }, 0, callback);
 }
 
 /**
@@ -110,7 +110,7 @@ const getProject = function (searchQuery, callback) {
  * @param {function} callback callback function
  */
 const getProjectById = function (projectId, callback) {
-    getProject({ _id: projectId }, callback);
+    getProject({ $and: [{ _id: projectId }, { status: { $ne: common.projectStatus.DELETED.value } }] }, callback);
 }
 
 
@@ -186,7 +186,17 @@ const updateProject = function (updateParams, callback) {
  * @param {function} callback callback function
  */
 const getProjectTeams = function (projectId, callback) {
-    db.getLimitedTeamsListSorted({ projectId: projectId }, { name: 1 }, 0, callback);
+    db.getLimitedTeamsListSorted({ $and: [{ projectId: projectId }, { status: common.teamStatus.ACTIVE.value }] }, { name: 1 }, 0, callback);
+}
+
+/**
+ * find a single team by the search parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const getTeam = function (searchQuery, callback) {
+    db.getTeam(searchQuery, callback);
 }
 
 /**
@@ -197,7 +207,7 @@ const getProjectTeams = function (projectId, callback) {
  * @param {function} callback callback function
  */
 const getTeamInProjectByName = function (projectId, teamName, callback) {
-    db.getTeam({ $and: [{ projectId: projectId }, { name: teamName }] }, callback);
+    getTeam({ $and: [{ projectId: projectId }, { name: teamName }, { status: common.teamStatus.ACTIVE.value }] }, callback);
 }
 
 /**
@@ -208,7 +218,7 @@ const getTeamInProjectByName = function (projectId, teamName, callback) {
  * @param {function} callback callback function
  */
 const getTeamInProjectById = function (projectId, teamId, callback) {
-    db.getTeam({ $and: [{ projectId: projectId }, { _id: teamId }] }, callback);
+    getTeam({ $and: [{ projectId: projectId }, { _id: teamId }, { status: common.teamStatus.ACTIVE.value }] }, callback);
 }
 
 /**

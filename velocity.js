@@ -489,16 +489,15 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
     const projectId = req.query.projectId;
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
         }
 
         const fullUserObjectsList = users.getActiveUsersList();
@@ -1068,7 +1067,18 @@ const handleProjectsGroupAssignPath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        // TODO: check membership
+        let userIsAdmin = projectObj.admins.indexOf(req.session.user._id) !== -1;
+        let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
+
+        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
+            return res.status(403).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DRAFT.value
+            && !userIsAdmin
+            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            return res.status(403).render(pageNotFoundPage);
+        }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
             if (err) {
@@ -1220,6 +1230,10 @@ const handleProjectByIdPath = function (req, res) {
             return res.status(500).render(pageNotFoundPage);
         }
 
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
+        }
+
         return res.status(200).render(projectPagePage, {
             user: req.session.user,
             title: projectObj.title,
@@ -1242,24 +1256,30 @@ const handleProjectUpdatePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
     const projectId = req.body.projectId;
-    let newProject = {
-        _id: req.body.projectId,
-        title: req.body.title,
-        description: req.body.description
-    };
-    projects.updateProject(newProject, function (err, result) {
+    projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(400).send(err);
+            return res.status(500).render(pageNotFoundPage);
         }
 
-        return res.status(200).send('ok');
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
+        }
+
+        let newProject = {
+            _id: req.body.projectId,
+            title: req.body.title,
+            description: req.body.description
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -1274,48 +1294,69 @@ const handleProjectTeamsUpdatePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
     const projectId = req.body.projectId;
-    const teamsList = req.body.teamsList;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
 
-    if (!Array.isArray(teamsList)) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
-    }
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
+        }
 
-    const fullUserObjectsList = users.getActiveUsersList();
-    const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+        const teamsList = req.body.teamsList;
+        if (!Array.isArray(teamsList)) {
+            logger.error(JSON.stringify(common.getError(1000)));
+            return res.status(400).send(common.getError(1000));
+        }
 
-    let resolvedTeamsList = [];
-    for (let i = 0; i < teamsList.length; i++) {
-        let team = teamsList[i];
-        let members = [];
-        for (let j = 0; j < team.members.length; j++) {
-            let username = team['members'][j]['username'];
-            if (fullUsersListObject[username]) {
-                members.push(fullUsersListObject[username]._id);
+        const fullUserObjectsList = users.getActiveUsersList();
+        const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+
+        let resolvedTeamsList = [];
+        for (let i = 0; i < teamsList.length; i++) {
+            let team = teamsList[i];
+            let members = [];
+            for (let j = 0; j < team.members.length; j++) {
+                let username = team['members'][j]['username'];
+                if (fullUsersListObject[username]) {
+                    members.push(fullUsersListObject[username]._id);
+                }
+            }
+            if (members.length > 0) {
+                resolvedTeamsList.push({
+                    name: team.name,
+                    members: members
+                });
             }
         }
-        if (members.length > 0) {
-            resolvedTeamsList.push({
-                name: team.name,
-                members: members
-            });
-        }
-    }
 
-    let updateTeamsCounter = 0;
-    for (let i = 0; i < resolvedTeamsList.length; i++) {
-        let team = resolvedTeamsList[i];
-        projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
-            if (err) {
-                if (err.code === 6004) {
-                    team.status = common.teamStatus.ACTIVE.value;
-                    projects.addTeamToProject(projectId, team, function (err, result) {
+        let updateTeamsCounter = 0;
+        for (let i = 0; i < resolvedTeamsList.length; i++) {
+            let team = resolvedTeamsList[i];
+            projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
+                if (err) {
+                    if (err.code === 6004) {
+                        team.status = common.teamStatus.ACTIVE.value;
+                        projects.addTeamToProject(projectId, team, function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                            }
+
+                            updateTeamsCounter++;
+                            if (updateTeamsCounter === resolvedTeamsList.length) {
+                                return res.status(200).send('ok');
+                            }
+                        });
+                    } else {
+                        logger.error(JSON.stringify(err));
+                    }
+                }
+
+                if (teamObj) {
+                    team._id = teamObj._id;
+                    projects.updateTeamInProject(projectId, team, function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                         }
@@ -1325,26 +1366,10 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                             return res.status(200).send('ok');
                         }
                     });
-                } else {
-                    logger.error(JSON.stringify(err));
                 }
-            }
-
-            if (teamObj) {
-                team._id = teamObj._id;
-                projects.updateTeamInProject(projectId, team, function (err, result) {
-                    if (err) {
-                        logger.error(JSON.stringify(err));
-                    }
-
-                    updateTeamsCounter++;
-                    if (updateTeamsCounter === resolvedTeamsList.length) {
-                        return res.status(200).send('ok');
-                    }
-                });
-            }
-        });
-    }
+            });
+        }
+    });
 }
 
 /**
@@ -1358,16 +1383,15 @@ const handleProjectActivatePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
     const projectId = req.body.projectId;
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
         }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
@@ -1409,23 +1433,29 @@ const handleProjectDeletePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
     const projectId = req.body.projectId;
-    let newProject = {
-        _id: req.body.projectId,
-        status: common.projectStatus.DELETED.value
-    };
-    projects.updateProject(newProject, function (err, result) {
+    projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(400).send(err);
+            return res.status(500).send(err);
         }
 
-        return res.status(200).send('ok');
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
+        }
+
+        let newProject = {
+            _id: req.body.projectId,
+            status: common.projectStatus.DELETED.value
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -1453,19 +1483,30 @@ const handleProjectTeamsConfigPath = function (req, res) {
     }
 
     const projectId = req.body.projectId;
-    let newProject = {
-        _id: projectId,
-        teamSize: parseInt(req.body.groupSize),
-        teamSelectionType: parseInt(req.body.groupSelectType),
-        teamPrefix: req.body.groupPrefix
-    };
-    projects.updateProject(newProject, function (err, result) {
+    projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(400).send(err);
+            return res.status(500).send(err);
         }
 
-        return res.status(200).send('ok');
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(403).render(pageNotFoundPage);
+        }
+
+        let newProject = {
+            _id: projectId,
+            teamSize: parseInt(req.body.groupSize),
+            teamSelectionType: parseInt(req.body.groupSelectType),
+            teamPrefix: req.body.groupPrefix
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
     });
 }
 // </Requests Function> -----------------------------------------------
