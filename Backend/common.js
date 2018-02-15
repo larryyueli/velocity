@@ -412,6 +412,22 @@ const convertListToJason = function (key, jasonList) {
 exports.convertListToJason = convertListToJason;
 
 /**
+ * return a list from a list of json objects
+ *
+ * @param {string} key key inside each of the object entries
+ * @param {array} jasonList secondary array
+ * @return {object} result object
+ */
+const convertJsonListToList = function (key, jasonList) {
+    let listResult = [];
+    for (let i = 0; i < jasonList.length; i++) {
+        listResult.push(jasonList[i][key]);
+    }
+    return listResult;
+}
+exports.convertJsonListToList = convertJsonListToList;
+
+/**
  * return a list of the unique join of two lists
  *
  * @param {array} list1 first list

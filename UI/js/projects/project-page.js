@@ -176,7 +176,7 @@ $(function () {
         saveGroupConfiguration();
     });
 
-    $(groupStatusId).on('change', function() {
+    $(groupStatusId).on('change', function () {
         groupSelectType = parseInt($(groupStatusId).val());
 
         if (groupSelectType === 0) {
@@ -541,6 +541,9 @@ function getUsersList() {
     $.ajax({
         type: 'GET',
         url: '/projectsAdminsListComponent',
+        data: {
+            projectId: projectId
+        },
         success: function (data) {
             adminUserRow = $(data.usersEntryHTML);
             projectAdminsList = data.projectAdmins;
@@ -1083,7 +1086,7 @@ function dragfunction(event) {
 
         const groups = $(groupListId).find('li');
         for (var i = 0; i < groups.length; i++) {
-            if(groups[i].className.indexOf('collection-item') === -1) {
+            if (groups[i].className.indexOf('collection-item') === -1) {
                 groups[i].style.border = 'green dashed';
             }
         }
@@ -1095,7 +1098,7 @@ function dragfunction(event) {
 function unDragfunction() {
     const groups = $(groupListId).find('li');
     for (var i = 0; i < groups.length; i++) {
-      if (groups[i].className.indexOf('collection-item') === -1) {
+        if (groups[i].className.indexOf('collection-item') === -1) {
             groups[i].style.border = '';
         }
     }

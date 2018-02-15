@@ -494,46 +494,54 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
         return res.status(403).render(pageNotFoundPage);
     }
 
-    return res.status(200).send({
-        projectAdmins: [{
-          username: 'user1',
-          fname: 'user1n',
-          lname: 'user1f',
-          email: 'user1.user@user.adf',
-          type: 3
-        },{
-          username: 'user2',
-          fname: 'user2n',
-          lname: 'user2f',
-          email: 'user2.user@user.adf',
-          type: 3
-        },{
-          username: 'user3',
-          fname: 'user3n',
-          lname: 'user3f',
-          email: 'user3.user@user.adf',
-          type: 3
-        },{
-          username: 'user4',
-          fname: 'user4n',
-          lname: 'user4f',
-          email: 'user4.user@user.adf',
-          type: 3
-        }],
-        projectUsers: [{
-          username: 'user5',
-          fname: 'user5n',
-          lname: 'user5f',
-          email: 'user5.user@user.adf',
-          type: 3
-        },{
-          username: 'user6',
-          fname: 'user6n',
-          lname: 'user6f',
-          email: 'user6.user@user.adf',
-          type: 3
-        }],
-        usersEntryHTML: projectsUserEntryComponent()
+    const projectId = req.query.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        const fullUserObjectsList = users.getActiveUsersList();
+        const fullUsersList = common.convertJsonListToList('_id', fullUserObjectsList);
+        const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
+
+        let adminsList = projectObj.admins;
+        let usersList = common.getArrayDiff(fullUsersList, adminsList);
+
+        let resolvedAdminsList = [];
+        let resolvedUsersList = [];
+
+        for (let i = 0; i < adminsList.length; i++) {
+            let innerUser = fullUsersListObject[adminsList[i]];
+            if (innerUser) {
+                resolvedAdminsList.push({
+                    fname: innerUser.fname,
+                    lname: innerUser.lname,
+                    username: innerUser.username,
+                    email: innerUser.email,
+                    type: innerUser.type
+                });
+            }
+        }
+
+        for (let i = 0; i < usersList.length; i++) {
+            let innerUser = fullUsersListObject[usersList[i]];
+            if (innerUser) {
+                resolvedUsersList.push({
+                    fname: innerUser.fname,
+                    lname: innerUser.lname,
+                    username: innerUser.username,
+                    email: innerUser.email,
+                    type: innerUser.type
+                });
+            }
+        }
+
+        return res.status(200).send({
+            projectAdmins: resolvedAdminsList,
+            projectUsers: resolvedUsersList,
+            usersEntryHTML: projectsUserEntryComponent()
+        });
     });
 }
 
@@ -1002,7 +1010,7 @@ const handleProjectsPath = function (req, res) {
     }
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        return res.status(400).render(pageNotFoundPage);
     }
 
     return res.status(200).render(projectsPage, {
@@ -1019,6 +1027,10 @@ const handleProjectsPath = function (req, res) {
 const handleProjectsListComponentPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        return res.status(400).render(pageNotFoundPage);
     }
 
     projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {
@@ -1043,6 +1055,10 @@ const handleProjectsListComponentPath = function (req, res) {
 const handleProjectsGroupAssignPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        return res.status(400).render(pageNotFoundPage);
     }
 
     const projectId = req.query.projectId;
@@ -1071,62 +1087,56 @@ const handleProjectsGroupAssignPath = function (req, res) {
             for (let i = 0; i < fullUserObjectsList.length; i++) {
                 usersList.push(fullUserObjectsList[i]._id);
             }
-            projects.getProjectTeams(projectId, function (err, teamsObjectList) {
-                if (err) {
-                    logger.error(JSON.stringify(err));
-                    return res.status(500).send(err);
+
+            let unassignedList = common.getArrayDiff(usersList, projectMembers);
+            let unassignedObjectsList = [];
+
+            for (let i = 0; i < unassignedList.length; i++) {
+                let innerUser = fullUsersListObject[unassignedList[i]];
+                if (innerUser) {
+                    unassignedObjectsList.push({
+                        fname: innerUser.fname,
+                        lname: innerUser.lname,
+                        username: innerUser.username,
+                        type: innerUser.type
+                    });
                 }
+            }
 
-                let unassignedList = common.getArrayDiff(usersList, projectMembers);
-                let unassignedObjectsList = [];
-
-                for (let i = 0; i < unassignedList.length; i++) {
-                    let innerUser = fullUsersListObject[unassignedList[i]];
-                    if (innerUser) {
-                        unassignedObjectsList.push({
-                            fname: innerUser.fname,
-                            lname: innerUser.lname,
-                            username: innerUser.username,
-                            type: innerUser.type
+            let resolvedTeamsList = [];
+            for (let i = 0; i < teamsList.length; i++) {
+                let teamObject = teamsList[i];
+                let teamMembers = [];
+                for (let j = 0; j < teamObject.members.length; j++) {
+                    let teamUser = fullUsersListObject[teamObject['members'][j]];
+                    if (teamUser) {
+                        teamMembers.push({
+                            fname: teamUser.fname,
+                            lname: teamUser.lname,
+                            username: teamUser.username,
+                            type: teamUser.type
                         });
                     }
                 }
-
-                let resolvedTeamsList = [];
-                for (let i = 0; i < teamsObjectList.length; i++) {
-                    let teamObject = teamsObjectList[i];
-                    let teamMembers = [];
-                    for (let j = 0; j < teamObject.members.length; j++) {
-                        let teamUser = fullUsersListObject[teamObject['members'][j]];
-                        if (teamUser) {
-                            teamMembers.push({
-                                fname: teamUser.fname,
-                                lname: teamUser.lname,
-                                username: teamUser.username,
-                                type: teamUser.type
-                            });
-                        }
-                    }
-                    resolvedTeamsList.push({
-                        name: teamObject.name,
-                        members: teamMembers
-                    });
-                }
-
-                return res.status(200).send({
-                    unassignedList: unassignedObjectsList,
-                    groupList: resolvedTeamsList,
-                    groupSize: projectObj.teamSize,
-                    groupSelectionType: projectObj.teamSelectionType,
-                    groupPrefix: projectObj.teamPrefix,
-                    groupUserHTML: projectsGroupUserEntryComponent(),
-                    groupHTML: projectsGroupEntryComponent(),
-                    groupModalHTML: projectsGroupModalComponent(),
-                    groupModalEntryHTML: projectsGroupModalEntryComponent(),
-                    isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
-                    isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-                    isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+                resolvedTeamsList.push({
+                    name: teamObject.name,
+                    members: teamMembers
                 });
+            }
+
+            return res.status(200).send({
+                unassignedList: unassignedObjectsList,
+                groupList: resolvedTeamsList,
+                groupSize: projectObj.teamSize,
+                groupSelectionType: projectObj.teamSelectionType,
+                groupPrefix: projectObj.teamPrefix,
+                groupUserHTML: projectsGroupUserEntryComponent(),
+                groupHTML: projectsGroupEntryComponent(),
+                groupModalHTML: projectsGroupModalComponent(),
+                groupModalEntryHTML: projectsGroupModalEntryComponent(),
+                isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
+                isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
+                isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
             });
         });
     });
