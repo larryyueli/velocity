@@ -60,6 +60,39 @@ const dataGenerator = function () {
         });
         res.on('end', () => {
             console.log('No more data in response.');
+
+            const options2 = {
+                hostname: 'localhost',
+                port: 8080,
+                path: '/login',
+                method: 'POST',
+                rejectUnauthorized: false,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Length': Buffer.byteLength(postData),
+                    'Cookie' : res.headers['set-cookie'][0]
+                }
+            };
+
+            const req2 = https.request(options2, (res) => {
+                console.log(`STATUS: ${res.statusCode}`);
+                console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+                res.setEncoding('utf8');
+                res.on('data', (chunk) => {
+                    console.log(`BODY: ${chunk}`);
+                });
+                res.on('end', () => {
+                    console.log('No more data in response.');
+                });
+            });
+        
+            req2.on('error', (e) => {
+                console.error(`problem with request: ${e.message}`);
+            });
+        
+            // write data to request body
+            req2.write(postData);
+            req2.end();
         });
     });
 

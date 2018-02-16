@@ -53,7 +53,7 @@ const sessionSecret = 'superSecretSecret';
 const sessionResave = false;
 const saveUninitializedSession = false;
 const rollingSession = true;
-const secureSessionCookie = false;
+const secureSessionCookie = true;
 const languageOptions = ['en'];
 const defaultLanguage = 'en';
 
