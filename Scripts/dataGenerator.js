@@ -16,39 +16,60 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const superagent = require('superagent');
-const fs = require('fs');
+const https = require('https');
+const querystring = require('query-string');
 const rls = require('readline-sync');
 
 const common = require('../Backend/common.js');
-const config = require('../Backend/config.js');
 const logger = require('../Backend/logger.js');
 
 /**
  * Generates a lot of dummy data
  */
 const dataGenerator = function () {
-    config.debugMode = true;
+
     const adminUsername = rls.question('Please enter your admin username: ');
-    const adminFname = rls.question('Please enter your admin first name: ');
-    const adminLname = rls.question('Please enter your admin last name: ');
     const adminPassword = rls.question('Enter your admin password: ', {
         hideEchoBack: true,
         mask: '*'
     });
-    superagent
-        .post('https://localhost:8080/login')
-        //.key(fs.readFileSync('/home/sergey/Velocity/velocity/Keys/private.key'))
-        .ca(fs.readFileSync('/home/sergey/Velocity/velocity/Keys/cert.crt'))
-        .cert(fs.readFileSync('/home/sergey/Velocity/velocity/Keys/cert.crt'))
-        .send({'username': adminUsername, 'password': adminPassword})
-        .end((err, res) => {
-            if (err) {
-                logger.info(err);
-            } else {
-                logger.info('Logged in!');
-            }
+
+    const postData = querystring.stringify({
+        'username': adminUsername,
+        'password': adminPassword
     });
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: '/login',
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(postData)
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        console.log(`STATUS: ${res.statusCode}`);
+        console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+        });
+        res.on('end', () => {
+            console.log('No more data in response.');
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    // write data to request body
+    req.write(postData);
+    req.end();
 }
 
 dataGenerator();
