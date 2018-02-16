@@ -93,25 +93,29 @@
 			"general": {
 				"title": "General"
 			},
-			"users": {
-				"projectAdmins": "Project Admins",
-				"projectUsers": "Project Users",
-				"title": "Users"
-			},
 			"groups": {
 				"deleteGroups": "Delete Groups",
 				"groupPrefix": "Group Prefix",
 				"groupName": "Group Name",
+				"groups": "Groups",
+				"groupSelectionMode" : "Group Selection Mode",
 				"groupSize": "Group Size",
 				"groupStatus": "Group Status",
 				"newGroup": "New Group",
+				"selectGroups": "Select a Group",
 				"types": {
 					"individual": "Individual",
 					"instructor": "Instructor select",
 					"randomize": "Randomize",
 					"student": "Student select"
 				},
-				"title": "Groups"
+				"title": "Groups",
+				"unassignedUsers": "Unassigned Users"
+			},
+			"users": {
+				"projectAdmins": "Project Admins",
+				"projectUsers": "Project Users",
+				"title": "Users"
 			}
 		},
 		"title": "Velocity - Project"

@@ -51,37 +51,41 @@ block content
                                                 i.material-icons.right send
                 if isProjectAdmin
                     #users
-                        .row
-                            .col.s12
-                               .row
-                                   .input-field.col.s12.m6
-                                       input#searchAdminFilter.validate(type='text')
-                                       label(for='searchAdminFilter')  #{__('users.searchFilter')}
-                                   .input-field.col.s12.m6
-                                       select#typeAdminFilter
-                                           if isClassMode
-                                               option(value='-1') #{__('users.all')}
-                                               option(value='5') #{__('userInformation.types.student')}
-                                               option(value='4') #{__('userInformation.types.ta')}
-                                               option(value='3') #{__('userInformation.types.professor')}
-                                           if isCollabMode
-                                               option(value='-1') #{__('users.all')}
-                                               option(value='1') #{__('userInformation.types.collaboratorAdmin')}
-                                               option(value='2') #{__('userInformation.types.collaborator')}
-                                       label #{__('users.userType')}
-                        .row
-                            .col.s12.m6
-                                h5 #{__('projectPage.tabs.users.projectUsers')}
-                                #projectUsersLoad
-                                ul.collection.scroll-auto.margin-0#projectUsersList
-                            .col.s12.m6
-                                h5 #{__('projectPage.tabs.users.projectAdmins')}
-                                #projectAdminsLoad
-                                ul.collection.scroll-auto.margin-0#projectAdminsList
+                        .card
+                            .card-content
+                                .row
+                                    .col.s12
+                                       .row
+                                           .input-field.col.s12.m6
+                                               input#searchAdminFilter.validate(type='text')
+                                               label(for='searchAdminFilter')  #{__('users.searchFilter')}
+                                           .input-field.col.s12.m6
+                                               select#typeAdminFilter
+                                                   if isClassMode
+                                                       option(value='-1') #{__('users.all')}
+                                                       option(value='5') #{__('userInformation.types.student')}
+                                                       option(value='4') #{__('userInformation.types.ta')}
+                                                       option(value='3') #{__('userInformation.types.professor')}
+                                                   if isCollabMode
+                                                       option(value='-1') #{__('users.all')}
+                                                       option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                                       option(value='2') #{__('userInformation.types.collaborator')}
+                                               label #{__('users.userType')}
+                                .row
+                                    .col.s12.m6
+                                        h5 #{__('projectPage.tabs.users.projectUsers')}
+                                        #projectUsersLoad
+                                        ul.collection.scroll-auto.margin-0#projectUsersList
+                                    .col.s12.m6
+                                        h5 #{__('projectPage.tabs.users.projectAdmins')}
+                                        #projectAdminsLoad
+                                        ul.collection.scroll-auto.margin-0#projectAdminsList
                 #groups
                     if isProjectAdmin && isClassMode
                         .card.center
                             .card-content
+                                .row
+                                    h5 #{__('projectPage.tabs.groups.groupSelectionMode')}
                                 .row
                                     .input-field.col.s12.m5
                                         select#groupStatus
@@ -108,6 +112,8 @@ block content
                             .row
                                 .col.s12.l6
                                     if isProjectAdmin
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.unassignedUsers')}
                                         .row
                                             form
                                                 .input-field.col.s12.l6.xl7
@@ -128,9 +134,16 @@ block content
                                         if isClassMode
                                             .row
                                                 button.center.waves-effect.waves-light.left.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
+
                                         #unassignedLoad
                                         ul.collection#unassignedList
                                 .col.s12(class=(isProjectAdmin) ? 'l6' : '')
+                                    if isProjectAdmin
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.groups')}
+                                    else
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.selectGroups')}
                                     .row
                                         form
                                             .input-field.col.s12.l6
@@ -146,6 +159,7 @@ block content
                                         button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
                                         if isProjectAdmin
                                             button.right.waves-effect.waves-light.left.btn.col.cancelButtonBackground-background-colour.cancelButtonText-colour(type='button')#deleteAllGroups #{__('projectPage.tabs.groups.deleteGroups')}
+
 
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList

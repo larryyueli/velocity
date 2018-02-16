@@ -1,7 +1,7 @@
-li.collection-item.dismissable(draggable="true", ondrag="dragfunction(event)", ondragend="unDragfunction()")
+li.collection-item.dismissable.pointer#userGroupItem(draggable="true", ondrag="dragfunction(event)", ondragend="unDragfunction()", onClick="selectUser(event, $(this))")
     i.material-icons.circle.vertical-align-middle.padding-right-5#icon
     span.vertical-align-middle#name
-    a.secondary-content.primaryColour-colour.pointer(onclick='removeFromGroup($(this))')#remove
+    a.secondary-content.primaryColour-colour.pointer(onclick='removeFromGroup(event, $(this))')#remove
         i.material-icons close
     a.secondary-content.modal-trigger.primaryColour-colour.pointer(href='#groupModal', onclick='displayGroupsModalList($(this))')#modalTrigger
         i.material-icons edit
