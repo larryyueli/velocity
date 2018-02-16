@@ -199,44 +199,18 @@ $(function () {
         if (!groupSize || groupSize < 1) {
             failSnackbar(translate('groupSizeCantBeZero'));
         } else {
-            swal({
-                text: translate('deletePremadeGroups'),
-                icon: 'warning',
-                dangerMode: true,
-                buttons: [translate('cancel'), translate('delete')]
-            }).then((deleteGroups) => {
-                if (deleteGroups) {
-                    emptyGroups();
-                }
-
-                if (groupSelectType === 0) {
-                    individualMode();
-                } else if (groupSelectType === 1 || groupSelectType === 2) {
-                    groupVisibility();
-                } else if (groupSelectType === 3) {
-                    randomizeRemaining();
-                }
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/project/teams/config',
-                    data: {
-                        projectId: projectId,
-                        groupSelectType: groupSelectType,
-                        groupSize: groupSize,
-                        groupPrefix: groupPrefix
-                    },
-                    success: function (data) {
-                        successSnackbar(translate('groupSelectionConfigurationSuccess'));
-                    },
-                    error: function (data) {
-                        handle401And404(data);
-
-                        const jsonResponse = data.responseJSON;
-                        failSnackbar(getErrorMessageFromResponse(jsonResponse));
-                    }
+            if (groupList.length) {
+                swal({
+                    text: translate('deletePremadeGroups'),
+                    icon: 'warning',
+                    dangerMode: true,
+                    buttons: [translate('cancel'), translate('delete')]
+                }).then((deleteGroups) => {
+                    changeGroupSelectionMode(deleteGroups);
                 });
-            });
+            } else {
+                changeGroupSelectionMode(false);
+            }
         }
     });
 
@@ -371,6 +345,39 @@ function setActive(clicked) {
 
 // ----------------------- Begin Requests section -----------------------
 
+function changeGroupSelectionMode(deleteGroups) {
+    if (deleteGroups) {
+        emptyGroups();
+    }
+
+    if (groupSelectType === 0) {
+        individualMode();
+    } else if (groupSelectType === 1 || groupSelectType === 2) {
+        groupVisibility();
+    } else if (groupSelectType === 3) {
+        randomizeRemaining();
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/project/teams/config',
+        data: {
+            projectId: projectId,
+            groupSelectType: groupSelectType,
+            groupSize: groupSize,
+            groupPrefix: groupPrefix
+        },
+        success: function (data) {
+            successSnackbar(translate('groupSelectionConfigurationSuccess'));
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
 /**
  * Gets the list on unassigned users and groups along with all the HTML
   * needed for the binding

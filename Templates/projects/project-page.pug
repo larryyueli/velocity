@@ -138,8 +138,12 @@ block content
                                         #unassignedLoad
                                         ul.collection#unassignedList
                                 .col.s12(class=(isProjectAdmin) ? 'l6' : '')
-                                    .row.center
-                                        h5 #{__('projectPage.tabs.groups.groups')}
+                                    if isProjectAdmin
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.groups')}
+                                    else
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.selectGroups')}
                                     .row
                                         form
                                             .input-field.col.s12.l6
