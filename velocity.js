@@ -1238,7 +1238,24 @@ const handleProjectByIdPath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
-        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+        let userIsAdmin = projectObj.admins.indexOf(req.session.user._id) !== -1;
+        let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
+
+        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DRAFT.value
+            && !userIsAdmin
+            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DELETED.value) {
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -1313,70 +1330,109 @@ const handleProjectTeamsUpdatePath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
-        const teamsList = req.body.teamsList;
-        if (!Array.isArray(teamsList)) {
-            logger.error(JSON.stringify(common.getError(1000)));
-            return res.status(400).send(common.getError(1000));
+        let inputTeamsList = req.body.teamsList;
+        if (!Array.isArray(inputTeamsList)) {
+            inputTeamsList = [];
         }
 
-        const fullUserObjectsList = users.getActiveUsersList();
-        const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+        projects.getProjectTeams(projectId, function (err, projectTeamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
 
-        let resolvedTeamsList = [];
-        for (let i = 0; i < teamsList.length; i++) {
-            let team = teamsList[i];
-            let members = [];
-            for (let j = 0; j < team.members.length; j++) {
-                let username = team['members'][j]['username'];
-                if (fullUsersListObject[username]) {
-                    members.push(fullUsersListObject[username]._id);
+            let projectTeamsListofNames = common.convertJsonListToList('name', projectTeamsList);
+            let inputTeamsListofNames = common.convertJsonListToList('name', inputTeamsList);
+            let teamsListofNamesToDelete = common.getArrayDiff(projectTeamsListofNames, inputTeamsListofNames);
+            let teamsObj = common.convertListToJason('name', projectTeamsList);
+
+            let updateTeams = function () {
+                const fullUserObjectsList = users.getActiveUsersList();
+                const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+
+                let resolvedTeamsList = [];
+                for (let i = 0; i < inputTeamsList.length; i++) {
+                    let team = inputTeamsList[i];
+                    let members = [];
+                    if (team.members) {
+                        for (let j = 0; j < team.members.length; j++) {
+                            let username = team['members'][j]['username'];
+                            if (fullUsersListObject[username]) {
+                                members.push(fullUsersListObject[username]._id);
+                            }
+                        }
+                    }
+                    resolvedTeamsList.push({
+                        name: team.name,
+                        members: members
+                    });
+                }
+
+                let updateTeamsCounter = 0;
+                if (updateTeamsCounter === resolvedTeamsList.length) {
+                    return res.status(200).send('ok');
+                }
+                for (let i = 0; i < resolvedTeamsList.length; i++) {
+                    let team = resolvedTeamsList[i];
+                    projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
+                        if (err) {
+                            if (err.code === 6004) {
+                                team.status = common.teamStatus.ACTIVE.value;
+                                projects.addTeamToProject(projectId, team, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                    }
+
+                                    updateTeamsCounter++;
+                                    if (updateTeamsCounter === resolvedTeamsList.length) {
+                                        return res.status(200).send('ok');
+                                    }
+                                });
+                            } else {
+                                logger.error(JSON.stringify(err));
+                            }
+                        }
+
+                        if (teamObj) {
+                            team._id = teamObj._id;
+                            projects.updateTeamInProject(projectId, team, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                }
+
+                                updateTeamsCounter++;
+                                if (updateTeamsCounter === resolvedTeamsList.length) {
+                                    return res.status(200).send('ok');
+                                }
+                            });
+                        }
+                    });
                 }
             }
-            if (members.length > 0) {
-                resolvedTeamsList.push({
-                    name: team.name,
-                    members: members
-                });
-            }
-        }
 
-        let updateTeamsCounter = 0;
-        for (let i = 0; i < resolvedTeamsList.length; i++) {
-            let team = resolvedTeamsList[i];
-            projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
-                if (err) {
-                    if (err.code === 6004) {
-                        team.status = common.teamStatus.ACTIVE.value;
-                        projects.addTeamToProject(projectId, team, function (err, result) {
+            let completedDeletedTeams = 0;
+            if (completedDeletedTeams === teamsListofNamesToDelete.length) {
+                updateTeams();
+            } else {
+                for (let i = 0; i < teamsListofNamesToDelete.length; i++) {
+                    let deleteTeamName = teamsListofNamesToDelete[i];
+                    if (teamsObj[deleteTeamName]) {
+                        let teamToDeleteUpdate = teamsObj[deleteTeamName];
+                        teamToDeleteUpdate.status = common.teamStatus.DISABLED.value;
+                        projects.updateTeamInProject(projectId, teamToDeleteUpdate, function (err, result) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                             }
 
-                            updateTeamsCounter++;
-                            if (updateTeamsCounter === resolvedTeamsList.length) {
-                                return res.status(200).send('ok');
+                            completedDeletedTeams++;
+                            if (completedDeletedTeams === teamsListofNamesToDelete.length) {
+                                updateTeams();
                             }
                         });
-                    } else {
-                        logger.error(JSON.stringify(err));
                     }
                 }
-
-                if (teamObj) {
-                    team._id = teamObj._id;
-                    projects.updateTeamInProject(projectId, team, function (err, result) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                        }
-
-                        updateTeamsCounter++;
-                        if (updateTeamsCounter === resolvedTeamsList.length) {
-                            return res.status(200).send('ok');
-                        }
-                    });
-                }
-            });
-        }
+            }
+        });
     });
 }
 

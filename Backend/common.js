@@ -434,7 +434,7 @@ exports.convertJsonListToList = convertJsonListToList;
  * @param {array} list2 second list
  * @return {list} result object
  */
-const joinSets = function (list1, list2, jasonList) {
+const joinSets = function (list1, list2) {
     let result = [];
     for (let i = 0; i < list1.length; i++) {
         if (result.indexOf(list1[i]) === -1) {
