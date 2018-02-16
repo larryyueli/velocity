@@ -198,7 +198,6 @@ const handleLoginPath = function (req, res) {
     if (isActiveSession(req)) {
         logger.info(`User ${req.session.user.username} logged out.`);
         req.session.destroy();
-        return res.status(500).send('pl');
     }
 
     if (typeof (req.body.username) !== common.variableTypes.STRING
