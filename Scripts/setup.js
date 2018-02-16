@@ -29,44 +29,15 @@ const users = require('../Backend/users.js');
 /**
  * add an admin account
  */
-const setupAdminAccount = function () {
+const setupAdminAccount = function (user) {
     config.debugMode = true;
     logger.info('Velocity server setup');
 
     const pathToConfigFile = `${__dirname}/../Backend/config.js`;
 
-    const username = rls.question('Please enter your username: ');
-    const fname = rls.question('Please enter your first name: ');
-    const lname = rls.question('Please enter your last name: ');
-    var password = rls.question('Enter your password: ', {
-        hideEchoBack: true,
-        mask: '*'
-    });
-    var password2 = rls.question('Confirm your password: ', {
-        hideEchoBack: true,
-        mask: '*'
-    });
-
-    while (password !== password2) {
-        logger.error('Your passwords do not match, please try again.');
-        password = rls.question('Enter your password: ', {
-            hideEchoBack: true,
-            mask: '*'
-        });
-        password2 = rls.question('Confirm your password: ', {
-            hideEchoBack: true,
-            mask: '*'
-        });
+    if (!user) {
+        user = promptUser();
     }
-
-    const user = {
-        username: username,
-        password: password,
-        fname: fname,
-        lname: lname,
-        type: common.userTypes.MODE_SELECTOR.value,
-        status: common.userStatus.ACTIVE.value
-    };
 
     fs.readFile(pathToConfigFile, 'utf8', function (err, data) {
         if (err) {
@@ -121,4 +92,49 @@ const setupAdminAccount = function () {
     });
 }
 
-setupAdminAccount();
+/**
+ * Prompts the user for admin account details and returns the data
+ */
+const promptUser = function() {
+    const username = rls.question('Please enter your username: ');
+    const fname = rls.question('Please enter your first name: ');
+    const lname = rls.question('Please enter your last name: ');
+    var password = rls.question('Enter your password: ', {
+        hideEchoBack: true,
+        mask: '*'
+    });
+    var password2 = rls.question('Confirm your password: ', {
+        hideEchoBack: true,
+        mask: '*'
+    });
+
+    while (password !== password2) {
+        logger.error('Your passwords do not match, please try again.');
+        password = rls.question('Enter your password: ', {
+            hideEchoBack: true,
+            mask: '*'
+        });
+        password2 = rls.question('Confirm your password: ', {
+            hideEchoBack: true,
+            mask: '*'
+        });
+    }
+
+    return user = {
+        username: username,
+        password: password,
+        fname: fname,
+        lname: lname,
+        type: common.userTypes.MODE_SELECTOR.value,
+        status: common.userStatus.ACTIVE.value
+    };
+}
+
+// Run manual admin account setup only if launched standalone
+if (require.main === module) {
+    setupAdminAccount();
+}
+
+// <exports> -----------------------------------
+exports.setupAdminAccount = setupAdminAccount
+// <exports> -----------------------------------
