@@ -16,21 +16,39 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const superagent = require('superagent');
+const fs = require('fs');
+const rls = require('readline-sync');
+
 const common = require('../Backend/common.js');
+const config = require('../Backend/config.js');
 const logger = require('../Backend/logger.js');
-const setup = require('./setup.js');
 
-const initialUser = {
-    username: 'Admin',
-    password: 'KonniChiwa',
-    fname: 'Larry',
-    lname: 'Zhang',
-    type: common.userTypes.MODE_SELECTOR.value,
-    status: common.userStatus.ACTIVE.value
-};
-
+/**
+ * Generates a lot of dummy data
+ */
 const dataGenerator = function () {
-    setup.setupAdminAccount(initialUser);
+    config.debugMode = true;
+    const adminUsername = rls.question('Please enter your admin username: ');
+    const adminFname = rls.question('Please enter your admin first name: ');
+    const adminLname = rls.question('Please enter your admin last name: ');
+    const adminPassword = rls.question('Enter your admin password: ', {
+        hideEchoBack: true,
+        mask: '*'
+    });
+    superagent
+        .post('https://localhost:8080/login')
+        //.key(fs.readFileSync('/home/sergey/Velocity/velocity/Keys/private.key'))
+        .ca(fs.readFileSync('/home/sergey/Velocity/velocity/Keys/cert.crt'))
+        .cert(fs.readFileSync('/home/sergey/Velocity/velocity/Keys/cert.crt'))
+        .send({'username': adminUsername, 'password': adminPassword})
+        .end((err, res) => {
+            if (err) {
+                logger.info(err);
+            } else {
+                logger.info('Logged in!');
+            }
+    });
 }
 
-dataGenerator()
+dataGenerator();
