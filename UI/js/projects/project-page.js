@@ -109,8 +109,10 @@ const navmProjectsId = '#navm-projects';
 const navProjectsId = '#nav-projects';
 
 // Drag Variables
-var userDragged = null;
 var inDragMode = false;
+var selectedUsers = [];
+var selectedObjects = [];
+var userDragged = null;
 
 $(function () {
     // Navbar highlight
@@ -640,6 +642,8 @@ function groupVisibility() {
  */
 function displayUnassignedList() {
     if (isProjectAdmin) {
+        deselectAllUsers();
+
         $(unassignedUserListId).html('');
         var rowPopulate = '';
 
@@ -715,6 +719,7 @@ function passUserFilter(user) {
  * displays the groups list
  */
 function displayGroupList() {
+    deselectAllUsers();
     $(groupListId).html('');
     $(userGroupId).html('');
     var rowPopulate = '';
@@ -978,7 +983,9 @@ function moveFromGroupToGroup(groupName, userName, isDrag) {
  *
  * @param {Object} clicked
  */
-function removeFromGroup(clicked) {
+function removeFromGroup(event, clicked) {
+    event.stopPropagation();
+
     const nameSplit = clicked.parent().find(nameId).text().split('-');
     const userName = nameSplit[nameSplit.length - 1].trim();
 
@@ -1097,6 +1104,10 @@ function dragfunction(event) {
             }
         }
 
+        if (selectedUsers.indexOf(userName) === -1) {
+            deselectAllUsers();
+        }
+
         inDragMode = true;
     }
 }
@@ -1115,14 +1126,28 @@ function unDragfunction() {
 function dragMovement(event) {
     const dragToGroup = $(event.currentTarget).find(titleId).text().trim();
 
-    const userObject = unassignedList.find(user => {
-        return user.username === userDragged;
-    });
+    if (selectedUsers.length) {
+        selectedUsers.forEach(username => {
+            let tempuser = unassignedList.find(user => {
+                return user.username === username;
+            });
 
-    if (userObject) {
-        moveFromUnassignedToGroup(dragToGroup, userDragged);
+            if (tempuser) {
+                moveFromUnassignedToGroup(dragToGroup, username);
+            } else {
+                moveFromGroupToGroup(dragToGroup, username, true);
+            }
+        });
     } else {
-        moveFromGroupToGroup(dragToGroup, userDragged, true);
+        let userObject = unassignedList.find(user => {
+            return user.username === userDragged;
+        });
+
+        if (userObject) {
+            moveFromUnassignedToGroup(dragToGroup, userDragged);
+        } else {
+            moveFromGroupToGroup(dragToGroup, userDragged, true);
+        }
     }
 }
 
@@ -1238,3 +1263,48 @@ function transfer(clicked) {
 }
 
 // ------------------------ End User Admin section -----------------------
+
+// ------------------------ Start multiselect section -----------------------
+
+/**
+ * Selects a user based on the key held
+ *
+ * @param {Object} event
+ * @param {object} clicked
+ */
+function selectUser(event, clicked) {
+    const nameSplit = clicked.find('#name').text().split('-');
+    const userName = nameSplit[nameSplit.length - 1].trim();
+
+    if (event.ctrlKey) {
+        if (selectedUsers.indexOf(userName) !== -1) {
+            let usernameIndex = selectedUsers.indexOf(userName);
+            selectedUsers.splice(usernameIndex, 1);
+            selectedObjects.splice(usernameIndex, 1);
+            clicked[0].style.backgroundColor = 'white';
+        } else {
+            selectedUsers.push(userName);
+            selectedObjects.push(clicked);
+            clicked[0].style.backgroundColor = 'lightgray';
+        }
+    } else {
+        deselectAllUsers();
+        selectedUsers.push(userName);
+        selectedObjects.push(clicked);
+        clicked[0].style.backgroundColor = 'lightgray';
+    }
+}
+
+/**
+ * Clears the selected items
+ */
+function deselectAllUsers() {
+    selectedObjects.forEach(item => {
+        item[0].style.backgroundColor = 'white';
+    });
+
+    selectedUsers = [];
+    selectedObjects = [];
+}
+
+// ------------------------ End multiselect section -----------------------
