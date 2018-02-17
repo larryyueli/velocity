@@ -1458,6 +1458,61 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 }
 
 /**
+ * path to update a project's admins
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectAdminsUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        const inputAdminsList = req.body.adminsList;
+        if (!Array.isArray(inputAdminsList)) {
+            logger.error(JSON.stringify(common.getError(1000)));
+            return res.status(500).send(common.getError(1000));
+        }
+
+        const projectAdminsListofNames = common.convertJsonListToList('username', inputAdminsList);
+        const fullUserObjectsList = users.getActiveUsersList();
+        const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+
+        let newAdminsList = [];
+        for (let i = 0; i < projectAdminsListofNames.length; i++) {
+            let adminObj = fullUsersListObject[projectAdminsListofNames[i]];
+            if (adminObj) {
+                newAdminsList.push(adminObj._id);
+            }
+        }
+
+        const newProject = {
+            _id: projectId,
+            admins: newAdminsList
+        };
+        projects.updateProject(newProject, function(err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
  * path to activate a project
  *
  * @param {object} req req object
@@ -1629,6 +1684,7 @@ app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/project/activate', handleProjectActivatePath);
+app.post('/project/admins/update', handleProjectAdminsUpdatePath);
 app.post('/project/teams/update', handleProjectTeamsUpdatePath);
 app.post('/project/teams/config', handleProjectTeamsConfigPath);
 app.post('/project/update', handleProjectUpdatePath);
