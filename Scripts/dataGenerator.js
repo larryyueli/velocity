@@ -117,7 +117,13 @@ const selectedMode = function() {
  */
 const generateUsers = function() {
     for (var i = 0; i < numOfProfessors; i++) {
-        createUser("Professor", i.toString(), common.userTypes.PROFESSOR)
+        createUser("Professor", i.toString(), common.userTypes.PROFESSOR.value)
+    }
+    for (var i = 0; i < numOfTAs; i++) {
+        createUser("TA", i.toString(), common.userTypes.TA.value)
+    }
+    for (var i = 0; i < numOfStudents; i++) {
+        createUser("Student", i.toString(), common.userTypes.STUDENT.value)
     }
 }
 
@@ -152,7 +158,7 @@ const createUser = function(fname, lname, type) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => {});
         res.on('end', () => {
-            console.log("Created a shmuck!");
+            
         });
     });
 
