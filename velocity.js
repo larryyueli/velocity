@@ -601,8 +601,14 @@ const handleUsersCreatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        return res.status(200).send('ok');
+        cfs.mkdir(common.cfsTree.USERS, userObj._id, common.cfsPermission.OWNER, function (err, userObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
 
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -779,6 +785,7 @@ const handleUsersImportFilePath = function (req, res) {
             let failed = 0;
             let exist = 0;
             let total = 0;
+            let processedDirs = 0;
 
             for (let i = 0; i < importedList.length; i++) {
                 let inputUser = importedList[i];
@@ -807,14 +814,22 @@ const handleUsersImportFilePath = function (req, res) {
                         added++;
                     }
 
-                    if (total === importedList.length) {
-                        return res.status(200).render(usersImportCompletePage, {
-                            added: added,
-                            failed: failed,
-                            exist: exist,
-                            total: total
-                        });
-                    }
+                    cfs.mkdir(common.cfsTree.USERS, userObj._id, common.cfsPermission.OWNER, function (err, userObj) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                        }
+
+                        processedDirs++;
+
+                        if (total === importedList.length && processedDirs === importedList.length) {
+                            return res.status(200).render(usersImportCompletePage, {
+                                added: added,
+                                failed: failed,
+                                exist: exist,
+                                total: total
+                            });
+                        }
+                    });
                 });
             }
         });
@@ -1501,7 +1516,7 @@ const handleProjectAdminsUpdatePath = function (req, res) {
             _id: projectId,
             admins: newAdminsList
         };
-        projects.updateProject(newProject, function(err, result) {
+        projects.updateProject(newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);

@@ -58,7 +58,7 @@ const initialize = function (callback) {
  *
  * @param {string} parentPath parent path
  * @param {string} directoryName new directory's name
- * @param {string} directoryPermissions new directory's permissions
+ * @param {number} directoryPermissions new directory's permissions
  * @param {function} callback callback function
  */
 const mkdir = function (parentPath, directoryName, directoryPermissions, callback) {
