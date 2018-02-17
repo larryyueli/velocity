@@ -58,6 +58,7 @@ const errors = Object.freeze({
     2007: 'failed to update user, missing information',
     2008: 'invalid profile picture extension',
     2009: 'invalid users import file extension',
+    2010: 'permission denied',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -449,4 +450,23 @@ const joinSets = function (list1, list2) {
     return result;
 }
 exports.joinSets = joinSets;
+
+/**
+ * return a list of the join of two lists
+ *
+ * @param {array} list1 first list
+ * @param {array} list2 second list
+ * @return {list} result object
+ */
+const joinLists = function (list1, list2) {
+    let result = [];
+    for (let i = 0; i < list1.length; i++) {
+        result.push(list1[i]);
+    }
+    for (let i = 0; i < list2.length; i++) {
+        result.push(list2[i]);
+    }
+    return result;
+}
+exports.joinLists = joinLists;
 // </Global Function> -----------------------------------------------

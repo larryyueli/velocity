@@ -113,6 +113,14 @@ const getProjectById = function (projectId, callback) {
     getProject({ $and: [{ _id: projectId }, { status: { $ne: common.projectStatus.DELETED.value } }] }, callback);
 }
 
+/**
+ * find projects in draft with user selections type
+ *
+ * @param {function} callback callback function
+ */
+const getDraftProjectsInUserSelectionType = function (callback) {
+    getLimitedProjectsListSorted({ $and: [{ status: common.projectStatus.DRAFT.value }, { teamSelectionType: common.teamSelectionTypes.USER.value }] }, { title: 1 }, 0, callback);
+}
 
 /**
  * update the projects information
@@ -301,6 +309,7 @@ const updateTeamInProject = function (projectId, updateParams, callback) {
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.addTeamToProject = addTeamToProject;
+exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
 exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;

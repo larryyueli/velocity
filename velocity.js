@@ -497,7 +497,8 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2010)));
+            return res.status(403).send(common.getError(2010));
         }
 
         const fullUserObjectsList = users.getActiveUsersList();
@@ -1038,10 +1039,30 @@ const handleProjectsListComponentPath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        return res.status(200).send({
-            projectsList: projectsList,
-            projectsEntryHTML: projectsEntryComponent()
-        });
+        let addDraft = function () {
+            projects.getDraftProjectsInUserSelectionType(function (err, draftProjectsList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let joinedLists = common.joinLists(projectsList, draftProjectsList);
+                console.log(projectsList, draftProjectsList, joinedLists);
+                return res.status(200).send({
+                    projectsList: joinedLists,
+                    projectsEntryHTML: projectsEntryComponent()
+                });
+            });
+        }
+
+        if (req.session.user.type === common.userTypes.STUDENT.value) {
+            addDraft();
+        } else {
+            return res.status(200).send({
+                projectsList: projectsList,
+                projectsEntryHTML: projectsEntryComponent()
+            });
+        }
     });
 }
 
