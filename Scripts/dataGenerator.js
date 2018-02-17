@@ -30,6 +30,9 @@ const classMode = querystring.stringify({
 const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
+const numOfProjects = 5;
+var processedUsers = 0;
+var processedProjects = 0;
 
 var adminCookie; // Stores the cookie we use throughout all requests
 
@@ -128,6 +131,56 @@ const generateUsers = function() {
 }
 
 /**
+ * Generates all the projects
+ */
+const generateProjects = function() {
+    for (var i = 0; i < numOfProjects; i++) {
+        createProject(`Project ${i}`, `Welcome to Project ${1}`)
+    }
+}
+
+/**
+ * Creates a project
+ */
+const createProject = function(title, description) {
+    const projectObject = querystring.stringify({
+        'title': title,
+        'description': description
+    });
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: '/projects/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectObject),
+            'Cookie' : adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {});
+        res.on('end', () => {
+            processedProjects++;
+            if (processedProjects === numOfProjects) {
+                
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    req.write(projectObject);
+    req.end();
+}
+
+/**
  * User creation request
  */
 const createUser = function(fname, lname, type) {
@@ -158,7 +211,10 @@ const createUser = function(fname, lname, type) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => {});
         res.on('end', () => {
-            
+            processedUsers++;
+            if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
+                generateProjects();
+            }
         });
     });
 
