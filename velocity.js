@@ -1062,7 +1062,6 @@ const handleProjectsListComponentPath = function (req, res) {
                 }
 
                 let joinedLists = common.joinLists(projectsList, draftProjectsList);
-                console.log(projectsList, draftProjectsList, joinedLists);
                 return res.status(200).send({
                     projectsList: joinedLists,
                     projectsEntryHTML: projectsEntryComponent()
