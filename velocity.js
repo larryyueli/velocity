@@ -1663,6 +1663,128 @@ const handleProjectTeamsConfigPath = function (req, res) {
         });
     });
 }
+
+/**
+ * path to update a student's team in a  project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamsUpdateMePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.STUDENT.value) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.status !== common.projectStatus.DRAFT.value
+            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common.getError(2010)));
+            return res.status(403).send(common.getError(2010));
+        }
+
+        projects.getTeamOfUser(projectId, req.session.user._id, function (err, teamObj) {
+            if (err) {
+                if (err.code !== 6004) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+            }
+
+            const teamNotExist = (err && err.code === 6004);
+            const addAction = req.body.action === 'add';
+            const removeAction = req.body.action === 'remove';
+            const teamName = req.body.teamName;
+
+            if (!addAction && !removeAction) {
+                logger.error(JSON.stringify(common.getError(1000)));
+                return res.status(400).send(common.getError(1000));
+            }
+
+            if (addAction) {
+                if (teamObj) {
+                    logger.error(JSON.stringify(common.getError(1000)));
+                    return res.status(400).send(common.getError(1000));
+                }
+
+                projects.getTeamInProjectByName(projectId, teamName, function (err, teamObjFound) {
+                    if (err) {
+                        if (err.code === 6004) {
+                            const newTeam = {
+                                name: teamName,
+                                status: common.teamStatus.ACTIVE.value,
+                                projectId: projectId,
+                                members: [req.session.user._id]
+                            };
+                            projects.addTeamToProject(projectId, newTeam, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                return res.status(200).send('ok');
+                            });
+                        } else {
+                            logger.error(JSON.stringify(err));
+                            return res.status(400).send(err);
+                        }
+                    }
+
+                    if (teamObjFound) {
+                        const updatedTeam = {
+                            _id: teamObjFound._id,
+                            projectId: projectId,
+                            members: teamObjFound.members.push(req.session.user._id)
+                        };
+                        projects.updateTeamInProject(projectId, updatedTeam, function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            return res.status(200).send('ok');
+                        });
+                    }
+                });
+            }
+
+            if (removeAction) {
+                if (teamNotExist || teamObj.name !== teamName || projectObj.teamSize < teamObj.members.length + 1) {
+                    logger.error(JSON.stringify(common.getError(1000)));
+                    return res.status(400).send(common.getError(1000));
+                }
+
+                teamObj.members.splice(teamObj.members.indexOf(req.session.user._id), 1);
+
+                let updatedTeam = {
+                    _id: teamObj._id,
+                    projectId: projectId,
+                    members: teamObj.members,
+                    status: teamObj.members.length === 0 ? common.teamStatus.DISABLED.value : common.teamStatus.ACTIVE.value
+                };
+
+                projects.updateTeamInProject(projectId, updatedTeam, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            }
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 /**
@@ -1700,6 +1822,7 @@ app.post('/profile/update/picture', handleUpdateProfilePicturePath);
 app.post('/project/activate', handleProjectActivatePath);
 app.post('/project/admins/update', handleProjectAdminsUpdatePath);
 app.post('/project/teams/update', handleProjectTeamsUpdatePath);
+app.post('/project/teams/update/me', handleProjectTeamsUpdateMePath);
 app.post('/project/teams/config', handleProjectTeamsConfigPath);
 app.post('/project/update', handleProjectUpdatePath);
 app.post('/settings/reset', handleSettingsResetPath);

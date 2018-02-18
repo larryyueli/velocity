@@ -208,7 +208,7 @@ const getTeam = function (searchQuery, callback) {
 }
 
 /**
- * find the a team under project by its name
+ * find a team under project by its name
  *
  * @param {string} projectId project id
  * @param {string} teamName team name
@@ -219,7 +219,7 @@ const getTeamInProjectByName = function (projectId, teamName, callback) {
 }
 
 /**
- * find the a team under project by its id
+ * find a team under project by its id
  *
  * @param {string} projectId project id
  * @param {string} teamId team id
@@ -227,6 +227,17 @@ const getTeamInProjectByName = function (projectId, teamName, callback) {
  */
 const getTeamInProjectById = function (projectId, teamId, callback) {
     getTeam({ $and: [{ projectId: projectId }, { _id: teamId }, { status: common.teamStatus.ACTIVE.value }] }, callback);
+}
+
+/**
+ * find the team of a user
+ *
+ * @param {string} projectId project id
+ * @param {string} userId team id
+ * @param {function} callback callback function
+ */
+const getTeamOfUser = function (projectId, userId, callback) {
+    getTeam({ $and: [{ projectId: projectId }, { members: userId }, { status: common.teamStatus.ACTIVE.value }] }, callback);
 }
 
 /**
@@ -318,6 +329,7 @@ exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.getProjectTeams = getProjectTeams;
 exports.getTeamInProjectById = getTeamInProjectById;
 exports.getTeamInProjectByName = getTeamInProjectByName;
+exports.getTeamOfUser = getTeamOfUser;
 exports.updateProject = updateProject;
 exports.updateTeamInProject = updateTeamInProject;
 // </exports> ----------------------------------

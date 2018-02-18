@@ -267,6 +267,21 @@ $(function () {
     startLoad(projectAdminsLoadId, projectAdminsListId);
     startLoad(projectUsersLoadId, projectUsersListId);
     getUsersList();
+
+    /*
+    $.ajax({
+        type: 'POST',
+        url: '/project/teams/update/me',
+        data: {projectId: projectId, action:"remove", teamName:"asdasdasdasd"},
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
 });
 
 // ----------------------- Begin general helpers section -----------------------
