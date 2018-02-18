@@ -338,6 +338,8 @@ const assignGroups = function (project) {
     const projectConfig = querystring.stringify({
         'projectId': project._id,
         'teamsList': [groups]
+    }, {
+        arrayFormat: 'bracket'
     });
 
     const options = {
