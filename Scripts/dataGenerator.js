@@ -33,6 +33,8 @@ const numOfTAs = 3;
 const numOfStudents = 25;
 const numOfProjects = 5;
 const groupSize = 5;
+var groupList = [];
+var usersToAdd = [];
 var processedUsers = 0;
 var processedProjects = 0;
 var updatedProjects = 0;
@@ -178,6 +180,7 @@ const createUser = function (fname, lname, type) {
             logger.info(`Created user ${fname} ${lname}`);
             processedUsers++;
             if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
+                generateGroups();
                 generateProjects();
             }
         });
@@ -189,6 +192,14 @@ const createUser = function (fname, lname, type) {
 
     req.write(userObject);
     req.end();
+}
+
+/**
+ * Generates the groups
+ */
+const generateGroups = function () {
+    
+    
 }
 
 /**
@@ -275,7 +286,7 @@ const getProjectsData = function () {
 /**
  * Sets project settings based on ID
  * 
- * @param {*} projectID The ID of the project
+ * @param {*} project The ID of the project
  */
 const setProjectInfo = function (project) {
     const projectConfig = querystring.stringify({
@@ -304,9 +315,49 @@ const setProjectInfo = function (project) {
         res.on('end', () => {
             logger.info(`Set project info for ${project.title}`);
             updatedProjects++;
+            assignGroups(project);
             if (updatedProjects === numOfProjects) {
-                process.exit(0);
+                
             }
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    req.write(projectConfig);
+    req.end();
+}
+
+const assignGroups = function (project) {
+    const groups = querystring.stringify({
+        'name': 'test',
+        'members': [{'username': 'student0'}]
+    });
+    const projectConfig = querystring.stringify({
+        'projectId': project._id,
+        'teamsList': [groups]
+    });
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: '/project/teams/update',
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectConfig),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+
         });
     });
 
