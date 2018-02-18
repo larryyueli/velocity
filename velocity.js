@@ -595,16 +595,16 @@ const handleUsersCreatePath = function (req, res) {
         email: req.body.email
     };
 
-    users.getUserByUsername(req.body.username, function (err, result) {
+    users.getUserByUsername(req.body.username, function (err, userObjFound) {
         if (err) {
             if (err.code === 2003) {
-                users.addUser(newUser, function (err, userObj) {
+                users.addUser(newUser, function (err, userObjAdded) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
-                    cfs.mkdir(common.cfsTree.USERS, userObj._id, common.cfsPermission.OWNER, function (err, userObj) {
+                    cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             return res.status(500).send(err);
@@ -619,7 +619,7 @@ const handleUsersCreatePath = function (req, res) {
             }
         }
 
-        if (userObj) {
+        if (userObjFound) {
             logger.error(JSON.stringify(common.getError(2001)));
             return res.status(500).send(common.getError(2001));
         }
@@ -657,16 +657,16 @@ const handleUsersRequestAccessPath = function (req, res) {
         email: req.body.email
     };
 
-    users.getUserByUsername(req.body.username, function (err, userObj) {
+    users.getUserByUsername(req.body.username, function (err, userObjFound) {
         if (err) {
             if (err.code === 2003) {
-                users.addUser(newUser, function (err, userObj) {
+                users.addUser(newUser, function (err, userObjAdded) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
-                    cfs.mkdir(common.cfsTree.USERS, userObj._id, common.cfsPermission.OWNER, function (err, userObj) {
+                    cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             return res.status(500).send(err);
@@ -681,7 +681,7 @@ const handleUsersRequestAccessPath = function (req, res) {
             }
         }
 
-        if (userObj) {
+        if (userObjFound) {
             logger.error(JSON.stringify(common.getError(2001)));
             return res.status(500).send(common.getError(2001));
         }
