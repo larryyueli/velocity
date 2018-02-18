@@ -514,15 +514,28 @@ const handleUsersCreatePath = function (req, res) {
         email: req.body.email
     };
 
-    users.addUser(newUser, function (err, userObj) {
+    users.getUserByUsername(req.body.username, function (err, result) {
         if (err) {
-            logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
+            if (err.code === 2003) {
+                users.addUser(newUser, function (err, userObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    logger.info(`user: ${req.body.username} was created.`);
+                    return res.status(200).send('ok');
+                });
+            } else {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
         }
 
-        logger.info(`user: ${req.body.username} was created.`);
-        return res.status(200).send('ok');
-
+        if (result) {
+            logger.error(JSON.stringify(common.getError(2001)));
+            return res.status(500).send(common.getError(2001));
+        }
     });
 }
 

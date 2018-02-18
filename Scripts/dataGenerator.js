@@ -40,7 +40,6 @@ var adminCookie; // Stores the cookie we use throughout all requests
  * Generates a lot of dummy data.
  */
 const dataGenerator = function () {
-
     const adminUsername = rls.question('Please enter your admin username: ');
     const adminPassword = rls.question('Enter your admin password: ', {
         hideEchoBack: true,
@@ -120,13 +119,13 @@ const selectedMode = function () {
  */
 const generateUsers = function () {
     for (var i = 0; i < numOfProfessors; i++) {
-        createUser("Professor", i.toString(), common.userTypes.PROFESSOR.value);
+        createUser(`Professor${i}`, i.toString(), common.userTypes.PROFESSOR.value);
     }
     for (var i = 0; i < numOfTAs; i++) {
-        createUser("TA", i.toString(), common.userTypes.TA.value);
+        createUser(`TA${i}`, i.toString(), common.userTypes.TA.value);
     }
     for (var i = 0; i < numOfStudents; i++) {
-        createUser("Student", i.toString(), common.userTypes.STUDENT.value);
+        createUser(`Student${i}`, i.toString(), common.userTypes.STUDENT.value);
     }
 }
 
