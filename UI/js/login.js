@@ -17,8 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const loginForm = $('#loginForm');
-const errorField = $('#loginForm_invalid');
-const passwordField = $('#loginForm_password');
+const loginErrorField = $('#loginForm_invalid');
+const loginPasswordField = $('#loginForm_password');
+const signupForm = $('#signupForm');
+const signupErrorField = $('#signupForm_invalid');
+const signupPasswordField = $('#signupForm_password');
+const signupPasswordConfirmField = $('#signupForm_confirmPassword');
 
 loginForm.submit(function (evt) {
     evt.preventDefault();
