@@ -21,6 +21,7 @@ const querystring = require('query-string');
 const rls = require('readline-sync');
 
 const common = require('../Backend/common.js');
+const config = require('../Backend/config.js');
 const logger = require('../Backend/logger.js');
 
 const classMode = querystring.stringify({
@@ -31,8 +32,10 @@ const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
 const numOfProjects = 5;
+const groupSize = 5;
 var processedUsers = 0;
 var processedProjects = 0;
+var updatedProjects = 0;
 
 var adminCookie; // Stores the cookie we use throughout all requests
 
@@ -40,6 +43,7 @@ var adminCookie; // Stores the cookie we use throughout all requests
  * Generates a lot of dummy data.
  */
 const dataGenerator = function () {
+    config.debugMode = true;
     const adminUsername = rls.question('Please enter your admin username: ');
     const adminPassword = rls.question('Enter your admin password: ', {
         hideEchoBack: true,
@@ -68,6 +72,7 @@ const dataGenerator = function () {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
+            logger.info(`Logged in as ${adminUsername}`);
             adminCookie = res.headers['set-cookie'][0];
             selectedMode();
         });
@@ -102,6 +107,7 @@ const selectedMode = function () {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
+            logger.info("Selected class mode");
             generateUsers();
         });
     });
@@ -134,49 +140,8 @@ const generateUsers = function () {
  */
 const generateProjects = function () {
     for (var i = 0; i < numOfProjects; i++) {
-        createProject(`Project ${i}`, `Welcome to Project ${1}`);
+        createProject(`Project ${i}`, `Welcome to Project ${i}`);
     }
-}
-
-/**
- * Creates a project
- */
-const createProject = function (title, description) {
-    const projectObject = querystring.stringify({
-        'title': title,
-        'description': description
-    });
-
-    const options = {
-        hostname: 'localhost',
-        port: 8080,
-        path: '/projects/create',
-        method: 'PUT',
-        rejectUnauthorized: false,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(projectObject),
-            'Cookie': adminCookie
-        }
-    };
-
-    const req = https.request(options, (res) => {
-        res.setEncoding('utf8');
-        res.on('data', (chunk) => { });
-        res.on('end', () => {
-            processedProjects++;
-            if (processedProjects === numOfProjects) {
-                process.exit(0);
-            }
-        });
-    });
-
-    req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
-    });
-
-    req.write(projectObject);
-    req.end();
 }
 
 /**
@@ -210,6 +175,7 @@ const createUser = function (fname, lname, type) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
+            logger.info(`Created user ${fname} ${lname}`);
             processedUsers++;
             if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
                 generateProjects();
@@ -222,6 +188,133 @@ const createUser = function (fname, lname, type) {
     });
 
     req.write(userObject);
+    req.end();
+}
+
+/**
+ * Creates a project
+ */
+const createProject = function (title, description) {
+    const projectObject = querystring.stringify({
+        'title': title,
+        'description': description
+    });
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: '/projects/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectObject),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Created project ${title}`);
+            processedProjects++;
+            if (processedProjects === numOfProjects) {
+                getProjectsData();
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    req.write(projectObject);
+    req.end();
+}
+
+/**
+ * Gets the main projects data block
+ */
+const getProjectsData = function () {
+    var projectsData = '';
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: '/projectsListComponent',
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            projectsData += chunk;
+        });
+        res.on('end', () => {
+            logger.info("Retrieved all projects");
+            var projectList = JSON.parse(projectsData).projectsList;
+            projectList.forEach(project => {
+                setProjectInfo(project);
+            });
+         });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    req.end();
+}
+
+/**
+ * Sets project settings based on ID
+ * 
+ * @param {*} projectID The ID of the project
+ */
+const setProjectInfo = function (project) {
+    const projectConfig = querystring.stringify({
+        'projectId': project._id,
+        'groupSelectType': common.teamSelectionTypes.RANDOM.value,
+        'groupSize': groupSize,
+        'groupPrefix': common.defaultTeamPrefix
+    });
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: `/project/teams/config`,
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectConfig),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Set project info for ${project.title}`);
+            updatedProjects++;
+            if (updatedProjects === numOfProjects) {
+                process.exit(0);
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    req.write(projectConfig);
     req.end();
 }
 
