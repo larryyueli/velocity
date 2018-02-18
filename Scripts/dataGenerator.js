@@ -67,7 +67,7 @@ const dataGenerator = function () {
     const req = https.request(options, (res) => {
 
         res.setEncoding('utf8');
-        res.on('data', (chunk) => {});
+        res.on('data', (chunk) => { });
         res.on('end', () => {
             adminCookie = res.headers['set-cookie'][0];
             selectedMode();
@@ -85,7 +85,7 @@ const dataGenerator = function () {
 /**
  * Selects Class mode
  */
-const selectedMode = function() {
+const selectedMode = function () {
     const options = {
         hostname: 'localhost',
         port: 8080,
@@ -95,13 +95,13 @@ const selectedMode = function() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(classMode),
-            'Cookie' : adminCookie
+            'Cookie': adminCookie
         }
     };
 
     const req = https.request(options, (res) => {
         res.setEncoding('utf8');
-        res.on('data', (chunk) => {});
+        res.on('data', (chunk) => { });
         res.on('end', () => {
             generateUsers();
         });
@@ -118,31 +118,31 @@ const selectedMode = function() {
 /**
  * Generates the entirety of our user list
  */
-const generateUsers = function() {
+const generateUsers = function () {
     for (var i = 0; i < numOfProfessors; i++) {
-        createUser("Professor", i.toString(), common.userTypes.PROFESSOR.value)
+        createUser("Professor", i.toString(), common.userTypes.PROFESSOR.value);
     }
     for (var i = 0; i < numOfTAs; i++) {
-        createUser("TA", i.toString(), common.userTypes.TA.value)
+        createUser("TA", i.toString(), common.userTypes.TA.value);
     }
     for (var i = 0; i < numOfStudents; i++) {
-        createUser("Student", i.toString(), common.userTypes.STUDENT.value)
+        createUser("Student", i.toString(), common.userTypes.STUDENT.value);
     }
 }
 
 /**
  * Generates all the projects
  */
-const generateProjects = function() {
+const generateProjects = function () {
     for (var i = 0; i < numOfProjects; i++) {
-        createProject(`Project ${i}`, `Welcome to Project ${1}`)
+        createProject(`Project ${i}`, `Welcome to Project ${1}`);
     }
 }
 
 /**
  * Creates a project
  */
-const createProject = function(title, description) {
+const createProject = function (title, description) {
     const projectObject = querystring.stringify({
         'title': title,
         'description': description
@@ -157,17 +157,17 @@ const createProject = function(title, description) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(projectObject),
-            'Cookie' : adminCookie
+            'Cookie': adminCookie
         }
     };
 
     const req = https.request(options, (res) => {
         res.setEncoding('utf8');
-        res.on('data', (chunk) => {});
+        res.on('data', (chunk) => { });
         res.on('end', () => {
             processedProjects++;
             if (processedProjects === numOfProjects) {
-                
+                process.exit(0);
             }
         });
     });
@@ -183,13 +183,13 @@ const createProject = function(title, description) {
 /**
  * User creation request
  */
-const createUser = function(fname, lname, type) {
+const createUser = function (fname, lname, type) {
 
     const userObject = querystring.stringify({
         'fname': fname,
         'lname': lname,
         'username': fname,
-        'password': lname,
+        'password': 'asd',
         'email': `${fname}@${lname}.ca`,
         'type': type
     });
@@ -203,13 +203,13 @@ const createUser = function(fname, lname, type) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(userObject),
-            'Cookie' : adminCookie
+            'Cookie': adminCookie
         }
     };
 
     const req = https.request(options, (res) => {
         res.setEncoding('utf8');
-        res.on('data', (chunk) => {});
+        res.on('data', (chunk) => { });
         res.on('end', () => {
             processedUsers++;
             if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
