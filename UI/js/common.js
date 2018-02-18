@@ -67,6 +67,7 @@ const translations = Object.freeze({
     //1000 system errors
     1000: 'Invalid request',
     1009: 'Failed to parse csv file',
+    1010: 'Website setup is not complete',
 
     //2000 user errors
     2000: 'Invalid username or password',
@@ -78,6 +79,9 @@ const translations = Object.freeze({
     2006: 'Session timed out',
     2007: 'Failed to update user, missing information',
     2008: 'Invalid profile picture extension',
+    2009: 'Invalid users import file extension',
+    2010: 'Permission denied',
+    2010: 'Password and confirm password do not match',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
@@ -206,11 +210,11 @@ function getNotification(notification) {
 /**
  * Returns the HTML for an error pill
  *
- * @param {Object} jsonResponse
+ * @param {String} text
  * @returns {String} HTML of error pill
  */
-function getErrorPill(jsonResponse) {
-    return `<div class="chip white-text red darken-4">${getErrorMessageFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`
+function getErrorPill(text) {
+    return `<div class="chip white-text red darken-4">${text}<i class="close material-icons">close</i></div>`
 }
 
 /**

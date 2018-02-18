@@ -46,6 +46,7 @@ const errors = Object.freeze({
     1007: 'failed to update user object, database issue',
     1008: 'failed to get the users list, database issue',
     1009: 'failed to parse csv file',
+    1010: 'mode setup is not complete',
 
     //2000 users
     2000: 'missing requirement',
@@ -59,6 +60,7 @@ const errors = Object.freeze({
     2008: 'invalid profile picture extension',
     2009: 'invalid users import file extension',
     2010: 'permission denied',
+    2011: 'password and confirm password do not match',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
