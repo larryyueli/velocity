@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const common = require('./../common.js');
 
 var usersCollection;
@@ -72,8 +74,8 @@ const getUser = function (searchQuery, callback) {
 }
 
 /**
- * get the full list of users from the database
- * 
+ * get the limited list of users from the database
+ *
  * @param {object} searchQuery search parameters
  * @param {object} sortQuery sort parameters
  * @param {number} lim limit
@@ -90,7 +92,7 @@ const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callbac
 }
 
 /**
- * find a single user by the search parameters, 
+ * find a single user by the search parameters,
  * then update its values by the update parameters
  *
  * @param {object} searchQuery search parameters

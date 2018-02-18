@@ -24,8 +24,13 @@ const passwword = $('#passwword');
 const email = $('#email');
 const userType = $('#userType');
 const userStatus = $('#userStatus');
+const navUsersId = '#nav-users';
+const navmUsersId = '#navm-users';
 
 $(function () {
+    $(navUsersId).addClass('active');
+    $(navmUsersId).addClass('active');
+
     $('select').material_select();
 });
 

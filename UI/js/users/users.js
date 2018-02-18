@@ -29,8 +29,13 @@ const nameId = '#name';
 const typeId = '#type';
 const emailId = '#email';
 const editLinkId = '#editLink';
+const navUsersId = '#nav-users';
+const navmUsersId = '#navm-users';
 
 $(function () {
+    $(navUsersId).addClass('active');
+    $(navmUsersId).addClass('active');
+
     $('select').material_select();
 
     $(typeFilterId).on('change', function () {
@@ -48,7 +53,6 @@ $(function () {
         displayList();
     });
 
-    getUsersList();
     startLoad(usersLoadId, usersListId);
     getUsersList();
 });

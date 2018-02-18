@@ -1,11 +1,15 @@
 {
 	"actions": {
+		"activate": "Activate",
+		"apply": "Apply",
 		"cancel": "Cancel",
 		"create": "Create",
+		"delete": "Delete",
 		"done": "Done",
 		"edit": "Edit",
 		"import": "Import",
-		"reset":"Reset",
+		"randomizeRemaining": "Randomize remaining",
+		"reset": "Reset",
 		"save": "Save",
 		"submit": "Submit",
 		"update": "Update"
@@ -61,6 +65,61 @@
 		"selectPicture": "Select your profile picture",
 		"title": "Velocity - Profile"
 	},
+	"projects": {
+		"all": "All",
+		"form": {
+			"title": "Create a new Project",
+			"description": "Project creation form",
+			"fields": {
+				"title": "Title",
+				"description": "Description"
+			}
+		},
+		"status": {
+			"active": "Active",
+			"draft": "Draft",
+			"closed": "Closed",
+			"label": "Status"
+		},
+		"title": "Velocity - Projects",
+		"type": {
+			"kanban": "Kanban",
+			"scrum": "Scrum",
+			"label": "Board Type"
+		}
+	},
+	"projectPage": {
+		"tabs": {
+			"general": {
+				"title": "General"
+			},
+			"groups": {
+				"deleteGroups": "Delete Groups",
+				"groupPrefix": "Group Prefix",
+				"groupName": "Group Name",
+				"groups": "Groups",
+				"groupSelectionMode" : "Group Selection Mode",
+				"groupSize": "Group Size",
+				"groupStatus": "Group Status",
+				"newGroup": "New Group",
+				"selectGroups": "Select a Group",
+				"types": {
+					"individual": "Individual",
+					"instructor": "Instructor select",
+					"randomize": "Randomize",
+					"student": "Student select"
+				},
+				"title": "Groups",
+				"unassignedUsers": "Unassigned Users"
+			},
+			"users": {
+				"projectAdmins": "Project Admins",
+				"projectUsers": "Project Users",
+				"title": "Users"
+			}
+		},
+		"title": "Velocity - Project"
+	},
 	"settings": {
 		"general": {
 			"active": "Class active (if users can log in):",
@@ -73,7 +132,7 @@
 			"permissionsEdit": "Users can edit",
 			"title": "User Settings"
 		},
-		"title":"Velocity - Settings"
+		"title": "Velocity - Settings"
 	},
 	"switch": {
 		"on": "On",

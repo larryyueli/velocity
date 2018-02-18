@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const bcrypt = require('bcryptjs');
 
 const common = require('./common.js');
@@ -70,7 +72,7 @@ const addUser = function (user, callback) {
         }
 
         const currentDate = common.getDate();
-        var userToAdd = {};
+        let userToAdd = {};
 
         userToAdd._id = common.getUUID();
         userToAdd.username = user.username.toLowerCase();
@@ -93,6 +95,8 @@ const addUser = function (user, callback) {
             || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR.value
             || user.type === common.userTypes.TA.value);
+        userToAdd.canCreateProjects = (user.type === common.userTypes.PROFESSOR.value
+            || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
 
         db.addUser(userToAdd, function (err, obj) {
             if (err) {
@@ -112,7 +116,7 @@ const addUser = function (user, callback) {
 
 /**
  * find a single user by the search parameters
- * 
+ *
  * @param {object} searchQuery search parameters
  * @param {function} callback callback function
  */
@@ -122,7 +126,7 @@ const getUser = function (searchQuery, callback) {
 
 /**
  * get the full list of users from the users collection
- * 
+ *
  * @param {object} searchQuery search parameters
  * @param {object} sortQuery sort parameters
  * @param {number} lim limit
@@ -134,12 +138,12 @@ const getLimitedUsersListSorted = function (searchQuery, sortQuery, lim, callbac
 
 /**
  * find a single user by its username
- * 
+ *
  * @param {string} username username
  * @param {function} callback callback function
  */
 const getUserByUsername = function (username, callback) {
-    for (var i = 0; i < cachedUsersList.length; i++) {
+    for (let i = 0; i < cachedUsersList.length; i++) {
         if (cachedUsersList[i].username === username) {
             return callback(null, cachedUsersList[i]);
         }
@@ -150,12 +154,12 @@ const getUserByUsername = function (username, callback) {
 
 /**
  * find a single user by its id
- * 
+ *
  * @param {string} id id
  * @param {function} callback callback function
  */
 const getUserById = function (id, callback) {
-    for (var i = 0; i < cachedUsersList.length; i++) {
+    for (let i = 0; i < cachedUsersList.length; i++) {
         if (cachedUsersList[i]._id === id) {
             return callback(null, cachedUsersList[i]);
         }
@@ -166,7 +170,7 @@ const getUserById = function (id, callback) {
 
 /**
  * verify if the user can login
- * 
+ *
  * @param {string} username username
  * @param {string} password password
  * @param {function} callback callback function
@@ -207,8 +211,8 @@ const login = function (username, password, callback) {
  * @param {function} callback callback function
  */
 const updateUser = function (updateParams, callback) {
-    var searchQuery = {};
-    var updateQuery = {};
+    let searchQuery = {};
+    let updateQuery = {};
     updateQuery.$set = {};
 
     if (typeof (updateParams._id) === common.variableTypes.STRING) {
@@ -268,6 +272,8 @@ const updateUser = function (updateParams, callback) {
             || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
         updateQuery.$set.canAccessGrades = (updateParams.type === common.userTypes.PROFESSOR.value
             || updateParams.type === common.userTypes.TA.value);
+        updateQuery.$set.canCreateProjects = (updateParams.type === common.userTypes.PROFESSOR.value
+            || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {
@@ -312,14 +318,31 @@ const updateUser = function (updateParams, callback) {
 
 /**
  * get the full users list (cached)
- * 
+ *
  * @return {array} full users list
  */
 const getFullUsersList = function () {
     return cachedUsersList;
 }
+
+/**
+ * get the active users list (cached)
+ *
+ * @return {array} full users list
+ */
+const getActiveUsersList = function () {
+    let activeUserList = [];
+    for (let i = 0; i < cachedUsersList.length; i++) {
+        if (cachedUsersList[i].status === common.userStatus.ACTIVE.value) {
+            activeUserList.push(cachedUsersList[i]);
+        }
+    }
+    return activeUserList;
+}
+
 // <exports> -----------------------------------
 exports.addUser = addUser;
+exports.getActiveUsersList = getActiveUsersList;
 exports.getFullUsersList = getFullUsersList;
 exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;

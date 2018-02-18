@@ -31,10 +31,30 @@ loginForm.submit(function (evt) {
         },
         error: function (data) {
             const jsonResponse = data.responseJSON;
-            errorField.html(getErrorPill(jsonResponse));
+            loginErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
         },
         complete: function (data) {
             passwordField.val('').focus();
         }
     });
+});
+
+signupForm.submit(function (evt) {
+    evt.preventDefault();
+    if (signupPasswordField.val() === signupPasswordConfirmField.val()) {
+        $.ajax({
+            type: 'PUT',
+            url: '/users/request/access',
+            data: signupForm.serialize(),
+            success: function (data) {
+                window.location.href = '/';
+            },
+            error: function (data) {
+                const jsonResponse = data.responseJSON;
+                signupErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
+            }
+        });
+    } else {
+        signupErrorField.html(getErrorPill(translate('passwordsDontMatch')));
+    }
 });

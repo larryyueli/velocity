@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const date = require('moment');
 const uuidv1 = require('uuid/v1');
 
@@ -28,6 +30,8 @@ const uuidv1 = require('uuid/v1');
  * 2000 -> user
  * 3000 -> settings
  * 4000 -> custom file system
+ * 5000 -> projects
+ * 6000 -> teams
  */
 
 const errors = Object.freeze({
@@ -42,6 +46,7 @@ const errors = Object.freeze({
     1007: 'failed to update user object, database issue',
     1008: 'failed to get the users list, database issue',
     1009: 'failed to parse csv file',
+    1010: 'mode setup is not complete',
 
     //2000 users
     2000: 'missing requirement',
@@ -54,6 +59,8 @@ const errors = Object.freeze({
     2007: 'failed to update user, missing information',
     2008: 'invalid profile picture extension',
     2009: 'invalid users import file extension',
+    2010: 'permission denied',
+    2011: 'password and confirm password do not match',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -78,7 +85,26 @@ const errors = Object.freeze({
     4007: 'entry does not exist in the physical file system',
     4008: 'failed to write file into the physical file system',
     4009: 'failed to remove the custom file system root from the physical file system',
-    4010: 'permission denied'
+    4010: 'permission denied',
+
+    //5000 projects
+    5000: 'missing requirement',
+    5001: 'failed to add a project, database issue',
+    5002: 'failed to get projects list, database issue',
+    5003: 'failed to get a project, database issue',
+    5004: 'project not found',
+    5005: 'failed to update projects, database issue',
+    5006: 'failed to update project, missing information',
+
+    //6000 teams
+    6000: 'missing requirement',
+    6001: 'failed to add a team, database issue',
+    6002: 'failed to get teams list, database issue',
+    6003: 'failed to get a team, database issue',
+    6004: 'team not found',
+    6005: 'failed to update team, database issue',
+    6006: 'failed to create a team, missing information',
+    6007: 'failed to update a team, missing information',
 });
 exports.errors = errors;
 
@@ -100,9 +126,9 @@ exports.userTypes = userTypes;
 
 // user status
 const userStatus = Object.freeze({
-    DISABLED: { value: 0, text: 'Disabled' },
-    PENDING: { value: 1, text: 'Pending' },
-    ACTIVE: { value: 2, text: 'Active' }
+    DISABLED: { value: 0, text: 'disabled' },
+    PENDING: { value: 1, text: 'pending' },
+    ACTIVE: { value: 2, text: 'active' }
 });
 exports.userStatus = userStatus;
 
@@ -119,7 +145,8 @@ exports.variableTypes = variableTypes;
 
 // all color themes
 const colorThemes = Object.freeze({
-    DEFAULT: 'theme-default'
+    DEFAULT: 'theme-default',
+    AHMED: 'theme-ahmed'
 });
 exports.colorThemes = colorThemes;
 
@@ -163,9 +190,50 @@ exports.cfsMainDirectories = cfsMainDirectories;
 
 // common languages
 const languages = Object.freeze({
-    English: { value: 'en', text: 'English' }
+    English: { value: 'en', text: 'english' }
 });
 exports.languages = languages;
+
+// common board types
+const boardTypes = Object.freeze({
+    KANBAN: { value: 0, text: 'kanban' },
+    SCRUM: { value: 1, text: 'scrum' }
+});
+exports.boardTypes = boardTypes;
+
+// common project status
+const projectStatus = Object.freeze({
+    CLOSED: { value: 0, text: 'closed' },
+    DRAFT: { value: 1, text: 'draft' },
+    ACTIVE: { value: 2, text: 'active' },
+    DELETED: { value: 3, text: 'deleted' }
+});
+exports.projectStatus = projectStatus;
+
+// common team status
+const teamStatus = Object.freeze({
+    DISABLED: { value: 0, text: 'disabled' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.teamStatus = teamStatus;
+
+// common team selectino types
+const teamSelectionTypes = Object.freeze({
+    INDIVIDUAL: { value: 0, text: 'individual' },
+    ADMIN: { value: 1, text: 'admin' },
+    USER: { value: 2, text: 'user' },
+    RANDOM: { value: 3, text: 'random' }
+});
+exports.teamSelectionTypes = teamSelectionTypes;
+
+
+// default team prefix
+const defaultTeamPrefix = 'group-';
+exports.defaultTeamPrefix = defaultTeamPrefix;
+
+// default team size
+const defaultTeamSize = 1;
+exports.defaultTeamSize = defaultTeamSize;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -186,7 +254,7 @@ exports.getUUID = getUUID;
  * @return {boolean}
  */
 const isEmptyObject = function (obj) {
-    for (var key in obj) {
+    for (let key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             return false;
         }
@@ -203,7 +271,7 @@ exports.isEmptyObject = isEmptyObject;
  * @return {boolean}
  */
 const isValueInObject = function (value, obj) {
-    for (var key in obj) {
+    for (let key in obj) {
         if (obj[key] === value) {
             return true;
         }
@@ -221,7 +289,7 @@ exports.isValueInObject = isValueInObject;
  * @return {boolean}
  */
 const isValueInObjectWithKeys = function (value, key, obj) {
-    for (var i in obj) {
+    for (let i in obj) {
         if (obj[i][key] === value) {
             return true;
         }
@@ -240,7 +308,7 @@ exports.isValueInObjectWithKeys = isValueInObjectWithKeys;
  * @return {*}
  */
 const getValueInObjectByKey = function (key, keyField, valueField, obj) {
-    for (var i in obj) {
+    for (let i in obj) {
         if (obj[i][keyField] === key) {
             return obj[i][valueField];
         }
@@ -306,4 +374,101 @@ const getDateFormatted = function (format) {
     return date().format(format);
 }
 exports.getDateFormatted = getDateFormatted;
+
+/**
+ * return an array of elements in the main array that are not in the secondary array
+ *
+ * @param {array} mainArray main array
+ * @param {array} secondaryArray secondary array
+ * @return {array} diff array
+ */
+const getArrayDiff = function (mainArray, secondaryArray) {
+    return mainArray.diff(secondaryArray);
+}
+exports.getArrayDiff = getArrayDiff;
+
+/**
+ * implement the diff operation on arrays
+ *
+ */
+Array.prototype.diff = function (a) {
+    return this.filter(function (i) {
+        return a.indexOf(i) < 0;
+    });
+};
+
+/**
+ * return a jason object from a list of json objects
+ *
+ * @param {string} key key inside each of the object entries
+ * @param {array} jasonList secondary array
+ * @return {object} result object
+ */
+const convertListToJason = function (key, jasonList) {
+    let jasonResult = {};
+    for (let i = 0; i < jasonList.length; i++) {
+        let item = jasonList[i];
+        jasonResult[item[key]] = item;
+    }
+    return jasonResult;
+}
+exports.convertListToJason = convertListToJason;
+
+/**
+ * return a list from a list of json objects
+ *
+ * @param {string} key key inside each of the object entries
+ * @param {array} jasonList secondary array
+ * @return {object} result object
+ */
+const convertJsonListToList = function (key, jasonList) {
+    let listResult = [];
+    for (let i = 0; i < jasonList.length; i++) {
+        listResult.push(jasonList[i][key]);
+    }
+    return listResult;
+}
+exports.convertJsonListToList = convertJsonListToList;
+
+/**
+ * return a list of the unique join of two lists
+ *
+ * @param {array} list1 first list
+ * @param {array} list2 second list
+ * @return {list} result object
+ */
+const joinSets = function (list1, list2) {
+    let result = [];
+    for (let i = 0; i < list1.length; i++) {
+        if (result.indexOf(list1[i]) === -1) {
+            result.push(list1[i]);
+        }
+    }
+    for (let i = 0; i < list2.length; i++) {
+        if (result.indexOf(list2[i]) === -1) {
+            result.push(list2[i]);
+        }
+    }
+    return result;
+}
+exports.joinSets = joinSets;
+
+/**
+ * return a list of the join of two lists
+ *
+ * @param {array} list1 first list
+ * @param {array} list2 second list
+ * @return {list} result object
+ */
+const joinLists = function (list1, list2) {
+    let result = [];
+    for (let i = 0; i < list1.length; i++) {
+        result.push(list1[i]);
+    }
+    for (let i = 0; i < list2.length; i++) {
+        result.push(list2[i]);
+    }
+    return result;
+}
+exports.joinLists = joinLists;
 // </Global Function> -----------------------------------------------

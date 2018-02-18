@@ -1,0 +1,10 @@
+.row
+    .input-field.col.s12
+        input#title.validate(type='text', name='title', value=title ? title : "",required, autofocus)
+        label(for='title') #{__('projects.form.fields.title')}
+.row
+    #description #{description ? description : ""}
+
+block scripts
+    script(src='/js/projects/projects-add-content.js')
+    script(src='/summernote/summernote.js')
