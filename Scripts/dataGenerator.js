@@ -32,8 +32,10 @@ const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
 const numOfProjects = 5;
+const groupSize = 5;
 var processedUsers = 0;
 var processedProjects = 0;
+var updatedProjects = 0;
 
 var adminCookie; // Stores the cookie we use throughout all requests
 
@@ -138,7 +140,7 @@ const generateUsers = function () {
  */
 const generateProjects = function () {
     for (var i = 0; i < numOfProjects; i++) {
-        createProject(`Project ${i}`, `Welcome to Project ${1}`);
+        createProject(`Project ${i}`, `Welcome to Project ${i}`);
     }
 }
 
@@ -218,7 +220,7 @@ const createProject = function (title, description) {
             logger.info(`Created project ${title}`);
             processedProjects++;
             if (processedProjects === numOfProjects) {
-                getProjectData();
+                getProjectsData();
             }
         });
     });
@@ -232,9 +234,11 @@ const createProject = function (title, description) {
 }
 
 /**
- * Gets all of the projects
+ * Gets the main projects data block
  */
-const getProjectData = function () {
+const getProjectsData = function () {
+    var projectsData = '';
+
     const options = {
         hostname: 'localhost',
         port: 8080,
@@ -250,15 +254,67 @@ const getProjectData = function () {
     const req = https.request(options, (res) => {
         res.setEncoding('utf8');
         res.on('data', (chunk) => {
-            console.log(chunk);
+            projectsData += chunk;
         });
-        res.on('end', () => { });
+        res.on('end', () => {
+            logger.info("Retrieved all projects");
+            var projectList = JSON.parse(projectsData).projectsList;
+            projectList.forEach(project => {
+                setProjectInfo(project);
+            });
+         });
     });
 
     req.on('error', (e) => {
         console.error(`problem with request: ${e.message}`);
     });
 
+    req.end();
+}
+
+/**
+ * Sets project settings based on ID
+ * 
+ * @param {*} projectID The ID of the project
+ */
+const setProjectInfo = function (project) {
+    const projectConfig = querystring.stringify({
+        'projectId': project._id,
+        'groupSelectType': common.teamSelectionTypes.RANDOM.value,
+        'groupSize': groupSize,
+        'groupPrefix': common.defaultTeamPrefix
+    });
+
+    const options = {
+        hostname: 'localhost',
+        port: 8080,
+        path: `/project/teams/config`,
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectConfig),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Set project info for ${project.title}`);
+            updatedProjects++;
+            if (updatedProjects === numOfProjects) {
+                process.exit(0);
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+    });
+
+    req.write(projectConfig);
     req.end();
 }
 
