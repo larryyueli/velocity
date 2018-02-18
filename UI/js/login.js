@@ -17,8 +17,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const loginForm = $('#loginForm');
-const errorField = $('#loginForm_invalid');
-const passwordField = $('#loginForm_password');
+const loginErrorField = $('#loginForm_invalid');
+const loginPasswordField = $('#loginForm_password');
+const signupForm = $('#signupForm');
+const signupErrorField = $('#signupForm_invalid');
+const signupPasswordField = $('#signupForm_password');
+const signupPasswordConfirmField = $('#signupForm_confirmPassword')
 
 loginForm.submit(function (evt) {
     evt.preventDefault();
@@ -31,10 +35,30 @@ loginForm.submit(function (evt) {
         },
         error: function (data) {
             const jsonResponse = data.responseJSON;
-            errorField.html(getErrorPill(jsonResponse));
+            loginErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
         },
         complete: function (data) {
-            passwordField.val('').focus();
+            loginPasswordField.val('').focus();
         }
     });
+});
+
+signupForm.submit(function (evt) {
+    evt.preventDefault();
+    if (signupPasswordField.val() === signupPasswordConfirmField.val()) {
+        $.ajax({
+            type: 'PUT',
+            url: '/users/request/access',
+            data: signupForm.serialize(),
+            success: function (data) {
+                window.location.href = '/';
+            },
+            error: function (data) {
+                const jsonResponse = data.responseJSON;
+                signupErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
+            }
+        });
+    } else {
+        signupErrorField.html(getErrorPill(translate('passwordsDontMatch')));
+    }
 });
