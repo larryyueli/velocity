@@ -185,11 +185,11 @@ function getNotification(notification) {
 /**
  * Returns the HTML for an error pill
  *
- * @param {Object} jsonResponse
+ * @param {String} text
  * @returns {String} HTML of error pill
  */
-function getErrorPill(jsonResponse) {
-    return `<div class="chip white-text red darken-4">${getErrorMessageFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`
+function getErrorPill(text) {
+    return `<div class="chip white-text red darken-4">${text}<i class="close material-icons">close</i></div>`
 }
 
 /**

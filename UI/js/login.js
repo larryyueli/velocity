@@ -35,7 +35,7 @@ loginForm.submit(function (evt) {
         },
         error: function (data) {
             const jsonResponse = data.responseJSON;
-            loginErrorField.html(getErrorPill(jsonResponse));
+            loginErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
         },
         complete: function (data) {
             loginPasswordField.val('').focus();
@@ -55,10 +55,10 @@ signupForm.submit(function (evt) {
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
-                signupErrorField.html(getErrorPill(jsonResponse));
+                signupErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
             }
         });
     } else {
-        failSnackbar(translate('passwordsDontMatch'));
+        signupErrorField.html(getErrorPill(translate('passwordsDontMatch')));
     }
 });
