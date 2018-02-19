@@ -26,10 +26,6 @@ const common = require('../Backend/common.js');
 const config = require('../Backend/config.js');
 const logger = require('../Backend/logger.js');
 
-const classMode = querystring.stringify({
-    'selectedMode': common.modeTypes.CLASS
-});
-
 const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
@@ -43,13 +39,19 @@ var processedUsers = 0;
 var processedProjects = 0;
 var updatedProjects = 0;
 
-var adminCookie; // Stores the cookie we use throughout all requests
+var adminCookie; // Stores the cookie we use throughout all 
+var selectedMode; // Stores whether we have Class mode or Collab mode
 
 /**
  * Generates a lot of dummy data.
  */
 const dataGenerator = function () {
     config.debugMode = true;
+    selectedMode = rls.question('Type collab or class to choose that mode: ');
+    while (selectedMode !== 'collab' && selectedMode !== 'class') {
+        selectedMode = rls.question('Unrecognized. Type either class or collab for your mode: ');
+    }
+    selectedMode = (selectedMode == 'collab' ? common.modeTypes.COLLABORATORS : common.modeTypes.CLASS);
     const adminUsername = rls.question('Please enter your admin username: ');
     const adminPassword = rls.question('Enter your admin password: ', {
         hideEchoBack: true,
@@ -80,7 +82,7 @@ const dataGenerator = function () {
         res.on('end', () => {
             logger.info(`Logged in as ${adminUsername}`);
             adminCookie = res.headers['set-cookie'][0];
-            selectedMode();
+            configureMode();
         });
     });
 
@@ -94,9 +96,12 @@ const dataGenerator = function () {
 }
 
 /**
- * Selects Class mode
+ * Selects whichever mode was selected by the 
  */
-const selectedMode = function () {
+const configureMode = function () {
+    const chosenMode = querystring.stringify({
+        'selectedMode': selectedMode
+    });
     const options = {
         hostname: config.hostName,
         port: config.httpsPort,
@@ -105,7 +110,7 @@ const selectedMode = function () {
         rejectUnauthorized: false,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(classMode),
+            'Content-Length': Buffer.byteLength(chosenMode),
             'Cookie': adminCookie
         }
     };
@@ -114,7 +119,7 @@ const selectedMode = function () {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
-            logger.info("Selected class mode");
+            logger.info(`Selected mode ${selectedMode}`);
             generateUsers();
         });
     });
@@ -124,7 +129,7 @@ const selectedMode = function () {
         process.exit(1);
     });
 
-    req.write(classMode);
+    req.write(chosenMode);
     req.end();
 }
 
