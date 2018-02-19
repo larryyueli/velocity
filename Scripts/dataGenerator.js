@@ -364,12 +364,11 @@ const setProjectInfo = function (project) {
     req.end();
 }
 
+/**
+ * Assigns the generated group list for each project
+ * @param {*} project The project to assign the group to
+ */
 const assignGroups = function (project) {
-    const groups = JSON.stringify([{
-        'name': 'test',
-        'members': [{ 'username': 'student0' }, {'username': 'student1'}]
-    }]);
-
     const projectConfig = querystring.stringify({
         'projectId': project._id,
         'teamsList': JSON.stringify(groupList)
@@ -411,6 +410,10 @@ const assignGroups = function (project) {
     req.end();
 }
 
+/**
+ * Activates a project
+ * @param {*} project Project to activate
+ */
 const activateProject = function (project) {
     const projectIdObject = querystring.stringify({
         'projectId': project._id,
