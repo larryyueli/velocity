@@ -134,6 +134,7 @@ const generateUsers = function () {
     }
     for (var i = 0; i < numOfStudents; i++) {
         createUser(`Student${i}`, i.toString(), common.userTypes.STUDENT.value);
+        usersToAdd.push(`student${i}`);
     }
 }
 
@@ -180,7 +181,7 @@ const createUser = function (fname, lname, type) {
             logger.info(`Created user ${fname} ${lname}`);
             processedUsers++;
             if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
-                generateGroups();
+                splitUsersIntoGroups();
                 generateProjects();
             }
         });
@@ -197,9 +198,34 @@ const createUser = function (fname, lname, type) {
 /**
  * Generates the groups
  */
-const generateGroups = function () {
+const splitUsersIntoGroups = function () {
+    members = [];
+    groupNumber = 0;
+    for (var i = 0; i < usersToAdd.length; i++) {
+        members.push(usersToAdd[i]);
+        if (members.length === groupSize) {
+            createGroup(`${common.defaultTeamPrefix}${groupNumber}`, members);
+            groupNumber++;
+            members = [];
+        }
+    }
+    if (members.length !== 0) {
+        createGroup(`${common.defaultTeamPrefix}${groupNumber}`, members);
+    }
+}
 
-
+/**
+ * Creates a group and adds it to our group list
+ */
+const createGroup = function(name, members) {
+    var group = {
+        'name': name,
+        'members': []
+    }
+    for (var i = 0; i < members.length; i++) {
+        group.members.push({'username': members[i]});
+    }
+    groupList.push(group);
 }
 
 /**
@@ -333,12 +359,12 @@ const setProjectInfo = function (project) {
 const assignGroups = function (project) {
     const groups = JSON.stringify([{
         'name': 'test',
-        'members': [{ 'username': 'student0' }]
+        'members': [{ 'username': 'student0' }, {'username': 'student1'}]
     }]);
 
     const projectConfig = querystring.stringify({
         'projectId': project._id,
-        'teamsList': groups
+        'teamsList': JSON.stringify(groupList)
     });
 
     const options = {
