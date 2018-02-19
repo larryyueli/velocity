@@ -32,7 +32,9 @@ const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
 const numOfProjects = 5;
+const numOfProjectsToActivate = 2;
 const groupSize = 5;
+var projectList = [];
 var groupList = [];
 var usersToAdd = [];
 var processedUsers = 0;
@@ -58,8 +60,8 @@ const dataGenerator = function () {
     });
 
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: '/login',
         method: 'POST',
         rejectUnauthorized: false,
@@ -81,7 +83,8 @@ const dataGenerator = function () {
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.write(postData);
@@ -93,8 +96,8 @@ const dataGenerator = function () {
  */
 const selectedMode = function () {
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: '/mode/select',
         method: 'POST',
         rejectUnauthorized: false,
@@ -115,7 +118,8 @@ const selectedMode = function () {
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.write(classMode);
@@ -160,10 +164,9 @@ const createUser = function (fname, lname, type) {
         'email': `${fname}@${lname}.ca`,
         'type': type
     });
-
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: '/users/create',
         method: 'PUT',
         rejectUnauthorized: false,
@@ -188,7 +191,8 @@ const createUser = function (fname, lname, type) {
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.write(userObject);
@@ -238,8 +242,8 @@ const createProject = function (title, description) {
     });
 
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: '/projects/create',
         method: 'PUT',
         rejectUnauthorized: false,
@@ -257,13 +261,15 @@ const createProject = function (title, description) {
             logger.info(`Created project ${title}`);
             processedProjects++;
             if (processedProjects === numOfProjects) {
+                processedProjects = 0;
                 getProjectsData();
             }
         });
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.write(projectObject);
@@ -277,8 +283,8 @@ const getProjectsData = function () {
     var projectsData = '';
 
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: '/projectsListComponent',
         method: 'GET',
         rejectUnauthorized: false,
@@ -295,7 +301,7 @@ const getProjectsData = function () {
         });
         res.on('end', () => {
             logger.info("Retrieved all projects");
-            var projectList = JSON.parse(projectsData).projectsList;
+            projectList = JSON.parse(projectsData).projectsList;
             projectList.forEach(project => {
                 setProjectInfo(project);
             });
@@ -303,7 +309,8 @@ const getProjectsData = function () {
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.end();
@@ -323,8 +330,8 @@ const setProjectInfo = function (project) {
     });
 
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: `/project/teams/config`,
         method: 'POST',
         rejectUnauthorized: false,
@@ -349,7 +356,8 @@ const setProjectInfo = function (project) {
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.write(projectConfig);
@@ -368,8 +376,8 @@ const assignGroups = function (project) {
     });
 
     const options = {
-        hostname: 'localhost',
-        port: 8080,
+        hostname: config.hostName,
+        port: config.httpsPort,
         path: '/project/teams/update',
         method: 'POST',
         rejectUnauthorized: false,
@@ -384,15 +392,59 @@ const assignGroups = function (project) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
-
+            processedProjects++;
+            if (processedProjects === numOfProjects) {
+                processedProjects = 0;
+                for (var i = 0; i < numOfProjectsToActivate; i++) {
+                    activateProject(projectList[i]);
+                }
+            }
         });
     });
 
     req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
     });
 
     req.write(projectConfig);
+    req.end();
+}
+
+const activateProject = function (project) {
+    const projectIdObject = querystring.stringify({
+        'projectId': project._id,
+    });
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/project/activate',
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectIdObject),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            if (processedProjects === numOfProjectsToActivate) {
+                process.exit(0);
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.info(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(projectIdObject);
     req.end();
 }
 
