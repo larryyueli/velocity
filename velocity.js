@@ -1429,6 +1429,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
     }
+
     const projectId = req.body.projectId;
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
@@ -1442,12 +1443,16 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
         let inputTeamsList = req.body.teamsList;
         if (!Array.isArray(inputTeamsList)) {
-            inputTeamsList = [];
+            try {
+                inputTeamsList = JSON.parse(inputTeamsList);
+            }
+            catch (err) {
+                inputTeamsList = [];
+            }
         }
 
         projects.getProjectTeams(projectId, function (err, projectTeamsList) {
             if (err) {
-                logger.info("BP 1");
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
@@ -1481,7 +1486,6 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
                 let updateTeamsCounter = 0;
                 if (updateTeamsCounter === resolvedTeamsList.length) {
-                    logger.info("BP 2");
                     return res.status(200).send('ok');
                 }
                 for (let i = 0; i < resolvedTeamsList.length; i++) {
@@ -1489,7 +1493,6 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                     projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
                         if (err) {
                             if (err.code === 6004) {
-                                logger.info("BP 3");
                                 team.status = common.teamStatus.ACTIVE.value;
                                 projects.addTeamToProject(projectId, team, function (err, result) {
                                     if (err) {
@@ -1502,7 +1505,6 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                                     }
                                 });
                             } else {
-                                logger.info("BP 4");
                                 logger.error(JSON.stringify(err));
                             }
                         }
@@ -1511,20 +1513,17 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                             team._id = teamObj._id;
                             projects.updateTeamInProject(projectId, team, function (err, result) {
                                 if (err) {
-                                    logger.info("BP 5");
                                     logger.error(JSON.stringify(err));
                                 }
 
                                 updateTeamsCounter++;
                                 if (updateTeamsCounter === resolvedTeamsList.length) {
-                                    logger.info("BP 6");
                                     return res.status(200).send('ok');
                                 }
                             });
                         }
                     });
                 }
-                logger.info("Completed.");
             }
 
             let completedDeletedTeams = 0;

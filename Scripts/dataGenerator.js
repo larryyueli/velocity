@@ -198,8 +198,8 @@ const createUser = function (fname, lname, type) {
  * Generates the groups
  */
 const generateGroups = function () {
-    
-    
+
+
 }
 
 /**
@@ -273,7 +273,7 @@ const getProjectsData = function () {
             projectList.forEach(project => {
                 setProjectInfo(project);
             });
-         });
+        });
     });
 
     req.on('error', (e) => {
@@ -317,7 +317,7 @@ const setProjectInfo = function (project) {
             updatedProjects++;
             assignGroups(project);
             if (updatedProjects === numOfProjects) {
-                
+
             }
         });
     });
@@ -331,15 +331,14 @@ const setProjectInfo = function (project) {
 }
 
 const assignGroups = function (project) {
-    const groups = querystring.stringify({
+    const groups = JSON.stringify([{
         'name': 'test',
-        'members': [{'username': 'student0'}]
-    });
+        'members': [{ 'username': 'student0' }]
+    }]);
+
     const projectConfig = querystring.stringify({
         'projectId': project._id,
-        'teamsList': [groups]
-    }, {
-        arrayFormat: 'bracket'
+        'teamsList': groups
     });
 
     const options = {
