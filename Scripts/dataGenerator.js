@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const https = require('https');
 const querystring = require('query-string');
 const rls = require('readline-sync');
@@ -130,13 +132,13 @@ const selectedMode = function () {
  * Generates the entirety of our user list
  */
 const generateUsers = function () {
-    for (var i = 0; i < numOfProfessors; i++) {
+    for (let i = 0; i < numOfProfessors; i++) {
         createUser(`Professor${i}`, i.toString(), common.userTypes.PROFESSOR.value);
     }
-    for (var i = 0; i < numOfTAs; i++) {
+    for (let i = 0; i < numOfTAs; i++) {
         createUser(`TA${i}`, i.toString(), common.userTypes.TA.value);
     }
-    for (var i = 0; i < numOfStudents; i++) {
+    for (let i = 0; i < numOfStudents; i++) {
         createUser(`Student${i}`, i.toString(), common.userTypes.STUDENT.value);
         usersToAdd.push(`student${i}`);
     }
@@ -146,7 +148,7 @@ const generateUsers = function () {
  * Generates all the projects
  */
 const generateProjects = function () {
-    for (var i = 0; i < numOfProjects; i++) {
+    for (let i = 0; i < numOfProjects; i++) {
         createProject(`Project ${i}`, `Welcome to Project ${i}`);
     }
 }
@@ -203,9 +205,9 @@ const createUser = function (fname, lname, type) {
  * Generates the groups
  */
 const splitUsersIntoGroups = function () {
-    members = [];
-    groupNumber = 0;
-    for (var i = 0; i < usersToAdd.length; i++) {
+    let members = [];
+    let groupNumber = 0;
+    for (let i = 0; i < usersToAdd.length; i++) {
         members.push(usersToAdd[i]);
         if (members.length === groupSize) {
             createGroup(`${common.defaultTeamPrefix}${groupNumber}`, members);
@@ -222,11 +224,11 @@ const splitUsersIntoGroups = function () {
  * Creates a group and adds it to our group list
  */
 const createGroup = function(name, members) {
-    var group = {
+    let group = {
         'name': name,
         'members': []
     }
-    for (var i = 0; i < members.length; i++) {
+    for (let i = 0; i < members.length; i++) {
         group.members.push({'username': members[i]});
     }
     groupList.push(group);
@@ -280,7 +282,7 @@ const createProject = function (title, description) {
  * Gets the main projects data block
  */
 const getProjectsData = function () {
-    var projectsData = '';
+    let projectsData = '';
 
     const options = {
         hostname: config.hostName,
@@ -391,10 +393,11 @@ const assignGroups = function (project) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
+            logger.info(`Assigned groups to project ${project.title}`);
             processedProjects++;
             if (processedProjects === numOfProjects) {
                 processedProjects = 0;
-                for (var i = 0; i < numOfProjectsToActivate; i++) {
+                for (let i = 0; i < numOfProjectsToActivate; i++) {
                     activateProject(projectList[i]);
                 }
             }
@@ -436,6 +439,7 @@ const activateProject = function (project) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
+            logger.info(`Activated project ${project.title}`);
             if (processedProjects === numOfProjectsToActivate) {
                 process.exit(0);
             }
