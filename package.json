@@ -22,6 +22,7 @@
     "node-sass": "^4.7.2",
     "node-sass-middleware": "^0.11.0",
     "pug": "^2.0.0-rc.4",
+    "query-string": "^5.1.0",
     "readline-sync": "^1.4.7",
     "rimraf": "^2.6.2",
     "summernote": "^0.8.9",
