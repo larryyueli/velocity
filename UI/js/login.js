@@ -38,7 +38,7 @@ loginForm.submit(function (evt) {
             loginErrorField.html(getErrorPill(getErrorMessageFromResponse(jsonResponse)));
         },
         complete: function (data) {
-            passwordField.val('').focus();
+            loginPasswordField.val('').focus();
         }
     });
 });

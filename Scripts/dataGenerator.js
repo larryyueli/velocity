@@ -83,7 +83,7 @@ const dataGenerator = function () {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -118,7 +118,7 @@ const selectedMode = function () {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -191,7 +191,7 @@ const createUser = function (fname, lname, type) {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -268,7 +268,7 @@ const createProject = function (title, description) {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -309,7 +309,7 @@ const getProjectsData = function () {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -356,7 +356,7 @@ const setProjectInfo = function (project) {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -403,7 +403,7 @@ const assignGroups = function (project) {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
@@ -440,7 +440,7 @@ const activateProject = function (project) {
     });
 
     req.on('error', (e) => {
-        logger.info(`Problem with request: ${e.message}`);
+        logger.error(`Problem with request: ${e.message}`);
         process.exit(1);
     });
 
