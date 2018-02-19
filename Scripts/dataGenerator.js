@@ -26,13 +26,11 @@ const common = require('../Backend/common.js');
 const config = require('../Backend/config.js');
 const logger = require('../Backend/logger.js');
 
-const classMode = querystring.stringify({
-    'selectedMode': common.modeTypes.CLASS
-});
-
 const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
+const numOfCollaboratorAdmins = 5;
+const numOfCollaborators = 20;
 const numOfProjects = 5;
 const numOfProjectsToActivate = 2;
 const groupSize = 5;
@@ -43,13 +41,23 @@ var processedUsers = 0;
 var processedProjects = 0;
 var updatedProjects = 0;
 
-var adminCookie; // Stores the cookie we use throughout all requests
+var adminCookie; // Stores the cookie we use throughout all 
+var workingMode; // Stores whether we have Class mode or Collab mode
 
 /**
  * Generates a lot of dummy data.
  */
 const dataGenerator = function () {
     config.debugMode = true;
+    let selectedMode = rls.question('Type collab or class to choose that mode: ');
+    while (selectedMode !== 'collab' && selectedMode !== 'class') {
+        selectedMode = rls.question('Unrecognized. Type either class or collab for your mode: ');
+    }
+    if (selectedMode === 'collab') {
+        workingMode = common.modeTypes.COLLABORATORS;
+    } else {
+        workingMode = common.modeTypes.CLASS;
+    }
     const adminUsername = rls.question('Please enter your admin username: ');
     const adminPassword = rls.question('Enter your admin password: ', {
         hideEchoBack: true,
@@ -80,7 +88,7 @@ const dataGenerator = function () {
         res.on('end', () => {
             logger.info(`Logged in as ${adminUsername}`);
             adminCookie = res.headers['set-cookie'][0];
-            selectedMode();
+            configureMode();
         });
     });
 
@@ -94,9 +102,12 @@ const dataGenerator = function () {
 }
 
 /**
- * Selects Class mode
+ * Selects whichever mode was selected by the 
  */
-const selectedMode = function () {
+const configureMode = function () {
+    const chosenMode = querystring.stringify({
+        'selectedMode': workingMode
+    });
     const options = {
         hostname: config.hostName,
         port: config.httpsPort,
@@ -105,7 +116,7 @@ const selectedMode = function () {
         rejectUnauthorized: false,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(classMode),
+            'Content-Length': Buffer.byteLength(chosenMode),
             'Cookie': adminCookie
         }
     };
@@ -114,8 +125,12 @@ const selectedMode = function () {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
-            logger.info("Selected class mode");
-            generateUsers();
+            logger.info(`Selected mode ${workingMode}`);
+            if (workingMode === common.modeTypes.CLASS) {
+                generateClassUsers();
+            } else {
+                generateCollabUsers();
+            }
         });
     });
 
@@ -124,14 +139,14 @@ const selectedMode = function () {
         process.exit(1);
     });
 
-    req.write(classMode);
+    req.write(chosenMode);
     req.end();
 }
 
 /**
- * Generates the entirety of our user list
+ * Generates the entirety of our class user list
  */
-const generateUsers = function () {
+const generateClassUsers = function () {
     for (let i = 0; i < numOfProfessors; i++) {
         createUser(`Professor${i}`, i.toString(), common.userTypes.PROFESSOR.value);
     }
@@ -141,6 +156,20 @@ const generateUsers = function () {
     for (let i = 0; i < numOfStudents; i++) {
         createUser(`Student${i}`, i.toString(), common.userTypes.STUDENT.value);
         usersToAdd.push(`student${i}`);
+    }
+}
+
+/**
+ * Generates the entirety of our collab user list
+ */
+const generateCollabUsers = function () {
+    for (let i = 0; i < numOfCollaboratorAdmins; i++) {
+        createUser(`CollabAdmin${i}`, i.toString(), common.userTypes.COLLABORATOR_ADMIN.value);
+        usersToAdd.push(`collabadmin${i}`);
+    }
+    for (let i = 0; i < numOfCollaborators; i++) {
+        createUser(`Collaborator${i}`, i.toString(), common.userTypes.COLLABORATOR.value);
+        usersToAdd.push(`collaborator${i}`);
     }
 }
 
@@ -185,7 +214,13 @@ const createUser = function (fname, lname, type) {
         res.on('end', () => {
             logger.info(`Created user ${fname} ${lname}`);
             processedUsers++;
-            if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
+            let totalUsers;
+            if (workingMode === common.modeTypes.CLASS) {
+                totalUsers = numOfProfessors + numOfTAs + numOfStudents;
+            } else {
+                totalUsers = numOfCollaboratorAdmins + numOfCollaborators;
+            }
+            if (processedUsers === totalUsers) {
                 splitUsersIntoGroups();
                 generateProjects();
             }
@@ -302,7 +337,7 @@ const getProjectsData = function () {
             projectsData += chunk;
         });
         res.on('end', () => {
-            logger.info("Retrieved all projects");
+            logger.info('Retrieved all projects');
             projectList = JSON.parse(projectsData).projectsList;
             projectList.forEach(project => {
                 setProjectInfo(project);
