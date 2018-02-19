@@ -223,13 +223,13 @@ const splitUsersIntoGroups = function () {
 /**
  * Creates a group and adds it to our group list
  */
-const createGroup = function(name, members) {
+const createGroup = function (name, members) {
     let group = {
         'name': name,
         'members': []
     }
     for (let i = 0; i < members.length; i++) {
-        group.members.push({'username': members[i]});
+        group.members.push({ 'username': members[i] });
     }
     groupList.push(group);
 }
