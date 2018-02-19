@@ -28,11 +28,13 @@ const notificationSwitch = '#notificationSwitch';
 const profilePicIn = '#profile-picture-input';
 const bodyclass = 'bodyclass';
 const select = 'select';
+const navProfileId = '#nav-profile';
 
 /**
 * Init function
 */
 $(function () {
+    $(navProfileId).addClass('active');
     $(select).material_select();
 });
 

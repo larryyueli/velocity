@@ -44,6 +44,18 @@
     margin-right: 10px !important;
 }
 
+.vertical-align-middle {
+    vertical-align: middle;
+}
+
+.multiline {
+    white-space: pre-wrap;
+}
+
+.alignTextLeft {
+    text-align: left;
+}
+
 .noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
     text-decoration: none;
 }
@@ -125,7 +137,7 @@
     }
 }
 
-.cancelButtonBackground-colour {
+.cancelButtonBackground-background-colour {
     @include themify($themes) {
         background-color: themed('cancelButtonBackground') !important;
     }
@@ -137,7 +149,7 @@
     }
 }
 
-.resetButtonBackground-colour {
+.resetButtonBackground-background-colour {
     @include themify($themes) {
         background-color: themed('resetButtonBackground') !important;
     }
@@ -149,16 +161,36 @@
     }
 }
 
+.activateButtonBackground-colour {
+    @include themify($themes) {
+        background-color: themed('activateButtonBackground') !important;
+    }
+}
+
+.activateButtonText-colour {
+    @include themify($themes) {
+        color: themed('activateButtonText') !important;
+    }
+}
+
 // Themed elements
 // Switch
 .switch label input[type=checkbox]:checked+.lever {
-    @extend .secondaryColour-background-colour;
+    @extend .loaderBackgroundColour-background-colour;
 }
 
 .switch label input[type=checkbox]:checked+.lever:after {
     @extend .primaryColour-background-colour;
 }
 
-.alignTextLeft {
-    text-align: left;
+.customSummernoteButton {
+    background-color: #ffffff;
+    color: #464646;
+    padding: 0 0.5rem;
+    margin: 0;
+}
+
+div.note-editor.note-frame.panel.panel-default{
+    border: 1px solid #eaeaea;
+    border-radius: 0px;
 }

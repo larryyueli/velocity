@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const common = require('./common.js');
 const db = require('./db.js');
 
@@ -71,7 +73,7 @@ const resetAllSettings = function (callback) {
         }
 
         const currentDate = common.getDate();;
-        var defaultSettings = {};
+        let defaultSettings = {};
         defaultSettings._id = common.getUUID();
         defaultSettings.ctime = currentDate;
         defaultSettings.mtime = currentDate;
@@ -170,7 +172,7 @@ const updateUsersCanEditPassword = function (status, callback) {
  * @param {function} callback callback function
  */
 const updateAllSettings = function (newSettings, callback) {
-    var updateQuery = {};
+    let updateQuery = {};
     updateQuery.$set = {};
     updateQuery.$set.users = {};
 

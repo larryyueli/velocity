@@ -67,6 +67,7 @@ const translations = Object.freeze({
     //1000 system errors
     1000: 'Invalid request',
     1009: 'Failed to parse csv file',
+    1010: 'Website setup is not complete',
 
     //2000 user errors
     2000: 'Invalid username or password',
@@ -78,6 +79,9 @@ const translations = Object.freeze({
     2006: 'Session timed out',
     2007: 'Failed to update user, missing information',
     2008: 'Invalid profile picture extension',
+    2009: 'Invalid users import file extension',
+    2010: 'Permission denied',
+    2010: 'Password and confirm password do not match',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
@@ -94,13 +98,37 @@ const translations = Object.freeze({
     mustBeCsv: 'File format must be csv!',
     mustImportOneFile: 'You can only import one file!',
     successfulFileUpload: 'File uploaded successfully',
+    emptyProjectDescription: 'Please enter your description in the editor.',
+    selectGroup: 'Select Group',
+    size: 'Size',
+    activatedProject: 'Project has been activated',
+    deletedProject: 'Project has been deleted',
+    updatedProject: 'Project has been updated',
+    alreadyInGroup: 'This user is already in this group',
+    groupNameCantBeEmpty: 'Group name can\'t be empty',
+    groupNamealreadyExists: 'Group name already exists',
+    groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
+    groupSizeCantBeZero: 'Group size must be a positive integer',
+    deletePremadeGroups: 'Would you like to delete the groups that are already made?',
+    randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    randomize: 'Randomize',
+    groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
+    groupConfigurationSuccess: 'Groups have been saved successfully',
+    notInGroup: 'You are currently not in a group',
+    deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',
     user2: 'Collaborator',
     user3: 'Professor',
     user4: 'Teaching Assistant',
-    user5: 'Student'
+    user5: 'Student',
+
+    projectStatus0: 'Closed',
+    projectStatus1: 'Draft',
+    projectStatus2: 'Active'
 });
 
 const userIcons = Object.freeze({
@@ -182,11 +210,11 @@ function getNotification(notification) {
 /**
  * Returns the HTML for an error pill
  *
- * @param {Object} jsonResponse
+ * @param {String} text
  * @returns {String} HTML of error pill
  */
-function getErrorPill(jsonResponse) {
-    return `<div class="chip white-text red darken-4">${getErrorMessageFromResponse(jsonResponse)}<i class="close material-icons">close</i></div>`
+function getErrorPill(text) {
+    return `<div class="chip white-text red darken-4">${text}<i class="close material-icons">close</i></div>`
 }
 
 /**
@@ -238,7 +266,7 @@ $.fn.extend({
 
 /**
  * handle 401 and 404 erros
- * 
+ *
  * @param {String} data response data
  */
 function handle401And404(data) {

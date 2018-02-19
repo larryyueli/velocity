@@ -21,8 +21,13 @@ const accountImportFormSubmit = $('#account-import-form-submit');
 const loaderId = '#loader';
 const accountImportContainerId = '#account-import-container';
 const accountImportDivId = '#account-import-div';
+const navUsersId = '#nav-users';
+const navmUsersId = '#navm-users';
 
 $(function () {
+    $(navUsersId).addClass('active');
+    $(navmUsersId).addClass('active');
+
     accountImportFormSubmit.click(() => {
         const files = accountImportFormInput.get(0).files;
         var formData = new FormData();

@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const fs = require('fs');
 const rls = require('readline-sync');
 
@@ -38,11 +40,11 @@ const setupAdminAccount = function () {
     const username = rls.question('Please enter your username: ');
     const fname = rls.question('Please enter your first name: ');
     const lname = rls.question('Please enter your last name: ');
-    var password = rls.question('Enter your password: ', {
+    let password = rls.question('Enter your password: ', {
         hideEchoBack: true,
         mask: '*'
     });
-    var password2 = rls.question('Confirm your password: ', {
+    let password2 = rls.question('Confirm your password: ', {
         hideEchoBack: true,
         mask: '*'
     });

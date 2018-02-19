@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const fs = require('fs');
 
 // server related configuration
@@ -53,7 +55,7 @@ const sessionSecret = 'superSecretSecret';
 const sessionResave = false;
 const saveUninitializedSession = false;
 const rollingSession = true;
-const secureSessionCookie = false;
+const secureSessionCookie = true;
 const languageOptions = ['en'];
 const defaultLanguage = 'en';
 

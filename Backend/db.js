@@ -16,11 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
+const db_projects = require('./dbs/db-projects.js');
 const db_settings = require('./dbs/db-settings.js');
+const db_teams = require('./dbs/db-teams.js');
 const db_users = require('./dbs/db-users.js');
 const db_vfs = require('./dbs/db-virtualFileSystem.js');
 
@@ -36,7 +40,9 @@ const initialize = function (callback) {
             return callback(common.getError(1001), null);
         }
 
+        db_projects.initialize(client.db(config.default_db_name).collection('projects'));
         db_settings.initialize(client.db(config.default_db_name).collection('settings'));
+        db_teams.initialize(client.db(config.default_db_name).collection('teams'));
         db_users.initialize(client.db(config.default_db_name).collection('users'));
         db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
 
@@ -64,3 +70,17 @@ exports.addToVirtualFileSystem = db_vfs.addToVirtualFileSystem;
 exports.removeFromVirtualFileSystem = db_vfs.removeFromVirtualFileSystem;
 exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
 // </Virtual File System Collection> ----------------------------------
+
+// <Projects Collection> ----------------------------------------------
+exports.addProject = db_projects.addProject;
+exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
+exports.getProject = db_projects.getProject;
+exports.updateProject = db_projects.updateProject;
+// </Projects Collection> ---------------------------------------------
+
+// <Teams Collection> ----------------------------------------------
+exports.addTeam = db_teams.addTeam;
+exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
+exports.getTeam = db_teams.getTeam;
+exports.updateTeam = db_teams.updateTeam;
+// </Teams Collection> ---------------------------------------------
