@@ -29,6 +29,8 @@ const logger = require('../Backend/logger.js');
 const numOfProfessors = 2;
 const numOfTAs = 3;
 const numOfStudents = 25;
+const numOfCollaboratorAdmins = 5;
+const numOfCollaborators = 20;
 const numOfProjects = 5;
 const numOfProjectsToActivate = 2;
 const groupSize = 5;
@@ -40,18 +42,22 @@ var processedProjects = 0;
 var updatedProjects = 0;
 
 var adminCookie; // Stores the cookie we use throughout all 
-var selectedMode; // Stores whether we have Class mode or Collab mode
+var workingMode; // Stores whether we have Class mode or Collab mode
 
 /**
  * Generates a lot of dummy data.
  */
 const dataGenerator = function () {
     config.debugMode = true;
-    selectedMode = rls.question('Type collab or class to choose that mode: ');
+    let selectedMode = rls.question('Type collab or class to choose that mode: ');
     while (selectedMode !== 'collab' && selectedMode !== 'class') {
         selectedMode = rls.question('Unrecognized. Type either class or collab for your mode: ');
     }
-    selectedMode = (selectedMode == 'collab' ? common.modeTypes.COLLABORATORS : common.modeTypes.CLASS);
+    if (selectedMode === 'collab') {
+        workingMode = common.modeTypes.COLLABORATORS;
+    } else {
+        workingMode = common.modeTypes.CLASS;
+    }
     const adminUsername = rls.question('Please enter your admin username: ');
     const adminPassword = rls.question('Enter your admin password: ', {
         hideEchoBack: true,
@@ -100,7 +106,7 @@ const dataGenerator = function () {
  */
 const configureMode = function () {
     const chosenMode = querystring.stringify({
-        'selectedMode': selectedMode
+        'selectedMode': workingMode
     });
     const options = {
         hostname: config.hostName,
@@ -119,8 +125,12 @@ const configureMode = function () {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
-            logger.info(`Selected mode ${selectedMode}`);
-            generateUsers();
+            logger.info(`Selected mode ${workingMode}`);
+            if (workingMode === common.modeTypes.CLASS) {
+                generateClassUsers();
+            } else {
+                generateCollabUsers();
+            }
         });
     });
 
@@ -134,9 +144,9 @@ const configureMode = function () {
 }
 
 /**
- * Generates the entirety of our user list
+ * Generates the entirety of our class user list
  */
-const generateUsers = function () {
+const generateClassUsers = function () {
     for (let i = 0; i < numOfProfessors; i++) {
         createUser(`Professor${i}`, i.toString(), common.userTypes.PROFESSOR.value);
     }
@@ -146,6 +156,20 @@ const generateUsers = function () {
     for (let i = 0; i < numOfStudents; i++) {
         createUser(`Student${i}`, i.toString(), common.userTypes.STUDENT.value);
         usersToAdd.push(`student${i}`);
+    }
+}
+
+/**
+ * Generates the entirety of our collab user list
+ */
+const generateCollabUsers = function () {
+    for (let i = 0; i < numOfCollaboratorAdmins; i++) {
+        createUser(`CollabAdmin${i}`, i.toString(), common.userTypes.COLLABORATOR_ADMIN.value);
+        usersToAdd.push(`collabadmin${i}`);
+    }
+    for (let i = 0; i < numOfCollaborators; i++) {
+        createUser(`Collaborator${i}`, i.toString(), common.userTypes.COLLABORATOR.value);
+        usersToAdd.push(`collaborator${i}`);
     }
 }
 
@@ -190,7 +214,13 @@ const createUser = function (fname, lname, type) {
         res.on('end', () => {
             logger.info(`Created user ${fname} ${lname}`);
             processedUsers++;
-            if (processedUsers === numOfProfessors + numOfTAs + numOfStudents) {
+            let totalUsers;
+            if (workingMode === common.modeTypes.CLASS) {
+                totalUsers = numOfProfessors + numOfTAs + numOfStudents;
+            } else {
+                totalUsers = numOfCollaboratorAdmins + numOfCollaborators;
+            }
+            if (processedUsers === totalUsers) {
                 splitUsersIntoGroups();
                 generateProjects();
             }
@@ -307,7 +337,7 @@ const getProjectsData = function () {
             projectsData += chunk;
         });
         res.on('end', () => {
-            logger.info("Retrieved all projects");
+            logger.info('Retrieved all projects');
             projectList = JSON.parse(projectsData).projectsList;
             projectList.forEach(project => {
                 setProjectInfo(project);
