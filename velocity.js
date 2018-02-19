@@ -73,6 +73,7 @@ const projectsPage = 'projects/projects';
 const projectPagePage = 'projects/project-page';
 const projectsAddPage = 'projects/projects-add';
 const settingsPage = 'settings/settings';
+const ticketCreationPage = 'tickets/tickets';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
@@ -1866,6 +1867,27 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to get the ticket creation form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleTicketsCreatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        return res.status(403).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(ticketCreationPage, {
+        user: req.session.user,
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 /**
@@ -1893,6 +1915,8 @@ app.get('/usersListComponent', handleUsersListComponentPath);
 app.get('/users/add', handleUsersAddPath);
 app.get('/users/edit/:username', handleUsersEditPath);
 app.get('/users/import', handleUsersImportPath);
+
+app.get('/tmp/tickets/create', handleTicketsCreatePath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
