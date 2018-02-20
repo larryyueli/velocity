@@ -267,21 +267,6 @@ $(function () {
     startLoad(projectAdminsLoadId, projectAdminsListId);
     startLoad(projectUsersLoadId, projectUsersListId);
     getUsersList();
-
-    /*
-    $.ajax({
-        type: 'POST',
-        url: '/project/teams/update/me',
-        data: {projectId: projectId, action:"remove", teamName:"asdasdasdasd"},
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -576,6 +561,27 @@ function getUsersList() {
             projectAdminsList = data.projectAdmins;
             projectUsersList = data.projectUsers;
             displayAdminsList();
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+function nonAdminChangeGroup(action, groupName, callback) {
+    $.ajax({
+        type: 'POST',
+        url: '/project/teams/update/me',
+        data: {
+            projectId: projectId,
+            action:action,
+            teamName:groupName
+        },
+        success: function (data) {
+            callback();
         },
         error: function (data) {
             handle401And404(data);
@@ -1074,18 +1080,21 @@ function leaveGroup() {
         });
     });
 
-    const userObject = oldGroup.members.find(user => {
-        return user.username === userName;
+    nonAdminChangeGroup('remove', oldGroup.name, function() {
+        const userObject = oldGroup.members.find(user => {
+            return user.username === userName;
+        });
+
+        unassignedList.push(userObject);
+
+        oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
+
+        if (oldGroup.members.length === 0) {
+            groupList.splice(groupList.indexOf(oldGroup), 1);
+        }
+
+        reloadAllLists();
     });
-
-    unassignedList.push(userObject);
-
-    oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
-
-    if (oldGroup.members.length === 0) {
-        groupList.splice(groupList.indexOf(oldGroup), 1);
-    }
-    reloadAllLists();
 }
 
 /**
@@ -1102,11 +1111,13 @@ function joinGroup(clicked, createdGroup) {
         return user.username === userName;
     });
 
-    if (userObject) {
-        moveFromUnassignedToGroup(groupName, userName);
-    } else {
-        moveFromGroupToGroup(groupName, userName);
-    }
+    nonAdminChangeGroup('add', groupName, function() {
+        if (userObject) {
+            moveFromUnassignedToGroup(groupName, userName);
+        } else {
+            moveFromGroupToGroup(groupName, userName);
+        }
+    });
 }
 
 // ------------------------ End User Movement section -----------------------
