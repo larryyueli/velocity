@@ -276,3 +276,12 @@ function handle401And404(data) {
         window.location.href = '/pageNotFound';
     }
 }
+
+function toggleVisibility(element) {
+    if (element.hasClass('hidden')) {
+        element.removeClass('hidden');
+        element.animateCss('fadeIn');
+    } else {
+        element.addClass('hidden');
+    }
+}
