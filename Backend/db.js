@@ -25,6 +25,7 @@ const config = require('./config.js');
 const db_projects = require('./dbs/db-projects.js');
 const db_settings = require('./dbs/db-settings.js');
 const db_teams = require('./dbs/db-teams.js');
+const db_tickets = require('./dbs/db-tickets.js');
 const db_users = require('./dbs/db-users.js');
 const db_vfs = require('./dbs/db-virtualFileSystem.js');
 
@@ -43,6 +44,7 @@ const initialize = function (callback) {
         db_projects.initialize(client.db(config.default_db_name).collection('projects'));
         db_settings.initialize(client.db(config.default_db_name).collection('settings'));
         db_teams.initialize(client.db(config.default_db_name).collection('teams'));
+        db_tickets.initialize(client.db(config.default_db_name).collection('tickets'));
         db_users.initialize(client.db(config.default_db_name).collection('users'));
         db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
 
@@ -84,3 +86,10 @@ exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
 exports.getTeam = db_teams.getTeam;
 exports.updateTeam = db_teams.updateTeam;
 // </Teams Collection> ---------------------------------------------
+
+// <Tickets Collection> ----------------------------------------------
+exports.addTicket = db_tickets.addTicket;
+exports.getLimitedTicketsListSorted = db_tickets.getLimitedTicketsListSorted;
+exports.getTicket = db_tickets.getTicket;
+exports.updateTicket = db_tickets.updateTicket;
+// </Tickets Collection> ---------------------------------------------

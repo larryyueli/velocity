@@ -32,6 +32,7 @@ const uuidv1 = require('uuid/v1');
  * 4000 -> custom file system
  * 5000 -> projects
  * 6000 -> teams
+ * 7000 -> tickets
  */
 
 const errors = Object.freeze({
@@ -111,6 +112,16 @@ const errors = Object.freeze({
     6005: 'failed to update team, database issue',
     6006: 'failed to create a team, missing information',
     6007: 'failed to update a team, missing information',
+
+    //7000 tickets
+    7000: 'missing requirement',
+    7001: 'failed to add a ticket, database issue',
+    7002: 'failed to get tickets list, database issue',
+    7003: 'failed to get a ticket, database issue',
+    7004: 'ticket not found',
+    7005: 'failed to update ticket, database issue',
+    7006: 'failed to create a ticket, missing information',
+    7007: 'failed to update a ticket, missing information',
 });
 exports.errors = errors;
 
