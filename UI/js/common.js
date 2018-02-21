@@ -81,7 +81,13 @@ const translations = Object.freeze({
     2008: 'Invalid profile picture extension',
     2009: 'Invalid users import file extension',
     2010: 'Permission denied',
-    2010: 'Password and confirm password do not match',
+    2011: 'Password and confirm password do not match',
+    2012: 'Project is already active',
+    2013: 'Project is already closed',
+    2014: 'Project is not in draft',
+    2015: 'Cant not update team, invalid action',
+    2016: 'Cant add to team, user is already in a team',
+    2017: 'Cant remove from team, user is not in a team',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
@@ -274,5 +280,14 @@ function handle401And404(data) {
         window.location.href = '/';
     } else if (data['status'] === 404) {
         window.location.href = '/pageNotFound';
+    }
+}
+
+function toggleVisibility(element) {
+    if (element.hasClass('hidden')) {
+        element.removeClass('hidden');
+        element.animateCss('fadeIn');
+    } else {
+        element.addClass('hidden');
     }
 }

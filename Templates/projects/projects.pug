@@ -11,6 +11,9 @@ block content
     br
     .container
         .row
+            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#projectsFilter"))')
+                i.material-icons search
+        .row.hidden#projectsFilter
             form.col.s10.offset-s1
                 .row
                     .input-field.col.s12.xl8
