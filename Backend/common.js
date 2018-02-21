@@ -61,6 +61,12 @@ const errors = Object.freeze({
     2009: 'invalid users import file extension',
     2010: 'permission denied',
     2011: 'password and confirm password do not match',
+    2012: 'cant not update team, project is active',
+    2013: 'cant not update team, project is closed',
+    2014: 'cant not update team, project is not in draft',
+    2015: 'cant not update team, invalid action',
+    2016: 'cant add to team, user is already in a team',
+    2017: 'cant remove from team, user is not in a team',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
