@@ -344,7 +344,6 @@ const getActiveUsersList = function () {
 exports.addUser = addUser;
 exports.getActiveUsersList = getActiveUsersList;
 exports.getFullUsersList = getFullUsersList;
-exports.getLimitedUsersListSorted = getLimitedUsersListSorted;
 exports.getUser = getUser;
 exports.getUserById = getUserById;
 exports.getUserByUsername = getUserByUsername;

@@ -27,7 +27,7 @@ const db = require('../db.js');
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    // return updateCachedList(callback); TODO : decide on cached tickets
+
 }
 
 /**

@@ -21,13 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common = require('./common.js');
 const db = require('./db.js');
 
+const tickets = require('./project-components/project-tickets.js');
+
 /**
  * initialize the projects
  *
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    return updateCachedList(callback);
+
 }
 
 /**
@@ -194,7 +196,19 @@ const updateProject = function (updateParams, callback) {
  * @param {function} callback callback function
  */
 const getProjectTeams = function (projectId, callback) {
-    db.getLimitedTeamsListSorted({ $and: [{ projectId: projectId }, { status: common.teamStatus.ACTIVE.value }] }, { name: 1 }, 0, callback);
+    getLimitedTeamsListSorted({ $and: [{ projectId: projectId }, { status: common.teamStatus.ACTIVE.value }] }, { name: 1 }, 0, callback);
+}
+
+/**
+ * get teams list with search, sort and limit params
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} sortQuery sort parameters
+ * @param {number} lim limit on the results list length
+ * @param {function} callback callback function
+ */
+const getLimitedTeamsListSorted = function (searchQuery, sortQuery, lim, callback) {
+    db.getLimitedTeamsListSorted(searchQuery, sortQuery, lim, callback);
 }
 
 /**
@@ -214,7 +228,7 @@ const getTeam = function (searchQuery, callback) {
  * @param {string} teamName team name
  * @param {function} callback callback function
  */
-const getTeamInProjectByName = function (projectId, teamName, callback) {
+const getTeamByName = function (projectId, teamName, callback) {
     getTeam({ $and: [{ projectId: projectId }, { name: teamName }, { status: common.teamStatus.ACTIVE.value }] }, callback);
 }
 
@@ -225,7 +239,7 @@ const getTeamInProjectByName = function (projectId, teamName, callback) {
  * @param {string} teamId team id
  * @param {function} callback callback function
  */
-const getTeamInProjectById = function (projectId, teamId, callback) {
+const getTeamById = function (projectId, teamId, callback) {
     getTeam({ $and: [{ projectId: projectId }, { _id: teamId }, { status: common.teamStatus.ACTIVE.value }] }, callback);
 }
 
@@ -236,7 +250,7 @@ const getTeamInProjectById = function (projectId, teamId, callback) {
  * @param {string} userId team id
  * @param {function} callback callback function
  */
-const getTeamOfUser = function (projectId, userId, callback) {
+const getTeamByUserId = function (projectId, userId, callback) {
     getTeam({ $and: [{ projectId: projectId }, { members: userId }, { status: common.teamStatus.ACTIVE.value }] }, callback);
 }
 
@@ -247,7 +261,7 @@ const getTeamOfUser = function (projectId, userId, callback) {
  * @param {object} team team object to add
  * @param {function} callback callback function
  */
-const addTeamToProject = function (projectId, team, callback) {
+const addTeam = function (projectId, team, callback) {
     if (typeof (projectId) !== common.variableTypes.STRING
         || typeof (team.name) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(team.status, 'value', common.teamStatus)
@@ -276,7 +290,7 @@ const addTeamToProject = function (projectId, team, callback) {
  * @param {object} updateParams team object to add
  * @param {function} callback callback function
  */
-const updateTeamInProject = function (projectId, updateParams, callback) {
+const updateTeam = function (projectId, updateParams, callback) {
     let searchQuery = {};
     searchQuery.$and = {};
     let updateQuery = {};
@@ -319,17 +333,20 @@ const updateTeamInProject = function (projectId, updateParams, callback) {
 
 // <exports> -----------------------------------
 exports.addProject = addProject;
-exports.addTeamToProject = addTeamToProject;
+exports.addTeamToProject = addTeam;
 exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
-exports.getLimitedProjectsListSorted = getLimitedProjectsListSorted;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.getProjectTeams = getProjectTeams;
-exports.getTeamInProjectById = getTeamInProjectById;
-exports.getTeamInProjectByName = getTeamInProjectByName;
-exports.getTeamOfUser = getTeamOfUser;
+exports.getTeamInProjectById = getTeamById;
+exports.getTeamInProjectByName = getTeamByName;
+exports.getTeamOfUser = getTeamByUserId;
 exports.updateProject = updateProject;
-exports.updateTeamInProject = updateTeamInProject;
+exports.updateTeamInProject = updateTeam;
 // </exports> ----------------------------------
+
+// <tickets> -----------------------------------
+exports.addTicketToTeam = tickets.addTicket;
+// </tickets> ----------------------------------
