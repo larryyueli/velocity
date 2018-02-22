@@ -243,7 +243,6 @@ const teamSelectionTypes = Object.freeze({
 });
 exports.teamSelectionTypes = teamSelectionTypes;
 
-
 // default team prefix
 const defaultTeamPrefix = 'group-';
 exports.defaultTeamPrefix = defaultTeamPrefix;
@@ -251,6 +250,31 @@ exports.defaultTeamPrefix = defaultTeamPrefix;
 // default team size
 const defaultTeamSize = 1;
 exports.defaultTeamSize = defaultTeamSize;
+
+// common ticket status
+const ticketStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.ticketStatus = ticketStatus;
+
+// common ticket states
+const ticketStates = Object.freeze({
+    NEW: { value: 0, text: 'new' },
+    IN_PROGRESS: { value: 1, text: 'in_progress' },
+    CODE_REVIEW: { value: 2, text: 'code_review' },
+    IN_TEST: { value: 3, text: 'in_test' },
+    DONE: { value: 4, text: 'done' }
+});
+exports.ticketStates = ticketStates;
+
+// common ticket types
+const ticketTypes = Object.freeze({
+    STORY: { value: 0, text: 'story' },
+    BUG: { value: 1, text: 'bug' },
+    MILESTONE: { value: 2, text: 'milestone' }
+});
+exports.ticketTypes = ticketTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

@@ -17,3 +17,54 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 "use strict";
+
+const common = require('../common.js');
+const db = require('../db.js');
+
+/**
+ * initialize the ticket
+ *
+ * @param {function} callback callback function
+ */
+const initialize = function (callback) {
+    // return updateCachedList(callback); TODO : decide on cached tickets
+}
+
+/**
+ * Create a ticket
+ *
+ * @param {object} ticket ticket object to add
+ * @param {function} callback callback function
+ */
+const addTicket = function (ticket, callback) {
+    if (typeof (ticket.title) !== common.variableTypes.STRING
+        || typeof (ticket.description) !== common.variableTypes.STRING
+        || typeof (ticket.projectId) !== common.variableTypes.STRING
+        || typeof (ticket.teamId) !== common.variableTypes.STRING
+        || !common.isValueInObjectWithKeys(ticket.status, 'value', common.ticketStatus)
+        || !common.isValueInObjectWithKeys(ticket.state, 'value', common.ticketStates)
+        || !common.isValueInObjectWithKeys(ticket.type, 'value', common.ticketTypes)) {
+        return callback(common.getError(7006), null);
+    }
+
+    const currentDate = common.getDate();
+    let ticketToAdd = {};
+
+    ticketToAdd._id = common.getUUID();
+    ticketToAdd.projectId = ticket.projectId;
+    ticketToAdd.teamId = ticket.teamId;
+    ticketToAdd.title = ticket.title;
+    ticketToAdd.ctime = currentDate;
+    ticketToAdd.mtime = currentDate;
+    ticketToAdd.description = ticket.description;
+    ticketToAdd.status = ticket.status;
+    ticketToAdd.state = ticket.state;
+    ticketToAdd.type = ticket.type;
+
+    db.addTicket(ticketToAdd, callback);
+}
+
+// <exports> -----------------------------------
+exports.addTicket = addTicket;
+exports.initialize = initialize;
+// </exports> ----------------------------------
