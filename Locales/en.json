@@ -141,16 +141,20 @@
 	"tickets": {
 		"assigned": "Assigned",
 		"create": "Create Ticket",
+		"epicIssues": "Issues in epic",
 		"points": "Points",
 		"priority": "Priority",
 		"relatedTickets": "Related Tickets",
 		"release": "Release",
 		"reporter": "Reporters",
+		"status": "Status",
 		"sprints": "Sprints",
+		"subtasks": "Subtasks",
 		"tags": "Tags",
 		"ticketDescription": "Ticket Description",
 		"ticketName": "Ticket Name",
-		"title": "Velocity - Tickets"
+		"title": "Velocity - Tickets",
+		"type": "Type"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
