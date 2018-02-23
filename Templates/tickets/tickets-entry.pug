@@ -23,7 +23,7 @@ br
                                                 | #{__('tickets.priority')}
                                 .row
                                     .input-field.padding-10
-                                        select
+                                        select(multiple)
                                             option(value='' disabled selected)
                                                 | #{__('tickets.tags')}
                             .col.s6
@@ -34,12 +34,12 @@ br
                                                 | #{__('tickets.status')}
                                 .row
                                     .input-field.padding-10
-                                        select
+                                        select(multiple)
                                             option(value='' disabled selected)
                                                 | #{__('tickets.sprints')}
                                 .row
                                     .input-field.padding-10
-                                        select
+                                        select(multiple)
                                             option(value='' disabled selected)
                                                 | #{__('tickets.points')}
                         .row
