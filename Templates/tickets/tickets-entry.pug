@@ -41,7 +41,7 @@ br
                                     .input-field.padding-10
                                         select
                                             option(value='' disabled selected)
-                                                | #{__('tickets.relatedTickets')}
+                                                | #{__('tickets.points')}
                         .row
                             .input-field.padding-10
                                 #description
@@ -53,6 +53,10 @@ br
                             .input-field.padding-10
                                 input.validate(type='text', name='epicIssues')
                                 label(for='epicIssues') #{__('tickets.epicIssues')}
+                        .row
+                            .input-field.padding-10
+                                input.autocomplete(type='text')
+                                label(for='autocomplete-input') #{__('tickets.relatedTickets')}
                     .col.s4
                         .row
                             .input-field.padding-10
@@ -62,11 +66,6 @@ br
                             .input-field.padding-10
                                 input.autocomplete(type='text')
                                 label(for='autocomplete-input') #{__('tickets.assigned')}
-                        .row
-                            .input-field.padding-10
-                                select
-                                    option(value='' disabled selected)
-                                        | #{__('tickets.points')}
                         .row
                             .input-field.padding-10
                                 input.autocomplete(type='text')
