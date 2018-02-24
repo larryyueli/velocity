@@ -342,11 +342,12 @@ exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.getProjectTeams = getProjectTeams;
 exports.getTeamInProjectById = getTeamById;
 exports.getTeamInProjectByName = getTeamByName;
-exports.getTeamOfUser = getTeamByUserId;
+exports.getTeamByUserId = getTeamByUserId;
 exports.updateProject = updateProject;
 exports.updateTeamInProject = updateTeam;
 // </exports> ----------------------------------
 
 // <tickets> -----------------------------------
 exports.addTicketToTeam = tickets.addTicket;
+exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 // </tickets> ----------------------------------

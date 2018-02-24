@@ -13,5 +13,17 @@ block content
         .row
             button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
                 i.material-icons.right add
+        ul.collection
+            each ticket in ticketsList
+                li.collection-item.avatar
+                    i.material-icons.circle.red note
+                    span.title #{ticket.title}
+                    p
+                        | First Line 
+                        br
+                        | Second Line
+                    a.secondary-content.ticketLink(href=`/project/${projectId}/team/${teamId}/ticket/${ticket._id}`)
+                        i.material-icons send
+
 block scripts
     script(src='/js/projects/project-team.js')

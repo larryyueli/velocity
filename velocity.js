@@ -1359,7 +1359,7 @@ const handleProjectByIdPath = function (req, res) {
         }
 
         if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsAdmin) {
-            return projects.getTeamOfUser(projectId, req.session.user._id, function (err, teamObj) {
+            return projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(404).send(err);
@@ -1797,7 +1797,7 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
             return res.status(403).send(common.getError(2014));
         }
 
-        projects.getTeamOfUser(projectId, req.session.user._id, function (err, teamObj) {
+        projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
             if (err) {
                 if (err.code !== 6004) {
                     logger.error(JSON.stringify(err));
@@ -2009,8 +2009,18 @@ const handleProjectTeamPath = function (req, res) {
                 return res.status(404).render(pageNotFoundPage);
             }
 
-            return res.status(200).render(projectTeamPage, {
-                user: req.session.user
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(pageNotFoundPage);
+                }
+
+                return res.status(200).render(projectTeamPage, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    ticketsList: ticketsObjList
+                });
             });
         });
     });

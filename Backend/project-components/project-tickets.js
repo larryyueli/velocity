@@ -67,7 +67,41 @@ const addTicket = function (ticket, callback) {
     db.addTicket(ticketToAdd, callback);
 }
 
+/**
+ * get tickets list with search, sort and limit params
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} sortQuery sort parameters
+ * @param {number} lim limit on the results list length
+ * @param {function} callback callback function
+ */
+const getLimitedTicketsListSorted = function (searchQuery, sortQuery, lim, callback) {
+    db.getLimitedTicketsListSorted(searchQuery, sortQuery, lim, callback);
+}
+
+/**
+ * find a single ticket by the search parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const getTicket = function (searchQuery, callback) {
+    db.getTicket(searchQuery, callback);
+}
+
+/**
+ * find team's list of tickets
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getTicketsByTeamId = function (projectId, teamId, callback) {
+    getLimitedTicketsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+}
+
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
+exports.getTicketsByTeamId = getTicketsByTeamId;
 exports.initialize = initialize;
 // </exports> ----------------------------------
