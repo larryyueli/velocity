@@ -41,6 +41,7 @@ const addTicket = function (ticket, callback) {
         || typeof (ticket.description) !== common.variableTypes.STRING
         || typeof (ticket.projectId) !== common.variableTypes.STRING
         || typeof (ticket.teamId) !== common.variableTypes.STRING
+        || typeof (ticket.reporter) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(ticket.status, 'value', common.ticketStatus)
         || !common.isValueInObjectWithKeys(ticket.state, 'value', common.ticketStates)
         || !common.isValueInObjectWithKeys(ticket.type, 'value', common.ticketTypes)) {
@@ -60,6 +61,8 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.status = ticket.status;
     ticketToAdd.state = ticket.state;
     ticketToAdd.type = ticket.type;
+    ticketToAdd.reporter = ticket.reporter;
+    ticketToAdd.assignee = typeof (ticket.assignee) === common.variableTypes.STRING ? ticket.assignee : null;
 
     db.addTicket(ticketToAdd, callback);
 }

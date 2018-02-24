@@ -23,6 +23,9 @@ const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
 const createTicketButtonId = '#createTicketButton';
 const descriptionId = '#description';
+const splithref = window.location.href.split('/');
+const projectId = splithref[4];
+const teamId = splithref[6];
 
 typeSelection.change(function () {
     if (typeSelection.val() === 'bug') {
@@ -69,18 +72,17 @@ function createTicketAction() {
         type: 'PUT',
         url: '/tickets/create',
         data: {
-            projectId: 'a',
-            teamId: 'a',
+            projectId: projectId,
+            teamId: teamId,
             title: 'ticket title',
             description: 'ticket description',
             type: 1,
             priority: 8,
             state: 1,
-            reporter: 'a',
-            assignee: 'a'
+            assignee: 'student1'
         },
         success: function (data) {
-            //window.location.reload();
+            window.location.href = `/project/${projectId}/team/${teamId}`;
         },
         error: function (data) {
             handle401And404(data);

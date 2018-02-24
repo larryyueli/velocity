@@ -1902,19 +1902,74 @@ const handleTicketsCreatePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    const newTicket = {
-        projectId: req.body.projectId,
-        teamId: req.body.teamId,
-        title: req.body.title,
-        description: req.body.description,
-        type: parseInt(req.body.type),
-        state: parseInt(req.body.state),
-        priority: parseInt(req.body.priority),
-        reporter: req.body.reporter,
-        assignee: req.body.assignee
-    };
-    projects.addTicketToTeam(newTicket, function (err, result) {
-        return res.status(200).send('ok');
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    const assignee = req.body.assignee;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2018)));
+            return res.status(400).send(common.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common.getError(2019)));
+                return res.status(400).send(common.getError(2019));
+            }
+
+            users.getUserByUsername(assignee, function (err, result) {
+                if (err && err.code !== 2003) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let newTicket = {
+                    projectId: req.body.projectId,
+                    teamId: req.body.teamId,
+                    title: req.body.title,
+                    description: req.body.description,
+                    status: common.ticketStatus.ACTIVE.value,
+                    type: parseInt(req.body.type),
+                    state: parseInt(req.body.state),
+                    priority: parseInt(req.body.priority),
+                    reporter: req.session.user._id
+                };
+
+                if (result) {
+                    if (projectObj.members.indexOf(result._id) === -1) {
+                        logger.error(JSON.stringify(common.getError(2018)));
+                        return res.status(400).send(common.getError(2018));
+                    }
+
+                    if (teamObj.members.indexOf(result._id) === -1) {
+                        logger.error(JSON.stringify(common.getError(2019)));
+                        return res.status(400).send(common.getError(2019));
+                    }
+
+                    newTicket.assignee = result._id;
+                }
+
+                projects.addTicketToTeam(newTicket, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            });
+        });
     });
 }
 
