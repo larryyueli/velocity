@@ -263,15 +263,16 @@ const ticketStates = Object.freeze({
     NEW: { value: 0, text: 'new' },
     IN_PROGRESS: { value: 1, text: 'in_progress' },
     CODE_REVIEW: { value: 2, text: 'code_review' },
-    IN_TEST: { value: 3, text: 'in_test' },
-    DONE: { value: 4, text: 'done' }
+    READY_FOR_TEST: { value: 3, text: 'ready_for_test' },
+    IN_TEST: { value: 4, text: 'in_test' },
+    DONE: { value: 5, text: 'done' }
 });
 exports.ticketStates = ticketStates;
 
 // common ticket types
 const ticketTypes = Object.freeze({
-    STORY: { value: 0, text: 'story' },
-    BUG: { value: 1, text: 'bug' },
+    BUG: { value: 0, text: 'bug' },
+    STORY: { value: 1, text: 'story' },
     MILESTONE: { value: 2, text: 'milestone' }
 });
 exports.ticketTypes = ticketTypes;

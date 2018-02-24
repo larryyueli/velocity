@@ -1892,27 +1892,6 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
 }
 
 /**
- * root path to get the ticket add form
- *
- * @param {object} req req object
- * @param {object} res res object
- */
-const handleTicketsAddPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
-    }
-
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
-    }
-
-    return res.status(200).render(ticketCreationPage, {
-        user: req.session.user,
-    });
-}
-
-/**
  * root path to create a ticket
  *
  * @param {object} req req object
@@ -1981,6 +1960,49 @@ const handleProjectTeamPath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to render the team's project tickets add page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamTicketsAddPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(404).render(pageNotFoundPage);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(err));
+                return res.status(404).render(pageNotFoundPage);
+            }
+
+            return res.status(200).render(ticketCreationPage, {
+                user: req.session.user
+            });
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 /**
@@ -1998,6 +2020,7 @@ app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/project/:projectId/team/:teamId', handleProjectTeamPath);
+app.get('/project/:projectId/team/:teamId/tickets/add', handleProjectTeamTicketsAddPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projectsListComponent', handleProjectsListComponentPath);
 app.get('/projectsAdminsListComponent', handleProjectsAdminsListComponentPath);
@@ -2009,8 +2032,6 @@ app.get('/usersListComponent', handleUsersListComponentPath);
 app.get('/users/add', handleUsersAddPath);
 app.get('/users/edit/:username', handleUsersEditPath);
 app.get('/users/import', handleUsersImportPath);
-
-app.get('/tmp/tickets/add', handleTicketsAddPath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------

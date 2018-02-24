@@ -8,5 +8,10 @@ block title
 
 block content
     include ../navbar
+    br
+    .container
+        .row
+            button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
+                i.material-icons.right add
 block scripts
     script(src='/js/projects/project-team.js')

@@ -144,10 +144,23 @@
 		"milestoneIssues": "Milestone issues",
 		"points": "Points",
 		"priority": "Priority",
+		"priorities": {
+			"low": "Low",
+			"medium": "Medium",
+			"high": "High"
+		},
 		"relatedTickets": "Related Tickets",
 		"release": "Release",
 		"reporter": "Reporters",
-		"status": "Status",
+		"state": "State",
+		"states": {
+			"new": "New",
+			"in_development": "In Development",
+			"code_review": "Code Review",
+			"ready_for_test": "Ready For Test",
+			"in_test": "In Test",
+			"done": "Done"
+		},
 		"sprints": "Sprints",
 		"subtasks": "Subtasks",
 		"tags": "Tags",
