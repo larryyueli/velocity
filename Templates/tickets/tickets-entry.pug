@@ -13,9 +13,15 @@ br
                             .col.s6
                                 .row
                                     .input-field.padding-10
-                                        select
-                                            option(value='' disabled selected)
-                                                | #{__('tickets.type')}
+                                        select#typeSelection
+                                            option(value='bug' selected)
+                                                | #{__('tickets.types.bug')}
+                                            option(value='epic')
+                                                | #{__('tickets.types.epic')}
+                                            option(value='story')
+                                                | #{__('tickets.types.story')}
+                                        label
+                                            | #{__('tickets.type')}
                                 .row
                                     .input-field.padding-10
                                         select
@@ -46,11 +52,11 @@ br
                             .input-field.padding-10
                                 #description
                         .row
-                            .input-field.padding-10
+                            .input-field.padding-10#subtasksSelection
                                 input.validate(type='text', name='subtasks')
                                 label(for='description') #{__('tickets.subtasks')}
                         .row
-                            .input-field.padding-10
+                            .input-field.padding-10#epicIssuesSelection
                                 input.validate(type='text', name='epicIssues')
                                 label(for='epicIssues') #{__('tickets.epicIssues')}
                         .row

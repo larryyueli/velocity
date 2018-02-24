@@ -16,6 +16,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const typeSelection = $('#typeSelection');
+const subtaskSelection = $('#subtasksSelection');
+const epicIssuesSelection = $('#epicIssuesSelection');
+
+typeSelection.change(function () {
+    if (typeSelection.val() === 'bug') {
+        subtaskSelection.hide();
+        epicIssuesSelection.hide();
+    } else if (typeSelection.val() === 'story') {
+        subtaskSelection.show();
+        epicIssuesSelection.hide();
+    } else {
+        subtaskSelection.hide();
+        epicIssuesSelection.show();
+    }
+});
+
 $(function () {
     $('select').material_select();
 
