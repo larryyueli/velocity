@@ -72,6 +72,7 @@ const profilePage = 'profile';
 const projectsPage = 'projects/projects';
 const projectPagePage = 'projects/project-page';
 const projectsAddPage = 'projects/projects-add';
+const projectTeamPage = 'projects/project-team';
 const settingsPage = 'settings/settings';
 const ticketCreationPage = 'tickets/tickets';
 const usersPage = 'users/users';
@@ -1357,6 +1358,17 @@ const handleProjectByIdPath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
+        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsAdmin) {
+            return projects.getTeamOfUser(projectId, req.session.user._id, function (err, teamObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).send(err);
+                }
+
+                return res.redirect(`/project/${projectId}/team/${teamObj._id}`);
+            });
+        }
+
         if (projectObj.status === common.projectStatus.DRAFT.value
             && !userIsAdmin
             && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
@@ -1926,6 +1938,49 @@ const handleTicketsCreatePath = function (req, res) {
         return res.status(200).send('ok');
     });
 }
+
+/**
+ * root path to render the team's project page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(404).render(pageNotFoundPage);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(err));
+                return res.status(404).render(pageNotFoundPage);
+            }
+
+            return res.status(200).render(projectTeamPage, {
+                user: req.session.user
+            });
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 /**
@@ -1942,6 +1997,7 @@ app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
+app.get('/project/:projectId/team/:teamId', handleProjectTeamPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projectsListComponent', handleProjectsListComponentPath);
 app.get('/projectsAdminsListComponent', handleProjectsAdminsListComponentPath);

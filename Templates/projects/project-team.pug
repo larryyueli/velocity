@@ -1,0 +1,12 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/projects.css')
+
+block title
+    title #{__('projects.title')}
+
+block content
+    include ../navbar
+block scripts
+    script(src='/js/projects/project-team.js')
