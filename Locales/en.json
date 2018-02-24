@@ -154,7 +154,12 @@
 		"ticketDescription": "Ticket Description",
 		"ticketName": "Ticket Name",
 		"title": "Velocity - Tickets",
-		"type": "Type"
+		"type": "Type",
+		"types": {
+			"bug": "Bug",
+			"epic": "Epic",
+			"story": "Story"
+		}
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
