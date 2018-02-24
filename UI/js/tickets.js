@@ -21,6 +21,8 @@ const subtaskRow = $('.subtasksRow')
 const milestoneIssuesRow = $('.milestoneIssuesRow')
 const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
+const createTicketButtonId = '#createTicketButton';
+const descriptionId = '#description';
 
 typeSelection.change(function () {
     if (typeSelection.val() === 'bug') {
@@ -39,7 +41,7 @@ $(function () {
     typeSelection.change();
     $('select').material_select();
 
-    initSummernote('#description');
+    initSummernote(descriptionId);
 
     $('input.autocomplete').autocomplete({
         data: {
@@ -53,4 +55,38 @@ $(function () {
         },
         minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
     });
+
+    $(createTicketButtonId).click(() => {
+        createTicketAction();
+    });
 });
+
+/** 
+ * create ticket action
+*/
+function createTicketAction() {
+    $.ajax({
+        type: 'PUT',
+        url: '/tickets/create',
+        data: {
+            projectId: 'a',
+            teamId: 'a',
+            title: 'ticket title',
+            description: 'ticket description',
+            type: 1,
+            priority: 8,
+            state: 1,
+            reporter: 'a',
+            assignee: 'a'
+        },
+        success: function (data) {
+            //window.location.reload();
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}

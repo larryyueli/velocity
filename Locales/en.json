@@ -139,7 +139,7 @@
 		"off": "Off"
 	},
 	"tickets": {
-		"assigned": "Assigned",
+		"assignee": "Assignee",
 		"create": "Create Ticket",
 		"milestoneIssues": "Milestone issues",
 		"points": "Points",

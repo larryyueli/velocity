@@ -71,9 +71,12 @@ br
                         .row
                             .input-field.padding-10
                                 input.autocomplete(type='text')
-                                label(for='autocomplete-input') #{__('tickets.assigned')}
+                                label(for='autocomplete-input') #{__('tickets.assignee')}
                         .row
                             .input-field.padding-10
                                 input.autocomplete(type='text')
                                 label(for='autocomplete-input') #{__('tickets.release')}
+                .row
+                    button.waves-effect.waves-light.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
+                        i.material-icons.right send
                     

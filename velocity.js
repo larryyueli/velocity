@@ -1880,12 +1880,12 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
 }
 
 /**
- * root path to get the ticket creation form
+ * root path to get the ticket add form
  *
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleTicketsCreatePath = function (req, res) {
+const handleTicketsAddPath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
     }
@@ -1897,6 +1897,33 @@ const handleTicketsCreatePath = function (req, res) {
 
     return res.status(200).render(ticketCreationPage, {
         user: req.session.user,
+    });
+}
+
+/**
+ * root path to create a ticket
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleTicketsCreatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const newTicket = {
+        projectId: req.body.projectId,
+        teamId: req.body.teamId,
+        title: req.body.title,
+        description: req.body.description,
+        type: parseInt(req.body.type),
+        state: parseInt(req.body.state),
+        priority: parseInt(req.body.priority),
+        reporter: req.body.reporter,
+        assignee: req.body.assignee
+    };
+    projects.addTicketToTeam(newTicket, function (err, result) {
+        return res.status(200).send('ok');
     });
 }
 // </Requests Function> -----------------------------------------------
@@ -1927,7 +1954,7 @@ app.get('/users/add', handleUsersAddPath);
 app.get('/users/edit/:username', handleUsersEditPath);
 app.get('/users/import', handleUsersImportPath);
 
-app.get('/tmp/tickets/create', handleTicketsCreatePath);
+app.get('/tmp/tickets/add', handleTicketsAddPath);
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
@@ -1948,6 +1975,7 @@ app.post('/users/update', handleUsersUpdatePath);
 
 // <Put Requests> ------------------------------------------------
 app.put('/projects/create', handleProjectsCreatePath);
+app.put('/tickets/create', handleTicketsCreatePath);
 app.put('/users/create', handleUsersCreatePath);
 app.put('/users/import/file', handleUsersImportFilePath);
 app.put('/users/request/access', handleUsersRequestAccessPath);
