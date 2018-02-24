@@ -141,7 +141,7 @@
 	"tickets": {
 		"assigned": "Assigned",
 		"create": "Create Ticket",
-		"epicIssues": "Issues in epic",
+		"milestoneIssues": "Milestone issues",
 		"points": "Points",
 		"priority": "Priority",
 		"relatedTickets": "Related Tickets",
@@ -157,7 +157,7 @@
 		"type": "Type",
 		"types": {
 			"bug": "Bug",
-			"epic": "Epic",
+			"milestone": "Milestone",
 			"story": "Story"
 		}
 	},

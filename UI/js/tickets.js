@@ -17,23 +17,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const typeSelection = $('#typeSelection');
+const subtaskRow = $('.subtasksRow')
+const milestoneIssuesRow = $('.milestoneIssuesRow')
 const subtaskSelection = $('#subtasksSelection');
-const epicIssuesSelection = $('#epicIssuesSelection');
+const milestoneIssuesSelection = $('#milestoneIssuesSelection');
 
 typeSelection.change(function () {
     if (typeSelection.val() === 'bug') {
-        subtaskSelection.hide();
-        epicIssuesSelection.hide();
+        subtaskRow.hide();
+        milestoneIssuesRow.hide();
     } else if (typeSelection.val() === 'story') {
-        subtaskSelection.show();
-        epicIssuesSelection.hide();
+        subtaskRow.show();
+        milestoneIssuesRow.hide();
     } else {
-        subtaskSelection.hide();
-        epicIssuesSelection.show();
+        subtaskRow.hide();
+        milestoneIssuesRow.show();
     }
 });
 
 $(function () {
+    typeSelection.change();
     $('select').material_select();
 
     initSummernote('#description');

@@ -16,8 +16,8 @@ br
                                         select#typeSelection
                                             option(value='bug' selected)
                                                 | #{__('tickets.types.bug')}
-                                            option(value='epic')
-                                                | #{__('tickets.types.epic')}
+                                            option(value='milestone')
+                                                | #{__('tickets.types.milestone')}
                                             option(value='story')
                                                 | #{__('tickets.types.story')}
                                         label
@@ -51,14 +51,14 @@ br
                         .row
                             .input-field.padding-10
                                 #description
-                        .row
+                        .row.subtasksRow
                             .input-field.padding-10#subtasksSelection
                                 input.validate(type='text', name='subtasks')
                                 label(for='description') #{__('tickets.subtasks')}
-                        .row
-                            .input-field.padding-10#epicIssuesSelection
-                                input.validate(type='text', name='epicIssues')
-                                label(for='epicIssues') #{__('tickets.epicIssues')}
+                        .row.milestoneIssuesRow
+                            .input-field.padding-10#milestoneIssuesSelection
+                                input.validate(type='text', name='milestoneIssues')
+                                label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
                         .row
                             .input-field.padding-10
                                 input.autocomplete(type='text')
