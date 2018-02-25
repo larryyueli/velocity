@@ -86,8 +86,10 @@ const translations = Object.freeze({
     2013: 'Project is already closed',
     2014: 'Project is not in draft',
     2015: 'Cant not update team, invalid action',
-    2016: 'Cant add to team, user is already in a team',
-    2017: 'Cant remove from team, user is not in a team',
+    2016: 'User is already in a team',
+    2017: 'User is not in a team',
+    2020: 'Cant exceed team size',
+    2021: 'Mismatching team names',
 
     //3000 settings errors
     3005: 'could not update the selected mode',

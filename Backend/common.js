@@ -67,6 +67,8 @@ const errors = Object.freeze({
     2015: 'cant not update team, invalid action',
     2016: 'cant add to team, user is already in a team',
     2017: 'cant remove from team, user is not in a team',
+    2020: 'cant add to team, cant exceed size limit',
+    2021: 'cant add to team, mismatching team names',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
