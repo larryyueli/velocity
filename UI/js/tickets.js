@@ -28,10 +28,10 @@ const projectId = splithref[4];
 const teamId = splithref[6];
 
 typeSelection.change(function () {
-    if (typeSelection.val() === 'bug') {
+    if (typeSelection.val() == 0) {
         subtaskRow.hide();
         milestoneIssuesRow.hide();
-    } else if (typeSelection.val() === 'story') {
+    } else if (typeSelection.val() == 1) {
         subtaskRow.show();
         milestoneIssuesRow.hide();
     } else {
