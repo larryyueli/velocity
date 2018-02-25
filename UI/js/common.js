@@ -122,6 +122,7 @@ const translations = Object.freeze({
     randomize: 'Randomize',
     groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
     groupConfigurationSuccess: 'Groups have been saved successfully',
+    adminConfigurationSuccess: 'Admins have been saved successfully',
     notInGroup: 'You are currently not in a group',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
 

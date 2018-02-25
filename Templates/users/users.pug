@@ -11,7 +11,7 @@ block content
     br
     .container
         .row
-            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#usersFilter"))')
+            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#usersSearch(onclick='toggleVisibility($("#usersFilter"))')
                 i.material-icons search
         .row.hidden#usersFilter
             form.col.s10.offset-s1
@@ -38,7 +38,7 @@ block content
                             option(value='1') #{__('userInformation.status.pending')}
                             option(value='0') #{__('userInformation.status.disabled')}
                         label #{__('users.userStatus')}
-        .row
+        .row#usersRowButton
             .col.s6
                 a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/users/import') #{__('actions.import')}
                     i.material-icons.right cloud_upload
