@@ -55,7 +55,9 @@ const groupModalListId = '#groupModalList';
 const groupNameId = '#groupName';
 const groupPrefixId = '#groupPrefix';
 const groupPrefixLabelId = '#groupPrefixLabel';
+const groupsRowId = '#groupsRow';
 const groupSelection = $('#groupSelect');
+const groupSelectionCardId = '#groupSelectionCard';
 const groupSizeId = '#groupSize';
 const groupSizeLabelId = '#groupSizeLabel';
 const groupStatusId = '#groupStatus';
@@ -67,12 +69,15 @@ const leaveGroupId = '#leaveGroup';
 const membersId = '#members';
 const nameId = '#name';
 const newGroupNameId = '#newGroupName';
+const newGroupId = '#newGroup';
 const projectAdminsListId = '#projectAdminsList';
 const projectAdminsLoadId = '#projectAdminsLoad';
+const projectAdminsRowId = '#projectAdminsRow';
 const projectUsersListId = '#projectUsersList';
 const projectUsersLoadId = '#projectUsersLoad';
 const randomizeRemainingId = '#randomizeRemaining';
 const removeId = '#remove';
+const saveAdminsConfigurationId = '#saveAdminsConfiguration';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
 const titleId = '#title';
@@ -81,18 +86,22 @@ const typeId = '#type';
 const unassignedLoadId = '#unassignedLoad'
 const unassignedUserListId = '#unassignedList';
 const unassignedUserListName = 'unassignedList';
+const unassignedUsersRowId = '#unassignedUsersRow';
 const userGroupId = '#userGroup';
 
 // Options in the select
 const optionGroups = $('#option-groups');
 
 // Filter Ids
+const adminsSearchId = '#adminsSearch';
+const groupsSearchId = '#groupsSearch';
 const groupSizeFilterId = '#groupSizeFilter';
 const searchAdminFilterId = '#searchAdminFilter';
 const searchGroupFilterId = '#searchGroupFilter';
 const searchUserFilterId = '#searchUserFilter';
 const typeFilterId = '#typeFilter';
 const typeAdminFilterId = '#typeAdminFilter';
+const unassignedSearchId = '#unassignedSearch';
 
 // Modal Ids
 const groupModalId = '#groupModal';
@@ -176,6 +185,10 @@ $(function () {
 
     $(saveGroupConfigurationId).click(() => {
         saveGroupConfiguration();
+    });
+
+    $(saveAdminsConfigurationId).click(() => {
+        saveAdminsConfiguration();
     });
 
     $(groupStatusId).on('change', function () {
@@ -441,8 +454,23 @@ function getGroupAssign() {
         error: function (data) {
             handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            $(groupListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(unassignedUserListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+
+            $(unassignedSearchId).addClass('hidden');
+            $(groupsSearchId).addClass('hidden');
+            $(saveGroupConfigurationId).addClass('hidden');
+            $(deleteAllGroupsId).addClass('hidden');
+            $(newGroupId).addClass('hidden');
+            $(randomizeRemainingId).addClass('hidden');
+            $(groupSelectionCardId).addClass('hidden');
+            $(groupsRowId).addClass('hidden');
+            $(unassignedUsersRow).addClass('hidden');
+            $(groupListId).addClass('light-border');
+            $(groupListId).removeClass('collapsible');
+
+            endLoad(groupLoadId, groupListId);
+            endLoad(unassignedLoadId, unassignedUserListId);
         }
     });
 }
@@ -482,6 +510,29 @@ function saveGroupConfiguration() {
         },
         success: function (data) {
             successSnackbar(translate('groupConfigurationSuccess'));
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * Updates the admin configuration
+ */
+function saveAdminsConfiguration() {
+    $.ajax({
+        type: 'POST',
+        url: '/project/admins/update',
+        data: {
+            projectId: projectId,
+            adminsList: projectAdminsList ? projectAdminsList : []
+        },
+        success: function (data) {
+            successSnackbar(translate('adminConfigurationSuccess'));
         },
         error: function (data) {
             handle401And404(data);
@@ -565,8 +616,15 @@ function getUsersList() {
         error: function (data) {
             handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            $(projectAdminsListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(projectUsersListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+
+            $(adminsSearchId).addClass('hidden');
+            $(saveAdminsConfigurationId).addClass('hidden');
+            $(projectAdminsRowId).addClass('hidden');
+
+            endLoad(projectAdminsLoadId, projectAdminsListId);
+            endLoad(projectUsersLoadId, projectUsersListId);
         }
     });
 }
@@ -708,6 +766,10 @@ function fillUserRow(user, isUnassigned) {
 
     if (!isProjectAdmin) {
         bindedRow.find(modalTriggerId).addClass('hidden');
+        bindedRow.attr('draggable', null)
+        bindedRow.attr('ondrag', null)
+        bindedRow.attr('ondragend', null)
+        bindedRow.attr('onclick', null)
     } else {
         bindedRow.find(modalTriggerId).removeClass('hidden');
     }
@@ -819,6 +881,11 @@ function fillGroupRow(group, isInGroup) {
             bindedRow.find(deleteGroupId).removeClass('hidden');
             bindedRow.find(joinGroupId).addClass('hidden');
         }
+    }
+
+    if (!isProjectAdmin) {
+        bindedRow.attr('ondragover', null)
+        bindedRow.attr('ondrop', null)
     }
 
     if (group.isActive) {
@@ -1038,7 +1105,8 @@ function removeFromGroup(event, clicked) {
  *
  * @param {Object} clicked
  */
-function deleteGroup(clicked) {
+function deleteGroup(clicked, event) {
+    event.stopPropagation();
     const groupName = clicked.parent().find('#title').text().trim();
 
     const groupToDelete = groupList.find(group => {
@@ -1071,7 +1139,8 @@ function deleteGroup(clicked) {
 /**
  * Removes the current user from a group
  */
-function leaveGroup() {
+function leaveGroup(event) {
+    event.stopPropagation();
     const userName = meObject.username;
 
     const oldGroup = groupList.find(group => {
@@ -1103,7 +1172,11 @@ function leaveGroup() {
  * @param {Object} clicked
  * @param {String} createdGroup
  */
-function joinGroup(clicked, createdGroup) {
+function joinGroup(clicked, createdGroup, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+
     const userName = meObject.username;
     const groupName = createdGroup || clicked.parent().find(titleId).text();
 
@@ -1233,6 +1306,12 @@ function fillAdminsRow(user) {
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
     bindedRow.find(typeId).html(`${translate(`user${user.type}`)}`);
     bindedRow.find(emailId).html(user.email);
+
+    if (user.username === meObject.username) {
+        $(transferId).addClass('hidden');
+    } else {
+        $(transferId).removeClass('hidden');
+    }
     return bindedRow[0].outerHTML;
 }
 

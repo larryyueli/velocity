@@ -1845,6 +1845,11 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
                     }
 
                     if (teamObjFound) {
+                        if (projectObj.teamSize < teamObjFound.members.length + 1) {
+                            logger.error(JSON.stringify(common.getError(2020)));
+                            return res.status(400).send(common.getError(2020));
+                        }
+
                         teamObjFound.members.push(req.session.user._id);
                         const updatedTeam = {
                             _id: teamObjFound._id,
@@ -1864,9 +1869,14 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
             }
 
             if (removeAction) {
-                if (teamNotExist || teamObj.name !== teamName || projectObj.teamSize < teamObj.members.length + 1) {
+                if (teamNotExist) {
                     logger.error(JSON.stringify(common.getError(2017)));
                     return res.status(400).send(common.getError(2017));
+                }
+
+                if (teamObj.name !== teamName) {
+                    logger.error(JSON.stringify(common.getError(2021)));
+                    return res.status(400).send(common.getError(2021));
                 }
 
                 teamObj.members.splice(teamObj.members.indexOf(req.session.user._id), 1);
