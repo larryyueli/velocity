@@ -52,11 +52,14 @@ block content
                 if isProjectAdmin
                     #users
                         .card
+                            .card-image
+                                a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveAdminsConfiguration
+                                    i.material-icons save
                             .card-content
-                                .row
+                                .row#projectAdminsRow
                                     .col.s12
                                         .row
-                                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#adminsFilter"))')
+                                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#adminsSearch(onclick='toggleVisibility($("#adminsFilter"))')
                                                 i.material-icons search
                                         .row.hidden#adminsFilter
                                              .input-field.col.s12.m6
@@ -76,20 +79,20 @@ block content
                                                  label #{__('users.userType')}
                                 .row
                                     .col.s12.m6
-                                        h5 #{__('projectPage.tabs.users.projectAdmins')}
+                                        h5.center #{__('projectPage.tabs.users.projectAdmins')}
                                         #projectAdminsLoad
                                         ul.collection.scroll-auto.margin-0#projectAdminsList
                                     .col.s12.m6
-                                        h5 #{__('projectPage.tabs.users.projectUsers')}
+                                        h5.center #{__('projectPage.tabs.users.projectUsers')}
                                         #projectUsersLoad
                                         ul.collection.scroll-auto.margin-0#projectUsersList
 
                 #groups
                     if isProjectAdmin && isClassMode
-                        .card.center
+                        .card.center#groupSelectionCard
                             .card-content
                                 .row
-                                    h4 #{__('projectPage.tabs.groups.groupSelectionMode')}
+                                    h5 #{__('projectPage.tabs.groups.groupSelectionMode')}
                                 .row
                                     .input-field.col.s12.m5
                                         select#groupStatus
@@ -117,9 +120,9 @@ block content
                                 .col.s12.l6
                                     if isProjectAdmin
                                         .row.center
-                                            h4 #{__('projectPage.tabs.groups.unassignedUsers')}
-                                        .row
-                                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#unassignedFilter"))')
+                                            h5 #{__('projectPage.tabs.groups.unassignedUsers')}
+                                        .row#unassignedUsersRow
+                                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#unassignedSearch(onclick='toggleVisibility($("#unassignedFilter"))')
                                                 i.material-icons search
                                         .row.hidden#unassignedFilter
                                             form
@@ -147,12 +150,12 @@ block content
                                 .col.s12(class=(isProjectAdmin) ? 'l6' : '')
                                     if isProjectAdmin
                                         .row.center
-                                            h4 #{__('projectPage.tabs.groups.groups')}
+                                            h5 #{__('projectPage.tabs.groups.groups')}
                                     else
                                         .row.center
                                             h4 #{__('projectPage.tabs.groups.selectGroups')}
-                                    .row
-                                        a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#groupsFilter"))')
+                                    .row#groupsRow
+                                        a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#groupsSearch(onclick='toggleVisibility($("#groupsFilter"))')
                                             i.material-icons search
                                     .row.hidden#groupsFilter
                                         form
@@ -166,7 +169,7 @@ block content
                                         ul.collapsible(data-collapsible='expandable')#userGroup
                                         br
                                     .row
-                                        button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
+                                        button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
                                         if isProjectAdmin
                                             button.right.waves-effect.waves-light.left.btn.col.cancelButtonBackground-background-colour.cancelButtonText-colour(type='button')#deleteAllGroups #{__('projectPage.tabs.groups.deleteGroups')}
 
