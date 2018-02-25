@@ -5,7 +5,7 @@ br
             .card-content
                 .input-field.padding-10
                     input.validate(type='text', name='name', required autofocus)
-                    label(for='name') #{__('tickets.ticketName')}
+                    label(for='name') #{__('tickets.ticketTitle')}
             .card-action
                 .row
                     .col.s12.l8.padding-10.margin-10.secondaryColour-border-colour
@@ -57,6 +57,8 @@ br
                                 label
                                     | #{__('tickets.points')}
                         .row
+                            .input-field.padding-10
+                                label(for='description') #{__('tickets.description')}
                             .input-field.padding-10
                                 #description
                         .row.subtasksRow

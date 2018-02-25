@@ -141,6 +141,7 @@
 	"tickets": {
 		"assignee": "Assignee",
 		"create": "Create Ticket",
+		"description": "Description",
 		"milestoneIssues": "Milestone issues",
 		"points": "Points",
 		"priority": "Priority",
@@ -165,7 +166,7 @@
 		"subtasks": "Subtasks",
 		"tags": "Tags",
 		"ticketDescription": "Ticket Description",
-		"ticketName": "Ticket Name",
+		"ticketTitle": "Title",
 		"title": "Velocity - Tickets",
 		"type": "Type",
 		"types": {
