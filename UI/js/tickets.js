@@ -29,10 +29,10 @@ const teamId = splithref[6];
 const assigneeAutocompleteId = '#assigneeAutocomplete';
 
 typeSelection.change(function () {
-    if (typeSelection.val() === 'bug') {
+    if (typeSelection.val() == 0) {
         subtaskRow.hide();
         milestoneIssuesRow.hide();
-    } else if (typeSelection.val() === 'story') {
+    } else if (typeSelection.val() == 1) {
         subtaskRow.show();
         milestoneIssuesRow.hide();
     } else {
