@@ -349,5 +349,6 @@ exports.updateTeamInProject = updateTeam;
 
 // <tickets> -----------------------------------
 exports.addTicketToTeam = tickets.addTicket;
+exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 // </tickets> ----------------------------------

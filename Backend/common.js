@@ -72,6 +72,7 @@ const errors = Object.freeze({
     2019: 'user is not a member of the team',
     2020: 'cant add to team, cant exceed size limit',
     2021: 'cant add to team, mismatching team names',
+    2022: 'project is not active',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',

@@ -16,12 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const backButtonId = '#backButton'
 const createTicketButtonId = '#createTicketButton';
 const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
 
 $(function () {
+    $(backButtonId).click(() => {
+        window.location.href = '/projects';
+    });
+
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
     });

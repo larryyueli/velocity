@@ -100,8 +100,21 @@ const getTicketsByTeamId = function (projectId, teamId, callback) {
     getLimitedTicketsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
 }
 
+/**
+ * find a ticket
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} ticketId ticket id
+ * @param {function} callback callback function
+ */
+const getTicketById = function (projectId, teamId, ticketId, callback) {
+    getTicket({ $and: [{ _id: ticketId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, callback);
+}
+
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
+exports.getTicketById = getTicketById;
 exports.getTicketsByTeamId = getTicketsByTeamId;
 exports.initialize = initialize;
 // </exports> ----------------------------------

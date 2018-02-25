@@ -2002,8 +2002,13 @@ const handleProjectTeamPath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
+        if (projectObj.status !== common.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common.getError(2022)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(err));
+            logger.error(JSON.stringify(common.getError(2018)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -2015,7 +2020,7 @@ const handleProjectTeamPath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(err));
+                logger.error(JSON.stringify(common.getError(2019)));
                 return res.status(404).render(pageNotFoundPage);
             }
 
@@ -2055,8 +2060,13 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
+        if (projectObj.status !== common.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common.getError(2022)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(err));
+            logger.error(JSON.stringify(common.getError(2018)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -2068,12 +2078,19 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(err));
+                logger.error(JSON.stringify(common.getError(2019)));
                 return res.status(404).render(pageNotFoundPage);
             }
 
+            const reporter = `${req.session.user.username} - ${req.session.user.fname} ${req.session.user.lname}`;
+            const assignee = `${req.session.user.username} - ${req.session.user.fname} ${req.session.user.lname}`;
+
             return res.status(200).render(ticketCreationPage, {
-                user: req.session.user
+                user: req.session.user,
+                projectId: projectId,
+                teamId: teamId,
+                reporter: reporter,
+                assignee: assignee
             });
         });
     });
@@ -2092,14 +2109,20 @@ const handleProjectTeamTicketPath = function (req, res) {
 
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
+    const ticketId = req.params.ticketId;
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(pageNotFoundPage);
         }
 
+        if (projectObj.status !== common.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common.getError(2022)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(err));
+            logger.error(JSON.stringify(common.getError(2018)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -2111,21 +2134,94 @@ const handleProjectTeamTicketPath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(err));
+                logger.error(JSON.stringify(common.getError(2019)));
                 return res.status(404).render(pageNotFoundPage);
             }
 
-            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketObj) {
+            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(404).render(pageNotFoundPage);
                 }
 
+                const usersList = common.convertListToJason('_id', users.getActiveUsersList());
+
+                let assignee = 'no assignee';
+                let resolvedAssignee = usersList[ticketObj.assignee];
+                if (resolvedAssignee) {
+                    assignee = `${resolvedAssignee.username} - ${resolvedAssignee.fname} ${resolvedAssignee.lname}`
+                }
+
+                let reporter = 'no reporter';
+                let resolvedReporter = usersList[ticketObj.reporter];
+                if (resolvedReporter) {
+                    reporter = `${resolvedReporter.username} - ${resolvedReporter.fname} ${resolvedReporter.lname}`
+                }
+
                 return res.status(200).render(ticketCreationPage, {
                     user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    reporter: reporter,
+                    assignee: assignee,
                     ticket: ticketObj
                 });
             });
+        });
+    });
+}
+
+/**
+ * root path to get the list of team members
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamMembersListPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2018)));
+            return res.status(400).send(common.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common.getError(2019)));
+                return res.status(400).send(common.getError(2019));
+            }
+
+            const usersObj = common.convertListToJason('_id', users.getActiveUsersList());
+            let usersList = [];
+            for (let i = 0; i < teamObj.members.length; i++) {
+                let memberId = teamObj.members[i];
+                let memberObj = usersObj[memberId];
+                if (memberObj) {
+                    usersList.push({
+                        username: memberObj.username,
+                        fname: memberObj.fname,
+                        lname: memberObj.lname
+                    });
+                }
+            }
+
+            return res.status(200).send(usersList);
         });
     });
 }
@@ -2146,8 +2242,9 @@ app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
 app.get('/project/:projectId', handleProjectByIdPath);
 app.get('/project/:projectId/team/:teamId', handleProjectTeamPath);
-app.get('/project/:projectId/team/:teamId/ticket/:ticketId', handleProjectTeamTicketPath);
 app.get('/project/:projectId/team/:teamId/tickets/add', handleProjectTeamTicketsAddPath);
+app.get('/project/:projectId/team/:teamId/ticket/:ticketId', handleProjectTeamTicketPath);
+app.get('/project/team/members/list', handleProjectTeamMembersListPath);
 app.get('/projects', handleProjectsPath);
 app.get('/projectsListComponent', handleProjectsListComponentPath);
 app.get('/projectsAdminsListComponent', handleProjectsAdminsListComponentPath);

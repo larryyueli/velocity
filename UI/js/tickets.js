@@ -26,6 +26,7 @@ const descriptionId = '#description';
 const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
+const assigneeAutocompleteId = '#assigneeAutocomplete';
 
 typeSelection.change(function () {
     if (typeSelection.val() === 'bug') {
@@ -46,25 +47,14 @@ $(function () {
 
     initSummernote(descriptionId);
 
-    $('input.autocomplete').autocomplete({
-        data: {
-            "Apple": null,
-            "Microsoft": null,
-            "Google": 'https://placehold.it/250x250'
-        },
-        limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
-        onAutocomplete: function (val) {
-            // Callback function when value is autcompleted.
-        },
-        minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
-    });
+    getListOfAssignee();
 
     $(createTicketButtonId).click(() => {
         createTicketAction();
     });
 });
 
-/** 
+/**
  * create ticket action
 */
 function createTicketAction() {
@@ -83,6 +73,41 @@ function createTicketAction() {
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * create ticket action
+*/
+function getListOfAssignee() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/members/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let usersObj = {};
+            for (let i = 0; i < data.length; i++) {
+                let user = data[i];
+                usersObj[`${user.username} - ${user.fname} ${user.lname}`] = null;
+            }
+            $(assigneeAutocompleteId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+
+                },
+                minLength: 1,
+            });
         },
         error: function (data) {
             handle401And404(data);

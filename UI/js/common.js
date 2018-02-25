@@ -90,6 +90,7 @@ const translations = Object.freeze({
     2017: 'User is not in a team',
     2020: 'Cant exceed team size',
     2021: 'Mismatching team names',
+    2022: 'Project is not active',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
