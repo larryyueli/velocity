@@ -68,24 +68,24 @@
 	"projects": {
 		"all": "All",
 		"form": {
-			"title": "Create a new Project",
 			"description": "Project creation form",
 			"fields": {
 				"title": "Title",
 				"description": "Description"
-			}
+			},
+			"title": "Create a new Project"
 		},
 		"status": {
 			"active": "Active",
-			"draft": "Draft",
 			"closed": "Closed",
+			"draft": "Draft",
 			"label": "Status"
 		},
 		"title": "Velocity - Projects",
 		"type": {
 			"kanban": "Kanban",
-			"scrum": "Scrum",
-			"label": "Board Type"
+			"label": "Board Type",
+			"scrum": "Scrum"
 		}
 	},
 	"projectPage": {
