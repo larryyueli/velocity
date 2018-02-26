@@ -231,7 +231,7 @@ const handleLoginPath = function (req, res) {
             return res.status(403).send(err);
         }
 
-        if (!settings.getAllSettings().active
+        if (!settings.isWebsiteActive()
             && userObject.type !== common.userTypes.PROFESSOR.value
             && userObject.type !== common.userTypes.COLLABORATOR_ADMIN.value) {
             logger.error(JSON.stringify(common.getError(3007)));
@@ -292,9 +292,9 @@ const handleProfilePath = function (req, res) {
         userType: common.getValueInObjectByKey(req.session.user.type, 'value', 'text', common.userTypes),
         themes: common.colorThemes,
         languages: common.languages,
-        canEditEmail: settings.getAllSettings().users.canEditEmail,
-        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
-        canEditPassword: settings.getAllSettings().users.canEditPassword,
+        canEditEmail: settings.isUsersAbleEditEmail(),
+        canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
+        canEditPassword: settings.isUsersAbleEditPassword(),
         notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
     });
 }
@@ -321,9 +321,9 @@ const handleProfileUpdatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        const canEditEmail = settings.getAllSettings().users.canEditEmail;
-        const canEditFirstAndLastName = settings.getAllSettings().users.canEditFirstAndLastName;
-        const canEditPassword = settings.getAllSettings().users.canEditPassword;
+        const canEditEmail = settings.isUsersAbleEditEmail();
+        const canEditFirstAndLastName = settings.isUsersAbleEditFirstAndLastName();
+        const canEditPassword = settings.isUsersAbleEditPassword();
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
         let updateObject = {};
@@ -446,13 +446,14 @@ const handleUsersPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2022)));
         return res.status(404).render(pageNotFoundPage);
     }
 
     return res.status(200).render(usersPage, {
         user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -469,7 +470,8 @@ const handleUsersListComponentPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2023)));
+        return res.status(403).render(pageNotFoundPage);
     }
 
     const fullUsersList = users.getFullUsersList();
@@ -500,7 +502,7 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common.getError(2010)));
-            return res.status(403).send(common.getError(2010));
+            return res.status(404).render(pageNotFoundPage);
         }
 
         const fullUserObjectsList = users.getActiveUsersList();
@@ -561,13 +563,14 @@ const handleUsersAddPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2024)));
         return res.status(404).render(pageNotFoundPage);
     }
 
     return res.status(200).render(usersAddPage, {
         user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -584,7 +587,8 @@ const handleUsersCreatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2025)));
+        return res.status(403).send(common.getError(2025));
     }
 
     const newUser = {
@@ -597,34 +601,20 @@ const handleUsersCreatePath = function (req, res) {
         email: req.body.email
     };
 
-    users.getUserByUsername(req.body.username, function (err, userObjFound) {
+    users.addUser(newUser, function (err, userObjAdded) {
         if (err) {
-            if (err.code === 2003) {
-                users.addUser(newUser, function (err, userObjAdded) {
-                    if (err) {
-                        logger.error(JSON.stringify(err));
-                        return res.status(500).send(err);
-                    }
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
 
-                    cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                            return res.status(500).send(err);
-                        }
-
-                        return res.status(200).send('ok');
-                    });
-                });
-            } else {
+        cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
+            if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
-        }
 
-        if (userObjFound) {
-            logger.error(JSON.stringify(common.getError(2001)));
-            return res.status(500).send(common.getError(2001));
-        }
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -642,7 +632,7 @@ const handleUsersRequestAccessPath = function (req, res) {
         return res.status(400).send(common.getError(2011));
     }
 
-    if (settings.getAllSettings().mode === common.modeTypes.UNKNOWN) {
+    if (settings.getModeType() === common.modeTypes.UNKNOWN) {
         logger.error(JSON.stringify(common.getError(1010)));
         return res.status(500).send(common.getError(1010));
     }
@@ -652,41 +642,28 @@ const handleUsersRequestAccessPath = function (req, res) {
         lname: req.body.lname,
         username: req.body.username,
         password: req.body.password,
-        type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+        type: settings.getModeType() === common.modeTypes.CLASS ?
             common.userTypes.STUDENT.value :
             common.userTypes.COLLABORATOR.value,
         status: common.userStatus.PENDING.value,
         email: req.body.email
     };
 
-    users.getUserByUsername(req.body.username, function (err, userObjFound) {
+
+    users.addUser(newUser, function (err, userObjAdded) {
         if (err) {
-            if (err.code === 2003) {
-                users.addUser(newUser, function (err, userObjAdded) {
-                    if (err) {
-                        logger.error(JSON.stringify(err));
-                        return res.status(500).send(err);
-                    }
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
 
-                    cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                            return res.status(500).send(err);
-                        }
-
-                        return res.status(200).send('ok');
-                    });
-                });
-            } else {
+        cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
+            if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
-        }
 
-        if (userObjFound) {
-            logger.error(JSON.stringify(common.getError(2001)));
-            return res.status(500).send(common.getError(2001));
-        }
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -703,6 +680,7 @@ const handleUsersEditPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2026)));
         return res.status(404).render(pageNotFoundPage);
     }
 
@@ -715,6 +693,7 @@ const handleUsersEditPath = function (req, res) {
     users.getUserByUsername(username, function (err, foundUser) {
         if (err) {
             if (err.code === 2003) {
+                logger.error(JSON.stringify(common.getError(2003)));
                 return res.status(404).render(pageNotFoundPage);
             }
 
@@ -725,8 +704,8 @@ const handleUsersEditPath = function (req, res) {
         return res.status(200).render(usersEditPage, {
             user: req.session.user,
             editUser: foundUser,
-            isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-            isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS,
+            isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+            isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS,
             commonUserTypes: common.userTypes,
             commonUserStatus: common.userStatus
         });
@@ -746,7 +725,8 @@ const handleUsersUpdatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2027)));
+        return res.status(404).send(common.getError(2027));
     }
 
     const oldUsername = req.body.oldUsername;
@@ -795,6 +775,7 @@ const handleUsersImportPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2028)));
         return res.status(404).render(pageNotFoundPage);
     }
 
@@ -816,7 +797,8 @@ const handleUsersImportFilePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2029)));
+        return res.status(403).send(common.getError(2029));
     }
 
     const validFileExtensions = ['text/csv', 'application/vnd.ms-excel'];
@@ -873,7 +855,7 @@ const handleUsersImportFilePath = function (req, res) {
                     username: inputUser.username,
                     email: inputUser.email,
                     password: inputUser.password,
-                    type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+                    type: settings.getModeType() === common.modeTypes.CLASS ?
                         common.userTypes.STUDENT.value : common.userTypes.COLLABORATOR.value,
                     status: common.userStatus.ACTIVE.value
                 };
@@ -1020,15 +1002,16 @@ const handleSettingsPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2030)));
         return res.status(404).render(pageNotFoundPage);
     }
 
     return res.status(200).render(settingsPage, {
         user: req.session.user,
-        generalActive: settings.getAllSettings().active,
-        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
-        canEditEmail: settings.getAllSettings().users.canEditEmail,
-        canEditPassword: settings.getAllSettings().users.canEditPassword
+        generalActive: settings.isWebsiteActive(),
+        canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
+        canEditEmail: settings.isUsersAbleEditEmail(),
+        canEditPassword: settings.isUsersAbleEditPassword()
     });
 }
 
@@ -1045,7 +1028,8 @@ const handleSettingsResetPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2031)));
+        return res.status(403).send(common.getError(2031));
     }
 
     settings.resetAllSettings(function (err, result) {
@@ -1071,7 +1055,8 @@ const handleSettingsUpdatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2032)));
+        return res.status(403).send(common.getError(2032));
     }
 
     const updateObject = {
@@ -1103,6 +1088,7 @@ const handleProjectsPath = function (req, res) {
     }
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2033)));
         return res.status(404).render(pageNotFoundPage);
     }
 
@@ -1123,6 +1109,7 @@ const handleProjectsListComponentPath = function (req, res) {
     }
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2034)));
         return res.status(404).render(pageNotFoundPage);
     }
 
@@ -1159,7 +1146,7 @@ const handleProjectsListComponentPath = function (req, res) {
 }
 
 /**
- * path to get the projects unassigned users list entry
+ * path to get the projects user groups list entry
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -1170,6 +1157,7 @@ const handleProjectsGroupAssignPath = function (req, res) {
     }
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2034)));
         return res.status(404).render(pageNotFoundPage);
     }
 
@@ -1184,20 +1172,24 @@ const handleProjectsGroupAssignPath = function (req, res) {
         let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
 
         if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2034)));
             return res.status(404).render(pageNotFoundPage);
         }
 
         if (projectObj.status === common.projectStatus.DRAFT.value
             && !userIsAdmin
             && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common.getError(2034)));
             return res.status(404).render(pageNotFoundPage);
         }
 
         if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2034)));
             return res.status(404).render(pageNotFoundPage);
         }
 
         if (projectObj.status === common.projectStatus.DELETED.value) {
+            logger.error(JSON.stringify(common.getError(2034)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -1214,10 +1206,7 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
             const fullUserObjectsList = users.getActiveUsersList();
             const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
-            let usersList = [];
-            for (let i = 0; i < fullUserObjectsList.length; i++) {
-                usersList.push(fullUserObjectsList[i]._id);
-            }
+            const usersList = common.convertJsonListToList('_id', fullUserObjectsList);
 
             let unassignedList = common.getArrayDiff(usersList, projectMembers);
             let unassignedObjectsList = [];
@@ -1266,8 +1255,8 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 groupModalHTML: projectsGroupModalComponent(),
                 groupModalEntryHTML: projectsGroupModalEntryComponent(),
                 isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
-                isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-                isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+                isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+                isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
             });
         });
     });
@@ -1286,13 +1275,14 @@ const handleProjectsAddPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2035)));
         return res.status(404).render(pageNotFoundPage);
     }
 
     return res.status(200).render(projectsAddPage, {
         user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -1309,7 +1299,8 @@ const handleProjectsCreatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(404).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2036)));
+        return res.status(403).send(common.getError(2036));
     }
 
     const newProject = {
@@ -1341,6 +1332,7 @@ const handleProjectByIdPath = function (req, res) {
     }
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2038)));
         return res.status(404).render(pageNotFoundPage);
     }
 
@@ -1355,6 +1347,7 @@ const handleProjectByIdPath = function (req, res) {
         let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
 
         if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2038)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -1372,14 +1365,17 @@ const handleProjectByIdPath = function (req, res) {
         if (projectObj.status === common.projectStatus.DRAFT.value
             && !userIsAdmin
             && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common.getError(2038)));
             return res.status(404).render(pageNotFoundPage);
         }
 
         if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2038)));
             return res.status(404).render(pageNotFoundPage);
         }
 
         if (projectObj.status === common.projectStatus.DELETED.value) {
+            logger.error(JSON.stringify(common.getError(2038)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -1388,8 +1384,8 @@ const handleProjectByIdPath = function (req, res) {
             title: projectObj.title,
             isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
             description: projectObj.description,
-            isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-            isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+            isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+            isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
         });
     });
 }
@@ -1409,11 +1405,18 @@ const handleProjectUpdatePath = function (req, res) {
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(500).send(err);
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2037)));
+            return res.status(403).send(common.getError(2037));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
         }
 
         let newProject = {
@@ -1451,7 +1454,14 @@ const handleProjectTeamsUpdatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2039)));
+            return res.status(403).send(common.getError(2039));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
         }
 
         let inputTeamsList = req.body.teamsList;
@@ -1460,6 +1470,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                 inputTeamsList = JSON.parse(inputTeamsList);
             }
             catch (err) {
+                logger.error(common.getError(1011));
                 inputTeamsList = [];
             }
         }
@@ -1514,7 +1525,11 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
                                     updateTeamsCounter++;
                                     if (updateTeamsCounter === resolvedTeamsList.length) {
-                                        return res.status(200).send('ok');
+                                        if (projectObj.status === common.projectStatus.ACTIVE.value) {
+                                            updateActiveTeam();
+                                        } else {
+                                            return res.status(200).send('ok');
+                                        }
                                     }
                                 });
                             } else {
@@ -1531,12 +1546,44 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
                                 updateTeamsCounter++;
                                 if (updateTeamsCounter === resolvedTeamsList.length) {
-                                    return res.status(200).send('ok');
+                                    if (projectObj.status === common.projectStatus.ACTIVE.value) {
+                                        updateActiveTeam();
+                                    } else {
+                                        return res.status(200).send('ok');
+                                    }
                                 }
                             });
                         }
                     });
                 }
+            }
+
+            let updateActiveTeam = function () {
+                projects.getProjectTeams(projectId, function (err, teamsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    let members = projectObj.admins;
+                    for (let i = 0; i < teamsList.length; i++) {
+                        members = common.joinSets(members, teamsList[i].members);
+                    }
+
+                    let newProject = {
+                        _id: req.body.projectId,
+                        status: common.projectStatus.ACTIVE.value,
+                        members: members
+                    };
+                    projects.updateProject(newProject, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(400).send(err);
+                        }
+
+                        return res.status(200).send('ok');
+                    });
+                });
             }
 
             let completedDeletedTeams = 0;
@@ -1584,13 +1631,25 @@ const handleProjectAdminsUpdatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2037)));
+            return res.status(403).send(common.getError(2037));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
         }
 
         const inputAdminsList = req.body.adminsList;
         if (!Array.isArray(inputAdminsList)) {
-            logger.error(JSON.stringify(common.getError(1000)));
-            return res.status(500).send(common.getError(1000));
+            try {
+                inputAdminsList = JSON.parse(inputAdminsList);
+            }
+            catch (err) {
+                logger.error(common.getError(1011));
+                inputAdminsList = [];
+            }
         }
 
         const projectAdminsListofNames = common.convertJsonListToList('username', inputAdminsList);
@@ -1639,7 +1698,14 @@ const handleProjectActivatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2041)));
+            return res.status(403).send(common.getError(2041));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
         }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
@@ -1689,7 +1755,8 @@ const handleProjectDeletePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2040)));
+            return res.status(403).send(common.getError(2040));
         }
 
         let newProject = {
@@ -1718,7 +1785,7 @@ const handleProjectTeamsConfigPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    if (settings.getAllSettings().mode !== common.modeTypes.CLASS) {
+    if (settings.getModeType() !== common.modeTypes.CLASS) {
         logger.error(JSON.stringify(common.getError(1000)));
         return res.status(400).send(common.getError(1000));
     }
@@ -1738,7 +1805,14 @@ const handleProjectTeamsConfigPath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common.getError(2037)));
+            return res.status(403).send(common.getError(2037));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
         }
 
         let newProject = {
@@ -2002,8 +2076,9 @@ const handleProjectTeamPath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common.getError(2022)));
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.CLOSED.value) {
+            logger.error(JSON.stringify(common.getError(2044)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -2061,7 +2136,7 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
         }
 
         if (projectObj.status !== common.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common.getError(2022)));
+            logger.error(JSON.stringify(common.getError(2043)));
             return res.status(404).render(pageNotFoundPage);
         }
 
@@ -2116,8 +2191,9 @@ const handleProjectTeamTicketPath = function (req, res) {
             return res.status(404).render(pageNotFoundPage);
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common.getError(2022)));
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.CLOSED.value) {
+            logger.error(JSON.stringify(common.getError(2044)));
             return res.status(404).render(pageNotFoundPage);
         }
 

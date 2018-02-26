@@ -48,6 +48,7 @@ const errors = Object.freeze({
     1008: 'failed to get the users list, database issue',
     1009: 'failed to parse csv file',
     1010: 'mode setup is not complete',
+    1011: 'failed to parse list',
 
     //2000 users
     2000: 'missing requirement',
@@ -62,17 +63,39 @@ const errors = Object.freeze({
     2009: 'invalid users import file extension',
     2010: 'permission denied',
     2011: 'password and confirm password do not match',
-    2012: 'cant not update team, project is active',
-    2013: 'cant not update team, project is closed',
-    2014: 'cant not update team, project is not in draft',
-    2015: 'cant not update team, invalid action',
+    2012: 'cant update team, project is active',
+    2013: 'cant update team, project is closed',
+    2014: 'cant update team, project is not in draft',
+    2015: 'cant update team, invalid action',
     2016: 'cant add to team, user is already in a team',
     2017: 'cant remove from team, user is not in a team',
     2018: 'user is not a member of the project',
     2019: 'user is not a member of the team',
     2020: 'cant add to team, cant exceed size limit',
     2021: 'cant add to team, mismatching team names',
-    2022: 'project is not active',
+    2022: 'cant access users page, permission denied',
+    2023: 'cant access users page components, permission denied',
+    2024: 'cant access users add page, permission denied',
+    2025: 'cant create a user, permission denied',
+    2026: 'cant access users add page, permission denied',
+    2027: 'cant update a user, permission denied',
+    2028: 'cant access users import page, permission denied',
+    2029: 'cant import users, permission denied',
+    2030: 'cant access settings page, permission denied',
+    2031: 'cant reset settings, permission denied',
+    2032: 'cant update settings, permission denied',
+    2033: 'cant access projects page, permission denied',
+    2034: 'cant access projects page components, permission denied',
+    2035: 'cant access projects add page, permission denied',
+    2036: 'cant create a project, permission denied',
+    2037: 'cant update a project, permission denied',
+    2038: 'cant access a project, permission denied',
+    2039: 'cant update team, permission denied',
+    2040: 'cant delete a project, permission denied',
+    2041: 'cant activate a project, permission denied',
+    2042: 'cant update project, project is in terminal status',
+    2043: 'project is not active',
+    2044: 'project is not active or closed',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -168,7 +191,7 @@ exports.variableTypes = variableTypes;
 // all color themes
 const colorThemes = Object.freeze({
     DEFAULT: 'theme-default',
-    AHMED: 'theme-ahmed'
+    BLUESKY: 'theme-blueSky'
 });
 exports.colorThemes = colorThemes;
 
@@ -218,6 +241,7 @@ exports.languages = languages;
 
 // common board types
 const boardTypes = Object.freeze({
+    UNKNOWN: { value: -1, text: 'unknown' },
     KANBAN: { value: 0, text: 'kanban' },
     SCRUM: { value: 1, text: 'scrum' }
 });
