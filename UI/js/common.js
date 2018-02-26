@@ -85,7 +85,7 @@ const translations = Object.freeze({
     2012: 'Project is already active',
     2013: 'Project is already closed',
     2014: 'Project is not in draft',
-    2015: 'Cant not update team, invalid action',
+    2015: 'Cant update team, invalid action',
     2016: 'User is already in a team',
     2017: 'User is not in a team',
     2020: 'Cant exceed team size',
@@ -110,6 +110,7 @@ const translations = Object.freeze({
     2039: 'Permission denied',
     2040: 'Permission denied',
     2041: 'Permission denied',
+    2042: 'Cant update project, project is in terminal status',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
