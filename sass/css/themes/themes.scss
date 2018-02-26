@@ -13,6 +13,26 @@ $themes: (
         cancelButtonBackground: #f44336,
         cancelButtonText: white,
         resetButtonBackground: #868686,
-        resetButtonText: white
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white
+    ),
+    bluesky: (
+        primaryColour: #006888,
+        primaryTextOnPrimary: white,
+        secondaryColour: rgb(0, 124, 182),
+        primaryTextOnSecondary: #ffab40,
+
+        loaderBackgroundColour: #bcd7e2,
+
+        notificationBackground: #26a69a,
+        notificationNumber: #02ffe6,
+
+        cancelButtonBackground: #f44336,
+        cancelButtonText: white,
+        resetButtonBackground: #868686,
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white
     )
 );

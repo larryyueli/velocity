@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const common = require('./common.js');
 const db = require('./db.js');
 
@@ -71,7 +73,7 @@ const resetAllSettings = function (callback) {
         }
 
         const currentDate = common.getDate();;
-        var defaultSettings = {};
+        let defaultSettings = {};
         defaultSettings._id = common.getUUID();
         defaultSettings.ctime = currentDate;
         defaultSettings.mtime = currentDate;
@@ -94,6 +96,15 @@ const resetAllSettings = function (callback) {
 }
 
 /**
+ * is website active
+ *
+ * @return {boolean} is website active
+ */
+const isWebsiteActive = function () {
+    return settingsObject.active;
+}
+
+/**
  * update the website active status
  *
  * @param {boolean} status active status
@@ -105,6 +116,15 @@ const updateActiveStatus = function (status, callback) {
     }
 
     updateAllSettings({ active: status }, callback);
+}
+
+/**
+ * get mode type
+ *
+ * @return {number} get mode type
+ */
+const getModeType = function () {
+    return settingsObject.mode;
 }
 
 /**
@@ -122,6 +142,15 @@ const updateModeType = function (modeType, callback) {
 }
 
 /**
+ * is user able to edit email
+ *
+ * @return {boolean} is user able to edit email
+ */
+const isUsersAbleEditEmail = function () {
+    return settingsObject.users.canEditEmail;
+}
+
+/**
  * update users can edit thier email
  *
  * @param {boolean} status active status
@@ -136,6 +165,15 @@ const updateUsersCanEditEmail = function (status, callback) {
 }
 
 /**
+ * is user able to edit first and last name
+ *
+ * @return {boolean} is user able to edit first and last name
+ */
+const isUsersAbleEditFirstAndLastName = function () {
+    return settingsObject.users.canEditFirstAndLastName;
+}
+
+/**
  * update users can edit thier first and last name
  *
  * @param {boolean} status active status
@@ -147,6 +185,15 @@ const updateUsersCanEditFirstAndLastName = function (status, callback) {
     }
 
     updateAllSettings({ canEditFirstAndLastName: status }, callback);
+}
+
+/**
+ * is user able to edit password
+ *
+ * @return {boolean} is user able to edit password
+ */
+const isUsersAbleEditPassword = function () {
+    return settingsObject.users.canEditPassword;
 }
 
 /**
@@ -170,7 +217,7 @@ const updateUsersCanEditPassword = function (status, callback) {
  * @param {function} callback callback function
  */
 const updateAllSettings = function (newSettings, callback) {
-    var updateQuery = {};
+    let updateQuery = {};
     updateQuery.$set = {};
     updateQuery.$set.users = {};
 
@@ -219,7 +266,12 @@ const updateAllSettings = function (newSettings, callback) {
 
 // <exports> -----------------------------------
 exports.getAllSettings = getAllSettings;
+exports.getModeType = getModeType;
 exports.initialize = initialize;
+exports.isUsersAbleEditEmail = isUsersAbleEditEmail;
+exports.isUsersAbleEditFirstAndLastName = isUsersAbleEditFirstAndLastName;
+exports.isUsersAbleEditPassword = isUsersAbleEditPassword;
+exports.isWebsiteActive = isWebsiteActive;
 exports.resetAllSettings = resetAllSettings;
 exports.updateActiveStatus = updateActiveStatus;
 exports.updateAllSettings = updateAllSettings;

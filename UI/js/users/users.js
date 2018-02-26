@@ -29,8 +29,15 @@ const nameId = '#name';
 const typeId = '#type';
 const emailId = '#email';
 const editLinkId = '#editLink';
+const navUsersId = '#nav-users';
+const navmUsersId = '#navm-users';
+const usersSearchId = '#usersSearch';
+const usersRowButtonId = '#usersRowButton';
 
 $(function () {
+    $(navUsersId).addClass('active');
+    $(navmUsersId).addClass('active');
+
     $('select').material_select();
 
     $(typeFilterId).on('change', function () {
@@ -48,7 +55,6 @@ $(function () {
         displayList();
     });
 
-    getUsersList();
     startLoad(usersLoadId, usersListId);
     getUsersList();
 });
@@ -63,7 +69,13 @@ function getUsersList() {
             displayList();
         },
         error: function (data) {
-            //TODO: add fail snackbar
+            handle401And404(data);
+
+            $(usersListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(usersSearchId).addClass('hidden');
+            $(usersRowButtonId).addClass('hidden');
+
+            endLoad(usersLoadId, usersListId);
         }
     });
 }

@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const fs = require('fs');
 
 const common = require('./common.js');
@@ -25,7 +27,7 @@ var dateStamp;
 
 /**
  * log an info message
- * 
+ *
  * @param {string} text info text to log
  */
 const info = function (text) {
@@ -35,7 +37,7 @@ const info = function (text) {
 
 /**
  * log a warning message
- * 
+ *
  * @param {string} text warning text to log
  */
 const warning = function (text) {
@@ -45,12 +47,22 @@ const warning = function (text) {
 
 /**
  * log an error message
- * 
+ *
  * @param {string} text error text to log
  */
 const error = function (text) {
     init();
     console.error(`[${common.getDate()}] error: ${text}`);
+}
+
+/**
+ * log a message
+ *
+ * @param {string} text text to log
+ */
+const log = function (text) {
+    init();
+    console.error(`[${common.getDate()}] ${text}`);
 }
 
 /**
@@ -73,5 +85,6 @@ const init = function () {
 // <exports> -----------------------------------
 exports.error = error;
 exports.info = info;
+exports.log = log;
 exports.warning = warning;
 // </exports> ----------------------------------

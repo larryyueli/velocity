@@ -22,7 +22,7 @@ const loginPasswordField = $('#loginForm_password');
 const signupForm = $('#signupForm');
 const signupErrorField = $('#signupForm_invalid');
 const signupPasswordField = $('#signupForm_password');
-const signupPasswordConfirmField = $('#signupForm_confirmPassword')
+const signupPasswordConfirmField = $('#signupForm_confirmPassword');
 
 loginForm.submit(function (evt) {
     evt.preventDefault();

@@ -80,7 +80,37 @@ const translations = Object.freeze({
     2007: 'Failed to update user, missing information',
     2008: 'Invalid profile picture extension',
     2009: 'Invalid users import file extension',
-    2010: 'Password and confirm password do not match',
+    2010: 'Permission denied',
+    2011: 'Password and confirm password do not match',
+    2012: 'Project is already active',
+    2013: 'Project is already closed',
+    2014: 'Project is not in draft',
+    2015: 'Cant update team, invalid action',
+    2016: 'User is already in a team',
+    2017: 'User is not in a team',
+    2020: 'Cant exceed team size',
+    2021: 'Mismatching team names',
+    2022: 'Permission denied',
+    2023: 'Permission denied',
+    2024: 'Permission denied',
+    2025: 'Permission denied',
+    2026: 'Permission denied',
+    2027: 'Permission denied',
+    2028: 'Permission denied',
+    2029: 'Permission denied',
+    2030: 'Permission denied',
+    2031: 'Permission denied',
+    2032: 'Permission denied',
+    2033: 'Permission denied',
+    2034: 'Permission denied',
+    2035: 'Permission denied',
+    2036: 'Permission denied',
+    2037: 'Permission denied',
+    2038: 'Permission denied',
+    2039: 'Permission denied',
+    2040: 'Permission denied',
+    2041: 'Permission denied',
+    2042: 'Cant update project, project is in terminal status',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
@@ -90,20 +120,45 @@ const translations = Object.freeze({
     //4000 custom file system errors
     4010: 'Permission denied',
 
+    activatedProject: 'Project has been activated',
+    adminConfigurationSuccess: 'Admins have been saved successfully',
+    alreadyInGroup: 'This user is already in this group',
+    cancel: 'Cancel',
     defaultError: 'Something went wrong, please try again!',
-    passwordsDontMatch: 'Passwords do not match',
-    uploadOnlyPicture: 'You can only upload one picture!',
-    noResultsFoundBasedOnSearch: 'No results found based on your search',
+    delete: 'Delete',
+    deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
+    deletedProject: 'Project has been deleted',
+    deletePremadeGroups: 'Would you like to delete the groups that are already made?',
+    emptyProjectDescription: 'Please enter your description in the editor.',
+    groupConfigurationSuccess: 'Groups have been saved successfully',
+    groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
+    groupNameAlreadyExists: 'Group name already exists',
+    groupNameCantBeEmpty: 'Group name can\'t be empty',
+    groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
+    groupSizeCantBeZero: 'Group size must be a positive integer',
     mustBeCsv: 'File format must be csv!',
     mustImportOneFile: 'You can only import one file!',
+    noResultsFoundBasedOnSearch: 'No results found based on your search',
+    notInGroup: 'You are currently not in a group',
+    passwordsDontMatch: 'Passwords do not match',
+    randomize: 'Randomize',
+    randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
+    selectGroup: 'Select Group',
+    size: 'Size',
     successfulFileUpload: 'File uploaded successfully',
+    uploadOnlyPicture: 'You can only upload one picture!',
+    updatedProject: 'Project has been updated',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',
     user2: 'Collaborator',
     user3: 'Professor',
     user4: 'Teaching Assistant',
-    user5: 'Student'
+    user5: 'Student',
+
+    projectStatus0: 'Closed',
+    projectStatus1: 'Draft',
+    projectStatus2: 'Active'
 });
 
 const userIcons = Object.freeze({
@@ -241,7 +296,7 @@ $.fn.extend({
 
 /**
  * handle 401 and 404 erros
- * 
+ *
  * @param {String} data response data
  */
 function handle401And404(data) {
@@ -249,5 +304,14 @@ function handle401And404(data) {
         window.location.href = '/';
     } else if (data['status'] === 404) {
         window.location.href = '/pageNotFound';
+    }
+}
+
+function toggleVisibility(element) {
+    if (element.hasClass('hidden')) {
+        element.removeClass('hidden');
+        element.animateCss('fadeIn');
+    } else {
+        element.addClass('hidden');
     }
 }

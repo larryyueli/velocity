@@ -16,6 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+"use strict";
+
 const bodyParser = require('body-parser');
 const csv2json = require('csvtojson');
 const express = require('express');
@@ -37,6 +39,7 @@ const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
 const logger = require('./Backend/logger.js');
+const projects = require('./Backend/projects.js');
 const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
@@ -66,6 +69,9 @@ const loginPage = 'login';
 const modeSelectorPage = 'modeSelector';
 const pageNotFoundPage = 'pageNotFound';
 const profilePage = 'profile';
+const projectsPage = 'projects/projects';
+const projectPagePage = 'projects/project-page';
+const projectsAddPage = 'projects/projects-add';
 const settingsPage = 'settings/settings';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
@@ -73,6 +79,12 @@ const usersEditPage = 'users/users-edit';
 const usersImportCompletePage = 'users/users-import-complete';
 const usersImportPage = 'users/users-import';
 
+const projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
+const projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
+const projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
+const projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
+const projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
+const projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
 const usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
 // read input parameters
@@ -93,6 +105,8 @@ i18n.configure({
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/Templates`);
 
+app.use('/sweetalert', express.static(`${__dirname}/node_modules/sweetalert/dist`));
+app.use('/summernote', express.static(`${__dirname}/node_modules/summernote/dist`));
 app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
@@ -136,9 +150,10 @@ httpServer.listen(config.httpPort, function () {
     const localDebugMode = config.debugMode;
     config.debugMode = true;
 
-    logger.info(`HTTP Server is listening on port :${config.httpPort}.`);
+    logger.info(`HTTP Server is listening on port :${config.httpPort}`);
     httpsServer.listen(config.httpsPort, function () {
-        logger.info(`HTTPs Server is listening on port :${config.httpsPort}.`);
+
+        logger.info(`HTTPs Server is listening on port :${config.httpsPort}`);
         logger.info(`Velocity web app is listening on port: ${config.httpsPort}`);
         db.initialize(function (err, result) {
             if (err) {
@@ -196,7 +211,6 @@ const isActiveSession = function (req) {
  */
 const handleLoginPath = function (req, res) {
     if (isActiveSession(req)) {
-        logger.info(`User ${req.session.user.username} logged out.`);
         req.session.destroy();
     }
 
@@ -209,23 +223,20 @@ const handleLoginPath = function (req, res) {
     const username = req.body.username.toLowerCase();
     const password = req.body.password;
 
-    logger.info(`Login request by user: ${username}`);
     users.login(username, password, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(403).send(err);
         }
 
-        if (!settings.getAllSettings().active
+        if (!settings.isWebsiteActive()
             && userObject.type !== common.userTypes.PROFESSOR.value
             && userObject.type !== common.userTypes.COLLABORATOR_ADMIN.value) {
             logger.error(JSON.stringify(common.getError(3007)));
             return res.status(403).send(common.getError(3007));
         }
 
-        logger.info(`User: ${username} logged in`);
-
-        var meObject = JSON.parse(JSON.stringify(userObject));
+        let meObject = JSON.parse(JSON.stringify(userObject));
         delete meObject.password;
         req.session.user = meObject;
 
@@ -241,7 +252,6 @@ const handleLoginPath = function (req, res) {
  */
 const handleLogoutPath = function (req, res) {
     if (isActiveSession(req)) {
-        logger.info(`User ${req.session.user.username} logged out.`);
         req.session.destroy();
     }
 
@@ -259,7 +269,7 @@ const handleMePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
-    var meObject = JSON.parse(JSON.stringify(req.session.user));
+    let meObject = JSON.parse(JSON.stringify(req.session.user));
     delete meObject._id;
     return res.status(200).send(meObject);
 }
@@ -280,9 +290,9 @@ const handleProfilePath = function (req, res) {
         userType: common.getValueInObjectByKey(req.session.user.type, 'value', 'text', common.userTypes),
         themes: common.colorThemes,
         languages: common.languages,
-        canEditEmail: settings.getAllSettings().users.canEditEmail,
-        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
-        canEditPassword: settings.getAllSettings().users.canEditPassword,
+        canEditEmail: settings.isUsersAbleEditEmail(),
+        canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
+        canEditPassword: settings.isUsersAbleEditPassword(),
         notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
     });
 }
@@ -309,12 +319,12 @@ const handleProfileUpdatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        const canEditEmail = settings.getAllSettings().users.canEditEmail;
-        const canEditFirstAndLastName = settings.getAllSettings().users.canEditFirstAndLastName;
-        const canEditPassword = settings.getAllSettings().users.canEditPassword;
+        const canEditEmail = settings.isUsersAbleEditEmail();
+        const canEditFirstAndLastName = settings.isUsersAbleEditFirstAndLastName();
+        const canEditPassword = settings.isUsersAbleEditPassword();
         const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
 
-        var updateObject = {};
+        let updateObject = {};
         updateObject._id = req.session.user._id;
         updateObject.fname = (canEditFirstAndLastName && typeof (req.body.fname) === common.variableTypes.STRING) ? req.body.fname : req.session.user.fname;
         updateObject.lname = (canEditFirstAndLastName && typeof (req.body.lname) === common.variableTypes.STRING) ? req.body.lname : req.session.user.lname;
@@ -358,7 +368,7 @@ const handleRootPath = function (req, res) {
         return res.status(200).render(modeSelectorPage);
     }
 
-    return res.status(200).send(`user type: ${req.session.user.type}`); // TO DO: replace with proper pages
+    return res.redirect('/projects');
 }
 
 /**
@@ -388,7 +398,7 @@ const handleModeSelectPath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        var newType;
+        let newType;
         if (parsedSelectedMode === common.modeTypes.CLASS) {
             newType = common.userTypes.PROFESSOR.value
         }
@@ -434,20 +444,19 @@ const handleUsersPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2022)));
+        return res.status(404).render(pageNotFoundPage);
     }
-
-    const fullUsersList = users.getFullUsersList();
 
     return res.status(200).render(usersPage, {
         user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
     });
 }
 
 /**
- * path to get the users list
+ * path to get the users list entry
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -457,6 +466,12 @@ const handleUsersListComponentPath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2023)));
+        return res.status(403).render(pageNotFoundPage);
+    }
+
     const fullUsersList = users.getFullUsersList();
 
     return res.status(200).send({
@@ -464,6 +479,74 @@ const handleUsersListComponentPath = function (req, res) {
         usersEntryHTML: usersEntryComponent()
     });
 }
+
+/**
+ * path to get the project admins and non projects admins list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsAdminsListComponentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.query.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2010)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        const fullUserObjectsList = users.getActiveUsersList();
+        const fullUsersList = common.convertJsonListToList('_id', fullUserObjectsList);
+        const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
+
+        let adminsList = projectObj.admins;
+        let usersList = common.getArrayDiff(fullUsersList, adminsList);
+
+        let resolvedAdminsList = [];
+        let resolvedUsersList = [];
+
+        for (let i = 0; i < adminsList.length; i++) {
+            let innerUser = fullUsersListObject[adminsList[i]];
+            if (innerUser) {
+                resolvedAdminsList.push({
+                    fname: innerUser.fname,
+                    lname: innerUser.lname,
+                    username: innerUser.username,
+                    email: innerUser.email,
+                    type: innerUser.type
+                });
+            }
+        }
+
+        for (let i = 0; i < usersList.length; i++) {
+            let innerUser = fullUsersListObject[usersList[i]];
+            if (innerUser) {
+                resolvedUsersList.push({
+                    fname: innerUser.fname,
+                    lname: innerUser.lname,
+                    username: innerUser.username,
+                    email: innerUser.email,
+                    type: innerUser.type
+                });
+            }
+        }
+
+        return res.status(200).send({
+            projectAdmins: resolvedAdminsList,
+            projectUsers: resolvedUsersList,
+            usersEntryHTML: projectsUserEntryComponent()
+        });
+    });
+}
+
 
 /**
  * root path to get the users creation form
@@ -478,13 +561,14 @@ const handleUsersAddPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2024)));
+        return res.status(404).render(pageNotFoundPage);
     }
 
     return res.status(200).render(usersAddPage, {
         user: req.session.user,
-        isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-        isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
     });
 }
 
@@ -501,7 +585,8 @@ const handleUsersCreatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2025)));
+        return res.status(403).send(common.getError(2025));
     }
 
     const newUser = {
@@ -514,14 +599,20 @@ const handleUsersCreatePath = function (req, res) {
         email: req.body.email
     };
 
-    users.addUser(newUser, function (err, userObj) {
+    users.addUser(newUser, function (err, userObjAdded) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
-        logger.info(`user: ${req.body.username} was created.`);
-        return res.status(200).send('ok');
+        cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -535,11 +626,11 @@ const handleUsersRequestAccessPath = function (req, res) {
     if (typeof (req.body.password) === common.variableTypes.STRING
         && typeof (req.body.confirmPassword) === common.variableTypes.STRING
         && req.body.password !== req.body.confirmPassword) {
-        logger.error(JSON.stringify(common.getError(2010)));
-        return res.status(400).send(common.getError(2010));
+        logger.error(JSON.stringify(common.getError(2011)));
+        return res.status(400).send(common.getError(2011));
     }
 
-    if (settings.getAllSettings().mode === common.modeTypes.UNKNOWN) {
+    if (settings.getModeType() === common.modeTypes.UNKNOWN) {
         logger.error(JSON.stringify(common.getError(1010)));
         return res.status(500).send(common.getError(1010));
     }
@@ -549,34 +640,28 @@ const handleUsersRequestAccessPath = function (req, res) {
         lname: req.body.lname,
         username: req.body.username,
         password: req.body.password,
-        type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+        type: settings.getModeType() === common.modeTypes.CLASS ?
             common.userTypes.STUDENT.value :
             common.userTypes.COLLABORATOR.value,
         status: common.userStatus.PENDING.value,
         email: req.body.email
     };
 
-    users.getUserByUsername(req.body.username, function (err, userObj) {
-        if (err) {
-            if (err.code === 2003) {
-                users.addUser(newUser, function (err, userObj) {
-                    if (err) {
-                        logger.error(JSON.stringify(err));
-                        return res.status(500).send(err);
-                    }
 
-                    return res.status(200).send('ok');
-                });
-            } else {
+    users.addUser(newUser, function (err, userObjAdded) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
+            if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
-        }
 
-        if (userObj) {
-            logger.error(JSON.stringify(common.getError(2001)));
-            return res.status(500).send(common.getError(2001));
-        }
+            return res.status(200).send('ok');
+        });
     });
 }
 
@@ -593,7 +678,8 @@ const handleUsersEditPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2026)));
+        return res.status(404).render(pageNotFoundPage);
     }
 
     const username = req.params.username;
@@ -605,29 +691,19 @@ const handleUsersEditPath = function (req, res) {
     users.getUserByUsername(username, function (err, foundUser) {
         if (err) {
             if (err.code === 2003) {
-                return res.status(400).render(pageNotFoundPage);
+                logger.error(JSON.stringify(common.getError(2003)));
+                return res.status(404).render(pageNotFoundPage);
             }
 
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
-        const modeType = settings.getAllSettings().mode;
-        var userTypesList = [];
-        if (modeType === common.modeTypes.CLASS) {
-            userTypesList = [common.userTypes.STUDENT, common.userTypes.TA, common.userTypes.PROFESSOR];
-        }
-        if (modeType === common.modeTypes.COLLABORATORS) {
-            userTypesList = [common.userTypes.COLLABORATOR, common.userTypes.COLLABORATOR_ADMIN];
-        }
-
-        const userStatusList = [common.userStatus.ACTIVE, common.userStatus.PENDING, common.userStatus.DISABLED];
-
         return res.status(200).render(usersEditPage, {
             user: req.session.user,
             editUser: foundUser,
-            isClassMode: settings.getAllSettings().mode === common.modeTypes.CLASS,
-            isCollabMode: settings.getAllSettings().mode === common.modeTypes.COLLABORATORS,
+            isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+            isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS,
             commonUserTypes: common.userTypes,
             commonUserStatus: common.userStatus
         });
@@ -647,7 +723,8 @@ const handleUsersUpdatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2027)));
+        return res.status(404).send(common.getError(2027));
     }
 
     const oldUsername = req.body.oldUsername;
@@ -657,7 +734,7 @@ const handleUsersUpdatePath = function (req, res) {
             return res.status(400).send(err);
         }
 
-        var newUser = {
+        let newUser = {
             _id: userObj._id,
             fname: req.body.fname,
             lname: req.body.lname,
@@ -677,7 +754,6 @@ const handleUsersUpdatePath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            logger.info(`user: ${req.body.username} was created.`);
             return res.status(200).send('ok');
 
         });
@@ -697,7 +773,8 @@ const handleUsersImportPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2028)));
+        return res.status(404).render(pageNotFoundPage);
     }
 
     return res.status(200).render(usersImportPage, {
@@ -713,12 +790,13 @@ const handleUsersImportPath = function (req, res) {
  */
 const handleUsersImportFilePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2029)));
+        return res.status(403).send(common.getError(2029));
     }
 
     const validFileExtensions = ['text/csv', 'application/vnd.ms-excel'];
@@ -745,12 +823,10 @@ const handleUsersImportFilePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`Uploaded users list file by user: ${req.session.user._id}`);
-
         const fullFilePath = path.resolve(`${fileObject.filePath}/${fileObject.fileName}.${fileObject.fileExtension}`);
-        var importedList = [];
+        let importedList = [];
         csv2json().fromFile(fullFilePath).on('json', function (jsonObj) {
-            var userObj = {};
+            let userObj = {};
             userObj['username'] = jsonObj['Username'];
             userObj['password'] = jsonObj['Password'];
             userObj['fname'] = jsonObj['First Name'];
@@ -763,20 +839,21 @@ const handleUsersImportFilePath = function (req, res) {
                 return res.status(500).send(common.getError(1009));
             }
 
-            var added = 0;
-            var failed = 0;
-            var exist = 0;
-            var total = 0;
+            let added = 0;
+            let failed = 0;
+            let exist = 0;
+            let total = 0;
+            let processedDirs = 0;
 
-            for (var i = 0; i < importedList.length; i++) {
-                var inputUser = importedList[i];
-                var userToAdd = {
+            for (let i = 0; i < importedList.length; i++) {
+                let inputUser = importedList[i];
+                let userToAdd = {
                     fname: inputUser.fname,
                     lname: inputUser.lname,
                     username: inputUser.username,
                     email: inputUser.email,
                     password: inputUser.password,
-                    type: settings.getAllSettings().mode === common.modeTypes.CLASS ?
+                    type: settings.getModeType() === common.modeTypes.CLASS ?
                         common.userTypes.STUDENT.value : common.userTypes.COLLABORATOR.value,
                     status: common.userStatus.ACTIVE.value
                 };
@@ -795,14 +872,22 @@ const handleUsersImportFilePath = function (req, res) {
                         added++;
                     }
 
-                    if (total === importedList.length) {
-                        return res.status(200).render(usersImportCompletePage, {
-                            added: added,
-                            failed: failed,
-                            exist: exist,
-                            total: total
-                        });
-                    }
+                    cfs.mkdir(common.cfsTree.USERS, userObj._id, common.cfsPermission.OWNER, function (err, userObj) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                        }
+
+                        processedDirs++;
+
+                        if (total === importedList.length && processedDirs === importedList.length) {
+                            return res.status(200).render(usersImportCompletePage, {
+                                added: added,
+                                failed: failed,
+                                exist: exist,
+                                total: total
+                            });
+                        }
+                    });
                 });
             }
         });
@@ -817,7 +902,7 @@ const handleUsersImportFilePath = function (req, res) {
  */
 const handleprofilePicturePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     const pictureId = req.params.pictureId;
@@ -863,7 +948,7 @@ const handleprofilePicturePath = function (req, res) {
  */
 const handleUpdateProfilePicturePath = function (req, res) {
     if (!isActiveSession(req)) {
-        return res.status(403).send(common.getError(2006));
+        return res.status(401).render(loginPage);
     }
 
     const validImageExtensions = ['image/jpeg', 'image/png'];
@@ -890,7 +975,6 @@ const handleUpdateProfilePicturePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        logger.info(`Updated user: ${req.session.user._id} to file: ${fileName}`);
         users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
@@ -916,16 +1000,16 @@ const handleSettingsPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2030)));
+        return res.status(404).render(pageNotFoundPage);
     }
 
-    logger.info(`GET request to the settings page, by user: ${req.session.user._id}`);
     return res.status(200).render(settingsPage, {
         user: req.session.user,
-        generalActive: settings.getAllSettings().active,
-        canEditFirstAndLastName: settings.getAllSettings().users.canEditFirstAndLastName,
-        canEditEmail: settings.getAllSettings().users.canEditEmail,
-        canEditPassword: settings.getAllSettings().users.canEditPassword
+        generalActive: settings.isWebsiteActive(),
+        canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
+        canEditEmail: settings.isUsersAbleEditEmail(),
+        canEditPassword: settings.isUsersAbleEditPassword()
     });
 }
 
@@ -942,10 +1026,9 @@ const handleSettingsResetPath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2031)));
+        return res.status(403).send(common.getError(2031));
     }
-
-    logger.info(`POST request to the reset settings object, by user: ${req.session.user._id}`);
 
     settings.resetAllSettings(function (err, result) {
         if (err) {
@@ -970,10 +1053,10 @@ const handleSettingsUpdatePath = function (req, res) {
 
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        return res.status(403).render(pageNotFoundPage);
+        logger.error(JSON.stringify(common.getError(2032)));
+        return res.status(403).send(common.getError(2032));
     }
 
-    logger.info(`POST request to the update settings object, by user: ${req.session.user._id}`);
     const updateObject = {
         active: common.convertStringToBoolean(req.body.active),
         canEditEmail: common.convertStringToBoolean(req.body.canEditEmail),
@@ -990,13 +1073,915 @@ const handleSettingsUpdatePath = function (req, res) {
         return res.status(200).send('ok');
     });
 }
+
+/**
+ * path to get the projects page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2033)));
+        return res.status(404).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(projectsPage, {
+        user: req.session.user
+    });
+}
+
+/**
+ * path to get the projects list entry
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsListComponentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2034)));
+        return res.status(404).render(pageNotFoundPage);
+    }
+
+    projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        let addDraft = function () {
+            projects.getDraftProjectsInUserSelectionType(function (err, draftProjectsList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let joinedLists = common.joinLists(projectsList, draftProjectsList);
+                return res.status(200).send({
+                    projectsList: joinedLists,
+                    projectsEntryHTML: projectsEntryComponent()
+                });
+            });
+        }
+
+        if (req.session.user.type === common.userTypes.STUDENT.value) {
+            addDraft();
+        } else {
+            return res.status(200).send({
+                projectsList: projectsList,
+                projectsEntryHTML: projectsEntryComponent()
+            });
+        }
+    });
+}
+
+/**
+ * path to get the projects user groups list entry
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsGroupAssignPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2034)));
+        return res.status(404).render(pageNotFoundPage);
+    }
+
+    const projectId = req.query.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        let userIsAdmin = projectObj.admins.indexOf(req.session.user._id) !== -1;
+        let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
+
+        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2034)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DRAFT.value
+            && !userIsAdmin
+            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common.getError(2034)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2034)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DELETED.value) {
+            logger.error(JSON.stringify(common.getError(2034)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        projects.getProjectTeams(projectId, function (err, teamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            let projectMembers = [];
+            for (let i = 0; i < teamsList.length; i++) {
+                projectMembers = common.joinSets(projectMembers, teamsList[i].members);
+            }
+
+            const fullUserObjectsList = users.getActiveUsersList();
+            const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
+            const usersList = common.convertJsonListToList('_id', fullUserObjectsList);
+
+            let unassignedList = common.getArrayDiff(usersList, projectMembers);
+            let unassignedObjectsList = [];
+
+            for (let i = 0; i < unassignedList.length; i++) {
+                let innerUser = fullUsersListObject[unassignedList[i]];
+                if (innerUser) {
+                    unassignedObjectsList.push({
+                        fname: innerUser.fname,
+                        lname: innerUser.lname,
+                        username: innerUser.username,
+                        type: innerUser.type
+                    });
+                }
+            }
+
+            let resolvedTeamsList = [];
+            for (let i = 0; i < teamsList.length; i++) {
+                let teamObject = teamsList[i];
+                let teamMembers = [];
+                for (let j = 0; j < teamObject.members.length; j++) {
+                    let teamUser = fullUsersListObject[teamObject['members'][j]];
+                    if (teamUser) {
+                        teamMembers.push({
+                            fname: teamUser.fname,
+                            lname: teamUser.lname,
+                            username: teamUser.username,
+                            type: teamUser.type
+                        });
+                    }
+                }
+                resolvedTeamsList.push({
+                    name: teamObject.name,
+                    members: teamMembers
+                });
+            }
+
+            return res.status(200).send({
+                unassignedList: unassignedObjectsList,
+                groupList: resolvedTeamsList,
+                groupSize: projectObj.teamSize,
+                groupSelectionType: projectObj.teamSelectionType,
+                groupPrefix: projectObj.teamPrefix,
+                groupUserHTML: projectsGroupUserEntryComponent(),
+                groupHTML: projectsGroupEntryComponent(),
+                groupModalHTML: projectsGroupModalComponent(),
+                groupModalEntryHTML: projectsGroupModalEntryComponent(),
+                isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
+                isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+                isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+            });
+        });
+    });
+}
+
+/**
+ * path to get the projects add page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsAddPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2035)));
+        return res.status(404).render(pageNotFoundPage);
+    }
+
+    return res.status(200).render(projectsAddPage, {
+        user: req.session.user,
+        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+    });
+}
+
+/**
+ * root path to create a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectsCreatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common.getError(2036)));
+        return res.status(403).send(common.getError(2036));
+    }
+
+    const newProject = {
+        title: req.body.title,
+        description: req.body.description,
+        status: common.projectStatus.DRAFT.value,
+        admins: [req.session.user._id]
+    };
+
+    projects.addProject(newProject, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send(projectObj._id);
+    });
+}
+
+/**
+ * path to get a project page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectByIdPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common.getError(2038)));
+        return res.status(404).render(pageNotFoundPage);
+    }
+
+    const projectId = req.params.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        let userIsAdmin = projectObj.admins.indexOf(req.session.user._id) !== -1;
+        let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
+
+        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2038)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DRAFT.value
+            && !userIsAdmin
+            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common.getError(2038)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
+            logger.error(JSON.stringify(common.getError(2038)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        if (projectObj.status === common.projectStatus.DELETED.value) {
+            logger.error(JSON.stringify(common.getError(2038)));
+            return res.status(404).render(pageNotFoundPage);
+        }
+
+        return res.status(200).render(projectPagePage, {
+            user: req.session.user,
+            title: projectObj.title,
+            isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
+            description: projectObj.description,
+            isClassMode: settings.getModeType() === common.modeTypes.CLASS,
+            isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+        });
+    });
+}
+
+/**
+ * path to update a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2037)));
+            return res.status(403).send(common.getError(2037));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
+        }
+
+        let newProject = {
+            _id: req.body.projectId,
+            title: req.body.title,
+            description: req.body.description
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
+ * path to update a project's teams
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamsUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2039)));
+            return res.status(403).send(common.getError(2039));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
+        }
+
+        let inputTeamsList = req.body.teamsList;
+        if (!Array.isArray(inputTeamsList)) {
+            try {
+                inputTeamsList = JSON.parse(inputTeamsList);
+            }
+            catch (err) {
+                logger.error(common.getError(1011));
+                inputTeamsList = [];
+            }
+        }
+
+        projects.getProjectTeams(projectId, function (err, projectTeamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            let projectTeamsListofNames = common.convertJsonListToList('name', projectTeamsList);
+            let inputTeamsListofNames = common.convertJsonListToList('name', inputTeamsList);
+            let teamsListofNamesToDelete = common.getArrayDiff(projectTeamsListofNames, inputTeamsListofNames);
+            let teamsObj = common.convertListToJason('name', projectTeamsList);
+
+            let updateTeams = function () {
+                const fullUserObjectsList = users.getActiveUsersList();
+                const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+
+                let resolvedTeamsList = [];
+                for (let i = 0; i < inputTeamsList.length; i++) {
+                    let team = inputTeamsList[i];
+                    let members = [];
+                    if (team.members) {
+                        for (let j = 0; j < team.members.length; j++) {
+                            let username = team['members'][j]['username'];
+                            if (fullUsersListObject[username]) {
+                                members.push(fullUsersListObject[username]._id);
+                            }
+                        }
+                    }
+                    resolvedTeamsList.push({
+                        name: team.name,
+                        members: members
+                    });
+                }
+
+                let updateTeamsCounter = 0;
+                if (updateTeamsCounter === resolvedTeamsList.length) {
+                    return res.status(200).send('ok');
+                }
+                for (let i = 0; i < resolvedTeamsList.length; i++) {
+                    let team = resolvedTeamsList[i];
+                    projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
+                        if (err) {
+                            if (err.code === 6004) {
+                                team.status = common.teamStatus.ACTIVE.value;
+                                projects.addTeamToProject(projectId, team, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                    }
+
+                                    updateTeamsCounter++;
+                                    if (updateTeamsCounter === resolvedTeamsList.length) {
+                                        if (projectObj.status === common.projectStatus.ACTIVE.value) {
+                                            updateActiveTeam();
+                                        } else {
+                                            return res.status(200).send('ok');
+                                        }
+                                    }
+                                });
+                            } else {
+                                logger.error(JSON.stringify(err));
+                            }
+                        }
+
+                        if (teamObj) {
+                            team._id = teamObj._id;
+                            projects.updateTeamInProject(projectId, team, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                }
+
+                                updateTeamsCounter++;
+                                if (updateTeamsCounter === resolvedTeamsList.length) {
+                                    if (projectObj.status === common.projectStatus.ACTIVE.value) {
+                                        updateActiveTeam();
+                                    } else {
+                                        return res.status(200).send('ok');
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            let updateActiveTeam = function () {
+                projects.getProjectTeams(projectId, function (err, teamsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    let members = projectObj.admins;
+                    for (let i = 0; i < teamsList.length; i++) {
+                        members = common.joinSets(members, teamsList[i].members);
+                    }
+
+                    let newProject = {
+                        _id: req.body.projectId,
+                        status: common.projectStatus.ACTIVE.value,
+                        members: members
+                    };
+                    projects.updateProject(newProject, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(400).send(err);
+                        }
+
+                        return res.status(200).send('ok');
+                    });
+                });
+            }
+
+            let completedDeletedTeams = 0;
+            if (completedDeletedTeams === teamsListofNamesToDelete.length) {
+                updateTeams();
+            } else {
+                for (let i = 0; i < teamsListofNamesToDelete.length; i++) {
+                    let deleteTeamName = teamsListofNamesToDelete[i];
+                    if (teamsObj[deleteTeamName]) {
+                        let teamToDeleteUpdate = teamsObj[deleteTeamName];
+                        teamToDeleteUpdate.status = common.teamStatus.DISABLED.value;
+                        projects.updateTeamInProject(projectId, teamToDeleteUpdate, function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                            }
+
+                            completedDeletedTeams++;
+                            if (completedDeletedTeams === teamsListofNamesToDelete.length) {
+                                updateTeams();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    });
+}
+
+/**
+ * path to update a project's admins
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectAdminsUpdatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2037)));
+            return res.status(403).send(common.getError(2037));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
+        }
+
+        const inputAdminsList = req.body.adminsList;
+        if (!Array.isArray(inputAdminsList)) {
+            try {
+                inputAdminsList = JSON.parse(inputAdminsList);
+            }
+            catch (err) {
+                logger.error(common.getError(1011));
+                inputAdminsList = [];
+            }
+        }
+
+        const projectAdminsListofNames = common.convertJsonListToList('username', inputAdminsList);
+        const fullUserObjectsList = users.getActiveUsersList();
+        const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+
+        let newAdminsList = [];
+        for (let i = 0; i < projectAdminsListofNames.length; i++) {
+            let adminObj = fullUsersListObject[projectAdminsListofNames[i]];
+            if (adminObj) {
+                newAdminsList.push(adminObj._id);
+            }
+        }
+
+        const newProject = {
+            _id: projectId,
+            admins: newAdminsList
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
+ * path to activate a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectActivatePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2041)));
+            return res.status(403).send(common.getError(2041));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
+        }
+
+        projects.getProjectTeams(projectId, function (err, teamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            let members = projectObj.admins;
+            for (let i = 0; i < teamsList.length; i++) {
+                members = common.joinSets(members, teamsList[i].members);
+            }
+
+            let newProject = {
+                _id: req.body.projectId,
+                status: common.projectStatus.ACTIVE.value,
+                members: members
+            };
+            projects.updateProject(newProject, function (err, result) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(400).send(err);
+                }
+
+                return res.status(200).send('ok');
+            });
+        });
+    });
+}
+
+/**
+ * path to delete a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectDeletePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2040)));
+            return res.status(403).send(common.getError(2040));
+        }
+
+        let newProject = {
+            _id: req.body.projectId,
+            status: common.projectStatus.DELETED.value
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
+ * path to update a project teams configuration
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamsConfigPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (settings.getModeType() !== common.modeTypes.CLASS) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    if (req.session.user.type !== common.userTypes.PROFESSOR.value
+        && req.session.user.type !== common.userTypes.TA.value
+        && req.session.user.type !== common.userTypes.STUDENT.value) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(403).send(common.getError(1000));
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2037)));
+            return res.status(403).send(common.getError(2037));
+        }
+
+        if (projectObj.status !== common.projectStatus.ACTIVE.value
+            && projectObj.status !== common.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common.getError(2042)));
+            return res.status(400).send(common.getError(2042));
+        }
+
+        let newProject = {
+            _id: projectId,
+            teamSize: parseInt(req.body.groupSize),
+            teamSelectionType: parseInt(req.body.groupSelectType),
+            teamPrefix: req.body.groupPrefix
+        };
+        projects.updateProject(newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
+ * path to update a student's team in a  project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamsUpdateMePath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    if (req.session.user.type !== common.userTypes.STUDENT.value) {
+        logger.error(JSON.stringify(common.getError(1000)));
+        return res.status(400).send(common.getError(1000));
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.status === common.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common.getError(2012)));
+            return res.status(403).send(common.getError(2012));
+        }
+
+        if (projectObj.status === common.projectStatus.CLOSED.value) {
+            logger.error(JSON.stringify(common.getError(2013)));
+            return res.status(403).send(common.getError(2013));
+        }
+
+        if (projectObj.status !== common.projectStatus.DRAFT.value
+            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common.getError(2014)));
+            return res.status(403).send(common.getError(2014));
+        }
+
+        projects.getTeamOfUser(projectId, req.session.user._id, function (err, teamObj) {
+            if (err) {
+                if (err.code !== 6004) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+            }
+
+            const teamNotExist = (err && err.code === 6004);
+            const addAction = req.body.action === 'add';
+            const removeAction = req.body.action === 'remove';
+            const teamName = req.body.teamName;
+
+            if (!addAction && !removeAction) {
+                logger.error(JSON.stringify(common.getError(2015)));
+                return res.status(400).send(common.getError(2015));
+            }
+
+            if (addAction) {
+                if (teamObj) {
+                    logger.error(JSON.stringify(common.getError(2016)));
+                    return res.status(400).send(common.getError(2016));
+                }
+
+                projects.getTeamInProjectByName(projectId, teamName, function (err, teamObjFound) {
+                    if (err) {
+                        if (err.code === 6004) {
+                            const newTeam = {
+                                name: teamName,
+                                status: common.teamStatus.ACTIVE.value,
+                                projectId: projectId,
+                                members: [req.session.user._id]
+                            };
+                            projects.addTeamToProject(projectId, newTeam, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                return res.status(200).send('ok');
+                            });
+                        } else {
+                            logger.error(JSON.stringify(err));
+                            return res.status(400).send(err);
+                        }
+                    }
+
+                    if (teamObjFound) {
+                        if (projectObj.teamSize < teamObjFound.members.length + 1) {
+                            logger.error(JSON.stringify(common.getError(2020)));
+                            return res.status(400).send(common.getError(2020));
+                        }
+
+                        teamObjFound.members.push(req.session.user._id);
+                        const updatedTeam = {
+                            _id: teamObjFound._id,
+                            projectId: projectId,
+                            members: teamObjFound.members
+                        };
+                        projects.updateTeamInProject(projectId, updatedTeam, function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            return res.status(200).send('ok');
+                        });
+                    }
+                });
+            }
+
+            if (removeAction) {
+                if (teamNotExist) {
+                    logger.error(JSON.stringify(common.getError(2017)));
+                    return res.status(400).send(common.getError(2017));
+                }
+
+                if (teamObj.name !== teamName) {
+                    logger.error(JSON.stringify(common.getError(2021)));
+                    return res.status(400).send(common.getError(2021));
+                }
+
+                teamObj.members.splice(teamObj.members.indexOf(req.session.user._id), 1);
+
+                let updatedTeam = {
+                    _id: teamObj._id,
+                    projectId: projectId,
+                    members: teamObj.members,
+                    status: teamObj.members.length === 0 ? common.teamStatus.DISABLED.value : common.teamStatus.ACTIVE.value
+                };
+
+                projects.updateTeamInProject(projectId, updatedTeam, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            }
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
+
+/**
+ * Log some information about the request
+ */
+app.use(function (req, res, next) {
+    logger.log(`${req.method}: ${req.url} SESSION._id:${isActiveSession(req) ? JSON.stringify(req.session.user._id) : ' NO USER'} QUERY:${JSON.stringify(req.query)} PARAMS:${JSON.stringify(req.params)} BODY:${JSON.stringify(req.body)}`);
+    next();
+});
 
 // <Get Requests> ------------------------------------------------
 app.get('/', handleRootPath);
 app.get('/me', handleMePath);
 app.get('/profile', handleProfilePath);
 app.get('/profilePicture/:pictureId', handleprofilePicturePath);
+app.get('/project/:projectId', handleProjectByIdPath);
+app.get('/projects', handleProjectsPath);
+app.get('/projectsListComponent', handleProjectsListComponentPath);
+app.get('/projectsAdminsListComponent', handleProjectsAdminsListComponentPath);
+app.get('/projectsGroupAssign', handleProjectsGroupAssignPath);
+app.get('/projects/add', handleProjectsAddPath);
 app.get('/settings', handleSettingsPath);
 app.get('/users', handleUsersPath);
 app.get('/usersListComponent', handleUsersListComponentPath);
@@ -1010,12 +1995,19 @@ app.post('/login', handleLoginPath);
 app.post('/mode/select', handleModeSelectPath);
 app.post('/profile/update', handleProfileUpdatePath);
 app.post('/profile/update/picture', handleUpdateProfilePicturePath);
+app.post('/project/activate', handleProjectActivatePath);
+app.post('/project/admins/update', handleProjectAdminsUpdatePath);
+app.post('/project/teams/update', handleProjectTeamsUpdatePath);
+app.post('/project/teams/update/me', handleProjectTeamsUpdateMePath);
+app.post('/project/teams/config', handleProjectTeamsConfigPath);
+app.post('/project/update', handleProjectUpdatePath);
 app.post('/settings/reset', handleSettingsResetPath);
 app.post('/settings/update', handleSettingsUpdatePath);
 app.post('/users/update', handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
+app.put('/projects/create', handleProjectsCreatePath);
 app.put('/users/create', handleUsersCreatePath);
 app.put('/users/import/file', handleUsersImportFilePath);
 app.put('/users/request/access', handleUsersRequestAccessPath);
@@ -1023,6 +2015,7 @@ app.put('/users/request/access', handleUsersRequestAccessPath);
 
 // <Delete Requests> ------------------------------------------------
 app.delete('/logout', handleLogoutPath);
+app.delete('/project/delete', handleProjectDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 // <notificationsWS Requests> ------------------------------------------------
@@ -1032,7 +2025,7 @@ notificationsWS.on('connection', function (client, req) {
     client.send('ws ok');
 });
 setInterval(function () {
-    for (var client of notificationsWS.clients) {
+    for (let client of notificationsWS.clients) {
         client.send('ws ok');
     }
 }, 1000);
