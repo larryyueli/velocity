@@ -74,7 +74,8 @@ const projectPagePage = 'projects/project-page';
 const projectsAddPage = 'projects/projects-add';
 const projectTeamPage = 'projects/project-team';
 const settingsPage = 'settings/settings';
-const ticketCreationPage = 'tickets/tickets';
+const ticketCreationPage = 'tickets/tickets-entry';
+const ticketModificationPage = 'tickets/tickets-edit';
 const usersPage = 'users/users';
 const usersAddPage = 'users/users-add';
 const usersEditPage = 'users/users-edit';
@@ -2234,7 +2235,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                     reporter = `${resolvedReporter.username} - ${resolvedReporter.fname} ${resolvedReporter.lname}`
                 }
 
-                return res.status(200).render(ticketCreationPage, {
+                return res.status(200).render(ticketModificationPage, {
                     user: req.session.user,
                     projectId: projectId,
                     teamId: teamId,
