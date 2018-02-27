@@ -471,7 +471,7 @@ const handleUsersListComponentPath = function (req, res) {
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common.getError(2023)));
-        return res.status(403).render(pageNotFoundPage);
+        return res.status(403).send(common.getError(2023));
     }
 
     const fullUsersList = users.getFullUsersList();
@@ -502,7 +502,7 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common.getError(2010)));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(403).send(common.getError(2010));
         }
 
         const fullUserObjectsList = users.getActiveUsersList();
@@ -726,7 +726,7 @@ const handleUsersUpdatePath = function (req, res) {
     if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common.getError(2027)));
-        return res.status(404).send(common.getError(2027));
+        return res.status(403).send(common.getError(2027));
     }
 
     const oldUsername = req.body.oldUsername;
@@ -1110,7 +1110,7 @@ const handleProjectsListComponentPath = function (req, res) {
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
         logger.error(JSON.stringify(common.getError(2034)));
-        return res.status(404).render(pageNotFoundPage);
+        return res.status(403).send(common.getError(2034));
     }
 
     projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {
@@ -1158,7 +1158,7 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
     if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
         logger.error(JSON.stringify(common.getError(2034)));
-        return res.status(404).render(pageNotFoundPage);
+        return res.status(403).send(common.getError(2034));
     }
 
     const projectId = req.query.projectId;
@@ -1173,24 +1173,24 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
         if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
             logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(403).send(common.getError(2034));
         }
 
         if (projectObj.status === common.projectStatus.DRAFT.value
             && !userIsAdmin
             && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
             logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(403).send(common.getError(2034));
         }
 
         if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
             logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(403).send(common.getError(2034));
         }
 
         if (projectObj.status === common.projectStatus.DELETED.value) {
             logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(403).send(common.getError(2034));
         }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
