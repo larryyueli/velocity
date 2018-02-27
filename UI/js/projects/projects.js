@@ -61,7 +61,10 @@ function getProjectsList() {
             displayList();
         },
         error: function (data) {
-            //TODO: add fail snackbar
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
 }

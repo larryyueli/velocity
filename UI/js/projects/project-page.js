@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const projectId = window.location.href.split('/project/')[1];
 
 // Global variables from the request
+var adminUserRow = null;
 var groupList = [];
 var groupModalEntryHTML = null;
 var groupModalHTML = null;
@@ -31,7 +32,6 @@ var groupUserRow = null;
 var unassignedList = null;
 var projectAdminsList = null;
 var projectUsersList = null;
-var adminUserRow = null;
 
 // Permissions
 var isProjectAdmin = null;
@@ -237,7 +237,7 @@ $(function () {
         if (groupName === '') {
             failSnackbar(translate('groupNameCantBeEmpty'));
         } else if (groupList.find(group => group.name === groupName)) {
-            failSnackbar(translate('groupNamealreadyExists'));
+            failSnackbar(translate('groupNameAlreadyExists'));
         } else {
             groupList.push(makeGroupObject(false, [], groupName));
 
