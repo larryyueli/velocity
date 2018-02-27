@@ -1,13 +1,13 @@
 br
 .row
-    form.col.s12#userTicket
+    .col.s12#userTicket
         .card.center
             .card-image
                 a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href=`/project/${projectId}/team/${teamId}`)
                     i.material-icons arrow_back
             .card-content
                 .input-field.padding-10
-                    input.validate(type='text', name='name', required autofocus)
+                    input.validate(type='text', name='name')#titleField
                     label(for='name') #{__('tickets.ticketTitle')}
             .card-action
                 .row
@@ -50,13 +50,7 @@ br
                                 label
                                     | #{__('tickets.priority')}
                             .input-field.padding-10.col.s12.m3
-                                select#pointsSelection
-                                    option(value=1) 1
-                                    option(value=2) 2
-                                    option(value=4, selected) 4
-                                    option(value=8) 8
-                                    option(value=16) 16
-                                    option(value=32) 32
+                                input(type='number', name='quantity', min='1', max='10', value='5')#pointsSelection
                                 label
                                     | #{__('tickets.points')}
                         .row

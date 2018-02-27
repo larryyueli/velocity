@@ -27,6 +27,11 @@ const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
 const assigneeAutocompleteId = '#assigneeAutocomplete';
+const titleFieldId = '#titleField';
+const typeSelectionId = '#typeSelection';
+const stateSelectionId = '#stateSelection';
+const prioritySelectionId = '#prioritySelection';
+const pointsId = '#pointsSelection';
 
 typeSelection.change(function () {
     if (typeSelection.val() == 0) {
@@ -58,17 +63,33 @@ $(function () {
  * create ticket action
 */
 function createTicketAction() {
+    const titleValue = $(titleFieldId).val().trim();
+    const typeValue = $(typeSelectionId).val();
+    const descriptionValue = $(descriptionId).summernote('code');
+    const stateValue = $(stateSelectionId).val();
+    const priorityValue = $(prioritySelectionId).val();
+    const pointsValue = $(pointsId).val();
+
+    if (titleValue.length <= 0) {
+        return warningSnackbar(translate('titleCanNotBeEmpty'));
+    }
+
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('descriptionCanNotBeEmpty'));
+    }
+
     $.ajax({
         type: 'PUT',
         url: '/tickets/create',
         data: {
             projectId: projectId,
             teamId: teamId,
-            title: 'ticket title',
-            description: 'ticket description',
-            type: 1,
-            priority: 8,
-            state: 1,
+            title: titleValue,
+            description: descriptionValue,
+            type: typeValue,
+            priority: priorityValue,
+            state: stateValue,
+            points: pointsValue,
             assignee: 'student1'
         },
         success: function (data) {

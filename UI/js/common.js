@@ -150,6 +150,8 @@ const translations = Object.freeze({
     adminConfigurationSuccess: 'Admins have been saved successfully',
     notInGroup: 'You are currently not in a group',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
+    titleCanNotBeEmpty: 'Title can not be empty!',
+    descriptionCanNotBeEmpty: 'Description can not be empty!',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',
