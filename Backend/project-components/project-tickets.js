@@ -118,10 +118,13 @@ const getTicketById = function (projectId, teamId, ticketId, callback) {
 /**
  * update the ticket information
  *
+ * @param {string} ticketId ticket id
+ * @param {string} teamId team id
+ * @param {string} projectId project id
  * @param {object} updateParams modify parameters
  * @param {function} callback callback function
  */
-const updateTicket = function (updateParams, callback) {
+const updateTicket = function (ticketId, teamId, projectId, updateParams, callback) {
     let searchQuery = {};
     searchQuery.$and = {};
     let updateQuery = {};
@@ -135,11 +138,11 @@ const updateTicket = function (updateParams, callback) {
         return callback(common.getError(7007), null);
     }
 
-    if (typeof (updateParams._id) !== common.variableTypes.STRING) {
+    if (typeof (ticketId) !== common.variableTypes.STRING) {
         return callback(common.getError(7007), null);
     }
 
-    searchQuery.$and = [{ _id: updateParams._id }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }];
+    searchQuery.$and = [{ _id: ticketId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }];
 
     if (typeof (updateParams.title) === common.variableTypes.STRING) {
         updateQuery.$set.title = updateParams.title;

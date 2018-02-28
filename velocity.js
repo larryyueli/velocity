@@ -1421,11 +1421,10 @@ const handleProjectUpdatePath = function (req, res) {
         }
 
         let newProject = {
-            _id: req.body.projectId,
             title: req.body.title,
             description: req.body.description
         };
-        projects.updateProject(newProject, function (err, result) {
+        projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(400).send(err);
@@ -1539,8 +1538,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                         }
 
                         if (teamObj) {
-                            team._id = teamObj._id;
-                            projects.updateTeamInProject(projectId, team, function (err, result) {
+                            projects.updateTeamInProject(teamObj._id, projectId, team, function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                 }
@@ -1572,11 +1570,10 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                     }
 
                     let newProject = {
-                        _id: req.body.projectId,
                         status: common.projectStatus.ACTIVE.value,
                         members: members
                     };
-                    projects.updateProject(newProject, function (err, result) {
+                    projects.updateProject(req.body.projectId, newProject, function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             return res.status(400).send(err);
@@ -1596,7 +1593,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                     if (teamsObj[deleteTeamName]) {
                         let teamToDeleteUpdate = teamsObj[deleteTeamName];
                         teamToDeleteUpdate.status = common.teamStatus.DISABLED.value;
-                        projects.updateTeamInProject(projectId, teamToDeleteUpdate, function (err, result) {
+                        projects.updateTeamInProject(teamToDeleteUpdate._id, projectId, teamToDeleteUpdate, function (err, result) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                             }
@@ -1666,10 +1663,9 @@ const handleProjectAdminsUpdatePath = function (req, res) {
         }
 
         const newProject = {
-            _id: projectId,
             admins: newAdminsList
         };
-        projects.updateProject(newProject, function (err, result) {
+        projects.updateProject(projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -1721,11 +1717,10 @@ const handleProjectActivatePath = function (req, res) {
             }
 
             let newProject = {
-                _id: req.body.projectId,
                 status: common.projectStatus.ACTIVE.value,
                 members: members
             };
-            projects.updateProject(newProject, function (err, result) {
+            projects.updateProject(req.body.projectId, newProject, function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(400).send(err);
@@ -1761,10 +1756,9 @@ const handleProjectDeletePath = function (req, res) {
         }
 
         let newProject = {
-            _id: req.body.projectId,
             status: common.projectStatus.DELETED.value
         };
-        projects.updateProject(newProject, function (err, result) {
+        projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(400).send(err);
@@ -1817,12 +1811,11 @@ const handleProjectTeamsConfigPath = function (req, res) {
         }
 
         let newProject = {
-            _id: projectId,
             teamSize: parseInt(req.body.groupSize),
             teamSelectionType: parseInt(req.body.groupSelectType),
             teamPrefix: req.body.groupPrefix
         };
-        projects.updateProject(newProject, function (err, result) {
+        projects.updateProject(projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(400).send(err);
@@ -1927,11 +1920,10 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
 
                         teamObjFound.members.push(req.session.user._id);
                         const updatedTeam = {
-                            _id: teamObjFound._id,
                             projectId: projectId,
                             members: teamObjFound.members
                         };
-                        projects.updateTeamInProject(projectId, updatedTeam, function (err, result) {
+                        projects.updateTeamInProject(teamObjFound._id, projectId, updatedTeam, function (err, result) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                                 return res.status(500).send(err);
@@ -1957,13 +1949,12 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
                 teamObj.members.splice(teamObj.members.indexOf(req.session.user._id), 1);
 
                 let updatedTeam = {
-                    _id: teamObj._id,
                     projectId: projectId,
                     members: teamObj.members,
                     status: teamObj.members.length === 0 ? common.teamStatus.DISABLED.value : common.teamStatus.ACTIVE.value
                 };
 
-                projects.updateTeamInProject(projectId, updatedTeam, function (err, result) {
+                projects.updateTeamInProject(teamObj._id, projectId, updatedTeam, function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
