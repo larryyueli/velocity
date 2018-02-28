@@ -23,6 +23,7 @@ const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
 const createTicketButtonId = '#createTicketButton';
 const descriptionId = '#description';
+const newCommentId = '#newComment';
 const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
@@ -51,4 +52,5 @@ $(function () {
     $('select').material_select();
 
     initSummernote(descriptionId);
+    initSummernote(newCommentId);
 });

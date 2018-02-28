@@ -2241,6 +2241,57 @@ const handleProjectTeamTicketPath = function (req, res) {
 }
 
 /**
+ * root path for commenting on a ticket
+ * 
+ * @param {*} req req object
+ * @param {*} res res object
+ */
+const handleTicketsCommentPath = function (req, res) {
+    if (!isActiveSession(req)) {
+        return res.status(401).render(loginPage);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    const assignee = req.body.ticketId;
+    const comment = req.body.comment;
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common.getError(2018)));
+            return res.status(400).send(common.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common.getError(2019)));
+                return res.status(400).send(common.getError(2019));
+            }
+
+            users.getUserByUsername(assignee, function (err, result) {
+                if (err && err.code !== 2003) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                return res.status(200).send('ok');
+            });
+        });
+    });
+}
+
+/**
  * root path to get the list of team members
  *
  * @param {object} req req object
@@ -2346,6 +2397,7 @@ app.post('/users/update', handleUsersUpdatePath);
 // <Put Requests> ------------------------------------------------
 app.put('/projects/create', handleProjectsCreatePath);
 app.put('/tickets/create', handleTicketsCreatePath);
+app.put('/tickets/comment', handleTicketsCommentPath);
 app.put('/users/create', handleUsersCreatePath);
 app.put('/users/import/file', handleUsersImportFilePath);
 app.put('/users/request/access', handleUsersRequestAccessPath);

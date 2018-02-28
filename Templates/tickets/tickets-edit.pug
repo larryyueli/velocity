@@ -105,7 +105,19 @@ block content
                         .row
                             button.waves-effect.waves-light.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
                                 i.material-icons.right add
-
+        .row
+            ul.collection
+                each comment in ticket.comments
+                    li.collection-item.avatar
+                        if comment.username === user.username
+                            button.waves-effect.waves-light.btn.right.primaryColour-background-colour#removeComment #{__('actions.delete')}
+                                i.material-icons.right close
+                        span.title #{comment.username}
+                        p
+                            | #{comment.content}
+            #newComment
+            button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
+                i.material-icons.right add
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')
