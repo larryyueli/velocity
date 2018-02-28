@@ -2291,27 +2291,44 @@ const handleProjectTeamTicketPath = function (req, res) {
                     return res.status(404).render(pageNotFoundPage);
                 }
 
-                const usersList = common.convertListToJason('_id', users.getActiveUsersList());
+                projects.getCommentsByTicketId(projectId, teamId, ticketId, function (err, commentsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(404).render(pageNotFoundPage);
+                    }
 
-                let assignee = 'no assignee';
-                let resolvedAssignee = usersList[ticketObj.assignee];
-                if (resolvedAssignee) {
-                    assignee = `${resolvedAssignee.username} - ${resolvedAssignee.fname} ${resolvedAssignee.lname}`
-                }
+                    const usersList = common.convertListToJason('_id', users.getActiveUsersList());
 
-                let reporter = 'no reporter';
-                let resolvedReporter = usersList[ticketObj.reporter];
-                if (resolvedReporter) {
-                    reporter = `${resolvedReporter.username} - ${resolvedReporter.fname} ${resolvedReporter.lname}`
-                }
+                    let assignee = 'no assignee';
+                    let resolvedAssignee = usersList[ticketObj.assignee];
+                    if (resolvedAssignee) {
+                        assignee = `${resolvedAssignee.username} - ${resolvedAssignee.fname} ${resolvedAssignee.lname}`
+                    }
 
-                return res.status(200).render(ticketModificationPage, {
-                    user: req.session.user,
-                    projectId: projectId,
-                    teamId: teamId,
-                    reporter: reporter,
-                    assignee: assignee,
-                    ticket: ticketObj
+                    let reporter = 'no reporter';
+                    let resolvedReporter = usersList[ticketObj.reporter];
+                    if (resolvedReporter) {
+                        reporter = `${resolvedReporter.username} - ${resolvedReporter.fname} ${resolvedReporter.lname}`
+                    }
+
+                    for(let i = 0; i< commentsList.length; i++){
+                        let comment = commentsList[i];
+                        let resolvedUserFromComment = usersList[comment.userId];
+                        if(resolvedUserFromComment){
+                            commentsList[i]['username'] = `${resolvedUserFromComment.fname} ${resolvedUserFromComment.lname}`;
+                            commentsList[i]['picture'] = resolvedUserFromComment.picture;
+                        }
+                    }
+
+                    return res.status(200).render(ticketModificationPage, {
+                        user: req.session.user,
+                        projectId: projectId,
+                        teamId: teamId,
+                        reporter: reporter,
+                        assignee: assignee,
+                        ticket: ticketObj,
+                        comments: commentsList
+                    });
                 });
             });
         });

@@ -107,8 +107,9 @@ block content
                                 i.material-icons.right save
         .row
             ul.collection
-                each comment in ticket.comments
+                each comment in comments
                     li.collection-item.avatar
+                        img.circle(src=`/profilePicture/${user.picture}`, alt='')
                         if comment.username === user.username
                             button.waves-effect.waves-light.btn.right.primaryColour-background-colour#removeComment #{__('actions.delete')}
                                 i.material-icons.right close

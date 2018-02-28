@@ -51,7 +51,7 @@ const addComment = function (comment, callback) {
     commentToAdd._id = common.getUUID();
     commentToAdd.projectId = comment.projectId;
     commentToAdd.teamId = comment.teamId;
-    commentToAdd.ticketId = comment.title;
+    commentToAdd.ticketId = comment.ticketId;
     commentToAdd.ctime = currentDate;
     commentToAdd.mtime = currentDate;
     commentToAdd.userId = comment.userId;
@@ -92,7 +92,7 @@ const getComment = function (searchQuery, callback) {
  * @param {function} callback callback function
  */
 const getCommentsByTicketId = function (projectId, teamId, ticketId, callback) {
-    getLimitedCommentsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }] }, { date: 1 }, 0, callback);
+    getLimitedCommentsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }] }, { mtime: 1 }, 0, callback);
 }
 
 /**
