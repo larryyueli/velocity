@@ -115,9 +115,14 @@ block content
                         span.title #{comment.username}
                         p
                             | #{comment.content}
-            #newComment
-            button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
-                i.material-icons.right add
+        .row
+            .col.s12
+                .input-field
+                    textarea.materialize-textarea#newComment
+                    label(for="newComment")
+                        | #{__('tickets.writeComment')}
+                button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
+                    i.material-icons.right add
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')

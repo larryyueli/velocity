@@ -52,5 +52,4 @@ $(function () {
     $('select').material_select();
 
     initSummernote(descriptionId);
-    initSummernote(newCommentId);
 });
