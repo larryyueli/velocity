@@ -305,6 +305,22 @@ const ticketTypes = Object.freeze({
     MILESTONE: { value: 2, text: 'milestone' }
 });
 exports.ticketTypes = ticketTypes;
+
+// common ticket default assignee
+const noAssignee = 'No Assignee';
+exports.noAssignee = noAssignee;
+
+// common ticket default points
+const defaultPoints = 1;
+exports.defaultPoints = defaultPoints;
+
+// common ticket priority
+const ticketPriority = Object.freeze({
+    LOW: { value: 0, text: 'low' },
+    MEDIUM: { value: 1, text: 'medium' },
+    HIGH: { value: 2, text: 'high' }
+});
+exports.ticketPriority = ticketPriority;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

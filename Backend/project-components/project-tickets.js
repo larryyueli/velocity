@@ -42,6 +42,7 @@ const addTicket = function (ticket, callback) {
         || typeof (ticket.projectId) !== common.variableTypes.STRING
         || typeof (ticket.teamId) !== common.variableTypes.STRING
         || typeof (ticket.reporter) !== common.variableTypes.STRING
+        || !common.isValueInObjectWithKeys(ticket.priority, 'value', common.ticketPriority)
         || !common.isValueInObjectWithKeys(ticket.status, 'value', common.ticketStatus)
         || !common.isValueInObjectWithKeys(ticket.state, 'value', common.ticketStates)
         || !common.isValueInObjectWithKeys(ticket.type, 'value', common.ticketTypes)) {
@@ -62,7 +63,9 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.state = ticket.state;
     ticketToAdd.type = ticket.type;
     ticketToAdd.reporter = ticket.reporter;
-    ticketToAdd.assignee = typeof (ticket.assignee) === common.variableTypes.STRING ? ticket.assignee : null;
+    ticketToAdd.priority = ticket.priority;
+    ticketToAdd.assignee = typeof (ticket.assignee) === common.variableTypes.STRING ? ticket.assignee : common.noAssignee;
+    ticketToAdd.points = typeof (ticket.points) === common.variableTypes.NUMBER ? ticket.points : common.defaultPoints;
 
     db.addTicket(ticketToAdd, callback);
 }
@@ -112,9 +115,73 @@ const getTicketById = function (projectId, teamId, ticketId, callback) {
     getTicket({ $and: [{ _id: ticketId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, callback);
 }
 
+/**
+ * update the ticket information
+ *
+ * @param {object} updateParams modify parameters
+ * @param {function} callback callback function
+ */
+const updateTicket = function (updateParams, callback) {
+    let searchQuery = {};
+    searchQuery.$and = {};
+    let updateQuery = {};
+    updateQuery.$set = {};
+
+    if (typeof (projectId) !== common.variableTypes.STRING) {
+        return callback(common.getError(7007), null);
+    }
+
+    if (typeof (teamId) !== common.variableTypes.STRING) {
+        return callback(common.getError(7007), null);
+    }
+
+    if (typeof (updateParams._id) !== common.variableTypes.STRING) {
+        return callback(common.getError(7007), null);
+    }
+
+    searchQuery.$and = [{ _id: updateParams._id }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }];
+
+    if (typeof (updateParams.title) === common.variableTypes.STRING) {
+        updateQuery.$set.title = updateParams.title;
+    }
+
+    if (typeof (updateParams.description) === common.variableTypes.STRING) {
+        updateQuery.$set.description = updateParams.description;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {
+        updateQuery.$set.priority = updateParams.priority;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.ticketStatus)) {
+        updateQuery.$set.status = updateParams.status;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.state, 'value', common.ticketStates)) {
+        updateQuery.$set.state = updateParams.state;
+    }
+
+    if (common.isValueInObjectWithKeys(updateParams.type, 'value', common.ticketTypes)) {
+        updateQuery.$set.type = updateParams.type;
+    }
+
+    if (common.isEmptyObject(updateQuery.$set)) {
+        delete updateQuery.$set;
+    }
+
+    if (common.isEmptyObject(updateQuery)) {
+        return callback(common.getError(7007), null);
+    }
+
+    updateQuery.$set.mtime = common.getDate();
+
+    db.updateTicket(searchQuery, updateQuery, callback);
+}
+
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
 exports.getTicketById = getTicketById;
 exports.getTicketsByTeamId = getTicketsByTeamId;
 exports.initialize = initialize;
+exports.updateTicket = updateTicket;
 // </exports> ----------------------------------

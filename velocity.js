@@ -2027,6 +2027,7 @@ const handleTicketsCreatePath = function (req, res) {
                     status: common.ticketStatus.ACTIVE.value,
                     type: parseInt(req.body.type),
                     state: parseInt(req.body.state),
+                    points: parseInt(req.body.points),
                     priority: parseInt(req.body.priority),
                     reporter: req.session.user._id
                 };
@@ -2159,7 +2160,7 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
             }
 
             const reporter = `${req.session.user.username} - ${req.session.user.fname} ${req.session.user.lname}`;
-            const assignee = `${req.session.user.username} - ${req.session.user.fname} ${req.session.user.lname}`;
+            const assignee = common.noAssignee;
 
             return res.status(200).render(ticketCreationPage, {
                 user: req.session.user,

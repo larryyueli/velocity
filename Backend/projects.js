@@ -136,7 +136,7 @@ const updateProject = function (updateParams, callback) {
     updateQuery.$set = {};
 
     if (typeof (updateParams._id) === common.variableTypes.STRING) {
-        searchQuery = { _id: updateParams._id };
+        searchQuery = { $and: [{ _id: projectId }, { status: { $ne: common.projectStatus.DELETED.value } }] };
     }
 
     if (common.isEmptyObject(searchQuery)) {
@@ -304,7 +304,7 @@ const updateTeam = function (projectId, updateParams, callback) {
         return callback(common.getError(6007), null);
     }
 
-    searchQuery.$and = [{ projectId: projectId }, { _id: updateParams._id }];
+    searchQuery.$and = [{ _id: updateParams._id }, { projectId: projectId }, { status: common.teamStatus.ACTIVE.value }];
 
     if (typeof (updateParams.name) === common.variableTypes.STRING) {
         updateQuery.$set.name = updateParams.name;
@@ -351,4 +351,5 @@ exports.updateTeamInProject = updateTeam;
 exports.addTicketToTeam = tickets.addTicket;
 exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
+exports.updateTicket = tickets.updateTicket;
 // </tickets> ----------------------------------

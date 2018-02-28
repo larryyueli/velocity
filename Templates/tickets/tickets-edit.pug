@@ -19,57 +19,56 @@ block content
                             i.material-icons arrow_back
                     .card-content
                         .input-field.padding-10
-                            input.validate(type='text', name='name')#titleField
-                            label(for='name') #{__('tickets.ticketTitle')}
+                            input.validate(type='text', name='titleField', value=`${ticket.title}`)#titleField
+                            label(for='titleField') #{__('tickets.ticketTitle')}
                     .card-action
                         .row
                             .col.s12.l8.padding-10.margin-10.secondaryColour-border-colour
                                 .row
                                     .input-field.padding-10.col.s12.m3
                                         select#typeSelection
-                                            option(value=0, selected)
+                                            option(value=0, selected=ticket.type===0)
                                                 | #{__('tickets.types.bug')}
-                                            option(value=1)
+                                            option(value=1, selected=ticket.type===1)
                                                 | #{__('tickets.types.story')}
-                                            option(value=2)
+                                            option(value=2, selected=ticket.type===2)
                                                 | #{__('tickets.types.milestone')}
                                         label
                                             | #{__('tickets.type')}
                                     .input-field.padding-10.col.s12.m3
                                         select#stateSelection
-                                            option(value=0, selected)
+                                            option(value=0, selected=ticket.state===0)
                                                 | #{__('tickets.states.new')}
-                                            option(value=1)
+                                            option(value=1, selected=ticket.state===1)
                                                 | #{__('tickets.states.in_development')}
-                                            option(value=2)
+                                            option(value=2, selected=ticket.state===2)
                                                 | #{__('tickets.states.code_review')}
-                                            option(value=3)
+                                            option(value=3, selected=ticket.state===3)
                                                 | #{__('tickets.states.ready_for_test')}
-                                            option(value=4)
+                                            option(value=4, selected=ticket.state===4)
                                                 | #{__('tickets.states.in_test')}
-                                            option(value=5)
+                                            option(value=5, selected=ticket.state===5)
                                                 | #{__('tickets.states.done')}
                                         label
                                             | #{__('tickets.state')}
                                     .input-field.padding-10.col.s12.m3
                                         select#prioritySelection
-                                            option(value=0, selected)
+                                            option(value=0, selected=ticket.priority===0)
                                                 | #{__('tickets.priorities.low')}
-                                            option(value=1)
+                                            option(value=1, selected=ticket.priority===1)
                                                 | #{__('tickets.priorities.medium')}
-                                            option(value=2)
+                                            option(value=2, selected=ticket.priority===2)
                                                 | #{__('tickets.priorities.high')}
                                         label
                                             | #{__('tickets.priority')}
                                     .input-field.padding-10.col.s12.m3
-                                        input(type='number', name='quantity', min='1', max='10', value='5')#pointsSelection
-                                        label
-                                            | #{__('tickets.points')}
+                                        input(type='number', name='pointsSelection', min='1', max='10', value=ticket.points)#pointsSelection
+                                        label(for='pointsSelection') #{__('tickets.points')}
                                 .row
                                     .input-field.padding-10
                                         label(for='description') #{__('tickets.description')}
                                     .input-field.padding-10
-                                        #description
+                                        #description #{ticket.description}
                                 .row.subtasksRow
                                     .input-field.padding-10#subtasksSelection
                                         input.validate(type='text', name='subtasks')
@@ -89,8 +88,8 @@ block content
                                         label(for='autocomplete-input') #{__('tickets.reporter')}
                                 .row
                                     .input-field.padding-10
-                                        input.autocomplete(type='text', value=`${assignee}`)#assigneeAutocomplete
-                                        label(for='autocomplete-input') #{__('tickets.assignee')}
+                                        input.autocomplete(type='text', value=`${assignee}`, name='assigneeAutocomplete')#assigneeAutocomplete
+                                        label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                 .row
                                     .input-field.padding-10
                                         input.autocomplete(type='text')
