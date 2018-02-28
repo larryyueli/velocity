@@ -99,7 +99,7 @@
 				"groupPrefix": "Group Prefix",
 				"groupName": "Group Name",
 				"groups": "Groups",
-				"groupSelectionMode" : "Group Selection Mode",
+				"groupSelectionMode": "Group Selection Mode",
 				"groupSize": "Group Size",
 				"groupStatus": "Group Status",
 				"newGroup": "New Group",
@@ -174,7 +174,8 @@
 			"bug": "Bug",
 			"milestone": "Milestone",
 			"story": "Story"
-		}
+		},
+		"writeComment": "Write Comment"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",

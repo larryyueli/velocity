@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common = require('./common.js');
 const db = require('./db.js');
 
+const comments = require('./project-components/project-comments.js');
 const teams = require('./project-components/project-teams.js');
 const tickets = require('./project-components/project-tickets.js');
 
