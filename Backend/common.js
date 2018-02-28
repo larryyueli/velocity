@@ -33,6 +33,7 @@ const uuidv1 = require('uuid/v1');
  * 5000 -> projects
  * 6000 -> teams
  * 7000 -> tickets
+ * 8000 -> comments
  */
 
 const errors = Object.freeze({
@@ -150,6 +151,16 @@ const errors = Object.freeze({
     7005: 'failed to update ticket, database issue',
     7006: 'failed to create a ticket, missing information',
     7007: 'failed to update a ticket, missing information',
+
+    //8000 comment
+    8000: 'missing requirement',
+    8001: 'failed to add a comment, database issue',
+    8002: 'failed to get comment list, database issue',
+    8003: 'failed to get a comment, database issue',
+    8004: 'comment not found',
+    8005: 'failed to update comment, database issue',
+    8006: 'failed to create a comment, missing information',
+    8007: 'failed to update a comment, missing information',
 });
 exports.errors = errors;
 
@@ -321,6 +332,13 @@ const ticketPriority = Object.freeze({
     HIGH: { value: 2, text: 'high' }
 });
 exports.ticketPriority = ticketPriority;
+
+// common comment status
+const commentStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.commentStatus = commentStatus;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

@@ -216,3 +216,10 @@ exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 exports.updateTicket = tickets.updateTicket;
 // </tickets> ----------------------------------
+
+// <comments> -----------------------------------
+exports.addCommentToTicket = comments.addComment;
+exports.getCommentById = comments.getCommentById;
+exports.getCommentsByTicketId = comments.getCommentsByTicketId;
+exports.updateComment = comments.updateComment;
+// </comments> ----------------------------------
