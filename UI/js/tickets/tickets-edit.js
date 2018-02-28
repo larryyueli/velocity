@@ -178,3 +178,30 @@ function getListOfAssignee() {
         }
     });
 }
+
+/**
+ * Deletes a comment
+ * 
+ * @param {*} commentId comment id
+ */
+function deleteComment(commentId) {
+    $.ajax({
+        type: 'DELETE',
+        url: '/project/ticket/comment/delete',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            ticketId: ticketId,
+            commentId: commentId
+        },
+        success: function (data) {
+            alert('Deletion successful! Change this to reload()');
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
