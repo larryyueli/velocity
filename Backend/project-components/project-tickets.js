@@ -153,6 +153,14 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
         updateQuery.$set.description = updateParams.description;
     }
 
+    if (typeof (updateParams.assignee) === common.variableTypes.STRING) {
+        updateQuery.$set.assignee = updateParams.assignee;
+    }
+
+    if (typeof (updateParams.points) === common.variableTypes.NUMBER) {
+        updateQuery.$set.points = updateParams.points;
+    }
+
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {
         updateQuery.$set.priority = updateParams.priority;
     }

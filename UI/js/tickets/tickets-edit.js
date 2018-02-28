@@ -21,12 +21,13 @@ const subtaskRow = $('.subtasksRow')
 const milestoneIssuesRow = $('.milestoneIssuesRow')
 const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
-const createTicketButtonId = '#createTicketButton';
+const saveTicketButtonId = '#saveTicketButton';
 const descriptionId = '#description';
 const newCommentId = '#newComment';
 const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
+const ticketId = splithref[8];
 const assigneeAutocompleteId = '#assigneeAutocomplete';
 const titleFieldId = '#titleField';
 const typeSelectionId = '#typeSelection';
@@ -52,4 +53,91 @@ $(function () {
     $('select').material_select();
 
     initSummernote(descriptionId);
+
+    getListOfAssignee();
+
+    $(saveTicketButtonId).click(() => {
+        updateTicketAction();
+    });
 });
+
+/**
+ * update ticket action
+*/
+function updateTicketAction() {
+    const titleValue = $(titleFieldId).val().trim();
+    const typeValue = $(typeSelectionId).val();
+    const descriptionValue = $(descriptionId).summernote('code');
+    const stateValue = $(stateSelectionId).val();
+    const priorityValue = $(prioritySelectionId).val();
+    const pointsValue = $(pointsId).val();
+
+    if (titleValue.length <= 0) {
+        return warningSnackbar(translate('titleCanNotBeEmpty'));
+    }
+
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('descriptionCanNotBeEmpty'));
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '/tickets/update',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            ticketId: ticketId,
+            title: titleValue,
+            description: descriptionValue,
+            type: typeValue,
+            priority: priorityValue,
+            state: stateValue,
+            points: pointsValue,
+            assignee: 'student1'
+        },
+        success: function (data) {
+            window.location.href = `/project/${projectId}/team/${teamId}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * create ticket action
+*/
+function getListOfAssignee() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/members/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let usersObj = {};
+            for (let i = 0; i < data.length; i++) {
+                let user = data[i];
+                usersObj[`${user.username} - ${user.fname} ${user.lname}`] = null;
+            }
+            $(assigneeAutocompleteId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+
+                },
+                minLength: 1,
+            });
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
