@@ -37,12 +37,11 @@ const initialize = function (callback) {
  * @param {function} callback callback function
  */
 const addComment = function (comment, callback) {
-    if (typeof (comment.text) !== common.variableTypes.STRING
+    if (typeof (comment.content) !== common.variableTypes.STRING
         || typeof (comment.userId) !== common.variableTypes.STRING
         || typeof (comment.projectId) !== common.variableTypes.STRING
         || typeof (comment.teamId) !== common.variableTypes.STRING
-        || typeof (comment.ticketId) !== common.variableTypes.STRING
-        || !common.isValueInObjectWithKeys(comment.status, 'value', common.commentStatus)) {
+        || typeof (comment.ticketId) !== common.variableTypes.STRING) {
         return callback(common.getError(8006), null);
     }
 
@@ -55,10 +54,9 @@ const addComment = function (comment, callback) {
     commentToAdd.ticketId = comment.title;
     commentToAdd.ctime = currentDate;
     commentToAdd.mtime = currentDate;
-    commentToAdd.date = common.getDateFormatted();
     commentToAdd.userId = comment.userId;
     commentToAdd.status = common.commentStatus.ACTIVE.value;
-    commentToAdd.text = comment.text;
+    commentToAdd.content = comment.content;
 
     db.addComment(commentToAdd, callback);
 }
@@ -144,8 +142,8 @@ const updateComment = function (commentId, ticketId, teamId, projectId, updatePa
 
     searchQuery.$and = [{ _id: commentId }, { projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }];
 
-    if (typeof (updateParams.text) === common.variableTypes.STRING) {
-        updateQuery.$set.text = updateParams.text;
+    if (typeof (updateParams.content) === common.variableTypes.STRING) {
+        updateQuery.$set.content = updateParams.content;
     }
 
     if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.commentStatus)) {

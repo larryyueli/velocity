@@ -62,6 +62,7 @@ UI Translations for user display
 2000 -> system errors
 3000 -> settings errors
 4000 -> custom file system errors
+8000 -> comments
 */
 const translations = Object.freeze({
     //1000 system errors
@@ -121,6 +122,12 @@ const translations = Object.freeze({
 
     //4000 custom file system errors
     4010: 'Permission denied',
+
+    //8000 comment
+    8001: 'Failed to add a comment',
+    8005: 'Failed to update comment',
+    8006: 'Failed to create a comment',
+    8007: 'Failed to update a comment',
 
     activatedProject: 'Project has been activated',
     adminConfigurationSuccess: 'Admins have been saved successfully',

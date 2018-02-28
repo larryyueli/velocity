@@ -43,7 +43,6 @@ const addTicket = function (ticket, callback) {
         || typeof (ticket.teamId) !== common.variableTypes.STRING
         || typeof (ticket.reporter) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(ticket.priority, 'value', common.ticketPriority)
-        || !common.isValueInObjectWithKeys(ticket.status, 'value', common.ticketStatus)
         || !common.isValueInObjectWithKeys(ticket.state, 'value', common.ticketStates)
         || !common.isValueInObjectWithKeys(ticket.type, 'value', common.ticketTypes)) {
         return callback(common.getError(7006), null);
@@ -59,7 +58,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.ctime = currentDate;
     ticketToAdd.mtime = currentDate;
     ticketToAdd.description = ticket.description;
-    ticketToAdd.status = ticket.status;
+    ticketToAdd.status = common.ticketStatus.ACTIVE.value;
     ticketToAdd.state = ticket.state;
     ticketToAdd.type = ticket.type;
     ticketToAdd.reporter = ticket.reporter;

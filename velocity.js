@@ -1517,7 +1517,6 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                     projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
                         if (err) {
                             if (err.code === 6004) {
-                                team.status = common.teamStatus.ACTIVE.value;
                                 projects.addTeamToProject(projectId, team, function (err, result) {
                                     if (err) {
                                         logger.error(JSON.stringify(err));
@@ -1894,7 +1893,6 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
                         if (err.code === 6004) {
                             const newTeam = {
                                 name: teamName,
-                                status: common.teamStatus.ACTIVE.value,
                                 projectId: projectId,
                                 members: [req.session.user._id]
                             };
@@ -2015,7 +2013,6 @@ const handleTicketsCreatePath = function (req, res) {
                     teamId: req.body.teamId,
                     title: req.body.title,
                     description: req.body.description,
-                    status: common.ticketStatus.ACTIVE.value,
                     type: parseInt(req.body.type),
                     state: parseInt(req.body.state),
                     points: parseInt(req.body.points),
@@ -2098,7 +2095,6 @@ const handleTicketsUpdatePath = function (req, res) {
                 let updatedTicket = {
                     title: req.body.title,
                     description: req.body.description,
-                    status: common.ticketStatus.ACTIVE.value,
                     type: parseInt(req.body.type),
                     state: parseInt(req.body.state),
                     points: parseInt(req.body.points),
@@ -2335,7 +2331,7 @@ const handleTicketsCommentPath = function (req, res) {
 
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
-    const assignee = req.body.ticketId;
+    const ticketId = req.body.ticketId;
     const comment = req.body.comment;
 
     projects.getProjectById(projectId, function (err, projectObj) {
@@ -2361,13 +2357,28 @@ const handleTicketsCommentPath = function (req, res) {
                 return res.status(400).send(common.getError(2019));
             }
 
-            users.getUserByUsername(assignee, function (err, result) {
-                if (err && err.code !== 2003) {
+            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
+                if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
                 }
 
-                return res.status(200).send('ok');
+                const newComment = {
+                    projectId: projectId,
+                    teamId: teamId,
+                    ticketId: ticketId,
+                    userId: req.session.user._id,
+                    content: req.body.content
+                };
+
+                projects.addCommentToTicket(newComment, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
             });
         });
     });

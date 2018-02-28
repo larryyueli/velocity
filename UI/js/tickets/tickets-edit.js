@@ -34,6 +34,8 @@ const typeSelectionId = '#typeSelection';
 const stateSelectionId = '#stateSelection';
 const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
+const addNewCommentId = '#addNewComment';
+const newCommentField = '#newComment';
 
 typeSelection.change(function () {
     if (typeSelection.val() == 0) {
@@ -58,6 +60,10 @@ $(function () {
 
     $(saveTicketButtonId).click(() => {
         updateTicketAction();
+    });
+
+    $(addNewCommentId).click(() => {
+        addNewCommentFunction();
     });
 });
 
@@ -108,7 +114,38 @@ function updateTicketAction() {
 }
 
 /**
- * create ticket action
+ * add a new comment
+*/
+function addNewCommentFunction() {
+    const newCommentValue = $(newCommentField).val().trim();
+
+    if (newCommentValue.length <= 0) {
+        return warningSnackbar(translate('titleCanNotBeEmpty'));
+    }
+
+    $.ajax({
+        type: 'PUT',
+        url: '/tickets/comment',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            ticketId: ticketId,
+            content: newCommentValue
+        },
+        success: function (data) {
+            //window.location.href = `/project/${projectId}/team/${teamId}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * list of possible assignee
 */
 function getListOfAssignee() {
     $.ajax({

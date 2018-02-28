@@ -105,7 +105,7 @@ function createTicketAction() {
 }
 
 /**
- * create ticket action
+ * list of possible assignee
 */
 function getListOfAssignee() {
     $.ajax({

@@ -40,7 +40,6 @@ const initialize = function (callback) {
 const addTeam = function (projectId, team, callback) {
     if (typeof (projectId) !== common.variableTypes.STRING
         || typeof (team.name) !== common.variableTypes.STRING
-        || !common.isValueInObjectWithKeys(team.status, 'value', common.teamStatus)
         || !Array.isArray(team.members)) {
         return callback(common.getError(6006), null);
     }
@@ -53,7 +52,7 @@ const addTeam = function (projectId, team, callback) {
     teamToAdd.name = team.name;
     teamToAdd.ctime = currentDate;
     teamToAdd.mtime = currentDate;
-    teamToAdd.status = team.status;
+    teamToAdd.status = common.teamStatus.ACTIVE.value;
     teamToAdd.members = team.members;
 
     db.addTeam(teamToAdd, callback);
