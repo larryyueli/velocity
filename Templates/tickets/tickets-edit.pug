@@ -110,8 +110,8 @@ block content
                 each comment in comments
                     li.collection-item.avatar
                         img.circle(src=`/profilePicture/${user.picture}`, alt='')
-                        if comment.username === user.username
-                            button.waves-effect.waves-light.btn.right.primaryColour-background-colour#removeComment #{__('actions.delete')}
+                        if comment.userId === user._id
+                            button.waves-effect.waves-light.btn.right.primaryColour-background-colour#removeComment
                                 i.material-icons.right close
                         span.title #{comment.username}
                         p
