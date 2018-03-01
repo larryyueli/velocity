@@ -2478,14 +2478,26 @@ const handleCommentDeletePath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                let updatedComment = { status: common.commentStatus.DELETED.value };
-                projects.updateComment(commentId, ticketId, teamId, projectId, updatedComment, function (err, result) {
+                projects.getCommentById(projectId, teamId, ticketId, commentId, function (err, commentObj) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    if (commentObj.userId !== req.session.user._id) {
+                        logger.error(JSON.stringify(common.getError(2018)));
+                        return res.status(400).send(common.getError(2018));
+                    }
+
+                    let updatedComment = { status: common.commentStatus.DELETED.value };
+                    projects.updateComment(commentId, ticketId, teamId, projectId, updatedComment, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(200).send('ok');
+                    });
                 });
             });
         });
@@ -2493,7 +2505,7 @@ const handleCommentDeletePath = function (req, res) {
 }
 
 /**
- * root path to get the list of team members
+ * root path to edit a comment
  *
  * @param {object} req req object
  * @param {object} res res object
@@ -2537,14 +2549,26 @@ const handleTicketsCommentEditPath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                let updatedComment = { content: req.body.content };
-                projects.updateComment(commentId, ticketId, teamId, projectId, updatedComment, function (err, result) {
+                projects.getCommentById(projectId, teamId, ticketId, commentId, function (err, commentObj) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    if (commentObj.userId !== req.session.user._id) {
+                        logger.error(JSON.stringify(common.getError(2018)));
+                        return res.status(400).send(common.getError(2018));
+                    }
+
+                    let updatedComment = { content: req.body.content };
+                    projects.updateComment(commentId, ticketId, teamId, projectId, updatedComment, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(200).send('ok');
+                    });
                 });
             });
         });
