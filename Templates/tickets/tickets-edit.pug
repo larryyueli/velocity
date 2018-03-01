@@ -106,26 +106,51 @@ block content
                             button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                 i.material-icons.right save
         .row
-            ul.collection
-                each comment in comments
-                    li(id=`comment_${comment._id}`).collection-item.avatar
-                        img.circle(src=`/profilePicture/${user.picture}`, alt='')
-                        if comment.userId === user._id
-                            button(onclick=`deleteComment('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
-                                i.material-icons.right close
-                        span.title #{comment.username}
-                        br
-                        | #{comment.mtime}
-                        br
-                        | #{comment.content}
+            .col.s12
+                ul.tabs
+                    li.tab.col.s4
+                        a.noLineLink.active(href='#comments')
+                            i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
+                            |
+                            .hide-on-med-and-down.primaryColour-colour #{__('tickets.tabs.comments')}
+                    li.tab.col.s4
+                        a.noLineLink(href='#states')
+                            i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
+                            |
+                            .hide-on-med-and-down.primaryColour-colour #{__('tickets.tabs.state')}
+                    li.tab.col.s4
+                        a.noLineLink(href='#assignees')
+                            i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
+                            |
+                            .hide-on-med-and-down.primaryColour-colour #{__('tickets.tabs.assignee')}
         .row
             .col.s12
-                .input-field
-                    textarea.materialize-textarea#newComment
-                    label(for="newComment")
-                        | #{__('tickets.writeComment')}
-                button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
-                    i.material-icons.right add
+                #comments
+                    .row
+                        ul.collection
+                            each comment in comments
+                                li(id=`comment_${comment._id}`).collection-item.avatar
+                                    img.circle(src=`/profilePicture/${user.picture}`, alt='')
+                                    if comment.userId === user._id
+                                        button(onclick=`deleteComment('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
+                                            i.material-icons.right close
+                                    span.title #{comment.username}
+                                    br
+                                    | #{comment.mtime}
+                                    br
+                                    | #{comment.content}
+                    .row
+                        .col.s12
+                            .input-field
+                                textarea.materialize-textarea#newComment
+                                label(for="newComment")
+                                    | #{__('tickets.writeComment')}
+                            button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
+                                i.material-icons.right add
+                #states
+                    | This is the states tab. Replace this with a collections loop
+                #assignees
+                    | This is the assignees tab. Replace this with a collections loop
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')
