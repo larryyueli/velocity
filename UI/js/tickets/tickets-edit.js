@@ -37,20 +37,20 @@ const pointsId = '#pointsSelection';
 const addNewCommentId = '#addNewComment';
 const newCommentField = '#newComment';
 
-typeSelection.change(function () {
-    if (typeSelection.val() == 0) {
-        subtaskRow.hide();
-        milestoneIssuesRow.hide();
-    } else if (typeSelection.val() == 1) {
-        subtaskRow.show();
-        milestoneIssuesRow.hide();
-    } else {
-        subtaskRow.hide();
-        milestoneIssuesRow.show();
-    }
-});
-
 $(function () {
+    typeSelection.change(function () {
+        if (typeSelection.val() == 0) {
+            subtaskRow.hide();
+            milestoneIssuesRow.hide();
+        } else if (typeSelection.val() == 1) {
+            subtaskRow.show();
+            milestoneIssuesRow.hide();
+        } else {
+            subtaskRow.hide();
+            milestoneIssuesRow.show();
+        }
+    });
+
     typeSelection.change();
     $('select').material_select();
 
@@ -120,7 +120,7 @@ function addNewCommentFunction() {
     const newCommentValue = $(newCommentField).val().trim();
 
     if (newCommentValue.length <= 0) {
-        return warningSnackbar(translate('titleCanNotBeEmpty'));
+        return warningSnackbar(translate('commentCanNotBeEmpty'));
     }
 
     $.ajax({
@@ -133,7 +133,7 @@ function addNewCommentFunction() {
             content: newCommentValue
         },
         success: function (data) {
-            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;   
+            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
         },
         error: function (data) {
             handle401And404(data);
@@ -182,12 +182,12 @@ function getListOfAssignee() {
 /**
  * Deletes a comment
  * 
- * @param {*} commentId comment id
+ * @param {String} commentId comment id
  */
 function deleteComment(commentId) {
     $.ajax({
         type: 'DELETE',
-        url: '/project/ticket/comment/delete',
+        url: '/comment/delete',
         data: {
             projectId: projectId,
             teamId: teamId,

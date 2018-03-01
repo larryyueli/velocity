@@ -115,7 +115,9 @@ block content
                                 i.material-icons.right close
                         span.title #{comment.username}
                         p
-                            | #{comment.content}
+                        | #{comment.mtime}
+                        br
+                        | #{comment.content}
         .row
             .col.s12
                 .input-field

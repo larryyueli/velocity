@@ -92,7 +92,7 @@ const getComment = function (searchQuery, callback) {
  * @param {function} callback callback function
  */
 const getCommentsByTicketId = function (projectId, teamId, ticketId, callback) {
-    getLimitedCommentsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }] }, { mtime: 1 }, 0, callback);
+    getLimitedCommentsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }] }, { mtime: -1 }, 0, callback);
 }
 
 /**

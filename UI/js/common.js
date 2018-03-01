@@ -174,6 +174,7 @@ const translations = Object.freeze({
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
     titleCanNotBeEmpty: 'Title can not be empty!',
     descriptionCanNotBeEmpty: 'Description can not be empty!',
+    commentCanNotBeEmpty: 'Comment can not be empty!',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

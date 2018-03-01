@@ -2311,10 +2311,10 @@ const handleProjectTeamTicketPath = function (req, res) {
                         reporter = `${resolvedReporter.username} - ${resolvedReporter.fname} ${resolvedReporter.lname}`
                     }
 
-                    for(let i = 0; i< commentsList.length; i++){
+                    for (let i = 0; i < commentsList.length; i++) {
                         let comment = commentsList[i];
                         let resolvedUserFromComment = usersList[comment.userId];
-                        if(resolvedUserFromComment){
+                        if (resolvedUserFromComment) {
                             commentsList[i]['username'] = `${resolvedUserFromComment.fname} ${resolvedUserFromComment.lname}`;
                             commentsList[i]['picture'] = resolvedUserFromComment.picture;
                         }
@@ -2407,8 +2407,7 @@ const handleTicketsCommentPath = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleTicketCommentDeletePath = function (req, res) {
-
+const handleCommentDeletePath = function (req, res) {
     if (!isActiveSession(req)) {
         return res.status(401).render(loginPage);
     }
@@ -2447,7 +2446,8 @@ const handleTicketCommentDeletePath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                projects.updateComment(commentId, ticketId, teamId, projectId, {status: common.commentStatus.DELETED.value}, function(err, result) {
+                let updatedComment = { status: common.commentStatus.DELETED.value };
+                projects.updateComment(commentId, ticketId, teamId, projectId, updatedComment, function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
@@ -2576,7 +2576,7 @@ app.put('/users/request/access', handleUsersRequestAccessPath);
 // <Delete Requests> ------------------------------------------------
 app.delete('/logout', handleLogoutPath);
 app.delete('/project/delete', handleProjectDeletePath);
-app.delete('/project/ticket/comment/delete', handleTicketCommentDeletePath);
+app.delete('/comment/delete', handleCommentDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 // <notificationsWS Requests> ------------------------------------------------
