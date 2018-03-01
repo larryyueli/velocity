@@ -204,35 +204,53 @@ function deleteComment(commentId) {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
+}
 
-    /**
+/**
+ * change a comment to a textfield
+ * 
+ * @param {String} commentId comment id
+ */
+function changeToInput(commentId) {
     let fullId = `#comment_${commentId}`;
     let label = $(fullId);
-    label.after("<input type = 'text' style = 'display:none' />");
+    label.after(`<div><div class="input-field">
+                    <textarea id='edit_${commentId}' class="materialize-textarea"></textarea>
+                    <label >Edit Comment</label>
+                </div>
+                <button class="waves-effect waves-light btn primaryColour-background-colour" onclick="updateComment('${commentId}')"><i class="material-icons right">save</i></button>
+                <button class="waves-effect waves-light btn primaryColour-background-colour""><i class="material-icons right">close</i></button></div>`);
 
     let textbox = $(fullId).next();
     let originalText = label.html();
-    textbox.val(originalText.split('<br>')[2]);
+    textbox.find('textarea').val(originalText.split('<br>')[2]);
+    textbox.find('textarea').focus();
 
     label.click(function () {
-        $(this).hide();
-        $(this).next().show();
+        label.hide();
+        label.next().show();
     });
 
-    textbox.focusout(function () {
-        $(this).hide();
-        $(this).prev().html(originalText);
-        $(this).prev().show();
+    textbox.find('button').click(function () {
+        textbox.hide();
+        textbox.prev().html(originalText);
+        textbox.prev().show();
     });
-     */
 }
 
+/**
+ * update a comment
+ * 
+ * @param {String} commentId comment id
+ */
 function updateComment(commentId) {
+    alert('asd');
     const updatedCommentValue = $(`#edit_${commentId}`).val().trim();
 
     if (updatedCommentValue.length <= 0) {
         return warningSnackbar(translate('commentCanNotBeEmpty'));
     }
+
     $.ajax({
         type: 'POST',
         url: '/tickets/comment/edit',

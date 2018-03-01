@@ -113,6 +113,9 @@ block content
                         if comment.userId === user._id
                             button(onclick=`deleteComment('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
                                 i.material-icons.right close
+                        if comment.userId === user._id
+                            button(onclick=`changeToInput('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
+                                i.material-icons.right mode_edit
                         span.title #{comment.username}
                         br
                         | #{comment.mtime}
