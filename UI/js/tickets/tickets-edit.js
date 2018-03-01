@@ -219,7 +219,7 @@ function changeToInput(commentId) {
                     <label >Edit Comment</label>
                 </div>
                 <button class="waves-effect waves-light btn primaryColour-background-colour" onclick="updateComment('${commentId}')"><i class="material-icons right">save</i></button>
-                <button class="waves-effect waves-light btn primaryColour-background-colour""><i class="material-icons right">close</i></button></div>`);
+                <button class="waves-effect waves-light btn primaryColour-background-colour"><i class="material-icons right">close</i></button></div>`);
 
     let textbox = $(fullId).next();
     let originalText = label.html();
@@ -244,7 +244,6 @@ function changeToInput(commentId) {
  * @param {String} commentId comment id
  */
 function updateComment(commentId) {
-    alert('asd');
     const updatedCommentValue = $(`#edit_${commentId}`).val().trim();
 
     if (updatedCommentValue.length <= 0) {
