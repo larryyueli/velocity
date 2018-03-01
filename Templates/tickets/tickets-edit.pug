@@ -151,9 +151,27 @@ block content
                             button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
                                 i.material-icons.right add
                 #states
-                    | This is the states tab. Replace this with a collections loop
+                    .row
+                        ul.collection
+                            each entry in stateHistory
+                                li.collection-item.avatar
+                                    i.material-icons.circle note
+                                    span.title #{entry.mtime}
+                                    br
+                                    | Before: #{entry.from}
+                                    br
+                                    | After: #{entry.to}
                 #assignees
-                    | This is the assignees tab. Replace this with a collections loop
+                    .row
+                        ul.collection
+                            each entry in assigneeHistory
+                                li.collection-item.avatar
+                                    i.material-icons.circle note
+                                    span.title #{entry.mtime}
+                                    br
+                                    | Before: #{entry.from}
+                                    br
+                                    | After: #{entry.to}
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')
