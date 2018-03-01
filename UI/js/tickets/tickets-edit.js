@@ -205,3 +205,31 @@ function deleteComment(commentId) {
         }
     });
 }
+
+function updateComment(commentId) {
+    const updatedCommentValue = $(`#edit_${commentId}`).val().trim();
+
+    if (updatedCommentValue.length <= 0) {
+        return warningSnackbar(translate('commentCanNotBeEmpty'));
+    }
+    $.ajax({
+        type: 'POST',
+        url: '/tickets/comment/edit',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            ticketId: ticketId,
+            commentId: commentId,
+            content: updatedCommentValue
+        },
+        success: function (data) {
+            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
