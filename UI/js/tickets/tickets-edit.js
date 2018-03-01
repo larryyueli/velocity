@@ -204,4 +204,25 @@ function deleteComment(commentId) {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
+
+    /**
+    let fullId = `#comment_${commentId}`;
+    let label = $(fullId);
+    label.after("<input type = 'text' style = 'display:none' />");
+
+    let textbox = $(fullId).next();
+    let originalText = label.html();
+    textbox.val(originalText.split('<br>')[2]);
+
+    label.click(function () {
+        $(this).hide();
+        $(this).next().show();
+    });
+
+    textbox.focusout(function () {
+        $(this).hide();
+        $(this).prev().html(originalText);
+        $(this).prev().show();
+    });
+     */
 }
