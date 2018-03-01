@@ -65,6 +65,8 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.priority = ticket.priority;
     ticketToAdd.assignee = typeof (ticket.assignee) === common.variableTypes.STRING ? ticket.assignee : common.noAssignee;
     ticketToAdd.points = typeof (ticket.points) === common.variableTypes.NUMBER ? ticket.points : common.defaultPoints;
+    ticketToAdd.stateHistory = [];
+    ticketToAdd.assigneeHistory = [];
 
     db.addTicket(ticketToAdd, callback);
 }
@@ -128,6 +130,7 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
     searchQuery.$and = {};
     let updateQuery = {};
     updateQuery.$set = {};
+    updateQuery.$push = {};
 
     if (typeof (projectId) !== common.variableTypes.STRING) {
         return callback(common.getError(7007), null);
@@ -159,6 +162,14 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
         updateQuery.$set.points = updateParams.points;
     }
 
+    if (typeof (updateParams.stateHistoryEntry) === common.variableTypes.OBJECT) {
+        updateQuery.$push.stateHistory = updateParams.stateHistoryEntry;
+    }
+
+    if (typeof (updateParams.assigneeHistoryEntry) === common.variableTypes.OBJECT) {
+        updateQuery.$push.assigneeHistory = updateParams.assigneeHistoryEntry;
+    }
+
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {
         updateQuery.$set.priority = updateParams.priority;
     }
@@ -173,6 +184,10 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
 
     if (common.isValueInObjectWithKeys(updateParams.type, 'value', common.ticketTypes)) {
         updateQuery.$set.type = updateParams.type;
+    }
+
+    if (common.isEmptyObject(updateQuery.$push)) {
+        delete updateQuery.$push;
     }
 
     if (common.isEmptyObject(updateQuery.$set)) {

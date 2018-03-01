@@ -153,21 +153,21 @@ block content
                 #states
                     .row
                         ul.collection
-                            each entry in stateHistory
+                            each entry in ticket.stateHistory
                                 li.collection-item.avatar
-                                    i.material-icons.circle note
-                                    span.title #{entry.mtime}
+                                    i.material-icons.circle trending_flat
+                                    span.title #{entry.ctime}
                                     br
-                                    | Before: #{entry.from}
+                                    | Before: #{__(`tickets.states.${resolveState(entry.from)}`)}
                                     br
-                                    | After: #{entry.to}
+                                    | After: #{__(`tickets.states.${resolveState(entry.to)}`)}
                 #assignees
                     .row
                         ul.collection
-                            each entry in assigneeHistory
+                            each entry in ticket.assigneeHistory
                                 li.collection-item.avatar
                                     i.material-icons.circle note
-                                    span.title #{entry.mtime}
+                                    span.title #{entry.ctime}
                                     br
                                     | Before: #{entry.from}
                                     br

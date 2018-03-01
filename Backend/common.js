@@ -301,7 +301,7 @@ exports.ticketStatus = ticketStatus;
 // common ticket states
 const ticketStates = Object.freeze({
     NEW: { value: 0, text: 'new' },
-    IN_PROGRESS: { value: 1, text: 'in_progress' },
+    IN_DEVELOPMENT: { value: 1, text: 'in_development' },
     CODE_REVIEW: { value: 2, text: 'code_review' },
     READY_FOR_TEST: { value: 3, text: 'ready_for_test' },
     IN_TEST: { value: 4, text: 'in_test' },

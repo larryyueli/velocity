@@ -2086,42 +2086,71 @@ const handleTicketsUpdatePath = function (req, res) {
                 return res.status(400).send(common.getError(2019));
             }
 
-            users.getUserByUsername(assignee, function (err, result) {
-                if (err && err.code !== 2003) {
+            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
+                if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
                 }
 
-                let updatedTicket = {
-                    title: req.body.title,
-                    description: req.body.description,
-                    type: parseInt(req.body.type),
-                    state: parseInt(req.body.state),
-                    points: parseInt(req.body.points),
-                    priority: parseInt(req.body.priority)
-                };
-
-                if (result) {
-                    if (projectObj.members.indexOf(result._id) === -1) {
-                        logger.error(JSON.stringify(common.getError(2018)));
-                        return res.status(400).send(common.getError(2018));
-                    }
-
-                    if (teamObj.members.indexOf(result._id) === -1) {
-                        logger.error(JSON.stringify(common.getError(2019)));
-                        return res.status(400).send(common.getError(2019));
-                    }
-
-                    updatedTicket.assignee = result._id;
-                }
-
-                projects.updateTicket(ticketId, teamId, projectId, updatedTicket, function (err, result) {
-                    if (err) {
+                users.getUserByUsername(assignee, function (err, assigneeObj) {
+                    if (err && err.code !== 2003) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    let newType = parseInt(req.body.type);
+                    let newState = parseInt(req.body.state);
+                    let newPoints = parseInt(req.body.points);
+                    let newPriority = parseInt(req.body.priority);
+
+                    let updatedTicket = {
+                        title: req.body.title,
+                        description: req.body.description,
+                        type: newType,
+                        state: newState,
+                        points: newPoints,
+                        priority: newPoints
+                    };
+
+                    if (common.isValueInObjectWithKeys(newState, 'value', common.ticketStates)
+                        && ticketObj.state !== newState) {
+                        updatedTicket.stateHistoryEntry = {
+                            from: ticketObj.state,
+                            to: newState,
+                            ctime: common.getDate()
+                        };
+                    }
+
+                    if (assigneeObj) {
+                        if (projectObj.members.indexOf(assigneeObj._id) === -1) {
+                            logger.error(JSON.stringify(common.getError(2018)));
+                            return res.status(400).send(common.getError(2018));
+                        }
+
+                        if (teamObj.members.indexOf(assigneeObj._id) === -1) {
+                            logger.error(JSON.stringify(common.getError(2019)));
+                            return res.status(400).send(common.getError(2019));
+                        }
+
+                        updatedTicket.assignee = assigneeObj._id;
+
+                        if (ticketObj.assignee !== assigneeObj._id) {
+                            updatedTicket.assigneeHistoryEntry = {
+                                from: ticketObj.state,
+                                to: newState,
+                                ctime: common.getDate()
+                            };
+                        }
+                    }
+
+                    projects.updateTicket(ticketId, teamId, projectId, updatedTicket, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(200).send('ok');
+                    });
                 });
             });
         });
@@ -2327,7 +2356,10 @@ const handleProjectTeamTicketPath = function (req, res) {
                         reporter: reporter,
                         assignee: assignee,
                         ticket: ticketObj,
-                        comments: commentsList
+                        comments: commentsList,
+                        resolveState: (state) => {
+                            return common.getValueInObjectByKey(state, 'value', 'text', common.ticketStates);
+                        }
                     });
                 });
             });
@@ -2338,8 +2370,8 @@ const handleProjectTeamTicketPath = function (req, res) {
 /**
  * root path for commenting on a ticket
  * 
- * @param {*} req req object
- * @param {*} res res object
+ * @param {object} req req object
+ * @param {object} res res object
  */
 const handleTicketsCommentPath = function (req, res) {
     if (!isActiveSession(req)) {
