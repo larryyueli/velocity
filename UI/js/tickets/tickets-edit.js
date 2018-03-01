@@ -102,7 +102,7 @@ function updateTicketAction() {
             assignee: 'student1'
         },
         success: function (data) {
-            window.location.href = `/project/${projectId}/team/${teamId}`;
+            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
         },
         error: function (data) {
             handle401And404(data);
@@ -133,7 +133,7 @@ function addNewCommentFunction() {
             content: newCommentValue
         },
         success: function (data) {
-            //window.location.href = `/project/${projectId}/team/${teamId}`;
+            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;   
         },
         error: function (data) {
             handle401And404(data);
@@ -195,7 +195,7 @@ function deleteComment(commentId) {
             commentId: commentId
         },
         success: function (data) {
-            alert('Deletion successful! Change this to reload()');
+            $(`#comment_${commentId}`).hide();
         },
         error: function (data) {
             handle401And404(data);

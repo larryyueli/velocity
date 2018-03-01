@@ -108,7 +108,7 @@ block content
         .row
             ul.collection
                 each comment in comments
-                    li.collection-item.avatar
+                    li(id=`comment_${comment._id}`).collection-item.avatar
                         img.circle(src=`/profilePicture/${user.picture}`, alt='')
                         if comment.userId === user._id
                             button(onclick=`deleteComment('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
