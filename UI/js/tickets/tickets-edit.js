@@ -36,6 +36,7 @@ const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
 const addNewCommentId = '#addNewComment';
 const newCommentField = '#newComment';
+const existingComments = '[id^=comment_]';
 
 $(function () {
     typeSelection.change(function () {
@@ -49,6 +50,19 @@ $(function () {
             subtaskRow.hide();
             milestoneIssuesRow.show();
         }
+    });
+
+    $(existingComments).each(function() {
+
+        let fullId = `#comment_${this.id.split('_').pop()}`;
+        let fulltext = $(fullId).html().split('<br>');
+        let comment = fulltext[2];
+        
+        // Do ticket hyperlink shenanigans here
+
+        fulltext[2] = comment;
+        $(fullId).html(fulltext.join('<br>'));
+
     });
 
     typeSelection.change();
