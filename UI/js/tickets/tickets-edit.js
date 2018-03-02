@@ -36,7 +36,6 @@ const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
 const addNewCommentId = '#addNewComment';
 const newCommentField = '#newComment';
-const existingComments = '[id^=comment_]';
 
 var selectedAssignee = null;
 
@@ -52,19 +51,6 @@ $(function () {
             subtaskRow.hide();
             milestoneIssuesRow.show();
         }
-    });
-
-    $(existingComments).each(function() {
-
-        let fullId = `#comment_${this.id.split('_').pop()}`;
-        let fulltext = $(fullId).html().split('<br>');
-        let comment = fulltext[2];
-        
-        // Do ticket hyperlink shenanigans here
-
-        fulltext[2] = comment;
-        $(fullId).html(fulltext.join('<br>'));
-
     });
 
     typeSelection.change();
@@ -174,10 +160,12 @@ function getListOfAssignee() {
         success: function (data) {
             let usersObj = {};
             let usernameObj = {};
+            let usernamesArray = [];
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
                 usersObj[`${user.fname} ${user.lname}`] = null;
                 usernameObj[`${user.fname} ${user.lname}`] = user.username;
+                usernamesArray.push(user.username);
             }
             $(assigneeAutocompleteId).autocomplete({
                 data: usersObj,
@@ -186,6 +174,10 @@ function getListOfAssignee() {
                     selectedAssignee = usernameObj[val];
                 },
                 minLength: 0,
+            });
+            $(newCommentField).atwho({
+                at: '#',
+                data: usernamesArray
             });
         },
         error: function (data) {
