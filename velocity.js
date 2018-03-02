@@ -114,6 +114,8 @@ app.use('/jquery', express.static(`${__dirname}/node_modules/jquery/dist`));
 app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`));
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
 app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
+app.use('/caretJs', express.static(`${__dirname}/node_modules/jquery.caret/dist`));
+app.use('/atJs', express.static(`${__dirname}/node_modules/at.js/dist`));
 app.use(
     sassMiddleware({
         src: `${__dirname}/sass`,
