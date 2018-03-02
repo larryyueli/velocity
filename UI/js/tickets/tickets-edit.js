@@ -38,6 +38,7 @@ const addNewCommentId = '#addNewComment';
 const newCommentField = '#newComment';
 
 var selectedAssignee = null;
+var usernamesArray = [];
 
 $(function () {
     typeSelection.change(function () {
@@ -160,13 +161,16 @@ function getListOfAssignee() {
         success: function (data) {
             let usersObj = {};
             let usernameObj = {};
-            let usernamesArray = [];
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
                 usersObj[`${user.fname} ${user.lname}`] = null;
                 usernameObj[`${user.fname} ${user.lname}`] = user.username;
                 usernamesArray.push(user.username);
             }
+            $(newCommentField).atwho({
+                at: '#',
+                data: usernamesArray
+            });
             $(assigneeAutocompleteId).autocomplete({
                 data: usersObj,
                 limit: 20,
@@ -174,10 +178,6 @@ function getListOfAssignee() {
                     selectedAssignee = usernameObj[val];
                 },
                 minLength: 0,
-            });
-            $(newCommentField).atwho({
-                at: '#',
-                data: usernamesArray
             });
         },
         error: function (data) {
@@ -240,11 +240,15 @@ function changeToInput(commentId) {
         label.hide();
         label.next().show();
     });
-
+    alert(usernamesArray);
     textbox.find('button').click(function () {
         textbox.hide();
         textbox.prev().html(originalText);
         textbox.prev().show();
+    });
+    textbox.find('textarea').atwho( {
+        at: '#',
+        data: usernamesArray
     });
 }
 
