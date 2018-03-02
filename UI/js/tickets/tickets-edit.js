@@ -168,7 +168,7 @@ function getListOfAssignee() {
                 usernamesArray.push(user.username);
             }
             $(newCommentField).atwho({
-                at: '#',
+                at: '@',
                 data: usernamesArray
             });
             $(assigneeAutocompleteId).autocomplete({
@@ -247,7 +247,7 @@ function changeToInput(commentId) {
         textbox.prev().show();
     });
     textbox.find('textarea').atwho( {
-        at: '#',
+        at: '@',
         data: usernamesArray
     });
 }
