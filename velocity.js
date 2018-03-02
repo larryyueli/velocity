@@ -2004,7 +2004,7 @@ const handleTicketsCreatePath = function (req, res) {
                 return res.status(400).send(common.getError(2019));
             }
 
-            users.getUserByUsername(assignee, function (err, result) {
+            users.getUserByUsername(assignee, function (err, assigneeObj) {
                 if (err && err.code !== 2003) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
@@ -2022,18 +2022,19 @@ const handleTicketsCreatePath = function (req, res) {
                     reporter: req.session.user._id
                 };
 
-                if (result) {
-                    if (projectObj.members.indexOf(result._id) === -1) {
+                if (assigneeObj) {
+                    if (projectObj.members.indexOf(assigneeObj._id) === -1) {
                         logger.error(JSON.stringify(common.getError(2018)));
                         return res.status(400).send(common.getError(2018));
                     }
 
-                    if (teamObj.members.indexOf(result._id) === -1) {
+                    if (settings.getModeType() === common.modeTypes.CLASS
+                        && teamObj.members.indexOf(assigneeObj._id) === -1) {
                         logger.error(JSON.stringify(common.getError(2019)));
                         return res.status(400).send(common.getError(2019));
                     }
 
-                    newTicket.assignee = result._id;
+                    newTicket.assignee = assigneeObj._id;
                 }
 
                 projects.addTicketToTeam(newTicket, function (err, result) {
@@ -2130,7 +2131,8 @@ const handleTicketsUpdatePath = function (req, res) {
                             return res.status(400).send(common.getError(2018));
                         }
 
-                        if (teamObj.members.indexOf(assigneeObj._id) === -1) {
+                        if (settings.getModeType() === common.modeTypes.CLASS
+                            && teamObj.members.indexOf(assigneeObj._id) === -1) {
                             logger.error(JSON.stringify(common.getError(2019)));
                             return res.status(400).send(common.getError(2019));
                         }
@@ -2261,7 +2263,7 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
                 return res.status(404).render(pageNotFoundPage);
             }
 
-            const reporter = `${req.session.user.username} - ${req.session.user.fname} ${req.session.user.lname}`;
+            const reporter = `${req.session.user.fname} ${req.session.user.lname}`;
             const assignee = common.noAssignee;
 
             return res.status(200).render(ticketCreationPage, {
@@ -2612,16 +2614,27 @@ const handleProjectTeamMembersListPath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common.getError(2019)));
                 return res.status(400).send(common.getError(2019));
             }
 
             const usersObj = common.convertListToJason('_id', users.getActiveUsersList());
+            let listToResolve = [];
             let usersList = [];
-            for (let i = 0; i < teamObj.members.length; i++) {
-                let memberId = teamObj.members[i];
+
+            if (settings.getModeType() === common.modeTypes.CLASS) {
+                listToResolve = teamObj.members;
+            }
+
+            if (settings.getModeType() === common.modeTypes.COLLABORATORS) {
+                listToResolve = projectObj.members;
+            }
+
+            for (let i = 0; i < listToResolve.length; i++) {
+                let memberId = listToResolve[i];
                 let memberObj = usersObj[memberId];
                 if (memberObj) {
                     usersList.push({

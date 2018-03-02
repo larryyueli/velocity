@@ -169,7 +169,7 @@ const generateCollabUsers = function () {
     }
     for (let i = 0; i < numOfCollaborators; i++) {
         createUser(`Collaborator${i}`, i.toString(), common.userTypes.COLLABORATOR.value);
-        usersToAdd.push(`collaborator${i}`);
+        usersToAdd.push(`collab${i}`);
     }
 }
 
