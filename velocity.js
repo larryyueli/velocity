@@ -2115,6 +2115,7 @@ const handleTicketsUpdatePath = function (req, res) {
                     if (common.isValueInObjectWithKeys(newState, 'value', common.ticketStates)
                         && ticketObj.state !== newState) {
                         updatedTicket.stateHistoryEntry = {
+                            actor: req.session.user._id,
                             from: ticketObj.state,
                             to: newState,
                             ctime: common.getDate()
@@ -2136,8 +2137,9 @@ const handleTicketsUpdatePath = function (req, res) {
 
                         if (ticketObj.assignee !== assigneeObj._id) {
                             updatedTicket.assigneeHistoryEntry = {
-                                from: ticketObj.state,
-                                to: newState,
+                                actor: req.session.user._id,
+                                from: ticketObj.assignee,
+                                to: assigneeObj._id,
                                 ctime: common.getDate()
                             };
                         }
@@ -2328,16 +2330,16 @@ const handleProjectTeamTicketPath = function (req, res) {
 
                     const usersList = common.convertListToJason('_id', users.getActiveUsersList());
 
-                    let assignee = 'no assignee';
+                    let assignee = common.noAssignee;
                     let resolvedAssignee = usersList[ticketObj.assignee];
                     if (resolvedAssignee) {
-                        assignee = `${resolvedAssignee.username} - ${resolvedAssignee.fname} ${resolvedAssignee.lname}`
+                        assignee = `${resolvedAssignee.fname} ${resolvedAssignee.lname}`
                     }
 
-                    let reporter = 'no reporter';
+                    let reporter = common.noReporter;
                     let resolvedReporter = usersList[ticketObj.reporter];
                     if (resolvedReporter) {
-                        reporter = `${resolvedReporter.username} - ${resolvedReporter.fname} ${resolvedReporter.lname}`
+                        reporter = `${resolvedReporter.fname} ${resolvedReporter.lname}`
                     }
 
                     for (let i = 0; i < commentsList.length; i++) {
@@ -2359,6 +2361,9 @@ const handleProjectTeamTicketPath = function (req, res) {
                         comments: commentsList,
                         resolveState: (state) => {
                             return common.getValueInObjectByKey(state, 'value', 'text', common.ticketStates);
+                        },
+                        resolveUsername: (userId) => {
+                            return usersList[userId] ? `${usersList[userId].fname} ${usersList[userId].lname}` : common.noAssignee;
                         }
                     });
                 });

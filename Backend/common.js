@@ -321,6 +321,10 @@ exports.ticketTypes = ticketTypes;
 const noAssignee = 'No Assignee';
 exports.noAssignee = noAssignee;
 
+// common ticket default reporter
+const noReporter = 'No Reporter';
+exports.noReporter = noReporter;
+
 // common ticket default points
 const defaultPoints = 1;
 exports.defaultPoints = defaultPoints;

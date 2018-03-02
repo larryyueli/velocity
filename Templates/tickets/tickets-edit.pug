@@ -155,8 +155,8 @@ block content
                         ul.collection
                             each entry in ticket.stateHistory
                                 li.collection-item.avatar
-                                    i.material-icons.circle trending_flat
-                                    span.title #{entry.ctime}
+                                    i.material-icons.circle compare_arrows
+                                    span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
                                     br
                                     | Before: #{__(`tickets.states.${resolveState(entry.from)}`)}
                                     br
@@ -166,12 +166,12 @@ block content
                         ul.collection
                             each entry in ticket.assigneeHistory
                                 li.collection-item.avatar
-                                    i.material-icons.circle note
-                                    span.title #{entry.ctime}
+                                    i.material-icons.circle people
+                                    span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
                                     br
-                                    | Before: #{entry.from}
+                                    | Before: #{resolveUsername(entry.from)}
                                     br
-                                    | After: #{entry.to}
+                                    | After: #{resolveUsername(entry.to)}
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')

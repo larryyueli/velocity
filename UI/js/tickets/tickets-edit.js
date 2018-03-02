@@ -37,6 +37,8 @@ const pointsId = '#pointsSelection';
 const addNewCommentId = '#addNewComment';
 const newCommentField = '#newComment';
 
+var selectedAssignee = null;
+
 $(function () {
     typeSelection.change(function () {
         if (typeSelection.val() == 0) {
@@ -99,7 +101,7 @@ function updateTicketAction() {
             priority: priorityValue,
             state: stateValue,
             points: pointsValue,
-            assignee: 'student1'
+            assignee: selectedAssignee
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
@@ -157,17 +159,19 @@ function getListOfAssignee() {
         },
         success: function (data) {
             let usersObj = {};
+            let usernameObj = {};
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
-                usersObj[`${user.username} - ${user.fname} ${user.lname}`] = null;
+                usersObj[`${user.fname} ${user.lname}`] = null;
+                usernameObj[`${user.fname} ${user.lname}`] = user.username;
             }
             $(assigneeAutocompleteId).autocomplete({
                 data: usersObj,
                 limit: 20,
                 onAutocomplete: function (val) {
-
+                    selectedAssignee = usernameObj[val];
                 },
-                minLength: 1,
+                minLength: 0,
             });
         },
         error: function (data) {
