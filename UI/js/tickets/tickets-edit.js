@@ -240,7 +240,6 @@ function changeToInput(commentId) {
         label.hide();
         label.next().show();
     });
-    alert(usernamesArray);
     textbox.find('button').click(function () {
         textbox.hide();
         textbox.prev().html(originalText);
