@@ -2368,6 +2368,27 @@ const handleProjectTeamTicketPath = function (req, res) {
                         },
                         resolveUsername: (userId) => {
                             return usersList[userId] ? `${usersList[userId].fname} ${usersList[userId].lname}` : common.noAssignee;
+                        },
+                        resolveCommentContent: (content) => {
+                            let splitContent = content.split(' ');
+                            let resolvedContent = '';
+
+                            for (let i = 0; i < splitContent.length; i++) {
+                                let phrase = splitContent[i];
+                                if (phrase.startsWith('@')) {
+                                    let userId = phrase.slice(1);
+                                    let user = usersList[userId];
+                                    if (user) {
+                                        resolvedContent += `@${user.username} `;
+                                    } else {
+                                        resolvedContent += `@UNKNOWN `;
+                                    }
+                                } else {
+                                    resolvedContent += `${phrase} `;
+                                }
+                            }
+
+                            return resolvedContent.trim();
                         }
                     });
                 });
@@ -2390,7 +2411,6 @@ const handleTicketsCommentPath = function (req, res) {
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
-    const comment = req.body.comment;
 
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
@@ -2421,12 +2441,34 @@ const handleTicketsCommentPath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
+                const userNamesObj = common.convertListToJason('username', users.getActiveUsersList());
+                const content = req.body.content;
+                let splitContent = content.split(' ');
+                let resolvedContent = '';
+
+                for (let i = 0; i < splitContent.length; i++) {
+                    let phrase = splitContent[i];
+                    if (phrase.startsWith('@')) {
+                        let username = phrase.slice(1);
+                        let user = userNamesObj[username];
+                        if (user) {
+                            resolvedContent += `@${user._id} `;
+                        } else {
+                            resolvedContent += `@UNKNOWN `;
+                        }
+                    } else {
+                        resolvedContent += `${phrase} `;
+                    }
+                }
+
+                resolvedContent = resolvedContent.trim();
+
                 const newComment = {
                     projectId: projectId,
                     teamId: teamId,
                     ticketId: ticketId,
                     userId: req.session.user._id,
-                    content: req.body.content
+                    content: resolvedContent
                 };
 
                 projects.addCommentToTicket(newComment, function (err, result) {
