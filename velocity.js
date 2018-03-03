@@ -60,7 +60,7 @@ const wsSessionInterceptor = function (info, callback) {
     });
 }
 const notificationsWS = new ws.Server({
-    verifyClient: wsSessionInterceptor,
+    VerifyClientCallbackAsync: wsSessionInterceptor,
     port: config.notificationsWSPort
 });
 
