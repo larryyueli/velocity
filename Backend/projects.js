@@ -31,7 +31,7 @@ const tickets = require('./project-components/project-tickets.js');
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-
+    tickets.initialize(callback);
 }
 
 /**
@@ -199,6 +199,7 @@ exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
+exports.initialize = initialize;
 exports.updateProject = updateProject;
 // </exports> ----------------------------------
 

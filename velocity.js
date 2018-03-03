@@ -188,8 +188,16 @@ httpServer.listen(config.httpPort, function () {
                         }
 
                         logger.info('Users list has been fetched successful.');
-                        config.debugMode = localDebugMode;
-                        logger.info(`Debug mode status: ${config.debugMode}`);
+                        projects.initialize(function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                process.exit(1);
+                            }
+
+                            logger.info('Project instance has been built successful.');
+                            config.debugMode = localDebugMode;
+                            logger.info(`Debug mode status: ${config.debugMode}`);
+                        });
                     });
                 });
             });
@@ -2320,10 +2328,23 @@ const handleProjectTeamTicketPath = function (req, res) {
                 return res.status(404).render(pageNotFoundPage);
             }
 
-            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) {
                 if (err) {
                     logger.error(JSON.stringify(err));
-                    return res.status(404).render(pageNotFoundPage);
+                    return res.status(500).send(err);
+                }
+
+                let ticketObj = null;
+                for (let i = 0; i < ticketsList.length; i++) {
+                    if (ticketsList[i]._id === ticketId) {
+                        ticketObj = ticketsList[i];
+                        break;
+                    }
+                }
+
+                if (!ticketObj) {
+                    logger.error(JSON.stringify(common.getError(7004)));
+                    return res.status(400).send(common.getError(7004));
                 }
 
                 projects.getCommentsByTicketId(projectId, teamId, ticketId, function (err, commentsList) {
@@ -2332,23 +2353,24 @@ const handleProjectTeamTicketPath = function (req, res) {
                         return res.status(404).render(pageNotFoundPage);
                     }
 
-                    const usersList = common.convertListToJason('_id', users.getActiveUsersList());
+                    const usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
+                    const ticketsIdObj = common.convertListToJason('_id', ticketsList);
 
                     let assignee = common.noAssignee;
-                    let resolvedAssignee = usersList[ticketObj.assignee];
+                    let resolvedAssignee = usersIdObj[ticketObj.assignee];
                     if (resolvedAssignee) {
                         assignee = `${resolvedAssignee.fname} ${resolvedAssignee.lname}`
                     }
 
                     let reporter = common.noReporter;
-                    let resolvedReporter = usersList[ticketObj.reporter];
+                    let resolvedReporter = usersIdObj[ticketObj.reporter];
                     if (resolvedReporter) {
                         reporter = `${resolvedReporter.fname} ${resolvedReporter.lname}`
                     }
 
                     for (let i = 0; i < commentsList.length; i++) {
                         let comment = commentsList[i];
-                        let resolvedUserFromComment = usersList[comment.userId];
+                        let resolvedUserFromComment = usersIdObj[comment.userId];
                         if (resolvedUserFromComment) {
                             commentsList[i]['username'] = `${resolvedUserFromComment.fname} ${resolvedUserFromComment.lname}`;
                             commentsList[i]['picture'] = resolvedUserFromComment.picture;
@@ -2367,7 +2389,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                             return common.getValueInObjectByKey(state, 'value', 'text', common.ticketStates);
                         },
                         resolveUsername: (userId) => {
-                            return usersList[userId] ? `${usersList[userId].fname} ${usersList[userId].lname}` : common.noAssignee;
+                            return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common.noAssignee;
                         },
                         resolveCommentContent: (content) => {
                             let splitContent = content.split(' ');
@@ -2375,16 +2397,29 @@ const handleProjectTeamTicketPath = function (req, res) {
 
                             for (let i = 0; i < splitContent.length; i++) {
                                 let phrase = splitContent[i];
-                                if (phrase.startsWith('@')) {
-                                    let userId = phrase.slice(1);
-                                    let user = usersList[userId];
-                                    if (user) {
-                                        resolvedContent += `@${user.username} `;
-                                    } else {
-                                        resolvedContent += `@UNKNOWN `;
-                                    }
-                                } else {
-                                    resolvedContent += `${phrase} `;
+                                let firstChar = phrase.charAt(0);
+                                switch (firstChar) {
+                                    case '@':
+                                        let userId = phrase.slice(1);
+                                        let user = usersIdObj[userId];
+                                        if (user) {
+                                            resolvedContent += `<b>@${user.username}</b> `;
+                                        } else {
+                                            resolvedContent += `@UNKNOWN `;
+                                        }
+                                        break;
+                                    case '#':
+                                        let ticketId = phrase.slice(1);
+                                        let ticket = ticketsIdObj[ticketId];
+                                        if (ticket) {
+                                            resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
+                                        } else {
+                                            resolvedContent += `#UNKNOWN `;
+                                        }
+                                        break;
+                                    default:
+                                        resolvedContent += `${phrase} `;
+                                        break;
                                 }
                             }
 
@@ -2435,29 +2470,56 @@ const handleTicketsCommentPath = function (req, res) {
                 return res.status(400).send(common.getError(2019));
             }
 
-            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
                 }
 
+                let ticketObj = null;
+                for (let i = 0; i < ticketsList.length; i++) {
+                    if (ticketsList[i]._id === ticketId) {
+                        ticketObj = ticketsList[i];
+                    }
+                }
+
+                if (!ticketObj) {
+                    logger.error(JSON.stringify(common.getError(7004)));
+                    return res.status(400).send(common.getError(7004));
+                }
+
+                const ticketsDisplayIdObj = common.convertListToJason('displayId', ticketsList);
                 const userNamesObj = common.convertListToJason('username', users.getActiveUsersList());
+
                 const content = req.body.content;
                 let splitContent = content.split(' ');
                 let resolvedContent = '';
 
                 for (let i = 0; i < splitContent.length; i++) {
                     let phrase = splitContent[i];
-                    if (phrase.startsWith('@')) {
-                        let username = phrase.slice(1);
-                        let user = userNamesObj[username];
-                        if (user) {
-                            resolvedContent += `@${user._id} `;
-                        } else {
-                            resolvedContent += `@UNKNOWN `;
-                        }
-                    } else {
-                        resolvedContent += `${phrase} `;
+                    let firstChar = phrase.charAt(0);
+                    switch (firstChar) {
+                        case '@':
+                            let username = phrase.slice(1);
+                            let user = userNamesObj[username];
+                            if (user) {
+                                resolvedContent += `@${user._id} `;
+                            } else {
+                                resolvedContent += `@UNKNOWN `;
+                            }
+                            break;
+                        case '#':
+                            let ticketDisplayId = phrase.slice(1);
+                            let ticket = ticketsDisplayIdObj[ticketDisplayId];
+                            if (ticket) {
+                                resolvedContent += `#${ticket._id} `;
+                            } else {
+                                resolvedContent += `#UNKNOWN `;
+                            }
+                            break;
+                        default:
+                            resolvedContent += `${phrase} `;
+                            break;
                     }
                 }
 
@@ -2745,7 +2807,7 @@ app.post('/users/update', handleUsersUpdatePath);
 // <Put Requests> ------------------------------------------------
 app.put('/projects/create', handleProjectsCreatePath);
 app.put('/tickets/create', handleTicketsCreatePath);
-app.put('/tickets/comment', handleTicketsCommentPath);
+app.put('/comment/create', handleTicketsCommentPath);
 app.put('/users/create', handleUsersCreatePath);
 app.put('/users/import/file', handleUsersImportFilePath);
 app.put('/users/request/access', handleUsersRequestAccessPath);

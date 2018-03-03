@@ -128,7 +128,7 @@ function addNewCommentFunction() {
 
     $.ajax({
         type: 'PUT',
-        url: '/tickets/comment',
+        url: '/comment/create',
         data: {
             projectId: projectId,
             teamId: teamId,

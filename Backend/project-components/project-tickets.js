@@ -21,13 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common = require('../common.js');
 const db = require('../db.js');
 
+var nextTicketId = 1;
+
 /**
  * initialize the ticket
  *
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
+    getLimitedTicketsListSorted({}, {}, 0, function (err, commentsList) {
+        if (err) {
+            return callback(err, null);
+        }
 
+        nextTicketId += commentsList.length;
+        return callback(null, 'ok');
+    });
 }
 
 /**
@@ -52,6 +61,7 @@ const addTicket = function (ticket, callback) {
     let ticketToAdd = {};
 
     ticketToAdd._id = common.getUUID();
+    ticketToAdd.displayId = `TICKET-${nextTicketId}`;
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
     ticketToAdd.title = ticket.title;
