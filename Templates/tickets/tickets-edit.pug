@@ -1,7 +1,7 @@
 extends ../layout
 
 block styles
-    link(rel='stylesheet' href='/stylesheets/css/profile.css')
+    link(rel='stylesheet' href='/stylesheets/css/tickets.css')
     link(rel='stylesheet' href='/summernote/summernote.css')
     link(rel='stylesheet' href='/atJs/css/jquery.atwho.min.css')
 
@@ -133,10 +133,10 @@ block content
                                 li(id=`comment_${comment._id}`).collection-item.avatar
                                     img.circle(src=`/profilePicture/${user.picture}`, alt='')
                                     if comment.userId === user._id
-                                        button(onclick=`deleteComment('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
+                                        button(onclick=`deleteComment('${comment._id}')`).btn.btn-flat.waves-effect.waves-light.right.comment-buttons
                                             i.material-icons.right close
                                     if comment.userId === user._id
-                                        button(onclick=`changeToInput('${comment._id}')`).waves-effect.waves-light.btn.right.primaryColour-background-colour
+                                        button(onclick=`changeToInput('${comment._id}')`).btn.btn-flat.waves-effect.waves-light.right.comment-buttons
                                             i.material-icons.right mode_edit
                                     span.title #{comment.username}
                                     br
