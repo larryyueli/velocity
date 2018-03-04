@@ -72,15 +72,17 @@ const addUser = function (user, callback) {
         }
 
         const currentDate = common.getDate();
+        const currentISODate = common.getISODate();
         let userToAdd = {};
 
         userToAdd._id = common.getUUID();
+        userToAdd.ctime = currentDate;
+        userToAdd.mtime = currentDate;
+        userToAdd.ictime = currentISODate;
+        userToAdd.imtime = currentISODate;
         userToAdd.username = user.username.toLowerCase();
         userToAdd.fname = user.fname;
         userToAdd.lname = user.lname;
-        userToAdd.ctime = currentDate;
-        userToAdd.atime = currentDate;
-        userToAdd.mtime = currentDate;
         userToAdd.email = user.email ? user.email : '';
         userToAdd.type = user.type;
         userToAdd.password = hash;
@@ -285,6 +287,7 @@ const updateUser = function (updateParams, callback) {
     }
 
     updateQuery.$set.mtime = common.getDate();
+    updateQuery.$set.imtime = common.getISODate();
 
     const updateFun = function () {
         db.updateUser(searchQuery, updateQuery, function (err, result) {

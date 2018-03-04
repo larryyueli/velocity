@@ -46,14 +46,17 @@ const addComment = function (comment, callback) {
     }
 
     const currentDate = common.getDate();
+    const currentISODate = common.getISODate();
     let commentToAdd = {};
 
     commentToAdd._id = common.getUUID();
+    commentToAdd.ctime = currentDate;
+    commentToAdd.mtime = currentDate;
+    commentToAdd.ictime = currentISODate;
+    commentToAdd.imtime = currentISODate;
     commentToAdd.projectId = comment.projectId;
     commentToAdd.teamId = comment.teamId;
     commentToAdd.ticketId = comment.ticketId;
-    commentToAdd.ctime = currentDate;
-    commentToAdd.mtime = currentDate;
     commentToAdd.userId = comment.userId;
     commentToAdd.status = common.commentStatus.ACTIVE.value;
     commentToAdd.content = comment.content;
@@ -92,7 +95,7 @@ const getComment = function (searchQuery, callback) {
  * @param {function} callback callback function
  */
 const getCommentsByTicketId = function (projectId, teamId, ticketId, callback) {
-    getLimitedCommentsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }] }, { mtime: -1 }, 0, callback);
+    getLimitedCommentsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }] }, { imtime: 1 }, 0, callback);
 }
 
 /**
@@ -159,6 +162,7 @@ const updateComment = function (commentId, ticketId, teamId, projectId, updatePa
     }
 
     updateQuery.$set.mtime = common.getDate();
+    updateQuery.$set.imtime = common.getISODate();
 
     db.updateComment(searchQuery, updateQuery, callback);
 }

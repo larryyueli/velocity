@@ -45,13 +45,16 @@ const addTeam = function (projectId, team, callback) {
     }
 
     const currentDate = common.getDate();
+    const currentISODate = common.getISODate();
     let teamToAdd = {};
 
     teamToAdd._id = common.getUUID();
-    teamToAdd.projectId = projectId;
-    teamToAdd.name = team.name;
     teamToAdd.ctime = currentDate;
     teamToAdd.mtime = currentDate;
+    teamToAdd.ictime = currentISODate;
+    teamToAdd.imtime = currentISODate;
+    teamToAdd.projectId = projectId;
+    teamToAdd.name = team.name;
     teamToAdd.status = common.teamStatus.ACTIVE.value;
     teamToAdd.members = team.members;
 
@@ -168,6 +171,7 @@ const updateTeam = function (teamId, projectId, updateParams, callback) {
     }
 
     updateQuery.$set.mtime = common.getDate();
+    updateQuery.$set.imtime = common.getISODate();
 
     db.updateTeam(searchQuery, updateQuery, callback);
 }

@@ -43,16 +43,18 @@ const addNotification = function (notification, callback) {
         return callback(common.getError(9000), null);
     }
 
-
-
     const currentDate = common.getDate();
+    const currentISODate = common.getISODate();
     let notificationToAdd = {};
 
     notificationToAdd._id = common.getUUID();
+    notificationToAdd.ctime = currentDate;
+    notificationToAdd.mtime = currentDate;
+    notificationToAdd.ictime = currentISODate;
+    notificationToAdd.imtime = currentISODate;
     notificationToAdd.userId = notification.userId;
     notificationToAdd.name = notification.name;
     notificationToAdd.link = notification.link;
-    notificationToAdd.ctime = currentDate;
     db.addNotification(notificationToAdd, callback);
 }
 

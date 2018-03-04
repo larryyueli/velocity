@@ -510,6 +510,16 @@ const getDateFormatted = function (format) {
 exports.getDateFormatted = getDateFormatted;
 
 /**
+ * return the current date iso formatted
+ *
+ * @return {string} date formatted
+ */
+const getISODate = function () {
+    return date().toISOString();
+}
+exports.getISODate = getISODate;
+
+/**
  * return an array of elements in the main array that are not in the secondary array
  *
  * @param {array} mainArray main array

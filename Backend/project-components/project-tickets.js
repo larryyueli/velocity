@@ -58,15 +58,18 @@ const addTicket = function (ticket, callback) {
     }
 
     const currentDate = common.getDate();
+    const currentISODate = common.getISODate();
     let ticketToAdd = {};
 
     ticketToAdd._id = common.getUUID();
+    ticketToAdd.ctime = currentDate;
+    ticketToAdd.mtime = currentDate;
+    ticketToAdd.ictime = currentISODate;
+    ticketToAdd.imtime = currentISODate;
     ticketToAdd.displayId = `TICKET-${nextTicketId}`;
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
     ticketToAdd.title = ticket.title;
-    ticketToAdd.ctime = currentDate;
-    ticketToAdd.mtime = currentDate;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
     ticketToAdd.state = ticket.state;
@@ -209,6 +212,7 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
     }
 
     updateQuery.$set.mtime = common.getDate();
+    updateQuery.$set.imtime = common.getISODate();
 
     db.updateTicket(searchQuery, updateQuery, callback);
 }

@@ -49,12 +49,15 @@ const addProject = function (project, callback) {
     }
 
     const currentDate = common.getDate();
+    const currentISODate = common.getISODate();
     let projectToAdd = {};
 
     projectToAdd._id = common.getUUID();
-    projectToAdd.title = project.title;
     projectToAdd.ctime = currentDate;
     projectToAdd.mtime = currentDate;
+    projectToAdd.ictime = currentISODate;
+    projectToAdd.imtime = currentISODate;
+    projectToAdd.title = project.title;
     projectToAdd.description = project.description;
     projectToAdd.status = project.status;
     projectToAdd.admins = project.admins;
@@ -188,6 +191,7 @@ const updateProject = function (projectId, updateParams, callback) {
     }
 
     updateQuery.$set.mtime = common.getDate();
+    updateQuery.$set.imtime = common.getISODate();
 
     db.updateProject(searchQuery, updateQuery, callback);
 }
