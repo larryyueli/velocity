@@ -40,7 +40,7 @@ const initialize = function (collectionObject) {
 const addNotification = function (notificationObj, callback) {
     notificationCollection.insert(notificationObj, function (err, obj) {
         if (err) {
-            return callback(common.getError(7001), null);
+            return callback(common.getError(9001), null);
         }
 
         return callback(null, notificationObj);
@@ -58,7 +58,7 @@ const addNotification = function (notificationObj, callback) {
 const getLimitedNotificationsListSorted = function (searchQuery, sortQuery, lim, callback) {
     notificationCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
         if (err) {
-            return callback(common.getError(7002), null);
+            return callback(common.getError(9002), null);
         }
 
         return callback(null, list);
@@ -74,11 +74,11 @@ const getLimitedNotificationsListSorted = function (searchQuery, sortQuery, lim,
 const getNotification = function (searchQuery, callback) {
     notificationCollection.findOne(searchQuery, function (err, obj) {
         if (err) {
-            return callback(common.getError(7003), null);
+            return callback(common.getError(9003), null);
         }
 
         if (!obj) {
-            return callback(common.getError(7004), null);
+            return callback(common.getError(9004), null);
         }
 
         return callback(null, obj);
@@ -96,7 +96,7 @@ const getNotification = function (searchQuery, callback) {
 const updateNotification = function (searchQuery, updateQuery, callback) {
     notificationCollection.update(searchQuery, updateQuery, function (err, result) {
         if (err) {
-            return callback(common.getError(7005), null);
+            return callback(common.getError(9005), null);
         }
 
         return callback(null, 'ok');

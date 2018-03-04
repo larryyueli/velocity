@@ -34,6 +34,7 @@ const uuidv1 = require('uuid/v1');
  * 6000 -> teams
  * 7000 -> tickets
  * 8000 -> comments
+ * 9000 -> tickets
  */
 
 const errors = Object.freeze({
@@ -161,6 +162,18 @@ const errors = Object.freeze({
     8005: 'failed to update comment, database issue',
     8006: 'failed to create a comment, missing information',
     8007: 'failed to update a comment, missing information',
+
+    //9000 notifications
+    9000: 'missing requirement',
+    9001: 'failed to add a notification, database issue',
+    9002: 'failed to get notifications list, database issue',
+    9003: 'failed to get a notification, database issue',
+    9004: 'notification not found',
+    9005: 'failed to update notification, database issue',
+    9006: 'failed to create a notification, missing information',
+    9007: 'failed to update a notification, missing information',
+    9008: 'failed to delete a notification, database issue',
+    9009: 'failed to delete a notification, missing information',
 });
 exports.errors = errors;
 
