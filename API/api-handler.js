@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const path = require('path');
+
 const cfs = require('../Backend/customFileSystem.js');
 const common = require('../Backend/common.js');
 const config = require('../Backend/config.js');
@@ -757,10 +759,10 @@ const handleprofilePicturePath = function (req, res) {
         return res.status(401).render(loginPage);
     }
 
+    const defaultImagePath = `${__dirname}/../UI/img/account_circle.png`;
     const pictureId = req.params.pictureId;
     if (pictureId === 'null') {
-        const defaultImagePath = `${__dirname}/UI/img/account_circle.png`;
-        return res.sendFile(defaultImagePath, function (err) {
+        return res.sendFile(path.resolve(defaultImagePath), function (err) {
             if (err) {
                 logger.error(JSON.stringify(err));
             }
@@ -768,23 +770,24 @@ const handleprofilePicturePath = function (req, res) {
     }
 
     cfs.fileExists(pictureId, function (err, fileObj) {
+        let imagePath = fileObj ? fileObj.path : defaultImagePath;
+
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(400).send(err);
         }
 
         if (fileObj.permission !== common.cfsPermission.PUBLIC) {
             logger.error(JSON.stringify(common.getError(4010)));
-            return res.status(403).send(common.getError(4010));
+            imagePath = defaultImagePath;
         }
 
         const validImageExtensions = ['jpeg', 'png'];
         if (validImageExtensions.indexOf(fileObj.extension) === -1) {
             logger.error(JSON.stringify(common.getError(2008)));
-            return res.status(400).send(common.getError(2008));
+            imagePath = defaultImagePath;
         }
 
-        return res.sendFile(path.resolve(fileObj.path), function (err) {
+        return res.sendFile(path.resolve(imagePath), function (err) {
             if (err) {
                 logger.error(JSON.stringify(err));
             }
@@ -2592,6 +2595,19 @@ const handleProjectTeamMembersListPath = function (req, res) {
         });
     });
 }
+
+/**
+ * handling connection request for notifications server
+ *
+ * @param {object} client client object
+ * @param {object} req req object
+ */
+const handleNotificationsConnection = function (client, req) {
+    sessionParser(req, {}, function () {
+        console.log(req);
+        client.send();
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Common Requests> ------------------------------------------------
@@ -2653,3 +2669,7 @@ exports.handleLogoutPath = handleLogoutPath;
 exports.handleProjectDeletePath = handleProjectDeletePath;
 exports.handleCommentDeletePath = handleCommentDeletePath;
 // </Delete Requests> -----------------------------------------------
+
+// <Notifications Requests> ------------------------------------------------
+exports.handleNotificationsConnection = handleNotificationsConnection;
+// </Notifications Requests> -----------------------------------------------

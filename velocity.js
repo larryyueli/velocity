@@ -21,17 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const bodyParser = require('body-parser');
 const csv2json = require('csvtojson');
 const express = require('express');
+const expressSession = require('express-session');
 const fileUpload = require('express-fileupload');
 const forceSSL = require('express-force-ssl');
 const helmet = require('helmet');
 const http = require('http');
 const https = require('https');
 const i18n = require('i18n');
-const path = require('path');
+const mongoStore = require('connect-mongo')(expressSession);
 const pug = require('pug');
 const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
-const session = require('express-session');
 const ws = require('ws');
 
 const api = require('./API/api-handler.js');
@@ -40,28 +40,32 @@ const common = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
 const logger = require('./Backend/logger.js');
+const notifications = require('./Backend/notifications.js');
 const projects = require('./Backend/projects.js');
 const settings = require('./Backend/settings.js');
 const users = require('./Backend/users.js');
 
 const app = express();
-const sessionParser = session({
+
+const mongoSessionStore = new mongoStore({
+    url: `mongodb://${config.default_db_host}:${config.default_db_port}`,
+    ttl: config.maxSessionAge
+});
+const sessionParser = expressSession({
     secret: config.sessionSecret,
+    store: mongoSessionStore,
     resave: config.sessionResave,
-    saveUninitialized: config.saveUninitializedSession,
-    rolling: config.rollingSession,
-    cookie: {
-        secure: config.secureSessionCookie,
-        maxAge: config.maxSessionAge
-    }
+    saveUninitialized: config.saveUninitializedSession
 });
 const wsSessionInterceptor = function (info, callback) {
-    sessionParser(info.req, {}, function () {
-        callback(api.isActiveSession(info.req));
+    sessionParser(info.req, {}, () => {
+        mongoSessionStore.get(info.req.sessionID, (err, session) => {
+            callback(!err); // TODO: verify session
+        });
     });
 }
 const notificationsWS = new ws.Server({
-    VerifyClientCallbackAsync: wsSessionInterceptor,
+    verifyClient: wsSessionInterceptor,
     port: config.notificationsWSPort
 });
 
@@ -260,9 +264,13 @@ app.delete('/comment/delete', api.handleCommentDeletePath);
 
 // <notificationsWS Requests> ------------------------------------------------
 notificationsWS.on('connection', function (client, req) {
-    client.on('message', function (message) {
-    });
-    client.send('ws ok');
+    if (api.isActiveSession(req)) {
+        client.userId = req.session.user._id;
+        console.log(req.session.user);
+        notifications.getNotificationsByUserId(req.session.user._id, function (err, notifList) {
+            client.send(notifList);
+        });
+    }
 });
 setInterval(function () {
     for (let client of notificationsWS.clients) {
