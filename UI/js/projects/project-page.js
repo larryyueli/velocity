@@ -603,7 +603,7 @@ function generalActivateProject() {
 function getUsersList() {
     $.ajax({
         type: 'GET',
-        url: '/projectsAdminsListComponent',
+        url: '/components/projectsAdminsList',
         data: {
             projectId: projectId
         },

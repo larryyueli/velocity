@@ -40,6 +40,7 @@ const users = require('../Backend/users.js');
  * @param {function} callback callback function
  */
 const initialize = function (pug, notificationsWS, callback) {
+    common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/projects/ticket-entry.pug');
     common_api.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
     common_api.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
     common_api.pugComponents.projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
@@ -941,6 +942,56 @@ const handleProjectsPath = function (req, res) {
 
     return res.status(200).render(common_api.pugPages.projects, {
         user: req.session.user
+    });
+}
+
+/**
+ * path to get the tickets list component
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleTicketsListComponentPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).send({
+                    ticketsList: ticketsObjList
+                });
+            });
+        });
     });
 }
 
@@ -2609,6 +2660,7 @@ exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;
 exports.handleProjectsPath = handleProjectsPath;
 exports.handleProjectsListComponentPath = handleProjectsListComponentPath;
+exports.handleTicketsListComponentPath = handleTicketsListComponentPath;
 exports.handleProjectsAdminsListComponentPath = handleProjectsAdminsListComponentPath;
 exports.handleProjectsGroupAssignPath = handleProjectsGroupAssignPath;
 exports.handleProjectsAddPath = handleProjectsAddPath;

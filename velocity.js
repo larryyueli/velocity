@@ -204,6 +204,9 @@ app.use(function (req, res, next) {
 
 // <Get Requests> ------------------------------------------------
 app.get('/', api.handleRootPath);
+app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentPath);
+app.get('/components/projectsList', api.handleProjectsListComponentPath);
+app.get('/components/ticketsList', api.handleTicketsListComponentPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
 app.get('/profilePicture/:pictureId', api.handleprofilePicturePath);
@@ -213,8 +216,6 @@ app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTic
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
 app.get('/projects', api.handleProjectsPath);
-app.get('/projectsListComponent', api.handleProjectsListComponentPath);
-app.get('/projectsAdminsListComponent', api.handleProjectsAdminsListComponentPath);
 app.get('/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/projects/add', api.handleProjectsAddPath);
 app.get('/settings', api.handleSettingsPath);

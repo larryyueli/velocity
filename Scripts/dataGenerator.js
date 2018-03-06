@@ -322,7 +322,7 @@ const getProjectsData = function () {
     const options = {
         hostname: config.hostName,
         port: config.httpsPort,
-        path: '/projectsListComponent',
+        path: '/components/projectsList',
         method: 'GET',
         rejectUnauthorized: false,
         headers: {

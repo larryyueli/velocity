@@ -43,6 +43,7 @@ exports.pugPages = pugPages;
 
 // all pages components
 var pugComponents = {
+    ticketEntryComponent: null,
     projectsEntryComponent: null,
     projectsGroupEntryComponent: null,
     projectsGroupModalComponent: null,
