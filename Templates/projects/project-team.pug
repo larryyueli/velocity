@@ -26,6 +26,39 @@ block content
                         | Second Line
                     a.secondary-content.ticketLink(href=`/project/${projectId}/team/${teamId}/ticket/${ticket._id}`)
                         i.material-icons send
+    
+    .container
+        .row
+            .col.s12
+                .row
+                    ul.tabs
+                        li.tab.col.s4
+                            a.noLineLink.active#option-board(href='#board')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.board.title')}
+                        li.tab.col.s4
+                            a.noLineLink#option-backlog(href='#backlog')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour view_list
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.backlog.title')}
+                        li.tab.col.s4
+                            a.noLineLink#option-issues(href='#issues')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour note
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.issues.title')}
+    .container
+        .row
+            .col.s12
+                #board
+                    .card
+                        h5 board test
+                #backlog
+                    .card
+                        h5 backlog test
+                #issues
+                    .card
+                        h5 issues test
 
 block scripts
     script(src='/js/projects/project-team.js')
