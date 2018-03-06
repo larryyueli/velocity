@@ -49,7 +49,9 @@ const initialize = function (pug, notificationsWS, callback) {
     common_api.pugComponents.projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
     common_api.pugComponents.usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
-    notifications_api.initialize(notificationsWS, callback);
+    notifications_api.initialize(notificationsWS);
+
+    return callback(null, 'ok');
 }
 
 /**
@@ -956,8 +958,8 @@ const handleTicketsListComponentPath = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    const projectId = req.body.projectId;
-    const teamId = req.body.teamId;
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));

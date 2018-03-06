@@ -259,10 +259,6 @@ app.delete('/project/delete', api.handleProjectDeletePath);
 app.delete('/comment/delete', api.handleCommentDeletePath);
 // </Delete Requests> -----------------------------------------------
 
-// <notificationsWS Requests> ------------------------------------------------
-notificationsWS.on('connection', api.handleNotificationsConnection);
-// </notificationsWS Requests> -----------------------------------------------
-
 /**
  * If request path does not match any of the above routes, then resolve to 404
  */
