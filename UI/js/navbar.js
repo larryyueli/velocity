@@ -145,6 +145,6 @@ logoutButton.click(function () {
 $(function () {
     var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
     socket.onmessage = function (event) {
-        addNotification([{ link: '/', type: 'account_circle', name: 'Hi, new notification', id: '22222' }]);
+        addNotification(JSON.parse(event.data)['notifList']);
     }
 });
