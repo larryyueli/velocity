@@ -16,9 +16,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const splithref = window.location.href.split('/');
-const projectId = splithref[4];
-const teamId = splithref[6];
+var sprintEntryHTML = null;
+var ticketEntryHTML = null;
+var ticketsList = null;
+
+const backlogTicketListId = '#backlogTicketList';
+const issueCountId = '#issueCount';
+const sprintsListId = '#sprintsList';
+const titleId = '#title';
+
+
+
+const iconId = '#icon';
+const nameId = '#name';
+const openTicketId = '#openTicket';
+
+
 
 $(function () {
     getBacklog();
@@ -33,10 +46,107 @@ function getBacklog() {
             teamId: teamId
         },
         success: function (data) {
-            
+            sprintEntryHTML = $(data.sprintEntryHTML);
+            ticketEntryHTML = $(data.ticketEntryHTML);
+            ticketsList = data.ticketsList;
+
+            displaySprintsList();
         },
         error: function (data) {
             handle401And404(data);
         }
     });
 }
+
+function displaySprintsList() {
+    $(sprintsListId).html('');
+    var rowPopulate = '';
+
+    $(sprintsListId).append(fillSprintsRow(ticketsList));
+    
+    // groupList.forEach(group => {
+    //     var inGroup = null;
+    //     if (passGroupFilter(group)) {
+    //         if (!isProjectAdmin) {
+    //             inGroup = groupList.find(groupSearch => {
+    //                 return group.name === groupSearch.name && groupSearch.members.find(user => {
+    //                     return user.username === meObject.username;
+    //                 });
+    //             });
+
+    //             if (inGroup) {
+    //                 $(userGroupId).append(fillGroupRow(group, true));
+    //             } else {
+    //                 $(groupListId).append(fillGroupRow(group, false));
+    //             }
+    //         } else {
+    //             $(groupListId).append(fillGroupRow(group, false));
+    //         }
+    //     }
+    // });
+
+    // endLoad(groupLoadId, groupListId);
+}
+
+function fillSprintsRow(tickets) {
+    var bindedRow = sprintEntryHTML;
+    
+    bindedRow.find(issueCountId).html('14');
+    bindedRow.find(titleId).html('Bonza - 1');
+
+    tickets.forEach(ticket => {
+        // if (passGroupFilter(group)) {
+            bindedRow.find(backlogTicketListId).append(fillTicketRow(ticket));
+        // }
+    });
+
+    //bindedRow.find(backlogTicketListId).html('sdfg');
+
+    return bindedRow[0].outerHTML;
+}
+
+// /**
+//  * Filters a group object to match filter parameters
+//  *
+//  * @param {Object} group
+//  */
+// function passGroupFilter(group) {
+//     const size = parseInt($(groupSizeFilterId)[0].value);
+//     const filterText = $(searchGroupFilterId)[0].value.trim().toLowerCase();
+
+//     // Group size filter
+//     if (size && group.members.length !== size) {
+//         return false;
+//     }
+
+//     // Search filter
+//     if (filterText !== '' &&
+//         group.name.toLowerCase().indexOf(filterText) === -1 &&
+//         group.members.every(user => {
+//             return `${user.fname} ${user.lname} - ${user.username}`.toLowerCase().indexOf(filterText) === -1 &&
+//                 translate(`user${user.type}`).toLowerCase().indexOf(filterText) === -1
+//         })) {
+//         return false;
+//     }
+
+//     return true;
+// }
+
+
+
+
+
+
+
+
+
+function fillTicketRow(ticket) {
+    var bindedRow = ticketEntryHTML;
+    
+    bindedRow.find(iconId).html('assignment');
+    bindedRow.find(nameId).html('ticket name');
+
+    // openTicketId
+    return bindedRow[0].outerHTML;
+}
+

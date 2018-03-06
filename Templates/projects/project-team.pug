@@ -44,7 +44,7 @@ block content
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.backlog.title')}
                         li.tab.col.s4
                             a.noLineLink#option-issues(href='#issues')
-                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour note
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour assignment
                                 |
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.issues.title')}
     .container
@@ -55,11 +55,11 @@ block content
                         h5 board test
                 #backlog
                     .card
-                        h5 backlog test
+                        ul.collapsible(data-collapsible='expandable')#sprintsList
                 #issues
                     .card
                         h5 issues test
 
 block scripts
-    script(src='/js/tickets/sprint-backlog.js')
     script(src='/js/projects/project-team.js')
+    script(src='/js/tickets/sprint-backlog.js')
