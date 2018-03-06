@@ -1308,9 +1308,9 @@ function fillAdminsRow(user) {
     bindedRow.find(emailId).html(user.email);
 
     if (user.username === meObject.username) {
-        $(transferId).addClass('hidden');
+        bindedRow.find(transferId).addClass('hidden');
     } else {
-        $(transferId).removeClass('hidden');
+        bindedRow.find(transferId).removeClass('hidden');
     }
     return bindedRow[0].outerHTML;
 }
