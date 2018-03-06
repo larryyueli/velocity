@@ -34,9 +34,11 @@ const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
 const ws = require('ws');
 
+const common_api = require('./API/api-components/common-api.js');
+
 const api = require('./API/api-handler.js');
 const cfs = require('./Backend/customFileSystem.js');
-const common = require('./Backend/common.js');
+const common_backend = require('./Backend/common.js');
 const config = require('./Backend/config.js');
 const db = require('./Backend/db.js');
 const logger = require('./Backend/logger.js');
@@ -174,9 +176,16 @@ httpServer.listen(config.httpPort, function () {
                             }
 
                             logger.info('Project instance has been built successful.');
-                            config.debugMode = localDebugMode;
-                            logger.info(`Debug mode status: ${config.debugMode}`);
-                            initializePugComponents();
+                            api.initialize(pug, notificationsWS, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    process.exit(1);
+                                }
+
+                                logger.info('API instance has been built successful.');
+                                config.debugMode = localDebugMode;
+                                logger.info(`Debug mode status: ${config.debugMode}`);
+                            });
                         });
                     });
                 });
@@ -184,19 +193,6 @@ httpServer.listen(config.httpPort, function () {
         });
     });
 });
-
-/**
- * initialize pug components
- */
-const initializePugComponents = function () {
-    common.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
-    common.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
-    common.pugComponents.projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
-    common.pugComponents.projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
-    common.pugComponents.projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
-    common.pugComponents.projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
-    common.pugComponents.usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
-}
 
 /**
  * Log some information about the request
@@ -263,25 +259,12 @@ app.delete('/comment/delete', api.handleCommentDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 // <notificationsWS Requests> ------------------------------------------------
-notificationsWS.on('connection', function (client, req) {
-    if (api.isActiveSession(req)) {
-        client.userId = req.session.user._id;
-        console.log(req.session.user);
-        notifications.getNotificationsByUserId(req.session.user._id, function (err, notifList) {
-            client.send(notifList);
-        });
-    }
-});
-setInterval(function () {
-    for (let client of notificationsWS.clients) {
-        client.send('ws ok');
-    }
-}, 1000);
+notificationsWS.on('connection', api.handleNotificationsConnection);
 // </notificationsWS Requests> -----------------------------------------------
 
 /**
  * If request path does not match any of the above routes, then resolve to 404
  */
 app.use(function (req, res, next) {
-    return res.status(404).render(pageNotFoundPage);
+    return res.status(404).render(common_api.pugPages.pageNotFound);
 });

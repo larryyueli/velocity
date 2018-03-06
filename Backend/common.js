@@ -36,7 +36,6 @@ const uuidv1 = require('uuid/v1');
  * 8000 -> comments
  * 9000 -> tickets
  */
-
 const errors = Object.freeze({
     //1000 system
     1000: 'invalid request',
@@ -182,18 +181,6 @@ exports.defaultError = defaultError;
 // </Global Errors> ------------------------------------------
 
 // <Global Constants> ------------------------------------------
-// all pages components
-var pugComponents = {
-    projectsEntryComponent: null,
-    projectsGroupEntryComponent: null,
-    projectsGroupModalComponent: null,
-    projectsGroupModalEntryComponent: null,
-    projectsGroupUserEntryComponent: null,
-    projectsUserEntryComponent: null,
-    usersEntryComponent: null
-};
-exports.pugComponents = pugComponents;
-
 // all user types
 const userTypes = Object.freeze({
     MODE_SELECTOR: { value: 0, text: 'modeSelector' },

@@ -20,41 +20,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const path = require('path');
 
+const common_api = require('./api-components/common-api.js');
+const notifications_api = require('./api-components/notifications-api.js');
+
 const cfs = require('../Backend/customFileSystem.js');
-const common = require('../Backend/common.js');
+const common_backend = require('../Backend/common.js');
 const config = require('../Backend/config.js');
 const logger = require('../Backend/logger.js');
 const projects = require('../Backend/projects.js');
 const settings = require('../Backend/settings.js');
 const users = require('../Backend/users.js');
 
-// File names to render
-const loginPage = 'login';
-const modeSelectorPage = 'modeSelector';
-const pageNotFoundPage = 'pageNotFound';
-const profilePage = 'profile';
-const projectsPage = 'projects/projects';
-const projectPagePage = 'projects/project-page';
-const projectsAddPage = 'projects/projects-add';
-const projectTeamPage = 'projects/project-team';
-const settingsPage = 'settings/settings';
-const ticketCreationPage = 'tickets/tickets-entry';
-const ticketModificationPage = 'tickets/tickets-edit';
-const usersPage = 'users/users';
-const usersAddPage = 'users/users-add';
-const usersEditPage = 'users/users-edit';
-const usersImportCompletePage = 'users/users-import-complete';
-const usersImportPage = 'users/users-import';
-
 // <Requests Function> -----------------------------------------------
 /**
- * verify active sessions
+ * initialize the api components
  *
- * @param {object} req req value of the session
+ * @param {object} pug pug object/instance
+ * @param {object} notificationsWS notifications web secket instance
+ * @param {function} callback callback function
  */
-const isActiveSession = function (req) {
-    return typeof (req.session) !== common.variableTypes.UNDEFINED
-        && typeof (req.session.user) !== common.variableTypes.UNDEFINED;
+const initialize = function (pug, notificationsWS, callback) {
+    common_api.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
+    common_api.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
+    common_api.pugComponents.projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
+    common_api.pugComponents.projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
+    common_api.pugComponents.projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
+    common_api.pugComponents.projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
+    common_api.pugComponents.usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
+
+    notifications_api.initialize(notificationsWS, callback);
 }
 
 /**
@@ -64,14 +58,14 @@ const isActiveSession = function (req) {
  * @param {object} res res object
  */
 const handleLoginPath = function (req, res) {
-    if (isActiveSession(req)) {
+    if (common_api.isActiveSession(req)) {
         req.session.destroy();
     }
 
-    if (typeof (req.body.username) !== common.variableTypes.STRING
-        || typeof (req.body.password) !== common.variableTypes.STRING) {
-        logger.error(JSON.stringify(common.getError(2002)));
-        return res.status(400).send(common.getError(2002));
+    if (typeof (req.body.username) !== common_backend.variableTypes.STRING
+        || typeof (req.body.password) !== common_backend.variableTypes.STRING) {
+        logger.error(JSON.stringify(common_backend.getError(2002)));
+        return res.status(400).send(common_backend.getError(2002));
     }
 
     const username = req.body.username.toLowerCase();
@@ -84,10 +78,10 @@ const handleLoginPath = function (req, res) {
         }
 
         if (!settings.isWebsiteActive()
-            && userObject.type !== common.userTypes.PROFESSOR.value
-            && userObject.type !== common.userTypes.COLLABORATOR_ADMIN.value) {
-            logger.error(JSON.stringify(common.getError(3007)));
-            return res.status(403).send(common.getError(3007));
+            && userObject.type !== common_backend.userTypes.PROFESSOR.value
+            && userObject.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value) {
+            logger.error(JSON.stringify(common_backend.getError(3007)));
+            return res.status(403).send(common_backend.getError(3007));
         }
 
         let meObject = JSON.parse(JSON.stringify(userObject));
@@ -105,7 +99,7 @@ const handleLoginPath = function (req, res) {
  * @param {object} res res object
  */
 const handleLogoutPath = function (req, res) {
-    if (isActiveSession(req)) {
+    if (common_api.isActiveSession(req)) {
         req.session.destroy();
     }
 
@@ -119,8 +113,8 @@ const handleLogoutPath = function (req, res) {
  * @param {object} res res object
  */
 const handleMePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     let meObject = JSON.parse(JSON.stringify(req.session.user));
@@ -135,15 +129,15 @@ const handleMePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProfilePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    return res.status(200).render(profilePage, {
+    return res.status(200).render(common_api.pugPages.profile, {
         user: req.session.user,
-        userType: common.getValueInObjectByKey(req.session.user.type, 'value', 'text', common.userTypes),
-        themes: common.colorThemes,
-        languages: common.languages,
+        userType: common_backend.getValueInObjectByKey(req.session.user.type, 'value', 'text', common_backend.userTypes),
+        themes: common_backend.colorThemes,
+        languages: common_backend.languages,
         canEditEmail: settings.isUsersAbleEditEmail(),
         canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
         canEditPassword: settings.isUsersAbleEditPassword(),
@@ -158,13 +152,13 @@ const handleProfilePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProfileUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     if (!req.body.currentPassword || req.body.newPassword !== req.body.confirmPassword) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
+        logger.error(JSON.stringify(common_backend.getError(1000)));
+        return res.status(400).send(common_backend.getError(1000));
     }
 
     users.login(req.session.user.username, req.body.currentPassword, function (err, userObject) {
@@ -176,17 +170,17 @@ const handleProfileUpdatePath = function (req, res) {
         const canEditEmail = settings.isUsersAbleEditEmail();
         const canEditFirstAndLastName = settings.isUsersAbleEditFirstAndLastName();
         const canEditPassword = settings.isUsersAbleEditPassword();
-        const updateNotificationEnabled = common.convertStringToBoolean(req.body.notificationEnabled);
+        const updateNotificationEnabled = common_backend.convertStringToBoolean(req.body.notificationEnabled);
 
         let updateObject = {};
         updateObject._id = req.session.user._id;
-        updateObject.fname = (canEditFirstAndLastName && typeof (req.body.fname) === common.variableTypes.STRING) ? req.body.fname : req.session.user.fname;
-        updateObject.lname = (canEditFirstAndLastName && typeof (req.body.lname) === common.variableTypes.STRING) ? req.body.lname : req.session.user.lname;
-        updateObject.email = (canEditEmail && typeof (req.body.email) === common.variableTypes.STRING) ? req.body.email : req.session.user.email;
-        updateObject.password = (canEditPassword && typeof (req.body.newPassword) === common.variableTypes.STRING) ? req.body.newPassword : null;
+        updateObject.fname = (canEditFirstAndLastName && typeof (req.body.fname) === common_backend.variableTypes.STRING) ? req.body.fname : req.session.user.fname;
+        updateObject.lname = (canEditFirstAndLastName && typeof (req.body.lname) === common_backend.variableTypes.STRING) ? req.body.lname : req.session.user.lname;
+        updateObject.email = (canEditEmail && typeof (req.body.email) === common_backend.variableTypes.STRING) ? req.body.email : req.session.user.email;
+        updateObject.password = (canEditPassword && typeof (req.body.newPassword) === common_backend.variableTypes.STRING) ? req.body.newPassword : null;
         updateObject.theme = req.body.theme || req.session.user.theme;
         updateObject.language = req.body.language || req.session.user.language;
-        updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common.variableTypes.BOOLEAN ?
+        updateObject.notificationEnabled = typeof (updateNotificationEnabled) === common_backend.variableTypes.BOOLEAN ?
             updateNotificationEnabled : req.session.user.notificationEnabled;
 
         users.updateUser(updateObject, function (err, result) {
@@ -214,12 +208,12 @@ const handleProfileUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleRootPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
-        return res.status(200).render(modeSelectorPage);
+    if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
+        return res.status(200).render(common_api.pugPages.modeSelector);
     }
 
     return res.redirect('/projects');
@@ -232,18 +226,18 @@ const handleRootPath = function (req, res) {
  * @param {object} res res object
  */
 const handleModeSelectPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.MODE_SELECTOR.value) {
-        return res.status(400).send(common.getError(1000));
+    if (req.session.user.type !== common_backend.userTypes.MODE_SELECTOR.value) {
+        return res.status(400).send(common_backend.getError(1000));
     }
 
     const parsedSelectedMode = parseInt(req.body.selectedMode);
-    if (!common.isValueInObject(parsedSelectedMode, common.modeTypes)) {
-        logger.error(JSON.stringify(common.getError(3006)));
-        return res.status(400).send(common.getError(3006));
+    if (!common_backend.isValueInObject(parsedSelectedMode, common_backend.modeTypes)) {
+        logger.error(JSON.stringify(common_backend.getError(3006)));
+        return res.status(400).send(common_backend.getError(3006));
     }
 
     settings.updateModeType(parsedSelectedMode, function (err, result) {
@@ -253,12 +247,12 @@ const handleModeSelectPath = function (req, res) {
         }
 
         let newType;
-        if (parsedSelectedMode === common.modeTypes.CLASS) {
-            newType = common.userTypes.PROFESSOR.value
+        if (parsedSelectedMode === common_backend.modeTypes.CLASS) {
+            newType = common_backend.userTypes.PROFESSOR.value
         }
 
-        if (parsedSelectedMode === common.modeTypes.COLLABORATORS) {
-            newType = common.userTypes.COLLABORATOR_ADMIN.value
+        if (parsedSelectedMode === common_backend.modeTypes.COLLABORATORS) {
+            newType = common_backend.userTypes.COLLABORATOR_ADMIN.value
         }
 
         const updateObject = {
@@ -292,20 +286,20 @@ const handleModeSelectPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2022)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2022)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
-    return res.status(200).render(usersPage, {
+    return res.status(200).render(common_api.pugPages.users, {
         user: req.session.user,
-        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
-        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
     });
 }
 
@@ -316,21 +310,21 @@ const handleUsersPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersListComponentPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2023)));
-        return res.status(403).send(common.getError(2023));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2023)));
+        return res.status(403).send(common_backend.getError(2023));
     }
 
     const fullUsersList = users.getFullUsersList();
 
     return res.status(200).send({
         usersList: fullUsersList,
-        usersEntryHTML: common.pugComponents.usersEntryComponent()
+        usersEntryHTML: common_api.pugComponents.usersEntryComponent()
     });
 }
 
@@ -341,8 +335,8 @@ const handleUsersListComponentPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectsAdminsListComponentPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.query.projectId;
@@ -353,16 +347,16 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2010)));
-            return res.status(403).send(common.getError(2010));
+            logger.error(JSON.stringify(common_backend.getError(2010)));
+            return res.status(403).send(common_backend.getError(2010));
         }
 
         const fullUserObjectsList = users.getActiveUsersList();
-        const fullUsersList = common.convertJsonListToList('_id', fullUserObjectsList);
-        const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
+        const fullUsersList = common_backend.convertJsonListToList('_id', fullUserObjectsList);
+        const fullUsersListObject = common_backend.convertListToJason('_id', fullUserObjectsList);
 
         let adminsList = projectObj.admins;
-        let usersList = common.getArrayDiff(fullUsersList, adminsList);
+        let usersList = common_backend.getArrayDiff(fullUsersList, adminsList);
 
         let resolvedAdminsList = [];
         let resolvedUsersList = [];
@@ -396,7 +390,7 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
         return res.status(200).send({
             projectAdmins: resolvedAdminsList,
             projectUsers: resolvedUsersList,
-            usersEntryHTML: common.pugComponents.projectsUserEntryComponent()
+            usersEntryHTML: common_api.pugComponents.projectsUserEntryComponent()
         });
     });
 }
@@ -409,20 +403,20 @@ const handleProjectsAdminsListComponentPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersAddPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2024)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2024)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
-    return res.status(200).render(usersAddPage, {
+    return res.status(200).render(common_api.pugPages.usersAdd, {
         user: req.session.user,
-        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
-        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
     });
 }
 
@@ -433,14 +427,14 @@ const handleUsersAddPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersCreatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2025)));
-        return res.status(403).send(common.getError(2025));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2025)));
+        return res.status(403).send(common_backend.getError(2025));
     }
 
     const newUser = {
@@ -449,7 +443,7 @@ const handleUsersCreatePath = function (req, res) {
         username: req.body.username,
         password: req.body.password,
         type: parseInt(req.body.type),
-        status: common.userStatus.ACTIVE.value,
+        status: common_backend.userStatus.ACTIVE.value,
         email: req.body.email
     };
 
@@ -459,7 +453,7 @@ const handleUsersCreatePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
+        cfs.mkdir(common_backend.cfsTree.USERS, userObjAdded._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -477,16 +471,16 @@ const handleUsersCreatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersRequestAccessPath = function (req, res) {
-    if (typeof (req.body.password) === common.variableTypes.STRING
-        && typeof (req.body.confirmPassword) === common.variableTypes.STRING
+    if (typeof (req.body.password) === common_backend.variableTypes.STRING
+        && typeof (req.body.confirmPassword) === common_backend.variableTypes.STRING
         && req.body.password !== req.body.confirmPassword) {
-        logger.error(JSON.stringify(common.getError(2011)));
-        return res.status(400).send(common.getError(2011));
+        logger.error(JSON.stringify(common_backend.getError(2011)));
+        return res.status(400).send(common_backend.getError(2011));
     }
 
-    if (settings.getModeType() === common.modeTypes.UNKNOWN) {
-        logger.error(JSON.stringify(common.getError(1010)));
-        return res.status(500).send(common.getError(1010));
+    if (settings.getModeType() === common_backend.modeTypes.UNKNOWN) {
+        logger.error(JSON.stringify(common_backend.getError(1010)));
+        return res.status(500).send(common_backend.getError(1010));
     }
 
     const newUser = {
@@ -494,10 +488,10 @@ const handleUsersRequestAccessPath = function (req, res) {
         lname: req.body.lname,
         username: req.body.username,
         password: req.body.password,
-        type: settings.getModeType() === common.modeTypes.CLASS ?
-            common.userTypes.STUDENT.value :
-            common.userTypes.COLLABORATOR.value,
-        status: common.userStatus.PENDING.value,
+        type: settings.getModeType() === common_backend.modeTypes.CLASS ?
+            common_backend.userTypes.STUDENT.value :
+            common_backend.userTypes.COLLABORATOR.value,
+        status: common_backend.userStatus.PENDING.value,
         email: req.body.email
     };
 
@@ -508,7 +502,7 @@ const handleUsersRequestAccessPath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        cfs.mkdir(common.cfsTree.USERS, userObjAdded._id, common.cfsPermission.OWNER, function (err, userObj) {
+        cfs.mkdir(common_backend.cfsTree.USERS, userObjAdded._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -526,40 +520,40 @@ const handleUsersRequestAccessPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersEditPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2026)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2026)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
     const username = req.params.username;
-    if (typeof (username) !== common.variableTypes.STRING) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
+    if (typeof (username) !== common_backend.variableTypes.STRING) {
+        logger.error(JSON.stringify(common_backend.getError(1000)));
+        return res.status(400).send(common_backend.getError(1000));
     }
 
     users.getUserByUsername(username, function (err, foundUser) {
         if (err) {
             if (err.code === 2003) {
-                logger.error(JSON.stringify(common.getError(2003)));
-                return res.status(404).render(pageNotFoundPage);
+                logger.error(JSON.stringify(common_backend.getError(2003)));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
         }
 
-        return res.status(200).render(usersEditPage, {
+        return res.status(200).render(common_api.pugPages.usersEdit, {
             user: req.session.user,
             editUser: foundUser,
-            isClassMode: settings.getModeType() === common.modeTypes.CLASS,
-            isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS,
-            commonUserTypes: common.userTypes,
-            commonUserStatus: common.userStatus
+            isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+            isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
+            commonUserTypes: common_backend.userTypes,
+            commonUserStatus: common_backend.userStatus
         });
     });
 }
@@ -571,14 +565,14 @@ const handleUsersEditPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2027)));
-        return res.status(403).send(common.getError(2027));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2027)));
+        return res.status(403).send(common_backend.getError(2027));
     }
 
     const oldUsername = req.body.oldUsername;
@@ -621,17 +615,17 @@ const handleUsersUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersImportPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2028)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2028)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
-    return res.status(200).render(usersImportPage, {
+    return res.status(200).render(common_api.pugPages.usersImport, {
         user: req.session.user,
     });
 }
@@ -643,31 +637,31 @@ const handleUsersImportPath = function (req, res) {
  * @param {object} res res object
  */
 const handleUsersImportFilePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2029)));
-        return res.status(403).send(common.getError(2029));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2029)));
+        return res.status(403).send(common_backend.getError(2029));
     }
 
     const validFileExtensions = ['text/csv', 'application/vnd.ms-excel'];
     const uploadedFile = req.files.usersImpotFile;
     if (!uploadedFile || validFileExtensions.indexOf(uploadedFile.mimetype) === -1) {
-        logger.error(JSON.stringify(common.getError(2009)));
-        return res.status(400).send(common.getError(2009));
+        logger.error(JSON.stringify(common_backend.getError(2009)));
+        return res.status(400).send(common_backend.getError(2009));
     }
 
-    const fileName = common.getUUID();
+    const fileName = common_backend.getUUID();
     const fileExtension = uploadedFile.mimetype.split('/')[1];
     const fileObject = {
         fileName: fileName,
-        filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
         fileData: uploadedFile.data,
-        filePermissions: common.cfsPermission.OWNER,
+        filePermissions: common_backend.cfsPermission.OWNER,
         fileCreator: req.session.user._id
     };
 
@@ -689,8 +683,8 @@ const handleUsersImportFilePath = function (req, res) {
             importedList.push(userObj);
         }).on('done', function (err) {
             if (err) {
-                logger.error(JSON.stringify(common.getError(1009)));
-                return res.status(500).send(common.getError(1009));
+                logger.error(JSON.stringify(common_backend.getError(1009)));
+                return res.status(500).send(common_backend.getError(1009));
             }
 
             let added = 0;
@@ -707,9 +701,9 @@ const handleUsersImportFilePath = function (req, res) {
                     username: inputUser.username,
                     email: inputUser.email,
                     password: inputUser.password,
-                    type: settings.getModeType() === common.modeTypes.CLASS ?
-                        common.userTypes.STUDENT.value : common.userTypes.COLLABORATOR.value,
-                    status: common.userStatus.ACTIVE.value
+                    type: settings.getModeType() === common_backend.modeTypes.CLASS ?
+                        common_backend.userTypes.STUDENT.value : common_backend.userTypes.COLLABORATOR.value,
+                    status: common_backend.userStatus.ACTIVE.value
                 };
                 users.addUser(userToAdd, function (err, userObj) {
                     total++;
@@ -726,7 +720,7 @@ const handleUsersImportFilePath = function (req, res) {
                         added++;
                     }
 
-                    cfs.mkdir(common.cfsTree.USERS, userObj._id, common.cfsPermission.OWNER, function (err, userObj) {
+                    cfs.mkdir(common_backend.cfsTree.USERS, userObj._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                         }
@@ -734,7 +728,7 @@ const handleUsersImportFilePath = function (req, res) {
                         processedDirs++;
 
                         if (total === importedList.length && processedDirs === importedList.length) {
-                            return res.status(200).render(usersImportCompletePage, {
+                            return res.status(200).render(common_api.pugPages.usersImportComplete, {
                                 added: added,
                                 failed: failed,
                                 exist: exist,
@@ -755,8 +749,8 @@ const handleUsersImportFilePath = function (req, res) {
  * @param {object} res res object
  */
 const handleprofilePicturePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const defaultImagePath = `${__dirname}/../UI/img/account_circle.png`;
@@ -776,14 +770,14 @@ const handleprofilePicturePath = function (req, res) {
             logger.error(JSON.stringify(err));
         }
 
-        if (fileObj.permission !== common.cfsPermission.PUBLIC) {
-            logger.error(JSON.stringify(common.getError(4010)));
+        if (fileObj.permission !== common_backend.cfsPermission.PUBLIC) {
+            logger.error(JSON.stringify(common_backend.getError(4010)));
             imagePath = defaultImagePath;
         }
 
         const validImageExtensions = ['jpeg', 'png'];
         if (validImageExtensions.indexOf(fileObj.extension) === -1) {
-            logger.error(JSON.stringify(common.getError(2008)));
+            logger.error(JSON.stringify(common_backend.getError(2008)));
             imagePath = defaultImagePath;
         }
 
@@ -802,25 +796,25 @@ const handleprofilePicturePath = function (req, res) {
  * @param {object} res res object
  */
 const handleUpdateProfilePicturePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const validImageExtensions = ['image/jpeg', 'image/png'];
     const uploadedFile = req.files.userpicture;
     if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
-        logger.error(JSON.stringify(common.getError(2008)));
-        return res.status(400).send(common.getError(2008));
+        logger.error(JSON.stringify(common_backend.getError(2008)));
+        return res.status(400).send(common_backend.getError(2008));
     }
 
-    const fileName = common.getUUID();
+    const fileName = common_backend.getUUID();
     const fileExtension = uploadedFile.mimetype.split('/')[1];
     const fileObject = {
         fileName: fileName,
-        filePath: `${common.cfsTree.USERS}/${req.session.user._id}`,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
         fileData: uploadedFile.data,
-        filePermissions: common.cfsPermission.PUBLIC,
+        filePermissions: common_backend.cfsPermission.PUBLIC,
         fileCreator: req.session.user._id
     };
 
@@ -849,17 +843,17 @@ const handleUpdateProfilePicturePath = function (req, res) {
  * @param {object} res res object
  */
 const handleSettingsPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2030)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2030)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
-    return res.status(200).render(settingsPage, {
+    return res.status(200).render(common_api.pugPages.settings, {
         user: req.session.user,
         generalActive: settings.isWebsiteActive(),
         canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
@@ -875,14 +869,14 @@ const handleSettingsPath = function (req, res) {
  * @param {object} res res object
  */
 const handleSettingsResetPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2031)));
-        return res.status(403).send(common.getError(2031));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2031)));
+        return res.status(403).send(common_backend.getError(2031));
     }
 
     settings.resetAllSettings(function (err, result) {
@@ -902,21 +896,21 @@ const handleSettingsResetPath = function (req, res) {
  * @param {object} res res object
  */
 const handleSettingsUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2032)));
-        return res.status(403).send(common.getError(2032));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2032)));
+        return res.status(403).send(common_backend.getError(2032));
     }
 
     const updateObject = {
-        active: common.convertStringToBoolean(req.body.active),
-        canEditEmail: common.convertStringToBoolean(req.body.canEditEmail),
-        canEditFirstAndLastName: common.convertStringToBoolean(req.body.canEditFirstAndLastName),
-        canEditPassword: common.convertStringToBoolean(req.body.canEditPassword)
+        active: common_backend.convertStringToBoolean(req.body.active),
+        canEditEmail: common_backend.convertStringToBoolean(req.body.canEditEmail),
+        canEditFirstAndLastName: common_backend.convertStringToBoolean(req.body.canEditFirstAndLastName),
+        canEditPassword: common_backend.convertStringToBoolean(req.body.canEditPassword)
     };
 
     settings.updateAllSettings(updateObject, function (err, result) {
@@ -936,16 +930,16 @@ const handleSettingsUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectsPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
-        logger.error(JSON.stringify(common.getError(2033)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2033)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
-    return res.status(200).render(projectsPage, {
+    return res.status(200).render(common_api.pugPages.projects, {
         user: req.session.user
     });
 }
@@ -957,13 +951,13 @@ const handleProjectsPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectsListComponentPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
-        logger.error(JSON.stringify(common.getError(2034)));
-        return res.status(403).send(common.getError(2034));
+    if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2034)));
+        return res.status(403).send(common_backend.getError(2034));
     }
 
     projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {
@@ -979,20 +973,20 @@ const handleProjectsListComponentPath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                let joinedLists = common.joinLists(projectsList, draftProjectsList);
+                let joinedLists = common_backend.joinLists(projectsList, draftProjectsList);
                 return res.status(200).send({
                     projectsList: joinedLists,
-                    projectsEntryHTML: common.pugComponents.projectsEntryComponent()
+                    projectsEntryHTML: common_api.pugComponents.projectsEntryComponent()
                 });
             });
         }
 
-        if (req.session.user.type === common.userTypes.STUDENT.value) {
+        if (req.session.user.type === common_backend.userTypes.STUDENT.value) {
             addDraft();
         } else {
             return res.status(200).send({
                 projectsList: projectsList,
-                projectsEntryHTML: common.pugComponents.projectsEntryComponent()
+                projectsEntryHTML: common_api.pugComponents.projectsEntryComponent()
             });
         }
     });
@@ -1005,13 +999,13 @@ const handleProjectsListComponentPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectsGroupAssignPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
-        logger.error(JSON.stringify(common.getError(2034)));
-        return res.status(403).send(common.getError(2034));
+    if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2034)));
+        return res.status(403).send(common_backend.getError(2034));
     }
 
     const projectId = req.query.projectId;
@@ -1024,26 +1018,26 @@ const handleProjectsGroupAssignPath = function (req, res) {
         let userIsAdmin = projectObj.admins.indexOf(req.session.user._id) !== -1;
         let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
 
-        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
-            logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(403).send(common.getError(2034));
+        if (projectObj.status === common_backend.projectStatus.ACTIVE.value && !userIsMember) {
+            logger.error(JSON.stringify(common_backend.getError(2034)));
+            return res.status(403).send(common_backend.getError(2034));
         }
 
-        if (projectObj.status === common.projectStatus.DRAFT.value
+        if (projectObj.status === common_backend.projectStatus.DRAFT.value
             && !userIsAdmin
-            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
-            logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(403).send(common.getError(2034));
+            && projectObj.teamSelectionType !== common_backend.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common_backend.getError(2034)));
+            return res.status(403).send(common_backend.getError(2034));
         }
 
-        if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
-            logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(403).send(common.getError(2034));
+        if (projectObj.status === common_backend.projectStatus.CLOSED.value && !userIsMember) {
+            logger.error(JSON.stringify(common_backend.getError(2034)));
+            return res.status(403).send(common_backend.getError(2034));
         }
 
-        if (projectObj.status === common.projectStatus.DELETED.value) {
-            logger.error(JSON.stringify(common.getError(2034)));
-            return res.status(403).send(common.getError(2034));
+        if (projectObj.status === common_backend.projectStatus.DELETED.value) {
+            logger.error(JSON.stringify(common_backend.getError(2034)));
+            return res.status(403).send(common_backend.getError(2034));
         }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
@@ -1054,14 +1048,14 @@ const handleProjectsGroupAssignPath = function (req, res) {
 
             let projectMembers = [];
             for (let i = 0; i < teamsList.length; i++) {
-                projectMembers = common.joinSets(projectMembers, teamsList[i].members);
+                projectMembers = common_backend.joinSets(projectMembers, teamsList[i].members);
             }
 
             const fullUserObjectsList = users.getActiveUsersList();
-            const fullUsersListObject = common.convertListToJason('_id', fullUserObjectsList);
-            const usersList = common.convertJsonListToList('_id', fullUserObjectsList);
+            const fullUsersListObject = common_backend.convertListToJason('_id', fullUserObjectsList);
+            const usersList = common_backend.convertJsonListToList('_id', fullUserObjectsList);
 
-            let unassignedList = common.getArrayDiff(usersList, projectMembers);
+            let unassignedList = common_backend.getArrayDiff(usersList, projectMembers);
             let unassignedObjectsList = [];
 
             for (let i = 0; i < unassignedList.length; i++) {
@@ -1103,13 +1097,13 @@ const handleProjectsGroupAssignPath = function (req, res) {
                 groupSize: projectObj.teamSize,
                 groupSelectionType: projectObj.teamSelectionType,
                 groupPrefix: projectObj.teamPrefix,
-                groupUserHTML: common.pugComponents.projectsGroupUserEntryComponent(),
-                groupHTML: common.pugComponents.projectsGroupEntryComponent(),
-                groupModalHTML: common.pugComponents.projectsGroupModalComponent(),
-                groupModalEntryHTML: common.pugComponents.projectsGroupModalEntryComponent(),
+                groupUserHTML: common_api.pugComponents.projectsGroupUserEntryComponent(),
+                groupHTML: common_api.pugComponents.projectsGroupEntryComponent(),
+                groupModalHTML: common_api.pugComponents.projectsGroupModalComponent(),
+                groupModalEntryHTML: common_api.pugComponents.projectsGroupModalEntryComponent(),
                 isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
-                isClassMode: settings.getModeType() === common.modeTypes.CLASS,
-                isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+                isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+                isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
             });
         });
     });
@@ -1122,20 +1116,20 @@ const handleProjectsGroupAssignPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectsAddPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2035)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2035)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
-    return res.status(200).render(projectsAddPage, {
+    return res.status(200).render(common_api.pugPages.projectsAdd, {
         user: req.session.user,
-        isClassMode: settings.getModeType() === common.modeTypes.CLASS,
-        isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+        isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+        isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
     });
 }
 
@@ -1146,20 +1140,20 @@ const handleProjectsAddPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectsCreatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.COLLABORATOR_ADMIN.value
-        && req.session.user.type !== common.userTypes.PROFESSOR.value) {
-        logger.error(JSON.stringify(common.getError(2036)));
-        return res.status(403).send(common.getError(2036));
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2036)));
+        return res.status(403).send(common_backend.getError(2036));
     }
 
     const newProject = {
         title: req.body.title,
         description: req.body.description,
-        status: common.projectStatus.DRAFT.value,
+        status: common_backend.projectStatus.DRAFT.value,
         admins: [req.session.user._id]
     };
 
@@ -1180,31 +1174,31 @@ const handleProjectsCreatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectByIdPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type === common.userTypes.MODE_SELECTOR.value) {
-        logger.error(JSON.stringify(common.getError(2038)));
-        return res.status(404).render(pageNotFoundPage);
+    if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2038)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
     }
 
     const projectId = req.params.projectId;
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         let userIsAdmin = projectObj.admins.indexOf(req.session.user._id) !== -1;
         let userIsMember = projectObj.members.indexOf(req.session.user._id) !== -1;
 
-        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsMember) {
-            logger.error(JSON.stringify(common.getError(2038)));
-            return res.status(404).render(pageNotFoundPage);
+        if (projectObj.status === common_backend.projectStatus.ACTIVE.value && !userIsMember) {
+            logger.error(JSON.stringify(common_backend.getError(2038)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        if (projectObj.status === common.projectStatus.ACTIVE.value && !userIsAdmin) {
+        if (projectObj.status === common_backend.projectStatus.ACTIVE.value && !userIsAdmin) {
             return projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
@@ -1215,30 +1209,30 @@ const handleProjectByIdPath = function (req, res) {
             });
         }
 
-        if (projectObj.status === common.projectStatus.DRAFT.value
+        if (projectObj.status === common_backend.projectStatus.DRAFT.value
             && !userIsAdmin
-            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
-            logger.error(JSON.stringify(common.getError(2038)));
-            return res.status(404).render(pageNotFoundPage);
+            && projectObj.teamSelectionType !== common_backend.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common_backend.getError(2038)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        if (projectObj.status === common.projectStatus.CLOSED.value && !userIsMember) {
-            logger.error(JSON.stringify(common.getError(2038)));
-            return res.status(404).render(pageNotFoundPage);
+        if (projectObj.status === common_backend.projectStatus.CLOSED.value && !userIsMember) {
+            logger.error(JSON.stringify(common_backend.getError(2038)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        if (projectObj.status === common.projectStatus.DELETED.value) {
-            logger.error(JSON.stringify(common.getError(2038)));
-            return res.status(404).render(pageNotFoundPage);
+        if (projectObj.status === common_backend.projectStatus.DELETED.value) {
+            logger.error(JSON.stringify(common_backend.getError(2038)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        return res.status(200).render(projectPagePage, {
+        return res.status(200).render(common_api.pugPages.projectPage, {
             user: req.session.user,
             title: projectObj.title,
             isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
             description: projectObj.description,
-            isClassMode: settings.getModeType() === common.modeTypes.CLASS,
-            isCollabMode: settings.getModeType() === common.modeTypes.COLLABORATORS
+            isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+            isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
         });
     });
 }
@@ -1250,8 +1244,8 @@ const handleProjectByIdPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1262,14 +1256,14 @@ const handleProjectUpdatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2037)));
-            return res.status(403).send(common.getError(2037));
+            logger.error(JSON.stringify(common_backend.getError(2037)));
+            return res.status(403).send(common_backend.getError(2037));
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common.getError(2042)));
-            return res.status(400).send(common.getError(2042));
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
         }
 
         let newProject = {
@@ -1294,8 +1288,8 @@ const handleProjectUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamsUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1306,14 +1300,14 @@ const handleProjectTeamsUpdatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2039)));
-            return res.status(403).send(common.getError(2039));
+            logger.error(JSON.stringify(common_backend.getError(2039)));
+            return res.status(403).send(common_backend.getError(2039));
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common.getError(2042)));
-            return res.status(400).send(common.getError(2042));
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
         }
 
         let inputTeamsList = req.body.teamsList;
@@ -1322,7 +1316,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                 inputTeamsList = JSON.parse(inputTeamsList);
             }
             catch (err) {
-                logger.error(common.getError(1011));
+                logger.error(common_backend.getError(1011));
                 inputTeamsList = [];
             }
         }
@@ -1333,14 +1327,14 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            let projectTeamsListofNames = common.convertJsonListToList('name', projectTeamsList);
-            let inputTeamsListofNames = common.convertJsonListToList('name', inputTeamsList);
-            let teamsListofNamesToDelete = common.getArrayDiff(projectTeamsListofNames, inputTeamsListofNames);
-            let teamsObj = common.convertListToJason('name', projectTeamsList);
+            let projectTeamsListofNames = common_backend.convertJsonListToList('name', projectTeamsList);
+            let inputTeamsListofNames = common_backend.convertJsonListToList('name', inputTeamsList);
+            let teamsListofNamesToDelete = common_backend.getArrayDiff(projectTeamsListofNames, inputTeamsListofNames);
+            let teamsObj = common_backend.convertListToJason('name', projectTeamsList);
 
             let updateTeams = function () {
                 const fullUserObjectsList = users.getActiveUsersList();
-                const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+                const fullUsersListObject = common_backend.convertListToJason('username', fullUserObjectsList);
 
                 let resolvedTeamsList = [];
                 for (let i = 0; i < inputTeamsList.length; i++) {
@@ -1376,7 +1370,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
                                     updateTeamsCounter++;
                                     if (updateTeamsCounter === resolvedTeamsList.length) {
-                                        if (projectObj.status === common.projectStatus.ACTIVE.value) {
+                                        if (projectObj.status === common_backend.projectStatus.ACTIVE.value) {
                                             updateActiveTeam();
                                         } else {
                                             return res.status(200).send('ok');
@@ -1396,7 +1390,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
                                 updateTeamsCounter++;
                                 if (updateTeamsCounter === resolvedTeamsList.length) {
-                                    if (projectObj.status === common.projectStatus.ACTIVE.value) {
+                                    if (projectObj.status === common_backend.projectStatus.ACTIVE.value) {
                                         updateActiveTeam();
                                     } else {
                                         return res.status(200).send('ok');
@@ -1417,11 +1411,11 @@ const handleProjectTeamsUpdatePath = function (req, res) {
 
                     let members = projectObj.admins;
                     for (let i = 0; i < teamsList.length; i++) {
-                        members = common.joinSets(members, teamsList[i].members);
+                        members = common_backend.joinSets(members, teamsList[i].members);
                     }
 
                     let newProject = {
-                        status: common.projectStatus.ACTIVE.value,
+                        status: common_backend.projectStatus.ACTIVE.value,
                         members: members
                     };
                     projects.updateProject(req.body.projectId, newProject, function (err, result) {
@@ -1443,7 +1437,7 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                     let deleteTeamName = teamsListofNamesToDelete[i];
                     if (teamsObj[deleteTeamName]) {
                         let teamToDeleteUpdate = teamsObj[deleteTeamName];
-                        teamToDeleteUpdate.status = common.teamStatus.DISABLED.value;
+                        teamToDeleteUpdate.status = common_backend.teamStatus.DISABLED.value;
                         projects.updateTeamInProject(teamToDeleteUpdate._id, projectId, teamToDeleteUpdate, function (err, result) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
@@ -1468,8 +1462,8 @@ const handleProjectTeamsUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectAdminsUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1480,14 +1474,14 @@ const handleProjectAdminsUpdatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2037)));
-            return res.status(403).send(common.getError(2037));
+            logger.error(JSON.stringify(common_backend.getError(2037)));
+            return res.status(403).send(common_backend.getError(2037));
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common.getError(2042)));
-            return res.status(400).send(common.getError(2042));
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
         }
 
         const inputAdminsList = req.body.adminsList;
@@ -1496,14 +1490,14 @@ const handleProjectAdminsUpdatePath = function (req, res) {
                 inputAdminsList = JSON.parse(inputAdminsList);
             }
             catch (err) {
-                logger.error(common.getError(1011));
+                logger.error(common_backend.getError(1011));
                 inputAdminsList = [];
             }
         }
 
-        const projectAdminsListofNames = common.convertJsonListToList('username', inputAdminsList);
+        const projectAdminsListofNames = common_backend.convertJsonListToList('username', inputAdminsList);
         const fullUserObjectsList = users.getActiveUsersList();
-        const fullUsersListObject = common.convertListToJason('username', fullUserObjectsList);
+        const fullUsersListObject = common_backend.convertListToJason('username', fullUserObjectsList);
 
         let newAdminsList = [];
         for (let i = 0; i < projectAdminsListofNames.length; i++) {
@@ -1534,8 +1528,8 @@ const handleProjectAdminsUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectActivatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1546,14 +1540,14 @@ const handleProjectActivatePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2041)));
-            return res.status(403).send(common.getError(2041));
+            logger.error(JSON.stringify(common_backend.getError(2041)));
+            return res.status(403).send(common_backend.getError(2041));
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common.getError(2042)));
-            return res.status(400).send(common.getError(2042));
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
         }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
@@ -1564,11 +1558,11 @@ const handleProjectActivatePath = function (req, res) {
 
             let members = projectObj.admins;
             for (let i = 0; i < teamsList.length; i++) {
-                members = common.joinSets(members, teamsList[i].members);
+                members = common_backend.joinSets(members, teamsList[i].members);
             }
 
             let newProject = {
-                status: common.projectStatus.ACTIVE.value,
+                status: common_backend.projectStatus.ACTIVE.value,
                 members: members
             };
             projects.updateProject(req.body.projectId, newProject, function (err, result) {
@@ -1590,8 +1584,8 @@ const handleProjectActivatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectDeletePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1602,12 +1596,12 @@ const handleProjectDeletePath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2040)));
-            return res.status(403).send(common.getError(2040));
+            logger.error(JSON.stringify(common_backend.getError(2040)));
+            return res.status(403).send(common_backend.getError(2040));
         }
 
         let newProject = {
-            status: common.projectStatus.DELETED.value
+            status: common_backend.projectStatus.DELETED.value
         };
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
@@ -1627,20 +1621,20 @@ const handleProjectDeletePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamsConfigPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (settings.getModeType() !== common.modeTypes.CLASS) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
+    if (settings.getModeType() !== common_backend.modeTypes.CLASS) {
+        logger.error(JSON.stringify(common_backend.getError(1000)));
+        return res.status(400).send(common_backend.getError(1000));
     }
 
-    if (req.session.user.type !== common.userTypes.PROFESSOR.value
-        && req.session.user.type !== common.userTypes.TA.value
-        && req.session.user.type !== common.userTypes.STUDENT.value) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(403).send(common.getError(1000));
+    if (req.session.user.type !== common_backend.userTypes.PROFESSOR.value
+        && req.session.user.type !== common_backend.userTypes.TA.value
+        && req.session.user.type !== common_backend.userTypes.STUDENT.value) {
+        logger.error(JSON.stringify(common_backend.getError(1000)));
+        return res.status(403).send(common_backend.getError(1000));
     }
 
     const projectId = req.body.projectId;
@@ -1651,14 +1645,14 @@ const handleProjectTeamsConfigPath = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2037)));
-            return res.status(403).send(common.getError(2037));
+            logger.error(JSON.stringify(common_backend.getError(2037)));
+            return res.status(403).send(common_backend.getError(2037));
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common.getError(2042)));
-            return res.status(400).send(common.getError(2042));
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
         }
 
         let newProject = {
@@ -1684,13 +1678,13 @@ const handleProjectTeamsConfigPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamsUpdateMePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
-    if (req.session.user.type !== common.userTypes.STUDENT.value) {
-        logger.error(JSON.stringify(common.getError(1000)));
-        return res.status(400).send(common.getError(1000));
+    if (req.session.user.type !== common_backend.userTypes.STUDENT.value) {
+        logger.error(JSON.stringify(common_backend.getError(1000)));
+        return res.status(400).send(common_backend.getError(1000));
     }
 
     const projectId = req.body.projectId;
@@ -1700,20 +1694,20 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
             return res.status(500).send(err);
         }
 
-        if (projectObj.status === common.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common.getError(2012)));
-            return res.status(403).send(common.getError(2012));
+        if (projectObj.status === common_backend.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common_backend.getError(2012)));
+            return res.status(403).send(common_backend.getError(2012));
         }
 
-        if (projectObj.status === common.projectStatus.CLOSED.value) {
-            logger.error(JSON.stringify(common.getError(2013)));
-            return res.status(403).send(common.getError(2013));
+        if (projectObj.status === common_backend.projectStatus.CLOSED.value) {
+            logger.error(JSON.stringify(common_backend.getError(2013)));
+            return res.status(403).send(common_backend.getError(2013));
         }
 
-        if (projectObj.status !== common.projectStatus.DRAFT.value
-            && projectObj.teamSelectionType !== common.teamSelectionTypes.USER.value) {
-            logger.error(JSON.stringify(common.getError(2014)));
-            return res.status(403).send(common.getError(2014));
+        if (projectObj.status !== common_backend.projectStatus.DRAFT.value
+            && projectObj.teamSelectionType !== common_backend.teamSelectionTypes.USER.value) {
+            logger.error(JSON.stringify(common_backend.getError(2014)));
+            return res.status(403).send(common_backend.getError(2014));
         }
 
         projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
@@ -1730,14 +1724,14 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
             const teamName = req.body.teamName;
 
             if (!addAction && !removeAction) {
-                logger.error(JSON.stringify(common.getError(2015)));
-                return res.status(400).send(common.getError(2015));
+                logger.error(JSON.stringify(common_backend.getError(2015)));
+                return res.status(400).send(common_backend.getError(2015));
             }
 
             if (addAction) {
                 if (teamObj) {
-                    logger.error(JSON.stringify(common.getError(2016)));
-                    return res.status(400).send(common.getError(2016));
+                    logger.error(JSON.stringify(common_backend.getError(2016)));
+                    return res.status(400).send(common_backend.getError(2016));
                 }
 
                 projects.getTeamInProjectByName(projectId, teamName, function (err, teamObjFound) {
@@ -1764,8 +1758,8 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
 
                     if (teamObjFound) {
                         if (projectObj.teamSize < teamObjFound.members.length + 1) {
-                            logger.error(JSON.stringify(common.getError(2020)));
-                            return res.status(400).send(common.getError(2020));
+                            logger.error(JSON.stringify(common_backend.getError(2020)));
+                            return res.status(400).send(common_backend.getError(2020));
                         }
 
                         teamObjFound.members.push(req.session.user._id);
@@ -1787,13 +1781,13 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
 
             if (removeAction) {
                 if (teamNotExist) {
-                    logger.error(JSON.stringify(common.getError(2017)));
-                    return res.status(400).send(common.getError(2017));
+                    logger.error(JSON.stringify(common_backend.getError(2017)));
+                    return res.status(400).send(common_backend.getError(2017));
                 }
 
                 if (teamObj.name !== teamName) {
-                    logger.error(JSON.stringify(common.getError(2021)));
-                    return res.status(400).send(common.getError(2021));
+                    logger.error(JSON.stringify(common_backend.getError(2021)));
+                    return res.status(400).send(common_backend.getError(2021));
                 }
 
                 teamObj.members.splice(teamObj.members.indexOf(req.session.user._id), 1);
@@ -1801,7 +1795,7 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
                 let updatedTeam = {
                     projectId: projectId,
                     members: teamObj.members,
-                    status: teamObj.members.length === 0 ? common.teamStatus.DISABLED.value : common.teamStatus.ACTIVE.value
+                    status: teamObj.members.length === 0 ? common_backend.teamStatus.DISABLED.value : common_backend.teamStatus.ACTIVE.value
                 };
 
                 projects.updateTeamInProject(teamObj._id, projectId, updatedTeam, function (err, result) {
@@ -1824,8 +1818,8 @@ const handleProjectTeamsUpdateMePath = function (req, res) {
  * @param {object} res res object
  */
 const handleTicketsCreatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1838,8 +1832,8 @@ const handleTicketsCreatePath = function (req, res) {
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(400).send(common.getError(2018));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
@@ -1850,8 +1844,8 @@ const handleTicketsCreatePath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(400).send(common.getError(2019));
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
             }
 
             users.getUserByUsername(assignee, function (err, assigneeObj) {
@@ -1874,14 +1868,14 @@ const handleTicketsCreatePath = function (req, res) {
 
                 if (assigneeObj) {
                     if (projectObj.members.indexOf(assigneeObj._id) === -1) {
-                        logger.error(JSON.stringify(common.getError(2018)));
-                        return res.status(400).send(common.getError(2018));
+                        logger.error(JSON.stringify(common_backend.getError(2018)));
+                        return res.status(400).send(common_backend.getError(2018));
                     }
 
-                    if (settings.getModeType() === common.modeTypes.CLASS
+                    if (settings.getModeType() === common_backend.modeTypes.CLASS
                         && teamObj.members.indexOf(assigneeObj._id) === -1) {
-                        logger.error(JSON.stringify(common.getError(2019)));
-                        return res.status(400).send(common.getError(2019));
+                        logger.error(JSON.stringify(common_backend.getError(2019)));
+                        return res.status(400).send(common_backend.getError(2019));
                     }
 
                     newTicket.assignee = assigneeObj._id;
@@ -1908,8 +1902,8 @@ const handleTicketsCreatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleTicketsUpdatePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -1923,8 +1917,8 @@ const handleTicketsUpdatePath = function (req, res) {
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(400).send(common.getError(2018));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
@@ -1935,8 +1929,8 @@ const handleTicketsUpdatePath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(400).send(common.getError(2019));
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
             }
 
             projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
@@ -1965,26 +1959,26 @@ const handleTicketsUpdatePath = function (req, res) {
                         priority: newPoints
                     };
 
-                    if (common.isValueInObjectWithKeys(newState, 'value', common.ticketStates)
+                    if (common_backend.isValueInObjectWithKeys(newState, 'value', common_backend.ticketStates)
                         && ticketObj.state !== newState) {
                         updatedTicket.stateHistoryEntry = {
                             actor: req.session.user._id,
                             from: ticketObj.state,
                             to: newState,
-                            ctime: common.getDate()
+                            ctime: common_backend.getDate()
                         };
                     }
 
                     if (assigneeObj) {
                         if (projectObj.members.indexOf(assigneeObj._id) === -1) {
-                            logger.error(JSON.stringify(common.getError(2018)));
-                            return res.status(400).send(common.getError(2018));
+                            logger.error(JSON.stringify(common_backend.getError(2018)));
+                            return res.status(400).send(common_backend.getError(2018));
                         }
 
-                        if (settings.getModeType() === common.modeTypes.CLASS
+                        if (settings.getModeType() === common_backend.modeTypes.CLASS
                             && teamObj.members.indexOf(assigneeObj._id) === -1) {
-                            logger.error(JSON.stringify(common.getError(2019)));
-                            return res.status(400).send(common.getError(2019));
+                            logger.error(JSON.stringify(common_backend.getError(2019)));
+                            return res.status(400).send(common_backend.getError(2019));
                         }
 
                         updatedTicket.assignee = assigneeObj._id;
@@ -1994,7 +1988,7 @@ const handleTicketsUpdatePath = function (req, res) {
                                 actor: req.session.user._id,
                                 from: ticketObj.assignee,
                                 to: assigneeObj._id,
-                                ctime: common.getDate()
+                                ctime: common_backend.getDate()
                             };
                         }
                     }
@@ -2020,8 +2014,8 @@ const handleTicketsUpdatePath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.params.projectId;
@@ -2029,39 +2023,39 @@ const handleProjectTeamPath = function (req, res) {
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.CLOSED.value) {
-            logger.error(JSON.stringify(common.getError(2044)));
-            return res.status(404).render(pageNotFoundPage);
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.CLOSED.value) {
+            logger.error(JSON.stringify(common_backend.getError(2044)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(404).render(pageNotFoundPage);
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(404).render(pageNotFoundPage);
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObjList) {
                 if (err) {
                     logger.error(JSON.stringify(err));
-                    return res.status(404).render(pageNotFoundPage);
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
-                return res.status(200).render(projectTeamPage, {
+                return res.status(200).render(common_api.pugPages.projectTeam, {
                     user: req.session.user,
                     projectId: projectId,
                     teamId: teamId,
@@ -2079,8 +2073,8 @@ const handleProjectTeamPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamTicketsAddPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.params.projectId;
@@ -2088,35 +2082,35 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common.getError(2043)));
-            return res.status(404).render(pageNotFoundPage);
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common_backend.getError(2043)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(404).render(pageNotFoundPage);
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(404).render(pageNotFoundPage);
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             const reporter = `${req.session.user.fname} ${req.session.user.lname}`;
-            const assignee = common.noAssignee;
+            const assignee = common_backend.noAssignee;
 
-            return res.status(200).render(ticketCreationPage, {
+            return res.status(200).render(common_api.pugPages.ticketCreation, {
                 user: req.session.user,
                 projectId: projectId,
                 teamId: teamId,
@@ -2134,8 +2128,8 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamTicketPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.params.projectId;
@@ -2144,30 +2138,30 @@ const handleProjectTeamTicketPath = function (req, res) {
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(404).render(pageNotFoundPage);
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        if (projectObj.status !== common.projectStatus.ACTIVE.value
-            && projectObj.status !== common.projectStatus.CLOSED.value) {
-            logger.error(JSON.stringify(common.getError(2044)));
-            return res.status(404).render(pageNotFoundPage);
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
+            && projectObj.status !== common_backend.projectStatus.CLOSED.value) {
+            logger.error(JSON.stringify(common_backend.getError(2044)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(404).render(pageNotFoundPage);
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(404).render(pageNotFoundPage);
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(404).render(pageNotFoundPage);
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
             projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) {
@@ -2185,26 +2179,26 @@ const handleProjectTeamTicketPath = function (req, res) {
                 }
 
                 if (!ticketObj) {
-                    logger.error(JSON.stringify(common.getError(7004)));
-                    return res.status(400).send(common.getError(7004));
+                    logger.error(JSON.stringify(common_backend.getError(7004)));
+                    return res.status(400).send(common_backend.getError(7004));
                 }
 
                 projects.getCommentsByTicketId(projectId, teamId, ticketId, function (err, commentsList) {
                     if (err) {
                         logger.error(JSON.stringify(err));
-                        return res.status(404).render(pageNotFoundPage);
+                        return res.status(404).render(common_api.pugPages.pageNotFound);
                     }
 
-                    const usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
-                    const ticketsIdObj = common.convertListToJason('_id', ticketsList);
+                    const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                    const ticketsIdObj = common_backend.convertListToJason('_id', ticketsList);
 
-                    let assignee = common.noAssignee;
+                    let assignee = common_backend.noAssignee;
                     let resolvedAssignee = usersIdObj[ticketObj.assignee];
                     if (resolvedAssignee) {
                         assignee = `${resolvedAssignee.fname} ${resolvedAssignee.lname}`
                     }
 
-                    let reporter = common.noReporter;
+                    let reporter = common_backend.noReporter;
                     let resolvedReporter = usersIdObj[ticketObj.reporter];
                     if (resolvedReporter) {
                         reporter = `${resolvedReporter.fname} ${resolvedReporter.lname}`
@@ -2219,7 +2213,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                         }
                     }
 
-                    return res.status(200).render(ticketModificationPage, {
+                    return res.status(200).render(common_api.pugPages.ticketModification, {
                         user: req.session.user,
                         projectId: projectId,
                         teamId: teamId,
@@ -2228,10 +2222,10 @@ const handleProjectTeamTicketPath = function (req, res) {
                         ticket: ticketObj,
                         comments: commentsList,
                         resolveState: (state) => {
-                            return common.getValueInObjectByKey(state, 'value', 'text', common.ticketStates);
+                            return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
                         },
                         resolveUsername: (userId) => {
-                            return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common.noAssignee;
+                            return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
                         },
                         resolveCommentContent: (content) => {
                             let splitContent = content.split(' ');
@@ -2281,8 +2275,8 @@ const handleProjectTeamTicketPath = function (req, res) {
  * @param {object} res res object
  */
 const handleTicketsCommentPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -2296,8 +2290,8 @@ const handleTicketsCommentPath = function (req, res) {
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(400).send(common.getError(2018));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
@@ -2308,8 +2302,8 @@ const handleTicketsCommentPath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(400).send(common.getError(2019));
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
             }
 
             projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) {
@@ -2326,12 +2320,12 @@ const handleTicketsCommentPath = function (req, res) {
                 }
 
                 if (!ticketObj) {
-                    logger.error(JSON.stringify(common.getError(7004)));
-                    return res.status(400).send(common.getError(7004));
+                    logger.error(JSON.stringify(common_backend.getError(7004)));
+                    return res.status(400).send(common_backend.getError(7004));
                 }
 
-                const ticketsDisplayIdObj = common.convertListToJason('displayId', ticketsList);
-                const userNamesObj = common.convertListToJason('username', users.getActiveUsersList());
+                const ticketsDisplayIdObj = common_backend.convertListToJason('displayId', ticketsList);
+                const userNamesObj = common_backend.convertListToJason('username', users.getActiveUsersList());
 
                 const content = req.body.content;
                 let splitContent = content.split(' ');
@@ -2395,8 +2389,8 @@ const handleTicketsCommentPath = function (req, res) {
  * @param {object} res res object
  */
 const handleCommentDeletePath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -2411,8 +2405,8 @@ const handleCommentDeletePath = function (req, res) {
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(400).send(common.getError(2018));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
@@ -2423,8 +2417,8 @@ const handleCommentDeletePath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(400).send(common.getError(2019));
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
             }
 
             projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
@@ -2440,11 +2434,11 @@ const handleCommentDeletePath = function (req, res) {
                     }
 
                     if (commentObj.userId !== req.session.user._id) {
-                        logger.error(JSON.stringify(common.getError(2018)));
-                        return res.status(400).send(common.getError(2018));
+                        logger.error(JSON.stringify(common_backend.getError(2018)));
+                        return res.status(400).send(common_backend.getError(2018));
                     }
 
-                    let updatedComment = { status: common.commentStatus.DELETED.value };
+                    let updatedComment = { status: common_backend.commentStatus.DELETED.value };
                     projects.updateComment(commentId, ticketId, teamId, projectId, updatedComment, function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
@@ -2466,8 +2460,8 @@ const handleCommentDeletePath = function (req, res) {
  * @param {object} res res object
  */
 const handleTicketsCommentEditPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.body.projectId;
@@ -2482,8 +2476,8 @@ const handleTicketsCommentEditPath = function (req, res) {
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(400).send(common.getError(2018));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
@@ -2494,8 +2488,8 @@ const handleTicketsCommentEditPath = function (req, res) {
 
             if (projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(400).send(common.getError(2019));
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
             }
 
             projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
@@ -2511,8 +2505,8 @@ const handleTicketsCommentEditPath = function (req, res) {
                     }
 
                     if (commentObj.userId !== req.session.user._id) {
-                        logger.error(JSON.stringify(common.getError(2018)));
-                        return res.status(400).send(common.getError(2018));
+                        logger.error(JSON.stringify(common_backend.getError(2018)));
+                        return res.status(400).send(common_backend.getError(2018));
                     }
 
                     let updatedComment = { content: req.body.content };
@@ -2537,8 +2531,8 @@ const handleTicketsCommentEditPath = function (req, res) {
  * @param {object} res res object
  */
 const handleProjectTeamMembersListPath = function (req, res) {
-    if (!isActiveSession(req)) {
-        return res.status(401).render(loginPage);
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
     }
 
     const projectId = req.query.projectId;
@@ -2550,8 +2544,8 @@ const handleProjectTeamMembersListPath = function (req, res) {
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common.getError(2018)));
-            return res.status(400).send(common.getError(2018));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
@@ -2560,22 +2554,22 @@ const handleProjectTeamMembersListPath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            if (settings.getModeType() === common.modeTypes.CLASS
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
                 && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
-                logger.error(JSON.stringify(common.getError(2019)));
-                return res.status(400).send(common.getError(2019));
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
             }
 
-            const usersObj = common.convertListToJason('_id', users.getActiveUsersList());
+            const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
             let listToResolve = [];
             let usersList = [];
 
-            if (settings.getModeType() === common.modeTypes.CLASS) {
+            if (settings.getModeType() === common_backend.modeTypes.CLASS) {
                 listToResolve = teamObj.members;
             }
 
-            if (settings.getModeType() === common.modeTypes.COLLABORATORS) {
+            if (settings.getModeType() === common_backend.modeTypes.COLLABORATORS) {
                 listToResolve = projectObj.members;
             }
 
@@ -2595,24 +2589,13 @@ const handleProjectTeamMembersListPath = function (req, res) {
         });
     });
 }
-
-/**
- * handling connection request for notifications server
- *
- * @param {object} client client object
- * @param {object} req req object
- */
-const handleNotificationsConnection = function (client, req) {
-    sessionParser(req, {}, function () {
-        console.log(req);
-        client.send();
-    });
-}
 // </Requests Function> -----------------------------------------------
 
-// <Common Requests> ------------------------------------------------
-exports.isActiveSession = isActiveSession;
-// </Common Requests> -----------------------------------------------
+exports.initialize = initialize;
+
+// <common_backend Requests> ------------------------------------------------
+exports.isActiveSession = common_api.isActiveSession;
+// </common_backend Requests> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
 exports.handleRootPath = handleRootPath;
@@ -2671,5 +2654,5 @@ exports.handleCommentDeletePath = handleCommentDeletePath;
 // </Delete Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
-exports.handleNotificationsConnection = handleNotificationsConnection;
+exports.handleNotificationsConnection = notifications_api.handleNotificationsConnection;
 // </Notifications Requests> -----------------------------------------------
