@@ -40,7 +40,7 @@ const users = require('../Backend/users.js');
  * @param {function} callback callback function
  */
 const initialize = function (pug, notificationsWS, callback) {
-    common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/projects/ticket-entry.pug');
+    common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/tickets/ticket-entry.pug');
     common_api.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
     common_api.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
     common_api.pugComponents.projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
