@@ -41,6 +41,7 @@ const users = require('../Backend/users.js');
  */
 const initialize = function (pug, notificationsWS, callback) {
     common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/tickets/ticket-entry.pug');
+    common_api.pugComponents.sprintEntryComponent = pug.compileFile('Templates/tickets/sprint-entry.pug');
     common_api.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
     common_api.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
     common_api.pugComponents.projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
@@ -990,6 +991,7 @@ const handleTicketsListComponentPath = function (req, res) {
                 }
 
                 return res.status(200).send({
+                    sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
                     ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
                     ticketsList: ticketsObjList
                 });

@@ -82,6 +82,17 @@
 			"draft": "Draft",
 			"label": "Status"
 		},
+		"tabs": {
+			"backlog": {
+				"title": "Backlog"
+			},
+			"board": {
+				"title": "Board"
+			},
+			"issues": {
+				"title": "Issues"
+			}
+		},
 		"title": "Velocity - Projects",
 		"type": {
 			"kanban": "Kanban",
@@ -147,21 +158,21 @@
 		"points": "Points",
 		"priority": "Priority",
 		"priorities": {
+			"high": "High",
 			"low": "Low",
-			"medium": "Medium",
-			"high": "High"
+			"medium": "Medium"
 		},
 		"relatedTickets": "Related Tickets",
 		"release": "Release",
 		"reporter": "Reporter",
 		"state": "State",
 		"states": {
+			"code_review": "Code Review",
+			"done": "Done",
 			"new": "New",
 			"in_development": "In Development",
-			"code_review": "Code Review",
-			"ready_for_test": "Ready For Test",
 			"in_test": "In Test",
-			"done": "Done"
+			"ready_for_test": "Ready For Test"
 		},
 		"sprints": "Sprints",
 		"subtasks": "Subtasks",
