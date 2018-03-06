@@ -27,45 +27,14 @@ const notifications = require('../../Backend/customFileSystem.js');
 var notificationsWS;
 
 /**
- * handling connection request for notifications server
- *
- * @param {object} client client object
- * @param {object} req req object
- */
-const handleNotificationsConnection = function (client, req) {
-    if (common_api.isActiveSession(req)) {
-        client.userId = req.session.user._id;
-        console.log(req.session.user);
-        notifications.getNotificationsByUserId(req.session.user._id, function (err, notifList) {
-            client.send('ok');
-        });
-    }
-
-    client.on('message', function incoming(message) {
-        console.log('received: %s', message);
-    });
-
-    client.send('something');
-}
-
-/**
  * initialize the notifications api components
  *
  * @param {object} nWS notifications web secket instance
  * @param {function} callback callback function
  */
 const initialize = function (nWS) {
-    notificationsWS = nWS;
-    notificationsWS.on('connection', handleNotificationsConnection);
 }
 
-setInterval(function () {
-    console.log(notificationsWS.clients);
-    for (let client of notificationsWS.clients) {
-        console.log('received: %s', client.userId);
-        client.send('ws ok');
-    }
-}, 1000);
 
 // <exports> ------------------------------------------------
 exports.initialize = initialize;
