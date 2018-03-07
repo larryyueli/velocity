@@ -80,6 +80,22 @@ function clearNotification(item, id) {
             noNotifications.removeClass('hidden');
         }
     });
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/notification/delete',
+        data: {
+            notificationId: id
+        },
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
 }
 
 /**

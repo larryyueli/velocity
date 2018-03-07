@@ -103,8 +103,26 @@ const updateNotification = function (searchQuery, updateQuery, callback) {
     });
 }
 
+
+/**
+ * remove any notification objects matching the search query
+ *
+ * @param {object} searchQuery callback function
+ * @param {function} callback callback function
+ */
+const deleteNotifications = function (searchQuery, callback) {
+    notificationCollection.remove(searchQuery, function (err, result) {
+        if (err) {
+            return callback(common.getError(9010), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
 // <exports> -----------------------------------
 exports.addNotification = addNotification;
+exports.deleteNotifications = deleteNotifications;
 exports.getLimitedNotificationsListSorted = getLimitedNotificationsListSorted;
 exports.getNotification = getNotification;
 exports.initialize = initialize;

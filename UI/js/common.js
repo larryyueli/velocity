@@ -254,8 +254,8 @@ function getNotification(notification) {
                         ${notification.name}
                     </a>
                     <span class="right right-icons">
-                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), ${notification._id})">keyboard_arrow_down</i>
-                        <span class="pointer clear-notification padding-right-10" id="${notification._id}-clear" onclick="clearNotification($(this), ${notification._id})">X</span>
+                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), '${notification._id}')">keyboard_arrow_down</i>
+                        <span class="pointer clear-notification padding-right-10" id="${notification._id}-clear" onclick="clearNotification($(this), '${notification._id}')">X</span>
                     </span>
                 </li>
                 <li class="full-description hidden" id="${notification._id}-desc">

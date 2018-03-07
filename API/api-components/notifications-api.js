@@ -94,10 +94,38 @@ setInterval(function ping() {
 setInterval(function () {
     //if (notificationsWS) {
     //    for (let client of notificationsWS.clients) {
-    //        client.send('ws ok');
+    //        pushNotificationByUserId(client.userId, { userId: client.userId, name: 'new notifi', type: 'save', link: 'https://www.google.ca' });
     //    }
     //}
 }, 1000);
+
+/**
+ * push a notification to a user
+ *
+ * @param {string} userId user id
+ * @param {object} notificationObj notification obj
+ * @param {function} callback callback function
+ */
+const pushNotificationByUserId = function (userId, notificationObj, callback) {
+    notifications.addNotification(notificationObj, function (err, resultObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return callback(err, null);
+        }
+
+        for (let client of notificationsWS.clients) {
+            if (client.userId === userId) {
+                try {
+                    client.send(JSON.stringify({ notifList: [resultObj] }));
+                } catch (e) {
+                    logger.error(JSON.stringify(e));
+                }
+            }
+        }
+
+        return callback(null, 'ok');
+    });
+}
 
 /**
  * initialize the notifications api components
@@ -110,6 +138,29 @@ const initialize = function (nWS) {
     notificationsWS.on('connection', handleNotificationsConnection);
 }
 
+/**
+ * path to dismiss/delete a single notification
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const deleteNotification = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const notificationId = req.body.notificationId;
+    notifications.deleteNotificationById(notificationId, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
 // <exports> ------------------------------------------------
+exports.deleteNotification = deleteNotification;
 exports.initialize = initialize;
 // </exports> -----------------------------------------------

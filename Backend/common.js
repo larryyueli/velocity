@@ -173,6 +173,7 @@ const errors = Object.freeze({
     9007: 'failed to update a notification, missing information',
     9008: 'failed to delete a notification, database issue',
     9009: 'failed to delete a notification, missing information',
+    9010: 'failed to delete a notification, database issue'
 });
 exports.errors = errors;
 

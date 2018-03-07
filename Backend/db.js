@@ -108,6 +108,7 @@ exports.updateComment = db_comments.updateComment;
 
 // <Notifications Collection> ----------------------------------------------
 exports.addNotification = db_notifications.addNotification;
+exports.deleteNotifications = db_notifications.deleteNotifications;
 exports.getLimitedNotificationsListSorted = db_notifications.getLimitedNotificationsListSorted;
 exports.getNotification = db_notifications.getNotification;
 exports.updateNotification = db_notifications.updateNotification;

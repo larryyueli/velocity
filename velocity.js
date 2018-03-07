@@ -254,9 +254,10 @@ app.put('/users/request/access', api.handleUsersRequestAccessPath);
 // </Put Requests> -----------------------------------------------
 
 // <Delete Requests> ------------------------------------------------
+app.delete('/comment/delete', api.handleCommentDeletePath);
 app.delete('/logout', api.handleLogoutPath);
 app.delete('/project/delete', api.handleProjectDeletePath);
-app.delete('/comment/delete', api.handleCommentDeletePath);
+app.delete('/notification/delete', api.handleNotificationDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 /**

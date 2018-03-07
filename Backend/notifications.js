@@ -72,6 +72,16 @@ const getLimitedNotificationsListSorted = function (searchQuery, sortQuery, lim,
 }
 
 /**
+ * remove notification object
+ *
+ * @param {object} searchQuery search parameters
+ * @param {function} callback callback function
+ */
+const deleteNotifications = function (searchQuery, callback) {
+    db.deleteNotifications(searchQuery, callback);
+}
+
+/**
  * get the list of notification by the user id
  *
  * @param {string} userId user id
@@ -81,8 +91,19 @@ const getNotificationsByUserId = function (userId, callback) {
     getLimitedNotificationsListSorted({ userId: userId }, {}, 0, callback);
 }
 
+/**
+ * remove a single notification by its id
+ *
+ * @param {string} notificationId notification id
+ * @param {function} callback callback function
+ */
+const deleteNotificationById = function (notificationId, callback) {
+    deleteNotifications({ _id: notificationId }, callback);
+}
+
 // <exports> -----------------------------------
 exports.addNotification = addNotification;
+exports.deleteNotificationById = deleteNotificationById;
 exports.getNotificationsByUserId = getNotificationsByUserId;
 exports.initialize = initialize;
 // </exports> ----------------------------------

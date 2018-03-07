@@ -2711,5 +2711,6 @@ exports.handleCommentDeletePath = handleCommentDeletePath;
 // </Delete Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
+exports.handleNotificationDeletePath = notifications_api.deleteNotification;
 exports.handleNotificationsConnection = notifications_api.handleNotificationsConnection;
 // </Notifications Requests> -----------------------------------------------
