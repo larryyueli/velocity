@@ -499,19 +499,14 @@ const activateProject = function (project) {
 const getGroupIds = function(projectId) {
     let projectGroups = '';
 
-    const projectIdObject = querystring.stringify({
-        'projectId': projectId,
-    });
-
     const options = {
         hostname: config.hostName,
         port: config.httpsPort,
-        path: '/components/teamsList',
+        path: `/components/teamsList?projectId=${projectId}`,
         method: 'GET',
         rejectUnauthorized: false,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(projectIdObject),
             'Cookie': adminCookie
         }
     };
@@ -531,9 +526,7 @@ const getGroupIds = function(projectId) {
         process.exit(1);
     });
 
-    req.write(projectIdObject);
     req.end();
-
 }
 
 dataGenerator();
