@@ -42,6 +42,7 @@ var projectGroupIds = [];
 var usersToAdd = [];
 var processedUsers = 0;
 var processedProjects = 0;
+var processedGroups = 0;
 var updatedProjects = 0;
 
 var adminCookie; // Stores the cookie we use throughout all 
@@ -496,7 +497,7 @@ const activateProject = function (project) {
     req.end();
 }
 
-const getGroupIds = function(projectId) {
+const getGroupIds = function (projectId) {
     let projectGroups = '';
 
     const options = {
@@ -517,7 +518,11 @@ const getGroupIds = function(projectId) {
             projectGroups += chunk;
         });
         res.on('end', () => {
-            logger.info(`Retrieved groups for project ${projectId}`);
+            logger.info(`Retrieved groupIds for project ${projectId}`);
+            let groups = JSON.parse(projectGroups).teamsList;
+            for (let i = 0; i < groups.length; i++) {
+                getGroupMembers(projectId, groups[i]._id);
+            }
         });
     });
 
@@ -528,5 +533,58 @@ const getGroupIds = function(projectId) {
 
     req.end();
 }
+
+const getGroupMembers = function (projectId, groupId) {
+    let groupMembers = '';
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: `/project/team/members/list?projectId=${projectId}&teamId=${groupId}`,
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            groupMembers += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved group members for project ${projectId}`);
+            let teamObj = {
+                projectId: projectId,
+                teamId: groupId,
+                members: [] 
+            };
+            JSON.parse(groupMembers).forEach(user => {
+                teamObj.members.push(user.username);
+                logger.info(user.username);
+            });
+            projectGroupIds.push(teamObj);
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.end();
+}
+
+/**
+const createTickets = function () {
+    for (let i = 0; i < projectGroupIds.length; i++) {
+        projectGroupIds[i].forEach( groupId => {
+            getGroupMembers(groupId._id);
+        });
+    }
+}
+ */
 
 dataGenerator();
