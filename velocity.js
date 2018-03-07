@@ -50,7 +50,8 @@ const users = require('./Backend/users.js');
 const app = express();
 
 const mongoSessionStore = new mongoStore({
-    url: `mongodb://${config.default_db_host}:${config.default_db_port}`,
+    url: `mongodb://${config.default_db_host}:${config.default_db_port}/${config.default_db_name}`,
+    collection: 'sessions',
     ttl: config.maxSessionAge
 });
 const sessionParser = expressSession({
@@ -206,6 +207,7 @@ app.use(function (req, res, next) {
 app.get('/', api.handleRootPath);
 app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentPath);
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
+app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/components/ticketsList', api.handleTicketsListComponentPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);

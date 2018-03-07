@@ -1001,6 +1001,42 @@ const handleTicketsListComponentPath = function (req, res) {
 }
 
 /**
+ * path to get the teams list component
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleTeamsListComponentPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.query.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getProjectTeams(projectId, function (err, teamsList) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send({
+                teamsList: teamsList
+            });
+        });
+    });
+}
+
+/**
  * path to get the projects list entry
  *
  * @param {object} req req object
@@ -2665,6 +2701,7 @@ exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;
 exports.handleProjectsPath = handleProjectsPath;
 exports.handleProjectsListComponentPath = handleProjectsListComponentPath;
+exports.handleTeamsListComponentPath = handleTeamsListComponentPath;
 exports.handleTicketsListComponentPath = handleTicketsListComponentPath;
 exports.handleProjectsAdminsListComponentPath = handleProjectsAdminsListComponentPath;
 exports.handleProjectsGroupAssignPath = handleProjectsGroupAssignPath;

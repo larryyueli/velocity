@@ -128,17 +128,6 @@ const pushNotificationByUserId = function (userId, notificationObj, callback) {
 }
 
 /**
- * initialize the notifications api components
- *
- * @param {object} nWS notifications web secket instance
- * @param {function} callback callback function
- */
-const initialize = function (nWS) {
-    notificationsWS = nWS;
-    notificationsWS.on('connection', handleNotificationsConnection);
-}
-
-/**
  * path to dismiss/delete a single notification
  *
  * @param {object} req req object
@@ -158,6 +147,17 @@ const deleteNotification = function (req, res) {
 
         return res.status(200).send('ok');
     });
+}
+
+/**
+ * initialize the notifications api components
+ *
+ * @param {object} nWS notifications web secket instance
+ * @param {function} callback callback function
+ */
+const initialize = function (nWS) {
+    notificationsWS = nWS;
+    notificationsWS.on('connection', handleNotificationsConnection);
 }
 
 // <exports> ------------------------------------------------

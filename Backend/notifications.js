@@ -39,7 +39,8 @@ const initialize = function (callback) {
 const addNotification = function (notification, callback) {
     if (typeof (notification.userId) !== common.variableTypes.STRING
         || typeof (notification.name) !== common.variableTypes.STRING
-        || typeof (notification.link) !== common.variableTypes.STRING) {
+        || typeof (notification.link) !== common.variableTypes.STRING
+        || typeof (notification.type) !== common.variableTypes.STRING) {
         return callback(common.getError(9000), null);
     }
 
@@ -55,6 +56,7 @@ const addNotification = function (notification, callback) {
     notificationToAdd.userId = notification.userId;
     notificationToAdd.name = notification.name;
     notificationToAdd.link = notification.link;
+    notificationToAdd.type = notification.type;
     db.addNotification(notificationToAdd, callback);
 }
 
