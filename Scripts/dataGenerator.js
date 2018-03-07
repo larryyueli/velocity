@@ -33,9 +33,12 @@ const numOfCollaboratorAdmins = 5;
 const numOfCollaborators = 20;
 const numOfProjects = 5;
 const numOfProjectsToActivate = 2;
+const numOfTicketsPerState = 1;
 const groupSize = 5;
 var projectList = [];
 var groupList = [];
+var ticketsList = [];
+var projectGroupIds = [];
 var usersToAdd = [];
 var processedUsers = 0;
 var processedProjects = 0;
@@ -475,9 +478,51 @@ const activateProject = function (project) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Activated project ${project.title}`);
+            processedProjects++;
             if (processedProjects === numOfProjectsToActivate) {
-                process.exit(0);
+                processedProjects = 0;
+                projectList.forEach(project => {
+                    getGroupIds(project._id);
+                });
             }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+    });
+
+    req.write(projectIdObject);
+    req.end();
+}
+
+const getGroupIds = function(projectId) {
+    let projectGroups = '';
+
+    const projectIdObject = querystring.stringify({
+        'projectId': projectId,
+    });
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/components/teamsList',
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(projectIdObject),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            projectGroups += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved groups for project ${projectId}`);
         });
     });
 
@@ -488,6 +533,7 @@ const activateProject = function (project) {
 
     req.write(projectIdObject);
     req.end();
+
 }
 
 dataGenerator();
