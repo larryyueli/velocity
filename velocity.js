@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
 const bodyParser = require('body-parser');
-const csv2json = require('csvtojson');
 const express = require('express');
 const expressSession = require('express-session');
 const fileUpload = require('express-fileupload');
@@ -260,6 +259,7 @@ app.delete('/comment/delete', api.handleCommentDeletePath);
 app.delete('/logout', api.handleLogoutPath);
 app.delete('/project/delete', api.handleProjectDeletePath);
 app.delete('/notification/delete', api.handleNotificationDeletePath);
+app.delete('/notifications/delete/all', api.handleDeleteAllNotificationsPath);
 // </Delete Requests> -----------------------------------------------
 
 /**

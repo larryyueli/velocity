@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const csv2json = require('csvtojson');
 const path = require('path');
 
 const common_api = require('./api-components/common-api.js');
@@ -2748,6 +2749,7 @@ exports.handleCommentDeletePath = handleCommentDeletePath;
 // </Delete Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
+exports.handleDeleteAllNotificationsPath = notifications_api.deleteAllNotifications;
 exports.handleNotificationDeletePath = notifications_api.deleteNotification;
 exports.handleNotificationsConnection = notifications_api.handleNotificationsConnection;
 // </Notifications Requests> -----------------------------------------------
