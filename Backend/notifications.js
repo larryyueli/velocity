@@ -103,8 +103,19 @@ const deleteNotificationById = function (notificationId, callback) {
     deleteNotifications({ _id: notificationId }, callback);
 }
 
+/**
+ * remove all notifications by user id
+ *
+ * @param {string} userId user id
+ * @param {function} callback callback function
+ */
+const deleteAllNotificationsByuserId = function (userId, callback) {
+    deleteNotifications({ userId: userId }, callback);
+}
+
 // <exports> -----------------------------------
 exports.addNotification = addNotification;
+exports.deleteAllNotificationsByuserId = deleteAllNotificationsByuserId;
 exports.deleteNotificationById = deleteNotificationById;
 exports.getNotificationsByUserId = getNotificationsByUserId;
 exports.initialize = initialize;

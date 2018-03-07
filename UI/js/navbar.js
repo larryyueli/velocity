@@ -117,6 +117,19 @@ function clearAllNotifications() {
             }
         }
     }
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/notifications/delete/all', // TODO: see if this still applies
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
 }
 
 /**

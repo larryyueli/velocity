@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const csv2json = require('csvtojson');
 const path = require('path');
 
 const common_api = require('./api-components/common-api.js');
@@ -2683,17 +2684,14 @@ const handleProjectTeamMembersListPath = function (req, res) {
 }
 // </Requests Function> -----------------------------------------------
 
+// <common Requests> ------------------------------------------------
+exports.handleModeSelectPath = handleModeSelectPath;
+exports.handleRootPath = handleRootPath;
 exports.initialize = initialize;
-
-// <common_backend Requests> ------------------------------------------------
 exports.isActiveSession = common_api.isActiveSession;
-// </common_backend Requests> -----------------------------------------------
+// </common Requests> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
-exports.handleRootPath = handleRootPath;
-exports.handleMePath = handleMePath;
-exports.handleProfilePath = handleProfilePath;
-exports.handleprofilePicturePath = handleprofilePicturePath;
 exports.handleProjectByIdPath = handleProjectByIdPath;
 exports.handleProjectTeamPath = handleProjectTeamPath;
 exports.handleProjectTeamTicketsAddPath = handleProjectTeamTicketsAddPath;
@@ -2706,19 +2704,9 @@ exports.handleTicketsListComponentPath = handleTicketsListComponentPath;
 exports.handleProjectsAdminsListComponentPath = handleProjectsAdminsListComponentPath;
 exports.handleProjectsGroupAssignPath = handleProjectsGroupAssignPath;
 exports.handleProjectsAddPath = handleProjectsAddPath;
-exports.handleSettingsPath = handleSettingsPath;
-exports.handleUsersPath = handleUsersPath;
-exports.handleUsersListComponentPath = handleUsersListComponentPath;
-exports.handleUsersAddPath = handleUsersAddPath;
-exports.handleUsersEditPath = handleUsersEditPath;
-exports.handleUsersImportPath = handleUsersImportPath;
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------
-exports.handleLoginPath = handleLoginPath;
-exports.handleModeSelectPath = handleModeSelectPath;
-exports.handleProfileUpdatePath = handleProfileUpdatePath;
-exports.handleUpdateProfilePicturePath = handleUpdateProfilePicturePath;
 exports.handleProjectActivatePath = handleProjectActivatePath;
 exports.handleProjectAdminsUpdatePath = handleProjectAdminsUpdatePath;
 exports.handleProjectTeamsUpdatePath = handleProjectTeamsUpdatePath;
@@ -2727,27 +2715,43 @@ exports.handleProjectTeamsConfigPath = handleProjectTeamsConfigPath;
 exports.handleProjectUpdatePath = handleProjectUpdatePath;
 exports.handleTicketsUpdatePath = handleTicketsUpdatePath;
 exports.handleTicketsCommentEditPath = handleTicketsCommentEditPath;
-exports.handleSettingsResetPath = handleSettingsResetPath;
-exports.handleSettingsUpdatePath = handleSettingsUpdatePath;
-exports.handleUsersUpdatePath = handleUsersUpdatePath;
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
 exports.handleProjectsCreatePath = handleProjectsCreatePath;
 exports.handleTicketsCreatePath = handleTicketsCreatePath;
 exports.handleTicketsCommentPath = handleTicketsCommentPath;
-exports.handleUsersCreatePath = handleUsersCreatePath;
-exports.handleUsersImportFilePath = handleUsersImportFilePath;
-exports.handleUsersRequestAccessPath = handleUsersRequestAccessPath;
-// </Put Requests> -----------------------------------------------
-
-// <Delete Requests> ------------------------------------------------
-exports.handleLogoutPath = handleLogoutPath;
 exports.handleProjectDeletePath = handleProjectDeletePath;
 exports.handleCommentDeletePath = handleCommentDeletePath;
-// </Delete Requests> -----------------------------------------------
+// </Put Requests> -----------------------------------------------
+
+// <Settings Requests> ------------------------------------------------
+exports.handleSettingsPath = handleSettingsPath;
+exports.handleSettingsResetPath = handleSettingsResetPath;
+exports.handleSettingsUpdatePath = handleSettingsUpdatePath;
+// </Settings Requests> -----------------------------------------------
+
+// <Users Requests> ------------------------------------------------
+exports.handleLoginPath = handleLoginPath;
+exports.handleLogoutPath = handleLogoutPath;
+exports.handleMePath = handleMePath;
+exports.handleProfilePath = handleProfilePath;
+exports.handleprofilePicturePath = handleprofilePicturePath;
+exports.handleProfileUpdatePath = handleProfileUpdatePath;
+exports.handleUpdateProfilePicturePath = handleUpdateProfilePicturePath;
+exports.handleUsersAddPath = handleUsersAddPath;
+exports.handleUsersCreatePath = handleUsersCreatePath;
+exports.handleUsersEditPath = handleUsersEditPath;
+exports.handleUsersImportFilePath = handleUsersImportFilePath;
+exports.handleUsersImportPath = handleUsersImportPath;
+exports.handleUsersListComponentPath = handleUsersListComponentPath;
+exports.handleUsersPath = handleUsersPath;
+exports.handleUsersRequestAccessPath = handleUsersRequestAccessPath;
+exports.handleUsersUpdatePath = handleUsersUpdatePath;
+// </Users Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
+exports.handleDeleteAllNotificationsPath = notifications_api.deleteAllNotifications;
 exports.handleNotificationDeletePath = notifications_api.deleteNotification;
 exports.handleNotificationsConnection = notifications_api.handleNotificationsConnection;
 // </Notifications Requests> -----------------------------------------------

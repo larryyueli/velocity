@@ -94,7 +94,7 @@ setInterval(function ping() {
 setInterval(function () {
     //if (notificationsWS) {
     //    for (let client of notificationsWS.clients) {
-    //        pushNotificationByUserId(client.userId, { userId: client.userId, name: 'new notifi', type: 'save', link: 'https://www.google.ca' });
+    //        pushNotificationByUserId(client.userId, { userId: client.userId, name: 'new notifi', type: 'save', link: 'https://www.google.ca' }, (err, res) => { });
     //    }
     //}
 }, 1000);
@@ -150,6 +150,27 @@ const deleteNotification = function (req, res) {
 }
 
 /**
+ * path to dismiss/delete all notifications
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const deleteAllNotifications = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    notifications.deleteAllNotificationsByuserId(req.session.user._id, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send('ok');
+    });
+}
+
+/**
  * initialize the notifications api components
  *
  * @param {object} nWS notifications web secket instance
@@ -161,6 +182,7 @@ const initialize = function (nWS) {
 }
 
 // <exports> ------------------------------------------------
+exports.deleteAllNotifications = deleteAllNotifications;
 exports.deleteNotification = deleteNotification;
 exports.initialize = initialize;
 // </exports> -----------------------------------------------

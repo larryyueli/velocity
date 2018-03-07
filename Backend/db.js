@@ -26,6 +26,7 @@ const db_comments = require('./dbs/db-comments.js');
 const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
 const db_settings = require('./dbs/db-settings.js');
+const db_sprints = require('./dbs/db-sprints.js');
 const db_teams = require('./dbs/db-teams.js');
 const db_tickets = require('./dbs/db-tickets.js');
 const db_users = require('./dbs/db-users.js');
@@ -47,6 +48,7 @@ const initialize = function (callback) {
         db_notifications.initialize(client.db(config.default_db_name).collection('notifications'));
         db_projects.initialize(client.db(config.default_db_name).collection('projects'));
         db_settings.initialize(client.db(config.default_db_name).collection('settings'));
+        db_sprints.initialize(client.db(config.default_db_name).collection('sprints'));
         db_teams.initialize(client.db(config.default_db_name).collection('teams'));
         db_tickets.initialize(client.db(config.default_db_name).collection('tickets'));
         db_users.initialize(client.db(config.default_db_name).collection('users'));
@@ -113,3 +115,10 @@ exports.getLimitedNotificationsListSorted = db_notifications.getLimitedNotificat
 exports.getNotification = db_notifications.getNotification;
 exports.updateNotification = db_notifications.updateNotification;
 // </Notifications Collection> ---------------------------------------------
+
+// <Sprints Collection> ----------------------------------------------
+exports.addSprint = db_sprints.addSprint;
+exports.getLimitedSprintsListSorted = db_sprints.getLimitedSprintsListSorted;
+exports.getSprint = db_sprints.getSprint;
+exports.updateSprint = db_sprints.updateSprint;
+// </Sprints Collection> ---------------------------------------------
