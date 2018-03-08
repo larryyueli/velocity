@@ -40,10 +40,10 @@ var groupList = [];
 var ticketsList = [];
 var projectGroupIds = [];
 var usersToAdd = [];
+var numOfGroups = 0;
 var processedUsers = 0;
 var processedProjects = 0;
 var processedGroups = 0;
-var updatedProjects = 0;
 
 var adminCookie; // Stores the cookie we use throughout all 
 var workingMode; // Stores whether we have Class mode or Collab mode
@@ -257,6 +257,7 @@ const splitUsersIntoGroups = function () {
     if (members.length !== 0) {
         createGroup(`${common.defaultTeamPrefix}${groupNumber}`, members);
     }
+    numOfGroups *= numOfProjects;
 }
 
 /**
@@ -271,6 +272,7 @@ const createGroup = function (name, members) {
         group.members.push({ 'username': members[i] });
     }
     groupList.push(group);
+    numOfGroups++;
 }
 
 /**
@@ -388,11 +390,7 @@ const setProjectInfo = function (project) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Set project info for ${project.title}`);
-            updatedProjects++;
             assignGroups(project);
-            if (updatedProjects === numOfProjects) {
-
-            }
         });
     });
 
@@ -481,7 +479,6 @@ const activateProject = function (project) {
             logger.info(`Activated project ${project.title}`);
             processedProjects++;
             if (processedProjects === numOfProjectsToActivate) {
-                processedProjects = 0;
                 projectList.forEach(project => {
                     getGroupIds(project._id);
                 });
@@ -497,6 +494,10 @@ const activateProject = function (project) {
     req.end();
 }
 
+/**
+ * Gets the groupIds for each project
+ * @param {*} projectId project id
+ */
 const getGroupIds = function (projectId) {
     let projectGroups = '';
 
@@ -534,6 +535,11 @@ const getGroupIds = function (projectId) {
     req.end();
 }
 
+/**
+ * Gets the group members of a group
+ * @param {*} projectId project id
+ * @param {*} groupId group id
+ */
 const getGroupMembers = function (projectId, groupId) {
     let groupMembers = '';
 
@@ -563,9 +569,13 @@ const getGroupMembers = function (projectId, groupId) {
             };
             JSON.parse(groupMembers).forEach(user => {
                 teamObj.members.push(user.username);
-                logger.info(user.username);
             });
             projectGroupIds.push(teamObj);
+            processedGroups++;
+            if (processedGroups === numOfGroups) {
+                createTickets();
+                pushTickets();
+            }
         });
     });
 
@@ -578,13 +588,78 @@ const getGroupMembers = function (projectId, groupId) {
 }
 
 /**
-const createTickets = function () {
-    for (let i = 0; i < projectGroupIds.length; i++) {
-        projectGroupIds[i].forEach( groupId => {
-            getGroupMembers(groupId._id);
-        });
-    }
-}
+ * Generates all the tickets we will be adding
  */
+const createTickets = function () {
+    Object.keys(common.ticketStates).forEach( state => {
+        for (let i = 0; i < Object.keys(common.ticketStates).length; i++) {
+            Object.keys(common.ticketTypes).forEach( type => {
+                ticketsList.push({
+                    projectId: '',
+                    teamId: '',
+                    title: `Ticket ${i} of type ${type.value} with state ${state.value}`,
+                    description: 'Putting more effort into this desc than I did into CSC301',
+                    type: type.value,
+                    priority: common.ticketPriority.LOW.value,
+                    state: state.value,
+                    points: 1,
+                    assignee: ''
+                });
+            });
+        }
+    });
+}
+
+/**
+ * Pushes all created tickets to each group
+ */
+const pushTickets = function () {
+    projectGroupIds.forEach( obj => {
+        ticketsList.forEach( ticket => {
+            logger.info('Now tickets!');
+            ticket.projectId = obj.projectId;
+            ticket.teamId = obj.groupId;
+            ticket.assignee = obj.members[0];
+            sendTicket(ticket);
+        });
+    });
+}
+
+/**
+ * Sends the ticket to the server
+ * @param {*} ticket 
+ */
+const sendTicket = function (ticket) {
+    const ticketObj = querystring.stringify(ticket);
+    
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/tickets/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(ticketObj),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Created ticket ${ticketObj.title} for team ${ticketObj.teamId}`);
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(ticketObj);
+    req.end();
+}
 
 dataGenerator();
