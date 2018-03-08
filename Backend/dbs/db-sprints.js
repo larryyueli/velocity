@@ -40,7 +40,7 @@ const initialize = function (collectionObject) {
 const addSprint = function (sprintObj, callback) {
     sprintsCollection.insert(sprintObj, function (err, obj) {
         if (err) {
-            return callback(common.getError(6001), null);
+            return callback(common.getError(10001), null);
         }
 
         return callback(null, sprintObj);
@@ -58,7 +58,7 @@ const addSprint = function (sprintObj, callback) {
 const getLimitedSprintsListSorted = function (searchQuery, sortQuery, lim, callback) {
     sprintsCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
         if (err) {
-            return callback(common.getError(6002), null);
+            return callback(common.getError(10002), null);
         }
 
         return callback(null, list);
@@ -74,11 +74,11 @@ const getLimitedSprintsListSorted = function (searchQuery, sortQuery, lim, callb
 const getSprint = function (searchQuery, callback) {
     sprintsCollection.findOne(searchQuery, function (err, obj) {
         if (err) {
-            return callback(common.getError(6003), null);
+            return callback(common.getError(10003), null);
         }
 
         if (!obj) {
-            return callback(common.getError(6004), null);
+            return callback(common.getError(10004), null);
         }
 
         return callback(null, obj);
@@ -96,7 +96,7 @@ const getSprint = function (searchQuery, callback) {
 const updateSprint = function (searchQuery, updateQuery, callback) {
     sprintsCollection.update(searchQuery, updateQuery, function (err, result) {
         if (err) {
-            return callback(common.getError(6005), null);
+            return callback(common.getError(10005), null);
         }
 
         return callback(null, 'ok');

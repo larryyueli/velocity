@@ -35,6 +35,7 @@ const uuidv1 = require('uuid/v1');
  * 7000 -> tickets
  * 8000 -> comments
  * 9000 -> tickets
+ * 10,000 -> sprints
  */
 const errors = Object.freeze({
     //1000 system
@@ -173,7 +174,17 @@ const errors = Object.freeze({
     9007: 'failed to update a notification, missing information',
     9008: 'failed to delete a notification, database issue',
     9009: 'failed to delete a notification, missing information',
-    9010: 'failed to delete a notification, database issue'
+    9010: 'failed to delete a notification, database issue',
+
+    //10,000 sprints
+    10000: 'missing requirement',
+    10001: 'failed to add a sprint, database issue',
+    10002: 'failed to get sprints list, database issue',
+    10003: 'failed to get a sprint, database issue',
+    10004: 'sprint not found',
+    10005: 'failed to update sprint, database issue',
+    10006: 'failed to create a sprint, missing information',
+    10007: 'failed to update a sprint, missing information',
 });
 exports.errors = errors;
 
@@ -331,15 +342,15 @@ const ticketTypes = Object.freeze({
 exports.ticketTypes = ticketTypes;
 
 // common ticket default assignee
-const noAssignee = 'No Assignee';
+const noAssignee = 'No Assignee'; // TODO: find another unique text
 exports.noAssignee = noAssignee;
 
 // common ticket default reporter
-const noReporter = 'No Reporter';
+const noReporter = 'No Reporter'; // TODO: find another unique text
 exports.noReporter = noReporter;
 
 // common ticket default points
-const defaultPoints = 1;
+const defaultPoints = 0;
 exports.defaultPoints = defaultPoints;
 
 // common ticket priority
@@ -356,6 +367,17 @@ const commentStatus = Object.freeze({
     ACTIVE: { value: 1, text: 'active' }
 });
 exports.commentStatus = commentStatus;
+
+// common default sprint
+const defaultSprint = 'Default Sprint'; // TODO: find another unique text
+exports.defaultSprint = defaultSprint;
+
+// common sprint status
+const sprintStatus = Object.freeze({
+    CLOSED: { value: 0, text: 'closed' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.sprintStatus = sprintStatus;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
