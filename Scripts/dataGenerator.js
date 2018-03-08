@@ -28,13 +28,15 @@ const logger = require('../Backend/logger.js');
 
 const numOfProfessors = 2;
 const numOfTAs = 3;
-const numOfStudents = 25;
+const numOfStudents = 10;
 const numOfCollaboratorAdmins = 5;
 const numOfCollaborators = 20;
-const numOfProjects = 5;
+const numOfProjects = 3;
 const numOfProjectsToActivate = 2;
 const numOfTicketsPerState = 1;
 const groupSize = 5;
+const userPassword = 'asd';
+var userCookies = [];
 var projectList = [];
 var groupList = [];
 var ticketsList = [];
@@ -195,7 +197,7 @@ const createUser = function (fname, lname, type) {
         'fname': fname,
         'lname': lname,
         'username': fname,
-        'password': 'asd',
+        'password': userPassword,
         'email': `${fname}@${lname}.ca`,
         'type': type
     });
@@ -217,6 +219,48 @@ const createUser = function (fname, lname, type) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Created user ${fname} ${lname}`);
+            logUserIn(fname);
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(userObject);
+    req.end();
+}
+
+/**
+ * Logs the user in and stores the cookie for their login
+ * @param {*} username username
+ */
+const logUserIn = function (username) {
+    const loginData = querystring.stringify({
+        'username': username,
+        'password': userPassword
+    });
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/login',
+        method: 'POST',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(loginData)
+        }
+    };
+
+    const req = https.request(options, (res) => {
+
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Logged in and stored the cookie of ${username}`);
+            userCookies.push({username: username, cookie: res.headers['set-cookie'][0]});
             processedUsers++;
             let totalUsers;
             if (workingMode === common.modeTypes.CLASS) {
@@ -236,7 +280,7 @@ const createUser = function (fname, lname, type) {
         process.exit(1);
     });
 
-    req.write(userObject);
+    req.write(loginData);
     req.end();
 }
 
@@ -616,12 +660,10 @@ const createTickets = function () {
 const pushTickets = function () {
     projectGroupIds.forEach( obj => {
         ticketsList.forEach( ticket => {
-            logger.info('Now tickets!');
             ticket.projectId = obj.projectId;
             ticket.teamId = obj.teamId;
             ticket.assignee = obj.members[0];
-            logger.info(`${ticket.projectId}, ${ticket.teamId}, ${ticket.assignee}`);
-            sendTicket(ticket);
+            sendTicket(ticket, obj.members[0]);
         });
     });
 }
@@ -630,7 +672,7 @@ const pushTickets = function () {
  * Sends the ticket to the server
  * @param {*} ticket 
  */
-const sendTicket = function (ticket) {
+const sendTicket = function (ticket, creator) {
     const ticketObj = querystring.stringify(ticket);
     
     const options = {
@@ -642,7 +684,7 @@ const sendTicket = function (ticket) {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(ticketObj),
-            'Cookie': adminCookie
+            'Cookie': getUserCookie(creator)
         }
     };
 
@@ -661,6 +703,19 @@ const sendTicket = function (ticket) {
 
     req.write(ticketObj);
     req.end();
+}
+
+/**
+ * Returns the cookie for a given username
+ * @param {*} username username
+ */
+const getUserCookie = function(username) {
+    userCookies.forEach( user => {
+        if (user.username === username) {
+            return user.cookie;
+        }
+    });
+    return null;
 }
 
 dataGenerator();
