@@ -597,11 +597,11 @@ const createTickets = function () {
                 ticketsList.push({
                     projectId: '',
                     teamId: '',
-                    title: `Ticket ${i} of type ${type.value} with state ${state.value}`,
+                    title: `Ticket ${i} of type ${common.ticketTypes[type].value} with state ${common.ticketStates[state].value}`,
                     description: 'Putting more effort into this desc than I did into CSC301',
-                    type: type.value,
+                    type: common.ticketTypes[type].value,
                     priority: common.ticketPriority.LOW.value,
-                    state: state.value,
+                    state: common.ticketStates[state].value,
                     points: 1,
                     assignee: ''
                 });
@@ -618,8 +618,9 @@ const pushTickets = function () {
         ticketsList.forEach( ticket => {
             logger.info('Now tickets!');
             ticket.projectId = obj.projectId;
-            ticket.teamId = obj.groupId;
+            ticket.teamId = obj.teamId;
             ticket.assignee = obj.members[0];
+            logger.info(`${ticket.projectId}, ${ticket.teamId}, ${ticket.assignee}`);
             sendTicket(ticket);
         });
     });
