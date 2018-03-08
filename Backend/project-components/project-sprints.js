@@ -84,6 +84,50 @@ const getSprint = function (searchQuery, callback) {
 }
 
 /**
+ * find the list of sprints under a team
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId project id
+ * @param {function} callback callback function
+ */
+const getSprintsByTeamId = function (projectId, teamId, callback) {
+    getLimitedTeamsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
+ * find the active sprint under a team
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId project id
+ * @param {function} callback callback function
+ */
+const getActiveSprint = function (projectId, teamId, callback) {
+    getSprint({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
+}
+
+/**
+ * set active sprint 
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId project id
+ * @param {string} sprintId sprint id
+ * @param {function} callback callback function
+ */
+const setActiveSprint = function (projectId, teamId, sprintId, callback) {
+    let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId } }, { projectId: projectId }, { teamId: teamId }] };
+    let deactivateUpdateQuery = { $set: { status: common.sprintStatus.CLOSED.value } };
+    db.updateSprint(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }] };
+        let activateUpdateQuery = { $set: { status: common.sprintStatus.ACTIVE.value } };
+        db.updateSprint(activateSearchQuery, activateUpdateQuery, callback);
+    });
+}
+
+/**
  * update the sprint information
  *
  * @param {string} sprintId sprint id
@@ -140,6 +184,9 @@ const updateSprint = function (sprintId, teamId, projectId, updateParams, callba
 
 // <exports> -----------------------------------
 exports.addSprint = addSprint;
+exports.getActiveSprint = getActiveSprint;
+exports.getSprintsByTeamId = getSprintsByTeamId;
 exports.initialize = initialize;
+exports.setActiveSprint = setActiveSprint;
 exports.updateSprint = updateSprint;
 // </exports> ----------------------------------
