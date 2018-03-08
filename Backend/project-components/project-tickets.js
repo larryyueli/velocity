@@ -69,6 +69,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.displayId = `TICKET-${nextTicketId}`;
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
+    ticketToAdd.sprintId = typeof (ticket.sprint) === common.variableTypes.STRING ? ticket.sprint : common.defaultSprint;
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
@@ -130,6 +131,18 @@ const getTicketById = function (projectId, teamId, ticketId, callback) {
 }
 
 /**
+ * find tickets under a sprint
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} sprintId sprint id
+ * @param {function} callback callback function
+ */
+const getTicketsBySprintId = function (projectId, teamId, sprintId, callback) {
+    getTicket({ $and: [{ sprintId: sprintId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, callback);
+}
+
+/**
  * update the ticket information
  *
  * @param {string} ticketId ticket id
@@ -183,6 +196,10 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
         updateQuery.$push.assigneeHistory = updateParams.assigneeHistoryEntry;
     }
 
+    if (typeof (updateParams.sprintId) === common.variableTypes.STRING) {
+        updateQuery.$set.sprintId = updateParams.sprintId;
+    }
+
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {
         updateQuery.$set.priority = updateParams.priority;
     }
@@ -220,6 +237,7 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
 exports.getTicketById = getTicketById;
+exports.getTicketsBySprintId = getTicketsBySprintId;
 exports.getTicketsByTeamId = getTicketsByTeamId;
 exports.initialize = initialize;
 exports.updateTicket = updateTicket;
