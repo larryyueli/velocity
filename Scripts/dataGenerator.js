@@ -40,9 +40,10 @@ var groupList = [];
 var ticketsList = [];
 var projectGroupIds = [];
 var usersToAdd = [];
+var numOfGroups = 0;
 var processedUsers = 0;
 var processedProjects = 0;
-var updatedProjects = 0;
+var processedGroups = 0;
 
 var adminCookie; // Stores the cookie we use throughout all 
 var workingMode; // Stores whether we have Class mode or Collab mode
@@ -256,6 +257,7 @@ const splitUsersIntoGroups = function () {
     if (members.length !== 0) {
         createGroup(`${common.defaultTeamPrefix}${groupNumber}`, members);
     }
+    numOfGroups *= numOfProjects;
 }
 
 /**
@@ -270,6 +272,7 @@ const createGroup = function (name, members) {
         group.members.push({ 'username': members[i] });
     }
     groupList.push(group);
+    numOfGroups++;
 }
 
 /**
@@ -387,11 +390,7 @@ const setProjectInfo = function (project) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Set project info for ${project.title}`);
-            updatedProjects++;
             assignGroups(project);
-            if (updatedProjects === numOfProjects) {
-
-            }
         });
     });
 
@@ -480,7 +479,6 @@ const activateProject = function (project) {
             logger.info(`Activated project ${project.title}`);
             processedProjects++;
             if (processedProjects === numOfProjectsToActivate) {
-                processedProjects = 0;
                 projectList.forEach(project => {
                     getGroupIds(project._id);
                 });
@@ -496,7 +494,11 @@ const activateProject = function (project) {
     req.end();
 }
 
-const getGroupIds = function(projectId) {
+/**
+ * Gets the groupIds for each project
+ * @param {*} projectId project id
+ */
+const getGroupIds = function (projectId) {
     let projectGroups = '';
 
     const options = {
@@ -517,7 +519,11 @@ const getGroupIds = function(projectId) {
             projectGroups += chunk;
         });
         res.on('end', () => {
-            logger.info(`Retrieved groups for project ${projectId}`);
+            logger.info(`Retrieved groupIds for project ${projectId}`);
+            let groups = JSON.parse(projectGroups).teamsList;
+            for (let i = 0; i < groups.length; i++) {
+                getGroupMembers(projectId, groups[i]._id);
+            }
         });
     });
 
@@ -526,6 +532,134 @@ const getGroupIds = function(projectId) {
         process.exit(1);
     });
 
+    req.end();
+}
+
+/**
+ * Gets the group members of a group
+ * @param {*} projectId project id
+ * @param {*} groupId group id
+ */
+const getGroupMembers = function (projectId, groupId) {
+    let groupMembers = '';
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: `/project/team/members/list?projectId=${projectId}&teamId=${groupId}`,
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            groupMembers += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved group members for project ${projectId}`);
+            let teamObj = {
+                projectId: projectId,
+                teamId: groupId,
+                members: [] 
+            };
+            JSON.parse(groupMembers).forEach(user => {
+                teamObj.members.push(user.username);
+            });
+            projectGroupIds.push(teamObj);
+            processedGroups++;
+            if (processedGroups === numOfGroups) {
+                createTickets();
+                pushTickets();
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.end();
+}
+
+/**
+ * Generates all the tickets we will be adding
+ */
+const createTickets = function () {
+    Object.keys(common.ticketStates).forEach( state => {
+        for (let i = 0; i < Object.keys(common.ticketStates).length; i++) {
+            Object.keys(common.ticketTypes).forEach( type => {
+                ticketsList.push({
+                    projectId: '',
+                    teamId: '',
+                    title: `Ticket ${i} of type ${common.ticketTypes[type].value} with state ${common.ticketStates[state].value}`,
+                    description: 'Putting more effort into this desc than I did into CSC301',
+                    type: common.ticketTypes[type].value,
+                    priority: common.ticketPriority.LOW.value,
+                    state: common.ticketStates[state].value,
+                    points: 1,
+                    assignee: ''
+                });
+            });
+        }
+    });
+}
+
+/**
+ * Pushes all created tickets to each group
+ */
+const pushTickets = function () {
+    projectGroupIds.forEach( obj => {
+        ticketsList.forEach( ticket => {
+            logger.info('Now tickets!');
+            ticket.projectId = obj.projectId;
+            ticket.teamId = obj.teamId;
+            ticket.assignee = obj.members[0];
+            logger.info(`${ticket.projectId}, ${ticket.teamId}, ${ticket.assignee}`);
+            sendTicket(ticket);
+        });
+    });
+}
+
+/**
+ * Sends the ticket to the server
+ * @param {*} ticket 
+ */
+const sendTicket = function (ticket) {
+    const ticketObj = querystring.stringify(ticket);
+    
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/tickets/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(ticketObj),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Created ticket ${ticketObj.title} for team ${ticketObj.teamId}`);
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(ticketObj);
     req.end();
 }
 
