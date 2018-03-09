@@ -53,12 +53,12 @@ block content
                                         label
                                             | #{__('tickets.state')}
                                     .input-field.padding-10.col.s12.m3
-                                        select#prioritySelection
-                                            option(value=0, selected=ticket.priority===0)
+                                        select.icons#prioritySelection
+                                            option(value=0, data-icon='/img/icon-low-priority.png', selected=ticket.priority===0)
                                                 | #{__('tickets.priorities.low')}
-                                            option(value=1, selected=ticket.priority===1)
+                                            option(value=1, data-icon='/img/icon-medium-priority.png', selected=ticket.priority===1)
                                                 | #{__('tickets.priorities.medium')}
-                                            option(value=2, selected=ticket.priority===2)
+                                            option(value=2, data-icon='/img/icon-high-priority.png', selected=ticket.priority===2)
                                                 | #{__('tickets.priorities.high')}
                                         label
                                             | #{__('tickets.priority')}

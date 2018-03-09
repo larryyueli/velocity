@@ -163,7 +163,7 @@ function getListOfAssignee() {
             let usernameObj = {};
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
-                usersObj[`${user.fname} ${user.lname}`] = null;
+                usersObj[`${user.fname} ${user.lname}`] = `/profilePicture/${user.picture}`;
                 usernameObj[`${user.fname} ${user.lname}`] = user.username;
                 usernamesArray.push(user.username);
             }

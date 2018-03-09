@@ -2049,7 +2049,7 @@ const handleTicketsUpdatePath = function (req, res) {
                         type: newType,
                         state: newState,
                         points: newPoints,
-                        priority: newPoints
+                        priority: newPriority
                     };
 
                     if (common_backend.isValueInObjectWithKeys(newState, 'value', common_backend.ticketStates)
@@ -2201,7 +2201,7 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
             }
 
             const reporter = `${req.session.user.fname} ${req.session.user.lname}`;
-            const assignee = common_backend.noAssignee;
+            const assignee = '';
 
             return res.status(200).render(common_api.pugPages.ticketCreation, {
                 user: req.session.user,
@@ -2285,7 +2285,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                     const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
                     const ticketsIdObj = common_backend.convertListToJason('_id', ticketsList);
 
-                    let assignee = common_backend.noAssignee;
+                    let assignee = '';
                     let resolvedAssignee = usersIdObj[ticketObj.assignee];
                     if (resolvedAssignee) {
                         assignee = `${resolvedAssignee.fname} ${resolvedAssignee.lname}`
@@ -2673,7 +2673,8 @@ const handleProjectTeamMembersListPath = function (req, res) {
                     usersList.push({
                         username: memberObj.username,
                         fname: memberObj.fname,
-                        lname: memberObj.lname
+                        lname: memberObj.lname,
+                        picture: memberObj.picture
                     });
                 }
             }

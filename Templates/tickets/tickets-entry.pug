@@ -52,17 +52,17 @@ block content
                                         label
                                             | #{__('tickets.state')}
                                     .input-field.padding-10.col.s12.m3
-                                        select#prioritySelection
-                                            option(value=0, selected)
+                                        select.icons#prioritySelection
+                                            option.circle(value=0, data-icon='/img/icon-low-priority.png', selected)
                                                 | #{__('tickets.priorities.low')}
-                                            option(value=1)
+                                            option.circle(value=1, data-icon='/img/icon-medium-priority.png')
                                                 | #{__('tickets.priorities.medium')}
-                                            option(value=2)
+                                            option.circle(value=2, data-icon='/img/icon-high-priority.png')
                                                 | #{__('tickets.priorities.high')}
                                         label
                                             | #{__('tickets.priority')}
                                     .input-field.padding-10.col.s12.m3
-                                        input(type='number', name='quantity', min='1', max='10', value='5')#pointsSelection
+                                        input(type='number', name='quantity', min='1', max='10', value='0')#pointsSelection
                                         label
                                             | #{__('tickets.points')}
                                 .row
