@@ -38,6 +38,7 @@ const groupSize = 5;
 const userPassword = 'asd';
 var userCookies = [];
 var projectList = [];
+var activeProjectList = [];
 var groupList = [];
 var ticketsList = [];
 var projectGroupIds = [];
@@ -154,13 +155,13 @@ const configureMode = function () {
  */
 const generateClassUsers = function () {
     for (let i = 0; i < numOfProfessors; i++) {
-        createUser(`Professor${i}`, i.toString(), common.userTypes.PROFESSOR.value);
+        createUser(`professor${i}`, i.toString(), common.userTypes.PROFESSOR.value);
     }
     for (let i = 0; i < numOfTAs; i++) {
-        createUser(`TA${i}`, i.toString(), common.userTypes.TA.value);
+        createUser(`ta${i}`, i.toString(), common.userTypes.TA.value);
     }
     for (let i = 0; i < numOfStudents; i++) {
-        createUser(`Student${i}`, i.toString(), common.userTypes.STUDENT.value);
+        createUser(`student${i}`, i.toString(), common.userTypes.STUDENT.value);
         usersToAdd.push(`student${i}`);
     }
 }
@@ -170,11 +171,11 @@ const generateClassUsers = function () {
  */
 const generateCollabUsers = function () {
     for (let i = 0; i < numOfCollaboratorAdmins; i++) {
-        createUser(`CollabAdmin${i}`, i.toString(), common.userTypes.COLLABORATOR_ADMIN.value);
+        createUser(`collabAdmin${i}`, i.toString(), common.userTypes.COLLABORATOR_ADMIN.value);
         usersToAdd.push(`collabadmin${i}`);
     }
     for (let i = 0; i < numOfCollaborators; i++) {
-        createUser(`Collaborator${i}`, i.toString(), common.userTypes.COLLABORATOR.value);
+        createUser(`collaborator${i}`, i.toString(), common.userTypes.COLLABORATOR.value);
         usersToAdd.push(`collab${i}`);
     }
 }
@@ -260,7 +261,7 @@ const logUserIn = function (username) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Logged in and stored the cookie of ${username}`);
-            userCookies.push({username: username, cookie: res.headers['set-cookie'][0]});
+            userCookies.push({'username': username, 'cookie': res.headers['set-cookie'][0]});
             processedUsers++;
             let totalUsers;
             if (workingMode === common.modeTypes.CLASS) {
@@ -301,7 +302,7 @@ const splitUsersIntoGroups = function () {
     if (members.length !== 0) {
         createGroup(`${common.defaultTeamPrefix}${groupNumber}`, members);
     }
-    numOfGroups *= numOfProjects;
+    numOfGroups *= numOfProjectsToActivate;
 }
 
 /**
@@ -479,6 +480,7 @@ const assignGroups = function (project) {
             if (processedProjects === numOfProjects) {
                 processedProjects = 0;
                 for (let i = 0; i < numOfProjectsToActivate; i++) {
+                    activeProjectList.push(projectList[i]);
                     activateProject(projectList[i]);
                 }
             }
@@ -523,7 +525,7 @@ const activateProject = function (project) {
             logger.info(`Activated project ${project.title}`);
             processedProjects++;
             if (processedProjects === numOfProjectsToActivate) {
-                projectList.forEach(project => {
+                activeProjectList.forEach(project => {
                     getGroupIds(project._id);
                 });
             }
@@ -636,7 +638,7 @@ const getGroupMembers = function (projectId, groupId) {
  */
 const createTickets = function () {
     Object.keys(common.ticketStates).forEach( state => {
-        for (let i = 0; i < Object.keys(common.ticketStates).length; i++) {
+        for (let i = 0; i < numOfTicketsPerState; i++) {
             Object.keys(common.ticketTypes).forEach( type => {
                 ticketsList.push({
                     projectId: '',
@@ -674,7 +676,7 @@ const pushTickets = function () {
  */
 const sendTicket = function (ticket, creator) {
     const ticketObj = querystring.stringify(ticket);
-    
+
     const options = {
         hostname: config.hostName,
         port: config.httpsPort,
@@ -692,7 +694,7 @@ const sendTicket = function (ticket, creator) {
         res.setEncoding('utf8');
         res.on('data', (chunk) => { });
         res.on('end', () => {
-            logger.info(`Created ticket ${ticketObj.title} for team ${ticketObj.teamId}`);
+            logger.info(`Created ticket ${ticket.title} for team ${ticket.teamId}`);
         });
     });
 
@@ -703,18 +705,19 @@ const sendTicket = function (ticket, creator) {
 
     req.write(ticketObj);
     req.end();
+
 }
 
 /**
  * Returns the cookie for a given username
  * @param {*} username username
  */
-const getUserCookie = function(username) {
-    userCookies.forEach( user => {
-        if (user.username === username) {
-            return user.cookie;
+const getUserCookie = function(name) {
+    for (let i = 0; i < userCookies.length; i++) {
+        if (userCookies[i].username == name) {
+            return userCookies[i].cookie;
         }
-    });
+    }
     return null;
 }
 
