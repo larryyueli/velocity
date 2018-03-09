@@ -33,9 +33,9 @@ const sass = require('node-sass');
 const sassMiddleware = require('node-sass-middleware');
 const ws = require('ws');
 
+const api = require('./API/api-handler.js');
 const common_api = require('./API/api-components/common-api.js');
 
-const api = require('./API/api-handler.js');
 const cfs = require('./Backend/customFileSystem.js');
 const common_backend = require('./Backend/common.js');
 const config = require('./Backend/config.js');

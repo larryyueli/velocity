@@ -26,12 +26,12 @@ block content
                             .col.s12.l8.padding-10.margin-10.secondaryColour-border-colour
                                 .row
                                     .input-field.padding-10.col.s12.m3
-                                        select#typeSelection
-                                            option(value=0, selected)
+                                        select.icons#typeSelection
+                                            option(value=0, data-icon='/img/icon-ladybird.png', selected)
                                                 | #{__('tickets.types.bug')}
-                                            option(value=1)
+                                            option(value=1, data-icon='/img/icon-code-file.png')
                                                 | #{__('tickets.types.story')}
-                                            option(value=2)
+                                            option(value=2, data-icon='/img/icon-purchase-order.png')
                                                 | #{__('tickets.types.milestone')}
                                         label
                                             | #{__('tickets.type')}

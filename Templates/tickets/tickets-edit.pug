@@ -27,12 +27,12 @@ block content
                             .col.s12.l8.padding-10.margin-10.secondaryColour-border-colour
                                 .row
                                     .input-field.padding-10.col.s12.m3
-                                        select#typeSelection
-                                            option(value=0, selected=ticket.type===0)
+                                        select.icons#typeSelection
+                                            option(value=0, data-icon='/img/icon-ladybird.png', selected=ticket.type===0)
                                                 | #{__('tickets.types.bug')}
-                                            option(value=1, selected=ticket.type===1)
+                                            option(value=1, data-icon='/img/icon-code-file.png', selected=ticket.type===1)
                                                 | #{__('tickets.types.story')}
-                                            option(value=2, selected=ticket.type===2)
+                                            option(value=2, data-icon='/img/icon-purchase-order.png', selected=ticket.type===2)
                                                 | #{__('tickets.types.milestone')}
                                         label
                                             | #{__('tickets.type')}
@@ -150,7 +150,7 @@ block content
                                 label(for="newComment")
                                     | #{__('tickets.writeComment')}
                             button.waves-effect.waves-light.btn.primaryColour-background-colour#addNewComment #{__('actions.comment')}
-                                i.material-icons.right add
+                                i.material-icons.right comment
                 #states
                     .row
                         ul.collection

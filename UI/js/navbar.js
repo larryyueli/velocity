@@ -138,21 +138,22 @@ function clearAllNotifications() {
  * @param {Array} notifList list of notifications
  */
 function addNotification(notifList) {
-    if (parseInt(notifCount[0].innerText) === 0) {
-        notifCount.removeClass('hidden');
-        mobileNotifCount.removeClass('hidden');
-        clearNotifications.removeClass('hidden');
-        noNotifications.addClass('hidden');
+    if (notifList.length > 0) {
+        if (parseInt(notifCount[0].innerText) === 0) {
+            notifCount.removeClass('hidden');
+            mobileNotifCount.removeClass('hidden');
+            clearNotifications.removeClass('hidden');
+            noNotifications.addClass('hidden');
+        }
+
+        notifCount[0].innerText = parseInt(notifCount[0].innerText) + notifList.length;
+        mobileNotifCount[0].innerText = parseInt(mobileNotifCount[0].innerText) + notifList.length;
+
+        // Adding all new notifications
+        notifList.forEach(notification => {
+            notificationList.append(getNotification(notification));
+        });
     }
-
-    // Updating the count
-    notifCount[0].innerText = parseInt(notifCount[0].innerText) + notifList.length;
-    mobileNotifCount[0].innerText = parseInt(mobileNotifCount[0].innerText) + notifList.length;
-
-    // Adding all new notifications
-    notifList.forEach(notification => {
-        notificationList.append(getNotification(notification));
-    });
 }
 
 logoutButton.click(function () {
