@@ -144,10 +144,15 @@ function fillSprintsRow(tickets) {
 function fillTicketRow(ticket) {
     var bindedRow = ticketEntryHTML;
 
-    bindedRow.find(iconId).html('assignment');
+    if (ticket.type === 0) {
+        bindedRow.find(iconId).html('assignment');
+    } else if (ticket.type === 1) {
+        bindedRow.find(iconId).html('assignment');
+    }
+
     bindedRow.find(nameId).html(ticket.title);
     bindedRow.find(estimateId).html(ticket.points);
+    bindedRow.find(openTicketId)[0].href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
 
-    // openTicketId
     return bindedRow[0].outerHTML;
 }
