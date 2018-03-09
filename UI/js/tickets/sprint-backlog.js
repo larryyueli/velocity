@@ -30,6 +30,7 @@ const titleId = '#title';
 const iconId = '#icon';
 const nameId = '#name';
 const openTicketId = '#openTicket';
+const estimateId = '#estimate';
 
 
 
@@ -63,7 +64,7 @@ function displaySprintsList() {
     var rowPopulate = '';
 
     $(sprintsListId).append(fillSprintsRow(ticketsList));
-    
+
     // groupList.forEach(group => {
     //     var inGroup = null;
     //     if (passGroupFilter(group)) {
@@ -90,7 +91,7 @@ function displaySprintsList() {
 
 function fillSprintsRow(tickets) {
     var bindedRow = sprintEntryHTML;
-    
+
     bindedRow.find(issueCountId).html('14');
     bindedRow.find(titleId).html('Bonza - 1');
 
@@ -142,11 +143,11 @@ function fillSprintsRow(tickets) {
 
 function fillTicketRow(ticket) {
     var bindedRow = ticketEntryHTML;
-    
+
     bindedRow.find(iconId).html('assignment');
-    bindedRow.find(nameId).html('ticket name');
+    bindedRow.find(nameId).html(ticket.title);
+    bindedRow.find(estimateId).html(ticket.points);
 
     // openTicketId
     return bindedRow[0].outerHTML;
 }
-
