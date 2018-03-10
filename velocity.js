@@ -49,6 +49,49 @@ const users = require('./Backend/users.js');
 
 const app = express();
 
+// read input parameters
+process.argv.forEach(function (val, index, array) {
+    if (val === 'DEBUG') {
+        config.debugMode = true;
+    }
+});
+
+// read the config file
+const parseConfigData = function () {
+    const config_data = fs.readFileSync(`${__dirname}/velocity.config`, 'utf8');
+
+    const localDebugMode = config.debugMode;
+    config.debugMode = true;
+
+    if (!config_data) {
+        logger.error('Failed to load configuration file');
+        process.exit(1);
+    }
+
+    let configObj = {};
+    try {
+        configObj = JSON.parse(config_data);
+    } catch (error) {
+        logger.error(JSON.stringify(error));
+        process.exit(1);
+    }
+
+    if (typeof (config.db_host) !== common_backend.variableTypes.STRING
+        || typeof (parseInt(config.db_port)) !== common_backend.variableTypes.NUMBER
+        || typeof (config.db_name) !== common_backend.variableTypes.STRING) {
+        logger.error('Invalid configuration');
+        process.exit(1);
+    }
+
+    config.db_host = configObj.db_host;
+    config.db_port = parseInt(config.db_port);
+    config.db_name = configObj.db_name;
+
+    logger.info(`Configuration has been loaded successfully.`);
+    config.debugMode = localDebugMode;
+}
+parseConfigData();
+
 const mongoSessionStore = new mongoStore({
     url: `mongodb://${config.db_host}:${config.db_port}/${config.db_name}`,
     collection: 'sessions',
@@ -70,13 +113,6 @@ const wsSessionInterceptor = function (info, callback) {
 const notificationsWS = new ws.Server({
     verifyClient: wsSessionInterceptor,
     port: config.notificationsWSPort
-});
-
-// read input parameters
-process.argv.forEach(function (val, index, array) {
-    if (val === 'DEBUG') {
-        config.debugMode = true;
-    }
 });
 
 // Setting up i18n library
@@ -142,77 +178,50 @@ httpServer.listen(config.httpPort, function () {
 
         logger.info(`HTTPs Server is listening on port :${config.httpsPort}`);
         logger.info(`Velocity web app is listening on port: ${config.httpsPort}`);
-        fs.readFile(`${__dirname}/velocity.config`, 'utf8', function (err, data) {
+        db.initialize(function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            let configObj = {};
-            try {
-                configObj = JSON.parse(data);
-            } catch (error) {
-                logger.error(JSON.stringify(error));
-                process.exit(1);
-            }
-
-            if (typeof (config.db_host) !== common_backend.variableTypes.STRING
-                || typeof (parseInt(config.db_port)) !== common_backend.variableTypes.NUMBER
-                || typeof (config.db_name) !== common_backend.variableTypes.STRING) {
-                logger.error('Failed to load configuration');
-                process.exit(1);
-            }
-
-            config.db_host = configObj.db_host;
-            config.db_port = parseInt(config.db_port);
-            config.db_name = configObj.db_name;
-
-            logger.info(`Configuration has been loaded successfully.`)
-            db.initialize(function (err, result) {
+            logger.info('Connection to velocity database was successful.');
+            cfs.initialize(function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     process.exit(1);
                 }
 
-                logger.info('Connection to velocity database was successful.');
-                cfs.initialize(function (err, result) {
+                logger.info('File System exists and seems ok');
+                settings.initialize(function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         process.exit(1);
                     }
 
-                    logger.info('File System exists and seems ok');
-                    settings.initialize(function (err, result) {
+                    logger.info('Settings object has been fetched successfully.');
+                    users.initialize(function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             process.exit(1);
                         }
 
-                        logger.info('Settings object has been fetched successfully.');
-                        users.initialize(function (err, result) {
+                        logger.info('Users list has been fetched successfully.');
+                        projects.initialize(function (err, result) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                                 process.exit(1);
                             }
 
-                            logger.info('Users list has been fetched successfully.');
-                            projects.initialize(function (err, result) {
+                            logger.info('Project instance has been built successfully.');
+                            api.initialize(pug, notificationsWS, function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
                                 }
 
-                                logger.info('Project instance has been built successfully.');
-                                api.initialize(pug, notificationsWS, function (err, result) {
-                                    if (err) {
-                                        logger.error(JSON.stringify(err));
-                                        process.exit(1);
-                                    }
-
-                                    logger.info('API instance has been built successfully.');
-                                    config.debugMode = localDebugMode;
-                                    logger.info(`Debug mode status: ${config.debugMode}`);
-                                });
+                                logger.info('API instance has been built successfully.');
+                                logger.info(`Debug mode status: ${localDebugMode}`);
+                                config.debugMode = localDebugMode;
                             });
                         });
                     });

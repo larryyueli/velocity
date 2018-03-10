@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
 const fs = require('fs');
+const path = require('path');
 const rimraf = require('rimraf');
 
 const common = require('./common.js');
@@ -62,7 +63,7 @@ const initialize = function (callback) {
  * @param {function} callback callback function
  */
 const mkdir = function (parentPath, directoryName, directoryPermissions, callback) {
-    const fullPath = `${parentPath}/${directoryName}`;
+    const fullPath = path.resolve(`${parentPath}/${directoryName}`);
     const entryObject = {
         _id: directoryName,
         path: fullPath,
@@ -94,7 +95,7 @@ const mkdir = function (parentPath, directoryName, directoryPermissions, callbac
  * @param {function} callback callback function
  */
 const rmdir = function (parentPath, directoryName, callback) {
-    const fullPath = `${parentPath}/${directoryName}`;
+    const fullPath = path.resolve(`${parentPath}/${directoryName}`);
     db.removeFromVirtualFileSystem({ _id: directoryName }, function (err, result) {
         if (err) {
             return callback(err, null);
@@ -118,7 +119,7 @@ const rmdir = function (parentPath, directoryName, callback) {
  * @param {function} callback callback function
  */
 const rmrf = function (parentPath, directoryName, callback) {
-    const fullPath = `${parentPath}/${directoryName}`;
+    const fullPath = path.resolve(`${parentPath}/${directoryName}`);
     db.removeFromVirtualFileSystem({ _id: directoryName }, function (err, result) {
         if (err) {
             return callback(err, null);
@@ -146,7 +147,7 @@ const existsSync = function (entryId, callback) {
             return callback(err, null);
         }
 
-        if (!fs.existsSync(fileObj.path)) {
+        if (!fs.existsSync(path.resolve(fileObj.path))) {
             return callback(common.getError(4007), null);
         }
 
@@ -161,7 +162,7 @@ const existsSync = function (entryId, callback) {
  * @param {function} callback callback function
  */
 const writeFile = function (fileObj, callback) {
-    const fullPath = `${fileObj.filePath}/${fileObj.fileName}.${fileObj.fileExtension}`;
+    const fullPath = path.resolve(`${fileObj.filePath}/${fileObj.fileName}.${fileObj.fileExtension}`);
     const fileObject = {
         _id: fileObj.fileName,
         path: fullPath,

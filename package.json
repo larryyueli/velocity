@@ -38,8 +38,8 @@
     "dataGen": "node Scripts/dataGenerator.js",
     "debug": "node velocity.js DEBUG",
     "restart": "npm stop ; npm start",
-    "setup": "node Scripts/setup.js & > /dev/null",
-    "start": "node velocity.js & > /dev/null",
+    "setup": "node Scripts/setup.js",
+    "start": "node velocity.js &",
     "stop": "kill $(ps -ef | grep velocity | awk '{print $2}') > /dev/null",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
