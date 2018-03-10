@@ -1,0 +1,30 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/tickets.css')
+    link(rel='stylesheet' href='/summernote/summernote.css')
+    link(rel='stylesheet' href='/atJs/css/jquery.atwho.min.css')
+
+block title
+    title #{__('tickets.title')}
+
+block content
+    include ../navbar
+    br
+    .container
+        .row
+            a.btn.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href=`/project/${projectId}`)
+                i.material-icons arrow_back
+            a.btn.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.cancelButtonText-colour.right(href=`/project/${projectId}/team/${teamId}/tickets/add`)
+                i.material-icons add
+        ul.collection
+            each ticket in ticketsList
+                li.collection-item.avatar
+                    i.material-icons.circle.red note
+                    span.title #{ticket.title}
+                    p
+                        | First Line 
+                        br
+                        | Second Line
+                    a.secondary-content.ticketLink(href=`/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}`)
+                        i.material-icons send

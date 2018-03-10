@@ -241,6 +241,7 @@ app.get('/profile', api.handleProfilePath);
 app.get('/profilePicture/:pictureId', api.handleprofilePicturePath);
 app.get('/project/:projectId', api.handleProjectByIdPath);
 app.get('/project/:projectId/team/:teamId', api.handleProjectTeamPath);
+app.get('/project/:projectId/team/:teamId/search', api.handleProjectTeamSearchPath);
 app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTicketsAddPath);
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);

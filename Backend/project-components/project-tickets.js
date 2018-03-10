@@ -143,6 +143,77 @@ const getTicketsBySprintId = function (projectId, teamId, sprintId, callback) {
 }
 
 /**
+ * search for tickets in a project
+ *
+ * @param {string} projectId project id
+ * @param {string} term search term
+ * @param {function} callback callback function
+ */
+const searchTicketsByProjectId = function (projectId, term, callback) {
+    getLimitedTicketsListSorted(
+        {
+            $and: [
+                {
+                    $or: [
+                        {
+                            title: { $regex: `(.*)${term}(.*)`, $options: 'i' }
+                        }, {
+                            description: { $regex: `(.*)${term}(.*)`, $options: 'i' }
+                        }
+                    ]
+                }, {
+                    projectId: projectId
+                }, {
+                    status: common.ticketStatus.ACTIVE.value
+                }
+            ]
+        },
+        {
+            title: 1
+        },
+        0,
+        callback
+    );
+}
+
+/**
+ * search for tickets in a team
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} term search term
+ * @param {function} callback callback function
+ */
+const searchTicketsByTeamId = function (projectId, teamId, term, callback) {
+    getLimitedTicketsListSorted(
+        {
+            $and: [
+                {
+                    $or: [
+                        {
+                            title: { $regex: `(.*)${term}(.*)`, $options: 'i' }
+                        }, {
+                            description: { $regex: `(.*)${term}(.*)`, $options: 'i' }
+                        }
+                    ]
+                }, {
+                    projectId: projectId
+                }, {
+                    teamId: teamId
+                }, {
+                    status: common.ticketStatus.ACTIVE.value
+                }
+            ]
+        },
+        {
+            title: 1
+        },
+        0,
+        callback
+    );
+}
+
+/**
  * update the ticket information
  *
  * @param {string} ticketId ticket id
@@ -240,5 +311,7 @@ exports.getTicketById = getTicketById;
 exports.getTicketsBySprintId = getTicketsBySprintId;
 exports.getTicketsByTeamId = getTicketsByTeamId;
 exports.initialize = initialize;
+exports.searchTicketsByProjectId = searchTicketsByProjectId;
+exports.searchTicketsByTeamId = searchTicketsByTeamId;
 exports.updateTicket = updateTicket;
 // </exports> ----------------------------------

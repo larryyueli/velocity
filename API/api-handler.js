@@ -2152,10 +2152,104 @@ const handleProjectTeamPath = function (req, res) {
                     user: req.session.user,
                     projectId: projectId,
                     teamId: teamId,
-                    ticketsList: ticketsObjList
+                    ticketsList: ticketsObjList,
+                    canSearch: true
                 });
             });
         });
+    });
+}
+
+/**
+ * root path to search for tickets in projects
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamSearchPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    const terms = req.query.criteria;
+
+    let searchForTickets = function (projectId, teamId, terms) {
+        if (settings.getModeType() === common_backend.modeTypes.COLLABORATORS) {
+            projects.searchTicketsByProjectId(projectId, terms, function (err, ticketsList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).render(common_api.pugPages.ticketSearch, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    ticketsList: ticketsList,
+                    canSearch: true
+                });
+            });
+        } else {
+            projects.searchTicketsByTeamId(projectId, teamId, terms, function (err, ticketsList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).render(common_api.pugPages.ticketSearch, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    ticketsList: ticketsList,
+                    canSearch: true
+                });
+            });
+        }
+    }
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common_backend.getError(2043)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (typeof (teamId) === common_backend.variableTypes.UNDEFINED) {
+            projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                searchForTickets(projectId, teamObj._id, terms);
+            });
+        } else {
+            projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                if (projectObj.admins.indexOf(req.session.user._id) === -1
+                    && teamObj.members.indexOf(req.session.user._id) === -1) {
+                    logger.error(JSON.stringify(common_backend.getError(2019)));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                searchForTickets(projectId, teamId, terms);
+            });
+        }
     });
 }
 
@@ -2208,7 +2302,8 @@ const handleProjectTeamTicketsAddPath = function (req, res) {
                 projectId: projectId,
                 teamId: teamId,
                 reporter: reporter,
-                assignee: assignee
+                assignee: assignee,
+                canSearch: true
             });
         });
     });
@@ -2353,7 +2448,8 @@ const handleProjectTeamTicketPath = function (req, res) {
                             }
 
                             return resolvedContent.trim();
-                        }
+                        },
+                        canSearch: true
                     });
                 });
             });
@@ -2695,6 +2791,7 @@ exports.isActiveSession = common_api.isActiveSession;
 // <Get Requests> ------------------------------------------------
 exports.handleProjectByIdPath = handleProjectByIdPath;
 exports.handleProjectTeamPath = handleProjectTeamPath;
+exports.handleProjectTeamSearchPath = handleProjectTeamSearchPath;
 exports.handleProjectTeamTicketsAddPath = handleProjectTeamTicketsAddPath;
 exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;

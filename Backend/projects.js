@@ -220,6 +220,8 @@ exports.updateTeamInProject = teams.updateTeamInProject;
 exports.addTicketToTeam = tickets.addTicket;
 exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
+exports.searchTicketsByProjectId = tickets.searchTicketsByProjectId;
+exports.searchTicketsByTeamId = tickets.searchTicketsByTeamId;
 exports.updateTicket = tickets.updateTicket;
 // </tickets> ----------------------------------
 

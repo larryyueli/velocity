@@ -19,6 +19,15 @@
                 li#nav-chatRoom
                     a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
             ul.right
+                if canSearch
+                    li
+                        .hide-on-med-and-down
+                            .col.s12
+                                .row
+                                    .input-field.col.s12
+                                        i.material-icons.prefix search
+                                        input#navSearchField.autocomplete(type='text')
+                                        label(for='searchField') Search
                 li
                     a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications

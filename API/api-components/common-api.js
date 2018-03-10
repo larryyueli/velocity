@@ -33,6 +33,7 @@ const pugPages = Object.freeze({
     settings: 'settings/settings',
     ticketCreation: 'tickets/tickets-entry',
     ticketModification: 'tickets/tickets-edit',
+    ticketSearch: 'tickets/tickets-search',
     users: 'users/users',
     usersAdd: 'users/users-add',
     usersEdit: 'users/users-edit',

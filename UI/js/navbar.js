@@ -21,6 +21,7 @@ var mobileNotifCount = $('#mobileNotifCount');
 var notificationList = $('#notifications_nav');
 var noNotifications = $('#noNotifications');
 var clearNotifications = $('#clearNotifications');
+var navSearchField = $('#navSearchField');
 
 const logoutButton = $('#nav-logout');
 
@@ -176,5 +177,16 @@ $(function () {
     var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
     socket.onmessage = function (event) {
         addNotification(JSON.parse(event.data)['notifList']);
+    }
+
+    if (navSearchField) {
+        navSearchField.on('keyup', function (event) {
+            if (event.keyCode === 13) {
+                const splithref = window.location.href.split('/');
+                const projectId = splithref[4];
+                const teamId = splithref[6];
+                window.location = `/project/${projectId}/team/${teamId}/search?criteria=${navSearchField.val()}`;
+            }
+        });
     }
 });
