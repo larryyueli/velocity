@@ -285,6 +285,7 @@ app.post('/users/update', api.handleUsersUpdatePath);
 
 // <Put Requests> ------------------------------------------------
 app.put('/projects/create', api.handleProjectsCreatePath);
+app.put('/sprints/create', api.handleSprintsCreatePath);
 app.put('/tickets/create', api.handleTicketsCreatePath);
 app.put('/comment/create', api.handleTicketsCommentPath);
 app.put('/users/create', api.handleUsersCreatePath);

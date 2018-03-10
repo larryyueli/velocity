@@ -22,6 +22,7 @@ const common = require('./common.js');
 const db = require('./db.js');
 
 const comments = require('./project-components/project-comments.js');
+const sprints = require('./project-components/project-sprints.js');
 const teams = require('./project-components/project-teams.js');
 const tickets = require('./project-components/project-tickets.js');
 
@@ -196,6 +197,13 @@ const updateProject = function (projectId, updateParams, callback) {
     db.updateProject(searchQuery, updateQuery, callback);
 }
 
+// <comments> -----------------------------------
+exports.addCommentToTicket = comments.addComment;
+exports.getCommentById = comments.getCommentById;
+exports.getCommentsByTicketId = comments.getCommentsByTicketId;
+exports.updateComment = comments.updateComment;
+// </comments> ----------------------------------
+
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
@@ -206,6 +214,14 @@ exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.initialize = initialize;
 exports.updateProject = updateProject;
 // </exports> ----------------------------------
+
+// <sprints> -----------------------------------
+exports.addSprintToTeam = sprints.addSprint;
+exports.getActiveSprintByTeamId = sprints.getActiveSprint;
+exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
+exports.setActiveSprintByTeamId = sprints.setActiveSprint;
+exports.updateSprintByTeamId = sprints.updateSprint;
+// </sprints> ----------------------------------
 
 // <teams> -----------------------------------
 exports.addTeamToProject = teams.addTeamToProject;
@@ -224,10 +240,3 @@ exports.searchTicketsByProjectId = tickets.searchTicketsByProjectId;
 exports.searchTicketsByTeamId = tickets.searchTicketsByTeamId;
 exports.updateTicket = tickets.updateTicket;
 // </tickets> ----------------------------------
-
-// <comments> -----------------------------------
-exports.addCommentToTicket = comments.addComment;
-exports.getCommentById = comments.getCommentById;
-exports.getCommentsByTicketId = comments.getCommentsByTicketId;
-exports.updateComment = comments.updateComment;
-// </comments> ----------------------------------

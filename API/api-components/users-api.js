@@ -225,6 +225,52 @@ const updateProfile = function (req, res) {
     });
 }
 
+/**
+ * path to udpate the users profile picture
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const updateProfilePicture = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const validImageExtensions = ['image/jpeg', 'image/png'];
+    const uploadedFile = req.files.userpicture;
+    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
+        logger.error(JSON.stringify(common_backend.getError(2008)));
+        return res.status(400).send(common_backend.getError(2008));
+    }
+
+    const fileName = common_backend.getUUID();
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileName: fileName,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common_backend.cfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            req.session.user.picture = fileName;
+            return res.status(200).send(fileName);
+        });
+    });
+}
 
 // <exports> ------------------------------------------------
 exports.getProfilePicture = getProfilePicture;
@@ -233,4 +279,5 @@ exports.logout = logout;
 exports.me = me;
 exports.renderProfilePage = renderProfilePage;
 exports.updateProfile = updateProfile;
+exports.updateProfilePicture = updateProfilePicture;
 // </exports> -----------------------------------------------

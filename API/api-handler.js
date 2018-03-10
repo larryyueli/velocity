@@ -600,53 +600,6 @@ const handleUsersImportFilePath = function (req, res) {
 }
 
 /**
- * path to udpate the users profile picture
- *
- * @param {object} req req object
- * @param {object} res res object
- */
-const handleUpdateProfilePicturePath = function (req, res) {
-    if (!common_api.isActiveSession(req)) {
-        return res.status(401).render(common_api.pugPages.login);
-    }
-
-    const validImageExtensions = ['image/jpeg', 'image/png'];
-    const uploadedFile = req.files.userpicture;
-    if (!uploadedFile || validImageExtensions.indexOf(uploadedFile.mimetype) === -1) {
-        logger.error(JSON.stringify(common_backend.getError(2008)));
-        return res.status(400).send(common_backend.getError(2008));
-    }
-
-    const fileName = common_backend.getUUID();
-    const fileExtension = uploadedFile.mimetype.split('/')[1];
-    const fileObject = {
-        fileName: fileName,
-        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
-        fileExtension: fileExtension,
-        fileData: uploadedFile.data,
-        filePermissions: common_backend.cfsPermission.PUBLIC,
-        fileCreator: req.session.user._id
-    };
-
-    cfs.writeFile(fileObject, function (err, fileObj) {
-        if (err) {
-            logger.error(JSON.stringify(err));
-            return res.status(500).send(err);
-        }
-
-        users.updateUser({ _id: req.session.user._id, picture: fileName }, function (err, result) {
-            if (err) {
-                logger.error(JSON.stringify(err));
-                return res.status(500).send(err);
-            }
-
-            req.session.user.picture = fileName;
-            return res.status(200).send(fileName);
-        });
-    });
-}
-
-/**
  * path to get the projects page
  *
  * @param {object} req req object
@@ -1738,7 +1691,8 @@ const handleTicketsUpdatePath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common_backend.getError(2019)));
                 return res.status(400).send(common_backend.getError(2019));
@@ -2064,7 +2018,8 @@ const handleProjectTeamTicketPath = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common_backend.getError(2019)));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -2207,7 +2162,8 @@ const handleTicketsCommentPath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common_backend.getError(2019)));
                 return res.status(400).send(common_backend.getError(2019));
@@ -2322,7 +2278,8 @@ const handleCommentDeletePath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common_backend.getError(2019)));
                 return res.status(400).send(common_backend.getError(2019));
@@ -2393,7 +2350,8 @@ const handleTicketsCommentEditPath = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common_backend.getError(2019)));
                 return res.status(400).send(common_backend.getError(2019));
@@ -2497,6 +2455,61 @@ const handleProjectTeamMembersListPath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to create a sprint
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSprintsCreatePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            let newSprint = {
+                projectId: projectId,
+                teamId: teamId,
+                name: req.body.name,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate
+            };
+            projects.addSprintToTeam(newSprint, function (err, sprintObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                return res.status(200).send('ok');
+            });
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <common Requests> ------------------------------------------------
@@ -2547,6 +2560,10 @@ exports.handleSettingsResetPath = settings_api.resetSettings;
 exports.handleSettingsUpdatePath = settings_api.updateSettings;
 // </Settings Requests> -----------------------------------------------
 
+// <Sprints Requests> ------------------------------------------------
+exports.handleSprintsCreatePath = handleSprintsCreatePath;
+// </Sprints Requests> -----------------------------------------------
+
 // <Users Requests> ------------------------------------------------
 exports.handleLoginPath = users_api.login;
 exports.handleLogoutPath = users_api.logout;
@@ -2554,7 +2571,7 @@ exports.handleMePath = users_api.me;
 exports.handleProfilePath = users_api.renderProfilePage;
 exports.handleProfilePicturePath = users_api.getProfilePicture;
 exports.handleProfileUpdatePath = users_api.updateProfile;
-exports.handleUpdateProfilePicturePath = handleUpdateProfilePicturePath;
+exports.handleUpdateProfilePicturePath = users_api.updateProfilePicture;
 exports.handleUsersAddPath = handleUsersAddPath;
 exports.handleUsersCreatePath = handleUsersCreatePath;
 exports.handleUsersEditPath = handleUsersEditPath;

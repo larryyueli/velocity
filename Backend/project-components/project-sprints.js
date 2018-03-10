@@ -39,7 +39,9 @@ const initialize = function (callback) {
 const addSprint = function (sprint, callback) {
     if (typeof (sprint.name) !== common.variableTypes.STRING
         || typeof (sprint.projectId) !== common.variableTypes.STRING
-        || typeof (sprint.teamId) !== common.variableTypes.STRING) {
+        || typeof (sprint.teamId) !== common.variableTypes.STRING
+        || typeof (sprint.startDate) !== common.variableTypes.STRING
+        || typeof (sprint.endDate) !== common.variableTypes.STRING) {
         return callback(common.getError(10006), null);
     }
 
@@ -55,6 +57,8 @@ const addSprint = function (sprint, callback) {
     sprintToAdd.projectId = sprint.projectId;
     sprintToAdd.teamId = sprint.teamId;
     sprintToAdd.name = sprint.name;
+    sprintToAdd.startDate = sprint.startDate;
+    sprintToAdd.endDate = sprint.endDate;
     sprintToAdd.status = common.sprintStatus.CLOSED.value;
     sprintToAdd.tickets = Array.isArray(sprint.tickets) ? sprint.tickets : [];
 
@@ -158,6 +162,14 @@ const updateSprint = function (sprintId, teamId, projectId, updateParams, callba
 
     if (typeof (updateParams.name) === common.variableTypes.STRING) {
         updateQuery.$set.name = updateParams.name;
+    }
+
+    if (typeof (updateParams.startDate) === common.variableTypes.STRING) {
+        updateQuery.$set.startDate = updateParams.startDate;
+    }
+
+    if (typeof (updateParams.endDate) === common.variableTypes.STRING) {
+        updateQuery.$set.endDate = updateParams.endDate;
     }
 
     if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.sprintStatus)) {
