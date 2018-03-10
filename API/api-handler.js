@@ -1250,7 +1250,37 @@ const handleTicketsCreatePath = function (req, res) {
                     newTicket.assignee = assigneeObj._id;
                 }
 
-                let createTicketFunction = function () {
+                if (typeof (sprintId) === common_backend.variableTypes.STRING) {
+                    projects.getSprintById(projectId, teamId, sprintId, function (err, sprintObj) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        newTicket.sprintId = sprintId;
+
+                        projects.addTicketToTeam(newTicket, function (err, ticketObj) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            sprintObj.tickets.push(ticketObj._id);
+                            let updatedSprint = {
+                                tickets: sprintObj.tickets
+                            };
+                            projects.updateSprint(sprintId, teamId, projectId, updatedSprint, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                return res.status(200).send('ok');
+                            });
+                        });
+
+                    });
+                } else {
                     projects.addTicketToTeam(newTicket, function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
@@ -1259,18 +1289,6 @@ const handleTicketsCreatePath = function (req, res) {
 
                         return res.status(200).send('ok');
                     });
-                }
-
-                if (typeof (sprintId) === common_backend.variableTypes.STRING) {
-                    projects.getSprintById(projectId, teamId, sprintId, function (err, sprintObj) {
-                        if (sprintObj) {
-                            newTicket.sprintId = sprintId;
-                        }
-
-                        createTicketFunction();
-                    });
-                } else {
-                    createTicketFunction();
                 }
             });
         });
