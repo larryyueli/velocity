@@ -69,7 +69,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.displayId = `TICKET-${nextTicketId}`;
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
-    ticketToAdd.sprintId = typeof (ticket.sprint) === common.variableTypes.STRING ? ticket.sprint : common.defaultSprint;
+    ticketToAdd.sprintId = typeof (ticket.sprintId) === common.variableTypes.STRING ? ticket.sprintId : common.defaultSprint;
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;

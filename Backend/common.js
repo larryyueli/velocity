@@ -374,10 +374,17 @@ exports.defaultSprint = defaultSprint;
 
 // common sprint status
 const sprintStatus = Object.freeze({
-    CLOSED: { value: 0, text: 'closed' },
+    DELETED: { value: 0, text: 'deleted' },
     ACTIVE: { value: 1, text: 'active' }
 });
 exports.sprintStatus = sprintStatus;
+
+// common sprint states
+const sprintStates = Object.freeze({
+    CLOSED: { value: 0, text: 'closed' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.sprintStates = sprintStates;
 
 // all ticket link types
 const ticketLinkTypes = Object.freeze({

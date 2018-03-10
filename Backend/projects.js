@@ -218,6 +218,7 @@ exports.updateProject = updateProject;
 // <sprints> -----------------------------------
 exports.addSprintToTeam = sprints.addSprint;
 exports.getActiveSprintByTeamId = sprints.getActiveSprint;
+exports.getSprintById = sprints.getSprintById;
 exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
 exports.setActiveSprintByTeamId = sprints.setActiveSprint;
 exports.updateSprintByTeamId = sprints.updateSprint;

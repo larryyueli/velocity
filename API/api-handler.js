@@ -1589,6 +1589,8 @@ const handleTicketsCreatePath = function (req, res) {
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
     const assignee = req.body.assignee;
+    const sprintId = req.body.sprintId;
+
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -1645,14 +1647,28 @@ const handleTicketsCreatePath = function (req, res) {
                     newTicket.assignee = assigneeObj._id;
                 }
 
-                projects.addTicketToTeam(newTicket, function (err, result) {
-                    if (err) {
-                        logger.error(JSON.stringify(err));
-                        return res.status(500).send(err);
-                    }
+                let createTicketFunction = function () {
+                    projects.addTicketToTeam(newTicket, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
 
-                    return res.status(200).send('ok');
-                });
+                        return res.status(200).send('ok');
+                    });
+                }
+
+                if (typeof (sprintId) === common_backend.variableTypes.STRING) {
+                    projects.getSprintById(projectId, teamId, sprintId, function (err, sprintObj) {
+                        if (sprintObj) {
+                            newTicket.sprintId = sprintId;
+                        }
+
+                        createTicketFunction();
+                    });
+                } else {
+                    createTicketFunction();
+                }
             });
         });
     });
@@ -2457,6 +2473,60 @@ const handleProjectTeamMembersListPath = function (req, res) {
 }
 
 /**
+ * root path to get the sprints list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamSprintsListPath = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let sprintsList = [];
+                for (let i = 0; i < sprintsObjList.length; i++) {
+                    let sprint = sprintsObjList[i];
+                    sprintsList.push({
+                        _id: sprint._id,
+                        name: sprint.name
+                    });
+                }
+
+                return res.status(200).send(sprintsList);
+            });
+        });
+    });
+}
+
+/**
  * root path to create a sprint
  *
  * @param {object} req req object
@@ -2526,6 +2596,7 @@ exports.handleProjectTeamSearchPath = handleProjectTeamSearchPath;
 exports.handleProjectTeamTicketsAddPath = handleProjectTeamTicketsAddPath;
 exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;
+exports.handleProjectTeamSprintsListPath = handleProjectTeamSprintsListPath;
 exports.handleProjectsPath = handleProjectsPath;
 exports.handleProjectsListComponentPath = handleProjectsListComponentPath;
 exports.handleTeamsListComponentPath = handleTeamsListComponentPath;

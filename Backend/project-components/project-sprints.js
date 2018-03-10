@@ -59,7 +59,8 @@ const addSprint = function (sprint, callback) {
     sprintToAdd.name = sprint.name;
     sprintToAdd.startDate = sprint.startDate;
     sprintToAdd.endDate = sprint.endDate;
-    sprintToAdd.status = common.sprintStatus.CLOSED.value;
+    sprintToAdd.state = common.sprintStates.CLOSED.value;
+    sprintToAdd.status = common.sprintStatus.ACTIVE.value;
     sprintToAdd.tickets = Array.isArray(sprint.tickets) ? sprint.tickets : [];
 
     db.addSprint(sprintToAdd, callback);
@@ -91,42 +92,54 @@ const getSprint = function (searchQuery, callback) {
  * find the list of sprints under a team
  *
  * @param {string} projectId project id
- * @param {string} teamId project id
+ * @param {string} teamId team id
+ * @param {string} sprintId sprint id
+ * @param {function} callback callback function
+ */
+const getSprintById = function (projectId, teamId, sprintId, callback) {
+    getSprint({ $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
+}
+
+/**
+ * find the list of sprints under a team
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
  * @param {function} callback callback function
  */
 const getSprintsByTeamId = function (projectId, teamId, callback) {
-    getLimitedTeamsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }] }, { status: -1, name: 1 }, 0, callback);
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
  * find the active sprint under a team
  *
  * @param {string} projectId project id
- * @param {string} teamId project id
+ * @param {string} teamId team id
  * @param {function} callback callback function
  */
 const getActiveSprint = function (projectId, teamId, callback) {
-    getSprint({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
+    getSprint({ $and: [{ projectId: projectId }, { teamId: teamId }, { state: common.sprintStates.ACTIVE.value }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
 }
 
 /**
  * set active sprint 
  *
  * @param {string} projectId project id
- * @param {string} teamId project id
+ * @param {string} teamId team id
  * @param {string} sprintId sprint id
  * @param {function} callback callback function
  */
 const setActiveSprint = function (projectId, teamId, sprintId, callback) {
     let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId } }, { projectId: projectId }, { teamId: teamId }] };
-    let deactivateUpdateQuery = { $set: { status: common.sprintStatus.CLOSED.value } };
+    let deactivateUpdateQuery = { $set: { state: common.sprintStates.CLOSED.value } };
     db.updateSprint(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
         if (err) {
             return callback(err, null);
         }
 
         let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }] };
-        let activateUpdateQuery = { $set: { status: common.sprintStatus.ACTIVE.value } };
+        let activateUpdateQuery = { $set: { state: common.sprintStates.ACTIVE.value } };
         db.updateSprint(activateSearchQuery, activateUpdateQuery, callback);
     });
 }
@@ -176,6 +189,10 @@ const updateSprint = function (sprintId, teamId, projectId, updateParams, callba
         updateQuery.$set.status = updateParams.status;
     }
 
+    if (common.isValueInObjectWithKeys(updateParams.state, 'value', common.sprintStates)) {
+        updateQuery.$set.state = updateParams.state;
+    }
+
     if (Array.isArray(updateParams.tickets)) {
         updateQuery.$set.tickets = updateParams.tickets;
     }
@@ -197,6 +214,7 @@ const updateSprint = function (sprintId, teamId, projectId, updateParams, callba
 // <exports> -----------------------------------
 exports.addSprint = addSprint;
 exports.getActiveSprint = getActiveSprint;
+exports.getSprintById = getSprintById;
 exports.getSprintsByTeamId = getSprintsByTeamId;
 exports.initialize = initialize;
 exports.setActiveSprint = setActiveSprint;

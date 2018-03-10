@@ -27,6 +27,7 @@ const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
 const assigneeAutocompleteId = '#assigneeAutocomplete';
+const sprintsAutocompleteId = '#sprintsAutocomplete';
 const titleFieldId = '#titleField';
 const typeSelectionId = '#typeSelection';
 const stateSelectionId = '#stateSelection';
@@ -34,6 +35,7 @@ const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
 
 var selectedAssignee = null;
+var selectedSprint = null;
 
 typeSelection.change(function () {
     if (typeSelection.val() == 0) {
@@ -55,6 +57,7 @@ $(function () {
     initSummernote(descriptionId);
 
     getListOfAssignee();
+    getListOfSprints();
 
     $(createTicketButtonId).click(() => {
         createTicketAction();
@@ -92,7 +95,8 @@ function createTicketAction() {
             priority: priorityValue,
             state: stateValue,
             points: pointsValue,
-            assignee: selectedAssignee
+            assignee: selectedAssignee,
+            sprintId: selectedSprint
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}`;
@@ -130,6 +134,43 @@ function getListOfAssignee() {
                 limit: 20,
                 onAutocomplete: function (val) {
                     selectedAssignee = usernameObj[val];
+                },
+                minLength: 0,
+            });
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * list of possible sprints
+*/
+function getListOfSprints() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/sprints/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let sprintsObj = {};
+            let sprintIdsObj = {};
+            for (let i = 0; i < data.length; i++) {
+                let sprint = data[i];
+                sprintsObj[`${sprint.name}`] = null;
+                sprintIdsObj[`${sprint.name}`] = sprint._id;
+            }
+            $(sprintsAutocompleteId).autocomplete({
+                data: sprintsObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    selectedSprint = sprintIdsObj[val];
                 },
                 minLength: 0,
             });

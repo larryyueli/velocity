@@ -31,23 +31,24 @@ $(function () {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
 
-    //$.ajax({
-    //    type: 'PUT',
-    //    url: '/sprints/create',
-    //    data: {
-    //        projectId: projectId,
-    //        teamId: teamId,
-    //        name: 'Sprint 3',
-    //        startDate: '1/2/2018',
-    //        endDate: '1/20/2018'
-    //    },
-    //    success: function (data) {
-    //        // alert(data);
-    //    },
-    //    error: function (data) {
-    //        handle401And404(data);
-    //        const jsonResponse = data.responseJSON;
-    //        failSnackbar(getErrorMessageFromResponse(jsonResponse));
-    //    }
-    //});
+    /*
+    $.ajax({
+        type: 'PUT',
+        url: '/sprints/create',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            name: 'Sprint 5',
+            startDate: '1/2/2018',
+            endDate: '1/20/2018'
+        },
+        success: function (data) {
+            alert(data);
+        },
+        error: function (data) {
+            handle401And404(data);
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
 });

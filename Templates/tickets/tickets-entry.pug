@@ -90,15 +90,15 @@ block content
                                 .row
                                     .input-field.padding-10
                                         input.autocomplete(type='text', value=`${assignee}`)#assigneeAutocomplete
-                                        label(for='autocomplete-input') #{__('tickets.assignee')}
+                                        label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                 .row
                                     .input-field.padding-10
                                         input.autocomplete(type='text')
                                         label(for='autocomplete-input') #{__('tickets.release')}
                                 .row
                                     .input-field.padding-10
-                                        input.autocomplete(type='text')
-                                        label(for='autocomplete-input')  #{__('tickets.sprints')}
+                                        input.autocomplete(type='text')#sprintsAutocomplete
+                                        label(for='sprintsAutocomplete')  #{__('tickets.sprints')}
                                 .row
                                     .input-field.padding-10
                                         input.autocomplete(type='text')
