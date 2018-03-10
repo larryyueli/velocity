@@ -41,13 +41,13 @@ exports.debugMode = debugMode;
 exports.ssl_options = ssl_options;
 
 // database related configuration
-const default_db_host = process.env.DB_HOST || 'localhost';
-const default_db_port = process.env.DB_PORT || 27017;
-var default_db_name = process.env.DB_NAME || 'velocity_db_UNKNOWN';
+var db_host = 'localhost';
+var db_port = 27017;
+var db_name = 'velocity_db_UNKNOWN';
 
-exports.default_db_host = default_db_host;
-exports.default_db_port = default_db_port;
-exports.default_db_name = default_db_name;
+exports.db_host = db_host;
+exports.db_port = db_port;
+exports.db_name = db_name;
 
 // session related configuration
 const maxSessionAge = 60 * 60 * 1000;

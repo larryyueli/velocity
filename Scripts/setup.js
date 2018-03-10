@@ -35,7 +35,7 @@ const setupAdminAccount = function () {
     config.debugMode = true;
     logger.info('Velocity server setup');
 
-    const pathToConfigFile = `${__dirname}/../Backend/config.js`;
+    const pathToConfigFile = `${__dirname}/../velocity.config`;
 
     const username = rls.question('Please enter your username: ');
     const fname = rls.question('Please enter your first name: ');
@@ -70,52 +70,50 @@ const setupAdminAccount = function () {
         status: common.userStatus.ACTIVE.value
     };
 
-    fs.readFile(pathToConfigFile, 'utf8', function (err, data) {
+    const newDbName = `velocity_db_${common.getUUID()}`;
+    const newConfig = JSON.stringify({
+        db_host: config.db_host,
+        db_port: config.db_port,
+        db_name: newDbName
+    });
+
+    fs.writeFile(pathToConfigFile, newConfig, function (err) {
         if (err) {
             logger.error(JSON.stringify(err));
             process.exit(1);
         }
 
-        const newDbName = `velocity_db_${common.getUUID()}`;
-        const newConfig = data.replace(/velocity_db_.+;/g, `${newDbName}';`);
-        fs.writeFile(pathToConfigFile, newConfig, function (err) {
+        config.db_name = newDbName;
+        logger.info('The new configuration has been saved!');
+        db.initialize(function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            config.default_db_name = newDbName;
-            logger.info('The new configuration has been saved!');
-            db.initialize(function (err, result) {
+            logger.info('Connection to Velocity database successful.');
+            cfs.initialize(function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     process.exit(1);
                 }
 
-                logger.info('Connection to Velocity database successful.');
-                cfs.initialize(function (err, result) {
+                logger.info('File System exists and seems ok');
+                users.addUser(user, function (err, userObject) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         process.exit(1);
                     }
 
-                    logger.info('File System exists and seems ok');
-                    users.addUser(user, function (err, userObject) {
+                    logger.info('Successful created mode selector account.');
+                    cfs.mkdir(common.cfsTree.USERS, userObject._id, common.cfsPermission.OWNER, function (err, result) {
                         if (err) {
-                            logger.error(JSON.stringify(err));
+                            logger.error(err);
                             process.exit(1);
                         }
 
-                        logger.info('Successful created mode selector account.');
-                        cfs.mkdir(common.cfsTree.USERS, userObject._id, common.cfsPermission.OWNER, function (err, result) {
-                            if (err) {
-                                logger.error(err);
-                                process.exit(1);
-                            }
-
-                            logger.info('Successful created users directory.');
-                            process.exit(0);
-                        });
+                        logger.info('Successful created users directory.');
+                        process.exit(0);
                     });
                 });
             });

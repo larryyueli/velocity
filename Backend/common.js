@@ -378,6 +378,17 @@ const sprintStatus = Object.freeze({
     ACTIVE: { value: 1, text: 'active' }
 });
 exports.sprintStatus = sprintStatus;
+
+// all ticket link types
+const ticketLinkTypes = Object.freeze({
+    BLOCKS: { value: 0, text: 'blocks' },
+    BLOCKED_BY: { value: 1, text: 'blocked_by' },
+    FIXES: { value: 2, text: 'fixes' },
+    FIXED_BY: { value: 3, text: 'fixed_by' },
+    DUPLICATES: { value: 4, text: 'duplicates' },
+    DUPLICATED_BY: { value: 5, text: 'duplicated_by' }
+});
+exports.ticketLinkTypes = ticketLinkTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

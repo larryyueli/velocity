@@ -23,6 +23,7 @@ const express = require('express');
 const expressSession = require('express-session');
 const fileUpload = require('express-fileupload');
 const forceSSL = require('express-force-ssl');
+const fs = require('fs');
 const helmet = require('helmet');
 const http = require('http');
 const https = require('https');
@@ -49,7 +50,7 @@ const users = require('./Backend/users.js');
 const app = express();
 
 const mongoSessionStore = new mongoStore({
-    url: `mongodb://${config.default_db_host}:${config.default_db_port}/${config.default_db_name}`,
+    url: `mongodb://${config.db_host}:${config.db_port}/${config.db_name}`,
     collection: 'sessions',
     ttl: config.maxSessionAge
 });
@@ -141,50 +142,77 @@ httpServer.listen(config.httpPort, function () {
 
         logger.info(`HTTPs Server is listening on port :${config.httpsPort}`);
         logger.info(`Velocity web app is listening on port: ${config.httpsPort}`);
-        db.initialize(function (err, result) {
+        fs.readFile(`${__dirname}/velocity.config`, 'utf8', function (err, data) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 process.exit(1);
             }
 
-            logger.info('Connection to velocity database successful.');
-            cfs.initialize(function (err, result) {
+            let configObj = {};
+            try {
+                configObj = JSON.parse(data);
+            } catch (error) {
+                logger.error(JSON.stringify(error));
+                process.exit(1);
+            }
+
+            if (typeof (config.db_host) !== common_backend.variableTypes.STRING
+                || typeof (parseInt(config.db_port)) !== common_backend.variableTypes.NUMBER
+                || typeof (config.db_name) !== common_backend.variableTypes.STRING) {
+                logger.error('Failed to load configuration');
+                process.exit(1);
+            }
+
+            config.db_host = configObj.db_host;
+            config.db_port = parseInt(config.db_port);
+            config.db_name = configObj.db_name;
+
+            logger.info(`Configuration has been loaded successfully.`)
+            db.initialize(function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     process.exit(1);
                 }
 
-                logger.info('File System exists and seems ok');
-                settings.initialize(function (err, result) {
+                logger.info('Connection to velocity database was successful.');
+                cfs.initialize(function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         process.exit(1);
                     }
 
-                    logger.info('Settings object has been fetched successful.');
-                    users.initialize(function (err, result) {
+                    logger.info('File System exists and seems ok');
+                    settings.initialize(function (err, result) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             process.exit(1);
                         }
 
-                        logger.info('Users list has been fetched successful.');
-                        projects.initialize(function (err, result) {
+                        logger.info('Settings object has been fetched successfully.');
+                        users.initialize(function (err, result) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                                 process.exit(1);
                             }
 
-                            logger.info('Project instance has been built successful.');
-                            api.initialize(pug, notificationsWS, function (err, result) {
+                            logger.info('Users list has been fetched successfully.');
+                            projects.initialize(function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
                                 }
 
-                                logger.info('API instance has been built successful.');
-                                config.debugMode = localDebugMode;
-                                logger.info(`Debug mode status: ${config.debugMode}`);
+                                logger.info('Project instance has been built successfully.');
+                                api.initialize(pug, notificationsWS, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        process.exit(1);
+                                    }
+
+                                    logger.info('API instance has been built successfully.');
+                                    config.debugMode = localDebugMode;
+                                    logger.info(`Debug mode status: ${config.debugMode}`);
+                                });
                             });
                         });
                     });

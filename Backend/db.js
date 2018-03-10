@@ -38,21 +38,21 @@ const db_vfs = require('./dbs/db-virtualFileSystem.js');
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    const url = `mongodb://${config.default_db_host}:${config.default_db_port}`;
+    const url = `mongodb://${config.db_host}:${config.db_port}`;
     mongoClient.connect(url, function (err, client) {
         if (err) {
             return callback(common.getError(1001), null);
         }
 
-        db_comments.initialize(client.db(config.default_db_name).collection('comments'));
-        db_notifications.initialize(client.db(config.default_db_name).collection('notifications'));
-        db_projects.initialize(client.db(config.default_db_name).collection('projects'));
-        db_settings.initialize(client.db(config.default_db_name).collection('settings'));
-        db_sprints.initialize(client.db(config.default_db_name).collection('sprints'));
-        db_teams.initialize(client.db(config.default_db_name).collection('teams'));
-        db_tickets.initialize(client.db(config.default_db_name).collection('tickets'));
-        db_users.initialize(client.db(config.default_db_name).collection('users'));
-        db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
+        db_comments.initialize(client.db(config.db_name).collection('comments'));
+        db_notifications.initialize(client.db(config.db_name).collection('notifications'));
+        db_projects.initialize(client.db(config.db_name).collection('projects'));
+        db_settings.initialize(client.db(config.db_name).collection('settings'));
+        db_sprints.initialize(client.db(config.db_name).collection('sprints'));
+        db_teams.initialize(client.db(config.db_name).collection('teams'));
+        db_tickets.initialize(client.db(config.db_name).collection('tickets'));
+        db_users.initialize(client.db(config.db_name).collection('users'));
+        db_vfs.initialize(client.db(config.db_name).collection('virtualFileSystem'));
 
         return callback(null, 'ok');
     });
