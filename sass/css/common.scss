@@ -230,3 +230,11 @@ div.note-editor.note-frame.panel.panel-default{
     padding-right: 5px;
     text-align: center;
 }
+
+.clickable-item {
+    cursor: pointer;
+}
+
+.clickable-item:hover {
+    background-color: #ececec;
+}
