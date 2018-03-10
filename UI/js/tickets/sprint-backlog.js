@@ -27,7 +27,8 @@ const titleId = '#title';
 
 
 
-const iconId = '#icon';
+const typeIconId = '#typeIcon';
+const priorityIconId = '#priorityIcon';
 const nameId = '#name';
 const openTicketId = '#openTicket';
 const estimateId = '#estimate';
@@ -145,9 +146,19 @@ function fillTicketRow(ticket) {
     var bindedRow = ticketEntryHTML;
 
     if (ticket.type === 0) {
-        bindedRow.find(iconId).html('assignment');
+        bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (ticket.type === 1) {
-        bindedRow.find(iconId).html('assignment');
+        bindedRow.find(typeIconId).html('/img/icon-code-file.png" alt="">');
+    }  else if (ticket.type === 3) {
+        bindedRow.find(typeIconId).html('/img/icon-purchase-order.png" alt="">');
+    }
+
+    if (ticket.priority === 0 ) {
+       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
+    } else if (ticket.priority === 1) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="auto">');
+    } else if (ticket.priority === 2) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="auto">');
     }
 
     bindedRow.find(nameId).html(ticket.title);
