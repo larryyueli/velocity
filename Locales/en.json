@@ -218,7 +218,14 @@
 			"ta": "Teaching Assistant",
 			"student": "Student"
 		},
-		"username": "Username"
+		"username": "Username",
+		"themes": {
+			"theme-default": "Default",
+			"theme-blueSky": "Blue Sky"
+		},
+		"languages": {
+			"english": "English"
+		}
 	},
 	"users": {
 		"all": "All",

@@ -38,13 +38,13 @@ block content
                             .input-field.s12
                                 select#theme(name='theme')
                                     each theme in themes
-                                        option(value=theme, selected=theme===user.theme) #{theme}
+                                        option(value=theme, selected=theme===user.theme) #{__(`userInformation.themes.${theme}`)}
                                 label #{__('userInformation.theme')}
                         .row
                             .input-field.s12
                                 select#language(name='language')
                                     each language in languages
-                                        option(value=language.value, selected=language.value===user.language) #{language.text}
+                                        option(value=language.value, selected=language.value===user.language) #{__(`userInformation.languages.${language.text}`)}
                                 label #{__('userInformation.language')}
                         .row
                             .switch
