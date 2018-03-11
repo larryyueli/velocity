@@ -18,6 +18,9 @@
 	"app": {
 		"name": "Velocity"
 	},
+	"filters": {
+		"all": "All"
+	},
 	"login": {
 		"signIn": "Sign In",
 		"signUp": "Sign Up",

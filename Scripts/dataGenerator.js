@@ -34,6 +34,7 @@ const numOfCollaborators = 20;
 const numOfProjects = 3;
 const numOfProjectsToActivate = 2;
 const numOfTicketsPerState = 1;
+const numOfCommentsPerTicket = 2;
 const groupSize = 5;
 const userPassword = 'asd';
 var userCookies = [];
@@ -47,6 +48,8 @@ var numOfGroups = 0;
 var processedUsers = 0;
 var processedProjects = 0;
 var processedGroups = 0;
+var processedTickets = 0;
+var totalTickets = 0;
 
 var adminCookie; // Stores the cookie we use throughout all 
 var workingMode; // Stores whether we have Class mode or Collab mode
@@ -619,6 +622,7 @@ const getGroupMembers = function (projectId, groupId) {
             projectGroupIds.push(teamObj);
             processedGroups++;
             if (processedGroups === numOfGroups) {
+                processedGroups = 0;
                 createTickets();
                 pushTickets();
             }
@@ -651,9 +655,11 @@ const createTickets = function () {
                     points: 1,
                     assignee: ''
                 });
+                totalTickets++;
             });
         }
     });
+    totalTickets *= projectGroupIds.length;
 }
 
 /**
@@ -695,6 +701,13 @@ const sendTicket = function (ticket, creator) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Created ticket ${ticket.title} for team ${ticket.teamId}`);
+            processedTickets++;
+            if (processedTickets === totalTickets) {
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    let team = projectGroupIds[i];
+                    getTicketIds(team.projectId, team.teamId, team.members[0], i);
+                }
+            }
         });
     });
 
@@ -709,10 +722,104 @@ const sendTicket = function (ticket, creator) {
 }
 
 /**
+ * Gets the ticket ids for a team
+ * @param {*} projectid projectid
+ * @param {*} ticketid ticketid
+ * @param {*} index index of projectGroupIds
+ */
+const getTicketIds = function (projectId, teamId, user, index) {
+    let ticketIdData = '';
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: `/components/ticketsList?projectId=${projectId}&teamId=${teamId}`,
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': getUserCookie(user)
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            ticketIdData += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved tickets for ${teamId}`);
+            projectGroupIds[index].tickets = JSON.parse(ticketIdData).ticketsList;
+            processedGroups++;
+            if (processedGroups === numOfGroups) {
+                projectGroupIds.forEach( team => {
+                    team.tickets.forEach( ticket => {
+                        for (let z = 0; z < numOfCommentsPerTicket; z++) {
+                            pushComment(team.projectId, team.teamId, ticket._id, team.members[0], z);
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.end();
+}
+
+/**
+ * Pushes a comment to the server
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} ticketId ticket id
+ * @param {*} num number of the comment
+ */
+const pushComment = function (projectId, teamId, ticketId, commenter, num) {
+    const commentObject = querystring.stringify({
+        'projectId': projectId,
+        'teamId': teamId,
+        'ticketId': ticketId,
+        'content': `Comment numero ${num}`
+    });
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/comment/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(commentObject),
+            'Cookie': getUserCookie(commenter)
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Made comment ${num} on ${ticketId}`);
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(commentObject);
+    req.end();
+}
+
+/**
  * Returns the cookie for a given username
  * @param {*} username username
  */
-const getUserCookie = function(name) {
+const getUserCookie = function (name) {
     for (let i = 0; i < userCookies.length; i++) {
         if (userCookies[i].username == name) {
             return userCookies[i].cookie;
