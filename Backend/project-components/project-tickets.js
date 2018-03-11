@@ -141,6 +141,27 @@ const getTicketById = function (projectId, teamId, ticketId, callback) {
 }
 
 /**
+ * find the list of tickets under a team
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} ticketsIds tickets ids
+ * @param {function} callback callback function
+ */
+const getTicketsByIds = function (projectId, teamId, ticketsIds, callback) {
+    let ticketsIdsList = [];
+    for (let i = 0; i < ticketsIds.length; i++) {
+        ticketsIdsList.push({ _id: ticketsIds[i] });
+    }
+
+    if (ticketsIds.length === 0) {
+        return callback(null, []);
+    }
+
+    getLimitedTicketsListSorted({ $and: [{ $or: ticketsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+}
+
+/**
  * find tickets under a sprint
  *
  * @param {string} projectId project id
@@ -318,6 +339,7 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
 exports.getTicketById = getTicketById;
+exports.getTicketsByIds = getTicketsByIds;
 exports.getTicketsBySprintId = getTicketsBySprintId;
 exports.getTicketsByProjectId = getTicketsByProjectId;
 exports.getTicketsByTeamId = getTicketsByTeamId;

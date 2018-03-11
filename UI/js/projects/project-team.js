@@ -51,4 +51,22 @@ $(function () {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });*/
+
+
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/sprints/object/full',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
 });

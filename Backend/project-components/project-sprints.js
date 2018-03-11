@@ -163,7 +163,7 @@ const addTicketToSprints = function (ticketId, projectId, teamId, sprintsIds, ca
         return callback(null, 'ok');
     }
 
-    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $addToSet: { tickets: ticketId } }, callback);
+    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $addToSet: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
 }
 
 /**
@@ -185,7 +185,7 @@ const removeTicketFromSprints = function (ticketId, projectId, teamId, sprintsId
         return callback(null, 'ok');
     }
 
-    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $pull: { tickets: ticketId } }, callback);
+    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $pull: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
 }
 
 /**
@@ -232,7 +232,7 @@ const getActiveSprint = function (projectId, teamId, callback) {
  */
 const setActiveSprint = function (projectId, teamId, sprintId, callback) {
     let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId } }, { projectId: projectId }, { teamId: teamId }] };
-    let deactivateUpdateQuery = { $set: { state: common.sprintStates.CLOSED.value } };
+    let deactivateUpdateQuery = { $set: { state: common.sprintStates.CLOSED.value, mtime: common.getDate(), imtime: common.getISODate() } };
     updateSprints(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
         if (err) {
             return callback(err, null);

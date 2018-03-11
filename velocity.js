@@ -255,6 +255,7 @@ app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTic
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
 app.get('/project/team/sprints/list', api.handleProjectTeamSprintsListPath);
+app.get('/project/team/sprints/object/full', api.handleProjectTeamSprintsFullObjectPath);
 app.get('/projects', api.handleProjectsPath);
 app.get('/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/projects/add', api.handleProjectsAddPath);

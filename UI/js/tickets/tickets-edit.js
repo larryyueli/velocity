@@ -350,9 +350,7 @@ function getListOfSprints() {
  * @param {string} id sprint id
 */
 function removeSprintId(sprintId) {
-    alert(selectedSprints);
     if (selectedSprints.indexOf(sprintId) !== -1) {
         selectedSprints.splice(selectedSprints.indexOf(sprintId), 1);
     }
-    alert(selectedSprints);
 }

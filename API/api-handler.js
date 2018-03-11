@@ -2217,13 +2217,105 @@ const handleProjectTeamSprintsListPath = function (req, res) {
                     let sprint = sprintsObjList[i];
                     sprintsList.push({
                         _id: sprint._id,
-                        name: sprint.name
+                        name: sprint.name,
+                        startDate: sprint.startDate,
+                        endDate: sprint.endDate
                     });
                 }
 
                 return res.status(200).send({
                     sprintsList: sprintsList
                 });
+            });
+        });
+    });
+}
+
+/**
+ * root path to get the sprints object of detailed
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamSprintsFullObjectPath = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let finalObj = {};
+                let completedSprints = 0;
+                for (let i = 0; i < sprintsObjList.length; i++) {
+                    let sprint = sprintsObjList[i];
+                    projects.getTicketsByIds(projectId, teamId, sprint.tickets, function (err, ticketsList) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        let limitedTicketList = [];
+                        for (let j = 0; j < ticketsList.length; j++) {
+                            let ticket = ticketsList[j];
+                            let ticketAssignee = usersObj[ticket.assignee];
+                            let ticketReporter = usersObj[ticket.reporter];
+                            limitedTicketList.push({
+                                _id: ticket._id,
+                                ctime: ticket.ctime,
+                                mtime: ticket.mtime,
+                                displayId: ticket.displayId,
+                                title: ticket.title,
+                                state: ticket.state,
+                                type: ticket.type,
+                                assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
+                                reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                                priority: ticket.priority,
+                                points: ticket.points
+                            });
+                        }
+                        finalObj[sprint._id] = {
+                            id: sprint._id,
+                            name: sprint.name,
+                            startDate: sprint.startDate,
+                            endDate: sprint.endDate,
+                            tickets: limitedTicketList
+                        };
+
+                        completedSprints++;
+                        if (completedSprints === sprintsObjList.length) {
+                            return res.status(200).send({
+                                sprintsList: finalObj
+                            });
+                        }
+                    });
+                }
             });
         });
     });
@@ -2300,6 +2392,7 @@ exports.handleProjectTeamTicketsAddPath = handleProjectTeamTicketsAddPath;
 exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;
 exports.handleProjectTeamSprintsListPath = handleProjectTeamSprintsListPath;
+exports.handleProjectTeamSprintsFullObjectPath = handleProjectTeamSprintsFullObjectPath;
 exports.handleProjectsPath = handleProjectsPath;
 exports.handleProjectsListComponentPath = handleProjectsListComponentPath;
 exports.handleTeamsListComponentPath = handleTeamsListComponentPath;
