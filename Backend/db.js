@@ -121,4 +121,5 @@ exports.addSprint = db_sprints.addSprint;
 exports.getLimitedSprintsListSorted = db_sprints.getLimitedSprintsListSorted;
 exports.getSprint = db_sprints.getSprint;
 exports.updateSprint = db_sprints.updateSprint;
+exports.updateSprints = db_sprints.updateSprints;
 // </Sprints Collection> ---------------------------------------------

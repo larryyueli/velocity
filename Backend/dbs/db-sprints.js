@@ -103,10 +103,29 @@ const updateSprint = function (searchQuery, updateQuery, callback) {
     });
 }
 
+/**
+ * find sprints by the search parameters,
+ * then update their values by the update parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateSprints = function (searchQuery, updateQuery, callback) {
+    sprintsCollection.update(searchQuery, updateQuery, { multi: true }, function (err, result) {
+        if (err) {
+            return callback(common.getError(10005), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
 // <exports> -----------------------------------
 exports.addSprint = addSprint;
 exports.getLimitedSprintsListSorted = getLimitedSprintsListSorted;
 exports.getSprint = getSprint;
 exports.initialize = initialize;
 exports.updateSprint = updateSprint;
+exports.updateSprints = updateSprints;
 // </exports> ----------------------------------

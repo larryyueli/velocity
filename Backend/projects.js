@@ -217,11 +217,14 @@ exports.updateProject = updateProject;
 
 // <sprints> -----------------------------------
 exports.addSprintToTeam = sprints.addSprint;
+exports.addTicketToSprints = sprints.addTicketToSprints;
 exports.getActiveSprintByTeamId = sprints.getActiveSprint;
 exports.getSprintById = sprints.getSprintById;
+exports.getSprintsByIds = sprints.getSprintsByIds;
 exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
+exports.getSprintsByTicketId = sprints.getSprintsByTicketId;
 exports.setActiveSprintByTeamId = sprints.setActiveSprint;
-exports.updateSprint = sprints.updateSprint;
+exports.updateSprintById = sprints.updateSprintById;
 // </sprints> ----------------------------------
 
 // <teams> -----------------------------------

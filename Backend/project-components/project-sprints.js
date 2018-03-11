@@ -89,7 +89,30 @@ const getSprint = function (searchQuery, callback) {
 }
 
 /**
- * find the list of sprints under a team
+ * update sprint found by the search query
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateSprint = function (searchQuery, updateQuery, callback) {
+    db.updateSprint(searchQuery, updateQuery, callback);
+}
+
+
+/**
+ * update sprints found by the search query
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateSprints = function (searchQuery, updateQuery, callback) {
+    db.updateSprints(searchQuery, updateQuery, callback);
+}
+
+/**
+ * find a sprint by its id
  *
  * @param {string} projectId project id
  * @param {string} teamId team id
@@ -105,10 +128,57 @@ const getSprintById = function (projectId, teamId, sprintId, callback) {
  *
  * @param {string} projectId project id
  * @param {string} teamId team id
+ * @param {array} sprintsIds sprints ids
+ * @param {function} callback callback function
+ */
+const getSprintsByIds = function (projectId, teamId, sprintsIds, callback) {
+    let sprintsIdsList = [];
+    for (let i = 0; i < sprintsIds.length; i++) {
+        sprintsIdsList.push({ _id: sprintsIds[i] });
+    }
+
+    getLimitedSprintsListSorted({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
+ * update the given sprints by adding the ticket to them
+ *
+ * @param {string} ticketId ticket id
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} sprintsIds sprints ids
+ * @param {function} callback callback function
+ */
+const addTicketToSprints = function (ticketId, projectId, teamId, sprintsIds, callback) {
+    let sprintsIdsList = [];
+    for (let i = 0; i < sprintsIds.length; i++) {
+        sprintsIdsList.push({ _id: sprintsIds[i] });
+    }
+
+    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $addToSet: { tickets: ticketId } }, callback);
+}
+
+/**
+ * find the list of sprints under a team
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
  * @param {function} callback callback function
  */
 const getSprintsByTeamId = function (projectId, teamId, callback) {
     getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
+ * find the list of sprints under a ticket
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} ticketId ticket id
+ * @param {function} callback callback function
+ */
+const getSprintsByTicketId = function (projectId, teamId, callback) {
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { tickets: ticketId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
@@ -133,14 +203,14 @@ const getActiveSprint = function (projectId, teamId, callback) {
 const setActiveSprint = function (projectId, teamId, sprintId, callback) {
     let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId } }, { projectId: projectId }, { teamId: teamId }] };
     let deactivateUpdateQuery = { $set: { state: common.sprintStates.CLOSED.value } };
-    db.updateSprint(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
+    updateSprints(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
         if (err) {
             return callback(err, null);
         }
 
         let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }] };
         let activateUpdateQuery = { $set: { state: common.sprintStates.ACTIVE.value } };
-        db.updateSprint(activateSearchQuery, activateUpdateQuery, callback);
+        updateSprint(activateSearchQuery, activateUpdateQuery, callback);
     });
 }
 
@@ -153,7 +223,7 @@ const setActiveSprint = function (projectId, teamId, sprintId, callback) {
  * @param {object} updateParams modify parameters
  * @param {function} callback callback function
  */
-const updateSprint = function (sprintId, teamId, projectId, updateParams, callback) {
+const updateSprintById = function (sprintId, teamId, projectId, updateParams, callback) {
     let searchQuery = {};
     searchQuery.$and = {};
     let updateQuery = {};
@@ -208,15 +278,18 @@ const updateSprint = function (sprintId, teamId, projectId, updateParams, callba
     updateQuery.$set.mtime = common.getDate();
     updateQuery.$set.imtime = common.getISODate();
 
-    db.updateSprint(searchQuery, updateQuery, callback);
+    updateSprint(searchQuery, updateQuery, callback);
 }
 
 // <exports> -----------------------------------
 exports.addSprint = addSprint;
+exports.addTicketToSprints = addTicketToSprints;
 exports.getActiveSprint = getActiveSprint;
 exports.getSprintById = getSprintById;
+exports.getSprintsByIds = getSprintsByIds;
 exports.getSprintsByTeamId = getSprintsByTeamId;
+exports.getSprintsByTicketId = getSprintsByTicketId;
 exports.initialize = initialize;
 exports.setActiveSprint = setActiveSprint;
-exports.updateSprint = updateSprint;
+exports.updateSprintById = updateSprintById;
 // </exports> ----------------------------------

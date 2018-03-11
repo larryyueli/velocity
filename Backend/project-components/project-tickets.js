@@ -69,7 +69,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.displayId = `TICKET-${nextTicketId}`;
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
-    ticketToAdd.sprintId = typeof (ticket.sprintId) === common.variableTypes.STRING ? ticket.sprintId : common.defaultSprint;
+    ticketToAdd.sprints = Array.isArray(ticket.sprints) ? ticket.sprints : [];
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
@@ -267,8 +267,8 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
         updateQuery.$push.assigneeHistory = updateParams.assigneeHistoryEntry;
     }
 
-    if (typeof (updateParams.sprintId) === common.variableTypes.STRING) {
-        updateQuery.$set.sprintId = updateParams.sprintId;
+    if (Array.isArray(updateParams.sprints)) {
+        updateQuery.$set.sprints = updateParams.sprints;
     }
 
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {

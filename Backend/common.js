@@ -368,10 +368,6 @@ const commentStatus = Object.freeze({
 });
 exports.commentStatus = commentStatus;
 
-// common default sprint
-const defaultSprint = 'Default Sprint'; // TODO: find another unique text
-exports.defaultSprint = defaultSprint;
-
 // common sprint status
 const sprintStatus = Object.freeze({
     DELETED: { value: 0, text: 'deleted' },

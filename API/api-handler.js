@@ -1192,7 +1192,7 @@ const handleTicketsCreatePath = function (req, res) {
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
     const assignee = req.body.assignee;
-    const sprintId = req.body.sprintId;
+    const sprints = req.body.sprints;
 
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
@@ -1250,46 +1250,43 @@ const handleTicketsCreatePath = function (req, res) {
                     newTicket.assignee = assigneeObj._id;
                 }
 
-                if (typeof (sprintId) === common_backend.variableTypes.STRING) {
-                    projects.getSprintById(projectId, teamId, sprintId, function (err, sprintObj) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                            return res.status(500).send(err);
-                        }
+                projects.addTicketToTeam(newTicket, function (err, ticketObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
 
-                        newTicket.sprintId = sprintId;
-
-                        projects.addTicketToTeam(newTicket, function (err, ticketObj) {
+                    if (Array.isArray(sprints)) {
+                        projects.getSprintsByIds(projectId, teamId, sprints, function (err, sprintsList) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                                 return res.status(500).send(err);
                             }
 
-                            sprintObj.tickets.push(ticketObj._id);
-                            let updatedSprint = {
-                                tickets: sprintObj.tickets
-                            };
-                            projects.updateSprint(sprintId, teamId, projectId, updatedSprint, function (err, result) {
+                            let sprintsIdsList = [];
+                            for (let i = 0; i < sprintsList.length; i++) {
+                                sprintsIdsList.push(sprintsList[i]['_id']);
+                            }
+                            projects.addTicketToSprints(ticketObj._id, projectId, teamId, sprintsIdsList, function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     return res.status(500).send(err);
                                 }
 
-                                return res.status(200).send('ok');
+                                projects.updateTicket(ticketObj._id, teamId, projectId, { sprints: sprintsIdsList }, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    return res.status(200).send('ok');
+                                });
                             });
                         });
-
-                    });
-                } else {
-                    projects.addTicketToTeam(newTicket, function (err, result) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                            return res.status(500).send(err);
-                        }
-
+                    } else {
                         return res.status(200).send('ok');
-                    });
-                }
+                    }
+                });
             });
         });
     });
@@ -1632,6 +1629,7 @@ const handleProjectTeamTicketPath = function (req, res) {
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
     const ticketId = req.params.ticketId;
+
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -1662,7 +1660,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) {
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) { // TODO: change to project Tickets
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
@@ -2141,7 +2139,9 @@ const handleProjectTeamSprintsListPath = function (req, res) {
                     });
                 }
 
-                return res.status(200).send(sprintsList);
+                return res.status(200).send({
+                    sprintsList: sprintsList
+                });
             });
         });
     });

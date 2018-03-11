@@ -33,9 +33,11 @@ const typeSelectionId = '#typeSelection';
 const stateSelectionId = '#stateSelection';
 const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
+const ticketSprintsDivId = '#ticketSprintsDivId';
 
 var selectedAssignee = null;
-var selectedSprint = null;
+var selectedSprints = [];
+var sprintIdsObj = {};
 
 typeSelection.change(function () {
     if (typeSelection.val() == 0) {
@@ -96,7 +98,7 @@ function createTicketAction() {
             state: stateValue,
             points: pointsValue,
             assignee: selectedAssignee,
-            sprintId: selectedSprint
+            sprints: selectedSprints
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}`;
@@ -160,9 +162,9 @@ function getListOfSprints() {
         },
         success: function (data) {
             let sprintsObj = {};
-            let sprintIdsObj = {};
-            for (let i = 0; i < data.length; i++) {
-                let sprint = data[i];
+
+            for (let i = 0; i < data.sprintsList.length; i++) {
+                let sprint = data.sprintsList[i];
                 sprintsObj[`${sprint.name}`] = null;
                 sprintIdsObj[`${sprint.name}`] = sprint._id;
             }
@@ -170,7 +172,10 @@ function getListOfSprints() {
                 data: sprintsObj,
                 limit: 20,
                 onAutocomplete: function (val) {
-                    selectedSprint = sprintIdsObj[val];
+                    if (selectedSprints.indexOf(sprintIdsObj[val]) === -1) {
+                        selectedSprints.push(sprintIdsObj[val]);
+                        $(ticketSprintsDivId).append(`<div class="chip" id=${sprintIdsObj[val]}>${val}<i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">close</i></div>`);
+                    }
                 },
                 minLength: 0,
             });
@@ -182,4 +187,15 @@ function getListOfSprints() {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
+}
+
+/**
+ * list of possible sprints
+ * 
+ * @param {string} id sprint id
+*/
+function removeSprintId(sprintId) {
+    if (selectedSprints.indexOf(sprintId) !== -1) {
+        selectedSprints.splice(selectedSprints.indexOf(sprintId),1);
+    }
 }
