@@ -185,6 +185,13 @@ const translations = Object.freeze({
     user4: 'Teaching Assistant',
     user5: 'Student',
 
+    state0: 'New',
+    state1: 'In Development',
+    state2: 'Code Review',
+    state3: 'Ready For Test',
+    state4: 'In Test',
+    state5: 'Done',
+
     projectStatus0: 'Closed',
     projectStatus1: 'Draft',
     projectStatus2: 'Active'

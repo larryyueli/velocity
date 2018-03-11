@@ -32,6 +32,7 @@ const priorityIconId = '#priorityIcon';
 const nameId = '#name';
 const openTicketId = '#openTicket';
 const estimateId = '#estimate';
+const statusId = '#status';
 
 const searchFilterId = '#searchFilter';
 const assigneeAutocompleteId = '#assigneeAutocomplete';
@@ -218,6 +219,10 @@ function passTicketFilter(ticket) {
 function fillTicketRow(ticket) {
     var bindedRow = ticketEntryHTML;
 
+    bindedRow.find(statusId).removeClass((index, className) => {
+        return (className.match (/(^|\s)state\S+/g) || []).join(' ');
+    });
+
     if (ticket.type === 0) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (ticket.type === 1) {
@@ -236,6 +241,9 @@ function fillTicketRow(ticket) {
 
     bindedRow.find(nameId).html(ticket.title);
     bindedRow.find(estimateId).html(ticket.points);
+    bindedRow.find(statusId).html(translate(`state${ticket.state}`));
+    bindedRow.find(statusId).addClass(`state${ticket.state}`);
+
     bindedRow.find(openTicketId)[0].href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
 
     return bindedRow[0].outerHTML;

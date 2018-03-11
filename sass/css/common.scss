@@ -8,6 +8,10 @@
     display: inline-block;
 }
 
+.display-flow-root {
+    display: flow-root;
+}
+
 .full-width {
     width: 100% !important;
 }
@@ -50,6 +54,10 @@
 
 .margin-10 {
     margin: 10 !important;
+}
+
+.margin-right-5 {
+    margin-right: 5px !important;
 }
 
 .margin-right-10 {
@@ -229,6 +237,64 @@ div.note-editor.note-frame.panel.panel-default{
     padding-left: 5px;
     padding-right: 5px;
     text-align: center;
+}
+
+.ticketStatus {
+    border-radius: 100px;
+    display: inline-block;
+    height: 25px;
+    min-width: 23px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+
+    &.state0 {
+        @include themify($themes) {
+            background: themed('standardBlue') !important;
+            border: 2px solid themed('standardBlue') !important;
+            color: #fff;
+        }
+    }
+
+    &.state1 {
+        @include themify($themes) {
+            background: themed('StandardYellow') !important;
+            border: 2px solid themed('StandardYellow') !important;
+            color: #000;
+        }
+    }
+
+    &.state2 {
+        @include themify($themes) {
+            background: themed('standardRed') !important;
+            border: 2px solid themed('standardRed') !important;
+            color: #000;
+        }
+    }
+
+    &.state3 {
+        @include themify($themes) {
+            background: themed('standardLightBlue') !important;
+            border: 2px solid themed('standardLightBlue') !important;
+            color: #000;
+        }
+    }
+
+    &.state4 {
+        @include themify($themes) {
+            background: themed('standardOrange') !important;
+            border: 2px solid themed('standardOrange') !important;
+            color: #fff;
+        }
+    }
+
+    &.state5 {
+        @include themify($themes) {
+            background: themed('standardGreen') !important;
+            border: 2px solid themed('standardGreen') !important;
+            color: #fff;
+        }
+    }
 }
 
 .clickable-item {
