@@ -119,6 +119,16 @@ const getTicketsByTeamId = function (projectId, teamId, callback) {
 }
 
 /**
+ * find project's list of tickets
+ *
+ * @param {string} projectId project id
+ * @param {function} callback callback function
+ */
+const getTicketsByProjectId = function (projectId, callback) {
+    getLimitedTicketsListSorted({ $and: [{ projectId: projectId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+}
+
+/**
  * find a ticket
  *
  * @param {string} projectId project id
@@ -309,6 +319,7 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
 exports.addTicket = addTicket;
 exports.getTicketById = getTicketById;
 exports.getTicketsBySprintId = getTicketsBySprintId;
+exports.getTicketsByProjectId = getTicketsByProjectId;
 exports.getTicketsByTeamId = getTicketsByTeamId;
 exports.initialize = initialize;
 exports.searchTicketsByProjectId = searchTicketsByProjectId;

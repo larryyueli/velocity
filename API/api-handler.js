@@ -1308,6 +1308,8 @@ const handleTicketsUpdatePath = function (req, res) {
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
     const assignee = req.body.assignee;
+    const sprints = req.body.sprints;
+
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -1392,14 +1394,71 @@ const handleTicketsUpdatePath = function (req, res) {
                         }
                     }
 
-                    projects.updateTicket(ticketId, teamId, projectId, updatedTicket, function (err, result) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                            return res.status(500).send(err);
-                        }
+                    if (Array.isArray(sprints)) {
+                        let allSprints = common_backend.joinSets(ticketObj.sprints, sprints);
+                        projects.getSprintsByIds(projectId, teamId, allSprints, function (err, sprintsList) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
 
-                        return res.status(200).send('ok');
-                    });
+                            let allSprintsId = [];
+                            for (let i = 0; i < sprintsList.length; i++) {
+                                allSprintsId.push(sprintsList[i]['_id']);
+                            }
+
+                            let validSprintIds = [];
+                            for (let i = 0; i < sprints.length; i++) {
+                                let sprintId = sprints[i];
+                                if (allSprintsId.indexOf(sprintId) !== -1) {
+                                    validSprintIds.push(sprintId);
+                                }
+                            }
+
+                            let sprintsToRemove = common_backend.getArrayDiff(allSprintsId, validSprintIds);
+
+                            projects.addTicketToSprints(ticketObj._id, projectId, teamId, validSprintIds, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                projects.removeTicketFromSprints(ticketObj._id, projectId, teamId, sprintsToRemove, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    updatedTicket.sprints = validSprintIds;
+                                    projects.updateTicket(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                            return res.status(500).send(err);
+                                        }
+
+                                        return res.status(200).send('ok');
+                                    });
+                                });
+                            });
+                        });
+                    } else {
+                        updatedTicket.sprints = [];
+                        projects.removeTicketFromSprints(ticketObj._id, projectId, teamId, ticketObj.sprints, function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            projects.updateTicket(ticketId, teamId, projectId, updatedTicket, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                return res.status(200).send('ok');
+                            });
+                        });
+                    }
                 });
             });
         });
@@ -1660,12 +1719,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) { // TODO: change to project Tickets
-                if (err) {
-                    logger.error(JSON.stringify(err));
-                    return res.status(500).send(err);
-                }
-
+            let continueWithTicketsList = function (ticketsList) {
                 let ticketObj = null;
                 for (let i = 0; i < ticketsList.length; i++) {
                     if (ticketsList[i]._id === ticketId) {
@@ -1676,7 +1730,7 @@ const handleProjectTeamTicketPath = function (req, res) {
 
                 if (!ticketObj) {
                     logger.error(JSON.stringify(common_backend.getError(7004)));
-                    return res.status(400).send(common_backend.getError(7004));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
                 projects.getCommentsByTicketId(projectId, teamId, ticketId, function (err, commentsList) {
@@ -1709,58 +1763,86 @@ const handleProjectTeamTicketPath = function (req, res) {
                         }
                     }
 
-                    return res.status(200).render(common_api.pugPages.ticketModification, {
-                        user: req.session.user,
-                        projectId: projectId,
-                        teamId: teamId,
-                        reporter: reporter,
-                        assignee: assignee,
-                        ticket: ticketObj,
-                        comments: commentsList,
-                        resolveState: (state) => {
-                            return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
-                        },
-                        resolveUsername: (userId) => {
-                            return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
-                        },
-                        resolveCommentContent: (content) => {
-                            let splitContent = content.split(' ');
-                            let resolvedContent = '';
+                    projects.getSprintsByIds(projectId, teamId, ticketObj.sprints, function (err, sprintsObjList) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(404).render(common_api.pugPages.pageNotFound);
+                        }
 
-                            for (let i = 0; i < splitContent.length; i++) {
-                                let phrase = splitContent[i];
-                                let firstChar = phrase.charAt(0);
-                                switch (firstChar) {
-                                    case '@':
-                                        let userId = phrase.slice(1);
-                                        let user = usersIdObj[userId];
-                                        if (user) {
-                                            resolvedContent += `<b>@${user.username}</b> `;
-                                        } else {
-                                            resolvedContent += `@UNKNOWN `;
-                                        }
-                                        break;
-                                    case '#':
-                                        let ticketId = phrase.slice(1);
-                                        let ticket = ticketsIdObj[ticketId];
-                                        if (ticket) {
-                                            resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
-                                        } else {
-                                            resolvedContent += `#UNKNOWN `;
-                                        }
-                                        break;
-                                    default:
-                                        resolvedContent += `${phrase} `;
-                                        break;
+                        return res.status(200).render(common_api.pugPages.ticketModification, {
+                            user: req.session.user,
+                            projectId: projectId,
+                            teamId: teamId,
+                            reporter: reporter,
+                            assignee: assignee,
+                            ticket: ticketObj,
+                            comments: commentsList,
+                            sprints: sprintsObjList,
+                            resolveState: (state) => {
+                                return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
+                            },
+                            resolveUsername: (userId) => {
+                                return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
+                            },
+                            resolveCommentContent: (content) => {
+                                let splitContent = content.split(' ');
+                                let resolvedContent = '';
+
+                                for (let i = 0; i < splitContent.length; i++) {
+                                    let phrase = splitContent[i];
+                                    let firstChar = phrase.charAt(0);
+                                    switch (firstChar) {
+                                        case '@':
+                                            let userId = phrase.slice(1);
+                                            let user = usersIdObj[userId];
+                                            if (user) {
+                                                resolvedContent += `<b>@${user.username}</b> `;
+                                            } else {
+                                                resolvedContent += `@UNKNOWN `;
+                                            }
+                                            break;
+                                        case '#':
+                                            let ticketId = phrase.slice(1);
+                                            let ticket = ticketsIdObj[ticketId];
+                                            if (ticket) {
+                                                resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
+                                            } else {
+                                                resolvedContent += `#UNKNOWN `;
+                                            }
+                                            break;
+                                        default:
+                                            resolvedContent += `${phrase} `;
+                                            break;
+                                    }
                                 }
-                            }
 
-                            return resolvedContent.trim();
-                        },
-                        canSearch: true
+                                return resolvedContent.trim();
+                            },
+                            canSearch: true
+                        });
                     });
                 });
-            });
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS) {
+                projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(404).render(common_api.pugPages.pageNotFound);
+                    }
+                    return continueWithTicketsList(ticketsList);
+                });
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.COLLABORATORS) {
+                projects.getTicketsByProjectId(projectId, function (err, ticketsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(404).render(common_api.pugPages.pageNotFound);
+                    }
+                    return continueWithTicketsList(ticketsList);
+                });
+            }
         });
     });
 }

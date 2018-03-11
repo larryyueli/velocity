@@ -174,7 +174,7 @@ function getListOfSprints() {
                 onAutocomplete: function (val) {
                     if (selectedSprints.indexOf(sprintIdsObj[val]) === -1) {
                         selectedSprints.push(sprintIdsObj[val]);
-                        $(ticketSprintsDivId).append(`<div class="chip" id=${sprintIdsObj[val]}>${val}<i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">close</i></div>`);
+                        $(ticketSprintsDivId).append(`<div class="chip sprint-chips" id=${sprintIdsObj[val]}>${val}<i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">close</i></div>`);
                     }
                 },
                 minLength: 0,

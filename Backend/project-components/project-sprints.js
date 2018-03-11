@@ -137,6 +137,10 @@ const getSprintsByIds = function (projectId, teamId, sprintsIds, callback) {
         sprintsIdsList.push({ _id: sprintsIds[i] });
     }
 
+    if (sprintsIds.length === 0) {
+        return callback(null, []);
+    }
+
     getLimitedSprintsListSorted({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
 }
 
@@ -155,7 +159,33 @@ const addTicketToSprints = function (ticketId, projectId, teamId, sprintsIds, ca
         sprintsIdsList.push({ _id: sprintsIds[i] });
     }
 
+    if (sprintsIds.length === 0) {
+        return callback(null, 'ok');
+    }
+
     updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $addToSet: { tickets: ticketId } }, callback);
+}
+
+/**
+ * update the given sprints by removing the ticket from their tickets list
+ *
+ * @param {string} ticketId ticket id
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} sprintsIds sprints ids
+ * @param {function} callback callback function
+ */
+const removeTicketFromSprints = function (ticketId, projectId, teamId, sprintsIds, callback) {
+    let sprintsIdsList = [];
+    for (let i = 0; i < sprintsIds.length; i++) {
+        sprintsIdsList.push({ _id: sprintsIds[i] });
+    }
+
+    if (sprintsIds.length === 0) {
+        return callback(null, 'ok');
+    }
+
+    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $pull: { tickets: ticketId } }, callback);
 }
 
 /**
@@ -290,6 +320,7 @@ exports.getSprintsByIds = getSprintsByIds;
 exports.getSprintsByTeamId = getSprintsByTeamId;
 exports.getSprintsByTicketId = getSprintsByTicketId;
 exports.initialize = initialize;
+exports.removeTicketFromSprints = removeTicketFromSprints;
 exports.setActiveSprint = setActiveSprint;
 exports.updateSprintById = updateSprintById;
 // </exports> ----------------------------------

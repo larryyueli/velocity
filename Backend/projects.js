@@ -223,6 +223,7 @@ exports.getSprintById = sprints.getSprintById;
 exports.getSprintsByIds = sprints.getSprintsByIds;
 exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
 exports.getSprintsByTicketId = sprints.getSprintsByTicketId;
+exports.removeTicketFromSprints = sprints.removeTicketFromSprints;
 exports.setActiveSprintByTeamId = sprints.setActiveSprint;
 exports.updateSprintById = sprints.updateSprintById;
 // </sprints> ----------------------------------
@@ -239,6 +240,7 @@ exports.updateTeamInProject = teams.updateTeamInProject;
 // <tickets> -----------------------------------
 exports.addTicketToTeam = tickets.addTicket;
 exports.getTicketById = tickets.getTicketById;
+exports.getTicketsByProjectId = tickets.getTicketsByProjectId;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 exports.searchTicketsByProjectId = tickets.searchTicketsByProjectId;
 exports.searchTicketsByTeamId = tickets.searchTicketsByTeamId;

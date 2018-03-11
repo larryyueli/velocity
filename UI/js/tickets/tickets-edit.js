@@ -29,6 +29,7 @@ const projectId = splithref[4];
 const teamId = splithref[6];
 const ticketId = splithref[8];
 const assigneeAutocompleteId = '#assigneeAutocomplete';
+const sprintsAutocompleteId = '#sprintsAutocomplete';
 const titleFieldId = '#titleField';
 const typeSelectionId = '#typeSelection';
 const stateSelectionId = '#stateSelection';
@@ -36,9 +37,12 @@ const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
 const addNewCommentId = '#addNewComment';
 const newCommentField = '#newComment';
+const ticketSprintsDivId = '#ticketSprintsDivId';
 
 var selectedAssignee = null;
 var usernamesArray = [];
+var selectedSprints = [];
+var sprintIdsObj = {};
 
 $(function () {
     typeSelection.change(function () {
@@ -57,9 +61,14 @@ $(function () {
     typeSelection.change();
     $('select').material_select();
 
+    $('.sprint-chips').each(function (index) {
+        selectedSprints.push($(this).attr('id'));
+    });
+
     initSummernote(descriptionId);
 
     getListOfAssignee();
+    getListOfSprints();
 
     $(saveTicketButtonId).click(() => {
         updateTicketAction();
@@ -102,7 +111,8 @@ function updateTicketAction() {
             priority: priorityValue,
             state: stateValue,
             points: pointsValue,
-            assignee: selectedAssignee
+            assignee: selectedAssignee,
+            sprints: selectedSprints
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
@@ -291,4 +301,58 @@ function updateComment(commentId) {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
+}
+
+/**
+ * list of possible sprints
+*/
+function getListOfSprints() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/sprints/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let sprintsObj = {};
+
+            for (let i = 0; i < data.sprintsList.length; i++) {
+                let sprint = data.sprintsList[i];
+                sprintsObj[`${sprint.name}`] = null;
+                sprintIdsObj[`${sprint.name}`] = sprint._id;
+            }
+            $(sprintsAutocompleteId).autocomplete({
+                data: sprintsObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    if (selectedSprints.indexOf(sprintIdsObj[val]) === -1) {
+                        selectedSprints.push(sprintIdsObj[val]);
+                        $(ticketSprintsDivId).append(`<div class="chip sprint-chips" id=${sprintIdsObj[val]}>${val}<i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">close</i></div>`);
+                    }
+                },
+                minLength: 0,
+            });
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+
+/**
+ * list of possible sprints
+ * 
+ * @param {string} id sprint id
+*/
+function removeSprintId(sprintId) {
+    alert(selectedSprints);
+    if (selectedSprints.indexOf(sprintId) !== -1) {
+        selectedSprints.splice(selectedSprints.indexOf(sprintId), 1);
+    }
+    alert(selectedSprints);
 }
