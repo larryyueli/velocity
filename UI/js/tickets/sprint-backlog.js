@@ -108,7 +108,7 @@ function getListOfAssignee() {
 function getBacklog() {
     $.ajax({
         type: 'GET',
-        url: '/components/ticketsList',
+        url: '/components/fullSprintsList',
         data: {
             projectId: projectId,
             teamId: teamId

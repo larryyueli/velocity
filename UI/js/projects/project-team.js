@@ -55,7 +55,7 @@ $(function () {
 
     $.ajax({
         type: 'GET',
-        url: '/project/team/sprints/object/full',
+        url: '/components/fullSprintsList',
         data: {
             projectId: projectId,
             teamId: teamId

@@ -266,7 +266,6 @@ const handleTicketsListComponentPath = function (req, res) {
                 }
 
                 return res.status(200).send({
-                    sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
                     ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
                     ticketsList: ticketsObjList
                 });
@@ -2311,6 +2310,8 @@ const handleProjectTeamSprintsFullObjectPath = function (req, res) {
                         completedSprints++;
                         if (completedSprints === sprintsObjList.length) {
                             return res.status(200).send({
+                                sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
+                                ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
                                 sprintsList: finalObj
                             });
                         }

@@ -245,6 +245,7 @@ app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentP
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
 app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/components/ticketsList', api.handleTicketsListComponentPath);
+app.get('/components/fullSprintsList', api.handleProjectTeamSprintsFullObjectPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
 app.get('/profilePicture/:pictureId', api.handleProfilePicturePath);
@@ -255,7 +256,6 @@ app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTic
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
 app.get('/project/team/sprints/list', api.handleProjectTeamSprintsListPath);
-app.get('/project/team/sprints/object/full', api.handleProjectTeamSprintsFullObjectPath);
 app.get('/projects', api.handleProjectsPath);
 app.get('/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/projects/add', api.handleProjectsAddPath);
