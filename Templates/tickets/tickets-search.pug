@@ -19,7 +19,7 @@ block content
                 i.material-icons add
         ul.collection
             each ticket in ticketsList
-                li.collection-item.avatar
+                li.collection-item.avatar.clickable-item
                     i.material-icons.circle.red note
                     span.title #{ticket.title}
                     p
@@ -27,4 +27,4 @@ block content
                         br
                         | Second Line
                     a.secondary-content.ticketLink(href=`/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}`)
-                        i.material-icons send
+                        i.material-icons.primaryColour-colour send
