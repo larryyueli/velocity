@@ -198,6 +198,7 @@ function passTicketFilter(ticket) {
     // Search filter
     if (filterText !== '' &&
         ticket.title.toLowerCase().indexOf(filterText) === -1 &&
+        ticket.assignee.toLowerCase().indexOf(filterText) === -1 &&
         ticket.displayId.toLowerCase().indexOf(filterText) === -1) {
         return false;
     }
