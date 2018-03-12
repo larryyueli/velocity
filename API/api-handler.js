@@ -2310,12 +2310,12 @@ const handleProjectTeamSprintsListPath = function (req, res) {
 }
 
 /**
- * root path to get the sprints object of detailed
+ * root path to get the list of sprints
  *
  * @param {object} req req object
  * @param {object} res res object
  */
-const handleProjectTeamSprintsFullObjectPath = function (req, res) {
+const handleProjectTeamSprintsFullListPath = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
     projects.getProjectById(projectId, function (err, projectObj) {
@@ -2349,7 +2349,7 @@ const handleProjectTeamSprintsFullObjectPath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                let finalObj = {};
+                let finalObj = [];
                 let completedSprints = 0;
 
                 if (sprintsObjList.length === 0) {
@@ -2387,13 +2387,14 @@ const handleProjectTeamSprintsFullObjectPath = function (req, res) {
                                 points: ticket.points
                             });
                         }
-                        finalObj[sprint._id] = {
+
+                        finalObj.push({
                             id: sprint._id,
                             name: sprint.name,
                             startDate: sprint.startDate,
                             endDate: sprint.endDate,
                             tickets: limitedTicketList
-                        };
+                        });
 
                         completedSprints++;
                         if (completedSprints === sprintsObjList.length) {
@@ -2482,7 +2483,7 @@ exports.handleProjectTeamTicketsAddPath = handleProjectTeamTicketsAddPath;
 exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;
 exports.handleProjectTeamSprintsListPath = handleProjectTeamSprintsListPath;
-exports.handleProjectTeamSprintsFullObjectPath = handleProjectTeamSprintsFullObjectPath;
+exports.handleProjectTeamSprintsFullListPath = handleProjectTeamSprintsFullListPath;
 exports.handleProjectsPath = handleProjectsPath;
 exports.handleProjectsListComponentPath = handleProjectsListComponentPath;
 exports.handleTeamsListComponentPath = handleTeamsListComponentPath;
