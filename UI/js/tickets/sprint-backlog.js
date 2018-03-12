@@ -78,17 +78,19 @@ function getListOfAssignee() {
         success: function (data) {
             let usersObj = {};
             let usernameObj = {};
+            let nameObj = {};
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
                 usersObj[`${user.fname} ${user.lname}`] = `/profilePicture/${user.picture}`;
                 usernameObj[`${user.fname} ${user.lname}`] = user.username;
+                nameObj[`${user.fname} ${user.lname}`] = `${user.fname} ${user.lname}`;
                 usernamesArray.push(user.username);
             }
             $(assigneeAutocompleteId).autocomplete({
                 data: usersObj,
                 limit: 20,
                 onAutocomplete: function (val) {
-                    selectedAssignee = usernameObj[val];
+                    selectedAssignee = nameObj[val];
                     startLoad(sprintsLoadId, sprintsListId);
                     displaySprintsList();
                 },
@@ -185,6 +187,11 @@ function passTicketFilter(ticket) {
 
     // Ticket type filter
     if (typeValue !== -1 && ticket.type !== typeValue) {
+        return false;
+    }
+
+    // Ticket assignee filter
+    if (assignee && assignee !== '' && assignee !== ticket.assignee) {
         return false;
     }
 
