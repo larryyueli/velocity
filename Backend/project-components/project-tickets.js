@@ -162,6 +162,17 @@ const getTicketsByIds = function (projectId, teamId, ticketsIds, callback) {
 }
 
 /**
+ * find the list of tickets with no sprints
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getTicketsWithNoSprints = function (projectId, teamId, callback) {
+    getLimitedTicketsListSorted({ $and: [{ sprints: { $size: 0 } }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+}
+
+/**
  * find tickets under a sprint
  *
  * @param {string} projectId project id
@@ -343,6 +354,7 @@ exports.getTicketsByIds = getTicketsByIds;
 exports.getTicketsBySprintId = getTicketsBySprintId;
 exports.getTicketsByProjectId = getTicketsByProjectId;
 exports.getTicketsByTeamId = getTicketsByTeamId;
+exports.getTicketsWithNoSprints = getTicketsWithNoSprints;
 exports.initialize = initialize;
 exports.searchTicketsByProjectId = searchTicketsByProjectId;
 exports.searchTicketsByTeamId = searchTicketsByTeamId;

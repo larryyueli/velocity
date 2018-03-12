@@ -243,6 +243,7 @@ exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByIds = tickets.getTicketsByIds;
 exports.getTicketsByProjectId = tickets.getTicketsByProjectId;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
+exports.getTicketsWithNoSprints = tickets.getTicketsWithNoSprints;
 exports.searchTicketsByProjectId = tickets.searchTicketsByProjectId;
 exports.searchTicketsByTeamId = tickets.searchTicketsByTeamId;
 exports.updateTicket = tickets.updateTicket;

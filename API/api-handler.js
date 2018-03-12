@@ -2343,69 +2343,113 @@ const handleProjectTeamSprintsFullListPath = function (req, res) {
             }
 
             const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
-            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+
+            projects.getTicketsWithNoSprints(projectId, teamId, function (err, ticketsWithNoSprintList) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
                 }
 
-                let finalObj = [];
-                let completedSprints = 0;
-
-                if (sprintsObjList.length === 0) {
-                    return res.status(200).send({
-                        sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
-                        ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                        sprintsList: finalObj
+                let limitedTicketsWithNoSprintList = [];
+                for (let i = 0; i < ticketsWithNoSprintList.length; i++) {
+                    let ticket = ticketsWithNoSprintList[i];
+                    let ticketAssignee = usersObj[ticket.assignee];
+                    let ticketReporter = usersObj[ticket.reporter];
+                    limitedTicketsWithNoSprintList.push({
+                        _id: ticket._id,
+                        ctime: ticket.ctime,
+                        mtime: ticket.mtime,
+                        displayId: ticket.displayId,
+                        title: ticket.title,
+                        state: ticket.state,
+                        type: ticket.type,
+                        assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
+                        reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                        priority: ticket.priority,
+                        points: ticket.points
                     });
                 }
 
-                for (let i = 0; i < sprintsObjList.length; i++) {
-                    let sprint = sprintsObjList[i];
-                    projects.getTicketsByIds(projectId, teamId, sprint.tickets, function (err, ticketsList) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                            return res.status(500).send(err);
-                        }
+                projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
 
-                        let limitedTicketList = [];
-                        for (let j = 0; j < ticketsList.length; j++) {
-                            let ticket = ticketsList[j];
-                            let ticketAssignee = usersObj[ticket.assignee];
-                            let ticketReporter = usersObj[ticket.reporter];
-                            limitedTicketList.push({
-                                _id: ticket._id,
-                                ctime: ticket.ctime,
-                                mtime: ticket.mtime,
-                                displayId: ticket.displayId,
-                                title: ticket.title,
-                                state: ticket.state,
-                                type: ticket.type,
-                                assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
-                                reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
-                                priority: ticket.priority,
-                                points: ticket.points
-                            });
-                        }
+                    let finalList = [];
+                    let completedSprints = 0;
 
-                        finalObj.push({
-                            id: sprint._id,
-                            name: sprint.name,
-                            startDate: sprint.startDate,
-                            endDate: sprint.endDate,
-                            tickets: limitedTicketList
+                    if (sprintsObjList.length === 0) {
+                        finalList.push({
+                            id: 'backlog',
+                            name: 'backlog',
+                            startDate: null,
+                            endDate: null,
+                            tickets: limitedTicketsWithNoSprintList
                         });
 
-                        completedSprints++;
-                        if (completedSprints === sprintsObjList.length) {
-                            return res.status(200).send({
-                                sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
-                                ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                                sprintsList: finalObj
+                        return res.status(200).send({
+                            sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
+                            ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                            sprintsList: finalList
+                        });
+                    }
+
+                    for (let i = 0; i < sprintsObjList.length; i++) {
+                        let sprint = sprintsObjList[i];
+                        projects.getTicketsByIds(projectId, teamId, sprint.tickets, function (err, ticketsList) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            let limitedTicketList = [];
+                            for (let j = 0; j < ticketsList.length; j++) {
+                                let ticket = ticketsList[j];
+                                let ticketAssignee = usersObj[ticket.assignee];
+                                let ticketReporter = usersObj[ticket.reporter];
+                                limitedTicketList.push({
+                                    _id: ticket._id,
+                                    ctime: ticket.ctime,
+                                    mtime: ticket.mtime,
+                                    displayId: ticket.displayId,
+                                    title: ticket.title,
+                                    state: ticket.state,
+                                    type: ticket.type,
+                                    assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
+                                    reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                                    priority: ticket.priority,
+                                    points: ticket.points
+                                });
+                            }
+
+                            finalList.push({
+                                id: sprint._id,
+                                name: sprint.name,
+                                startDate: sprint.startDate,
+                                endDate: sprint.endDate,
+                                tickets: limitedTicketList
                             });
-                        }
-                    });
-                }
+
+                            completedSprints++;
+                            if (completedSprints === sprintsObjList.length) {
+                                finalList.push({
+                                    id: 'backlog',
+                                    name: 'backlog',
+                                    startDate: null,
+                                    endDate: null,
+                                    tickets: limitedTicketsWithNoSprintList
+                                });
+
+                                return res.status(200).send({
+                                    sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
+                                    ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                                    sprintsList: finalList
+                                });
+                            }
+                        });
+                    }
+                });
             });
         });
     });
