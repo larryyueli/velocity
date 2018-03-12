@@ -275,6 +275,85 @@ const handleTicketsListComponentPath = function (req, res) {
 }
 
 /**
+ * path to get the tickets list in active sprint
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleActiveSprintTicketsListComponentPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getActiveSprintByTeamId(projectId, teamId, function (err, activeSprintObj) {
+                if (err && err.code !== 10004) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                projects.getTicketsByIds(projectId, teamId, activeSprintObj.tickets, function (err, ticketsObjList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                    let limitedTicketList = [];
+                    for (let i = 0; i < ticketsObjList.length; i++) {
+                        let ticket = ticketsObjList[i];
+                        let ticketAssignee = usersObj[ticket.assignee];
+                        let ticketReporter = usersObj[ticket.reporter];
+                        limitedTicketList.push({
+                            _id: ticket._id,
+                            ctime: ticket.ctime,
+                            mtime: ticket.mtime,
+                            displayId: ticket.displayId,
+                            title: ticket.title,
+                            state: ticket.state,
+                            type: ticket.type,
+                            assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
+                            reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                            priority: ticket.priority,
+                            points: ticket.points
+                        });
+                    }
+
+                    return res.status(200).send({
+                        ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                        ticketsList: limitedTicketList
+                    });
+                });
+            });
+        });
+    });
+}
+
+/**
  * path to get the teams list component
  *
  * @param {object} req req object
@@ -2386,6 +2465,7 @@ exports.isActiveSession = common_api.isActiveSession;
 // </common Requests> -----------------------------------------------
 
 // <Get Requests> ------------------------------------------------
+exports.handleActiveSprintTicketsListComponentPath = handleActiveSprintTicketsListComponentPath;
 exports.handleProjectByIdPath = handleProjectByIdPath;
 exports.handleProjectTeamPath = handleProjectTeamPath;
 exports.handleProjectTeamSearchPath = handleProjectTeamSearchPath;

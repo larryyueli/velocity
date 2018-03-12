@@ -245,6 +245,7 @@ app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentP
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
 app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/components/ticketsList', api.handleTicketsListComponentPath);
+app.get('/components/ticketsList/activeSprint', api.handleActiveSprintTicketsListComponentPath);
 app.get('/components/fullSprintsList', api.handleProjectTeamSprintsFullObjectPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
