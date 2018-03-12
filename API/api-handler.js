@@ -338,6 +338,8 @@ const handleActiveSprintTicketsListComponentPath = function (req, res) {
                             type: ticket.type,
                             assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
                             reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                            assigneePicture: ticketAssignee ? ticketAssignee.picture : null,
+                            reporterPicture: ticketReporter ? ticketReporter.picture : null,
                             priority: ticket.priority,
                             points: ticket.points
                         });
@@ -2365,6 +2367,8 @@ const handleProjectTeamSprintsFullListPath = function (req, res) {
                         type: ticket.type,
                         assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
                         reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                        assigneePicture: ticketAssignee ? ticketAssignee.picture : null,
+                        reporterPicture: ticketReporter ? ticketReporter.picture : null,
                         priority: ticket.priority,
                         points: ticket.points
                     });
@@ -2418,6 +2422,8 @@ const handleProjectTeamSprintsFullListPath = function (req, res) {
                                     type: ticket.type,
                                     assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
                                     reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                                    assigneePicture: ticketAssignee ? ticketAssignee.picture : null,
+                                    reporterPicture: ticketReporter ? ticketReporter.picture : null,
                                     priority: ticket.priority,
                                     points: ticket.points
                                 });
