@@ -2351,6 +2351,15 @@ const handleProjectTeamSprintsFullObjectPath = function (req, res) {
 
                 let finalObj = {};
                 let completedSprints = 0;
+
+                if (sprintsObjList.length === 0) {
+                    return res.status(200).send({
+                        sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
+                        ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                        sprintsList: finalObj
+                    });
+                }
+
                 for (let i = 0; i < sprintsObjList.length; i++) {
                     let sprint = sprintsObjList[i];
                     projects.getTicketsByIds(projectId, teamId, sprint.tickets, function (err, ticketsList) {
