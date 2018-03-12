@@ -9,23 +9,23 @@ block title
 block content
     include ../navbar
     br
-    .container
-        .row
-            button.btn.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left#backButton
-                i.material-icons arrow_back
-            button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
-                i.material-icons.right add
-        ul.collection
-            each ticket in ticketsList
-                li.collection-item.avatar
-                    i.material-icons.circle.red note
-                    span.title #{ticket.title}
-                    p
-                        | First Line
-                        br
-                        | Second Line
-                    a.secondary-content.ticketLink(href=`/project/${projectId}/team/${teamId}/ticket/${ticket._id}`)
-                        i.material-icons send
+    //.container
+    //    .row
+    //        button.btn.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left#backButton
+    //            i.material-icons arrow_back
+    //        button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
+    //            i.material-icons.right add
+    //    ul.collection
+    //        each ticket in ticketsList
+    //            li.collection-item.avatar
+    //                i.material-icons.circle.red note
+    //                span.title #{ticket.title}
+    //                p
+    //                    | First Line
+    //                    br
+    //                    | Second Line
+    //                a.secondary-content.ticketLink(href=`/project/${projectId}/team/${teamId}/ticket/${ticket._id}`)
+    //                    i.material-icons send
 
     .container
         .row

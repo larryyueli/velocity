@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 var sprintEntryHTML = null;
 var ticketEntryHTML = null;
-var ticketsList = null;
+var sprintsList = null;
 
 const backlogTicketListId = '#backlogTicketList';
 const issueCountId = '#issueCount';
@@ -116,11 +116,11 @@ function getBacklog() {
         success: function (data) {
             sprintEntryHTML = $(data.sprintEntryHTML);
             ticketEntryHTML = $(data.ticketEntryHTML);
-            ticketsList = data.ticketsList;
+            sprintsList = data.sprintsList;
 
-            // sprintsList.forEach(sprint => {
-            //     sprint.isActive = false;
-            // });
+            sprintsList.forEach(sprint => {
+                sprint.isActive = false;
+            });
 
             displaySprintsList();
         },
@@ -134,38 +134,20 @@ function displaySprintsList() {
     $(sprintsListId).html('');
     var rowPopulate = '';
 
-    $(sprintsListId).append(fillSprintsRow(ticketsList));
-
-    // groupList.forEach(group => {
-    //     var inGroup = null;
-    //     if (passGroupFilter(group)) {
-    //         if (!isProjectAdmin) {
-    //             inGroup = groupList.find(groupSearch => {
-    //                 return group.name === groupSearch.name && groupSearch.members.find(user => {
-    //                     return user.username === meObject.username;
-    //                 });
-    //             });
-
-    //             if (inGroup) {
-    //                 $(userGroupId).append(fillGroupRow(group, true));
-    //             } else {
-    //                 $(groupListId).append(fillGroupRow(group, false));
-    //             }
-    //         } else {
-    //             $(groupListId).append(fillGroupRow(group, false));
-    //         }
-    //     }
-    // });
+    sprintsList.forEach(sprint => {
+        $(sprintsListId).append(fillSprintsRow(sprint));
+    });
 
     endLoad(sprintsLoadId, sprintsListId);
 }
 
-function fillSprintsRow(tickets) {
+function fillSprintsRow(sprint) {
+    var tickets = sprint.tickets;
     var bindedRow = sprintEntryHTML;
     var isActive = false;
     bindedRow.find(backlogTicketListId).html('');
 
-    bindedRow.find(titleId).html('Bonza - 1');
+    bindedRow.find(titleId).html(sprint.name);
 
     tickets.forEach(ticket => {
         if (passTicketFilter(ticket)) {
@@ -179,13 +161,13 @@ function fillSprintsRow(tickets) {
         bindedRow.find(backlogTicketListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
     }
 
-    // if (tickets.isActive) {
-    //     bindedRow.find(sprintHeaderId).addClass('active');
-    //     bindedRow.find(sprintBodyId)[0].style.display = 'block';
-    // } else {
-    //     bindedRow.find(sprintHeaderId).removeClass('active');
-    //     bindedRow.find(sprintBodyId)[0].style.display = 'none';
-    // }
+    if (sprint.isActive) {
+        bindedRow.find(sprintHeaderId).addClass('active');
+        bindedRow.find(sprintBodyId)[0].style.display = 'block';
+    } else {
+        bindedRow.find(sprintHeaderId).removeClass('active');
+        bindedRow.find(sprintBodyId)[0].style.display = 'none';
+    }
 
     return bindedRow[0].outerHTML;
 }
@@ -257,11 +239,11 @@ function fillTicketRow(ticket) {
 function setActive(clicked) {
     const sprintName = clicked.parent().find('#title').text();
 
-    // const clickedSprint = sprintsList.find(sprint => {
-    //     return sprint.name === sprintName;
-    // });
-    //
-    // if (clickedSprint) {
-    //     clickedSprint.isActive = !clicked.hasClass('active');
-    // }
+    const clickedSprint = sprintsList.find(sprint => {
+        return sprint.name === sprintName;
+    });
+
+    if (clickedSprint) {
+        clickedSprint.isActive = !clicked.hasClass('active');
+    }
 }
