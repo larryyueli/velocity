@@ -33,6 +33,7 @@ const nameId = '#name';
 const openTicketId = '#openTicket';
 const estimateId = '#estimate';
 const statusId = '#status';
+const imageId = '#image';
 
 const searchFilterId = '#searchFilter';
 const assigneeAutocompleteId = '#assigneeAutocomplete';
@@ -224,6 +225,7 @@ function fillTicketRow(ticket) {
     bindedRow.find(nameId).html(ticket.title);
     bindedRow.find(estimateId).html(ticket.points);
     bindedRow.find(statusId).html(translate(`state${ticket.state}`));
+    bindedRow.find(imageId).html(`<img src="/profilePicture/${ticket.assigneePicture}" alt="" height="25" width="auto">`);
     bindedRow.find(statusId).addClass(`state${ticket.state}`);
 
     bindedRow.find(openTicketId)[0].href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
