@@ -515,7 +515,7 @@ function generalDeleteProject() {
                 },
                 error: function (data) {
                     handle401And404(data);
-        
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -580,6 +580,9 @@ function generalSaveProject() {
 
     const titleText = $(titleId).val();
     const descriptionText = $(descriptionId).summernote('code');
+    const boardType = $(boardSelection).val();
+    const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
+
     swal({
         text: translate('saveProjectPrompt'),
         icon: 'warning',
@@ -593,20 +596,22 @@ function generalSaveProject() {
                 data: {
                     projectId: projectId,
                     title: titleText,
-                    description: descriptionText
+                    description: descriptionText,
+                    boardType: boardType,
+                    canForceBoardType: canForceBoardTypeValue
                 },
                 success: function (data) {
                     successSnackbar(translate('updatedProject'));
                 },
                 error: function (data) {
                     handle401And404(data);
-        
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
             });
         }
-    }); 
+    });
 }
 
 /**
@@ -631,7 +636,7 @@ function generalActivateProject() {
                 },
                 error: function (data) {
                     handle401And404(data);
-        
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -651,7 +656,22 @@ function generalCloseProject() {
         buttons: [translate('cancel'), translate('close')]
     }).then(canClose => {
         if (canClose) {
-            
+            $.ajax({
+                type: 'POST',
+                url: '/project/close',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    successSnackbar(translate('closedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -660,6 +680,13 @@ function generalCloseProject() {
  * Updates a project
  */
 function generalActiveUpdateProject() {
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('emptyProjectDescription'));
+    }
+
+    const titleText = $(titleId).val();
+    const descriptionText = $(descriptionId).summernote('code');
+
     swal({
         text: translate('updateProjectPrompt'),
         icon: 'warning',
@@ -667,7 +694,24 @@ function generalActiveUpdateProject() {
         buttons: [translate('cancel'), translate('update')]
     }).then(canUpdate => {
         if (canUpdate) {
-            
+            $.ajax({
+                type: 'POST',
+                url: '/project/update/active',
+                data: {
+                    projectId: projectId,
+                    title: titleText,
+                    description: descriptionText
+                },
+                success: function (data) {
+                    successSnackbar(translate('updatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }

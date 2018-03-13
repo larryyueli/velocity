@@ -50,13 +50,17 @@ $(function () {
 
         const titleText = $(titleId).val();
         const descriptionText = $(descriptionId).summernote('code');
+        const boardType = $(boardSelection).val();
+        const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
 
         $.ajax({
             type: 'PUT',
             url: '/projects/create',
             data: {
                 title: titleText,
-                description: descriptionText
+                description: descriptionText,
+                boardType: boardType,
+                canForceBoardType: canForceBoardTypeValue
             },
             success: function (data) {
                 window.location.href = `/project/${data}`;

@@ -131,6 +131,7 @@ const translations = Object.freeze({
 
     activate: 'Activate',
     activatedProject: 'Project has been activated',
+    closedProject: 'Project has been closed',
     activateProjectPrompt: 'Are you sure you want to activate this project?',
     adminConfigurationSuccess: 'Admins have been saved successfully',
     alreadyInGroup: 'This user is already in this group',

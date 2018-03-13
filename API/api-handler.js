@@ -576,7 +576,9 @@ const handleProjectsAddPath = function (req, res) {
     return res.status(200).render(common_api.pugPages.projectsAdd, {
         user: req.session.user,
         isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
-        isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
+        isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
+        isActive: false,
+        selectedBoardType: common_backend.boardTypes.KANBAN.value
     });
 }
 
@@ -597,11 +599,19 @@ const handleProjectsCreatePath = function (req, res) {
         return res.status(403).send(common_backend.getError(2036));
     }
 
+    const parsedBoardType = parseInt(req.body.boardType);
+    const boardType = common_backend.convertStringToBoolean(req.body.canForceBoardType)
+        ? typeof (parsedBoardType) === common_backend.variableTypes.NUMBER
+            ? parsedBoardType
+            : common_backend.boardTypes.UNKNOWN.value
+        : common_backend.boardTypes.UNKNOWN.value;
+
     const newProject = {
         title: req.body.title,
         description: req.body.description,
         status: common_backend.projectStatus.DRAFT.value,
-        admins: [req.session.user._id]
+        admins: [req.session.user._id],
+        boardType: boardType
     };
 
     projects.addProject(newProject, function (err, projectObj) {
@@ -681,7 +691,8 @@ const handleProjectByIdPath = function (req, res) {
             isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
             isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
             isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value,
-            forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value
+            forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value,
+            selectedBoardType: projectObj.boardType
         });
     });
 }
@@ -710,6 +721,57 @@ const handleProjectUpdatePath = function (req, res) {
         }
 
         if (projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
+        }
+
+        const parsedBoardType = parseInt(req.body.boardType);
+        const boardType = common_backend.convertStringToBoolean(req.body.canForceBoardType)
+            ? typeof (parsedBoardType) === common_backend.variableTypes.NUMBER
+                ? parsedBoardType
+                : common_backend.boardTypes.UNKNOWN.value
+            : common_backend.boardTypes.UNKNOWN.value;
+
+        let newProject = {
+            title: req.body.title,
+            description: req.body.description,
+            boardType: boardType
+        };
+        projects.updateProject(req.body.projectId, newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
+ * path to update an active project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectActiveUpdatePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2037)));
+            return res.status(403).send(common_backend.getError(2037));
+        }
+
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
             logger.error(JSON.stringify(common_backend.getError(2042)));
             return res.status(400).send(common_backend.getError(2042));
         }
@@ -1020,6 +1082,48 @@ const handleProjectActivatePath = function (req, res) {
 
                 return res.status(200).send('ok');
             });
+        });
+    });
+}
+
+/**
+ * path to close a project
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectClosePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.admins.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2041)));
+            return res.status(403).send(common_backend.getError(2041));
+        }
+
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common_backend.getError(2042)));
+            return res.status(400).send(common_backend.getError(2042));
+        }
+
+        let newProject = {
+            status: common_backend.projectStatus.CLOSED.value,
+        };
+        projects.updateProject(req.body.projectId, newProject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(400).send(err);
+            }
+
+            return res.status(200).send('ok');
         });
     });
 }
@@ -2546,10 +2650,12 @@ exports.handleProjectsAddPath = handleProjectsAddPath;
 // <Post Requests> -----------------------------------------------
 exports.handleProjectActivatePath = handleProjectActivatePath;
 exports.handleProjectAdminsUpdatePath = handleProjectAdminsUpdatePath;
+exports.handleProjectClosePath = handleProjectClosePath;
 exports.handleProjectTeamsUpdatePath = handleProjectTeamsUpdatePath;
 exports.handleProjectTeamsUpdateMePath = handleProjectTeamsUpdateMePath;
 exports.handleProjectTeamsConfigPath = handleProjectTeamsConfigPath;
 exports.handleProjectUpdatePath = handleProjectUpdatePath;
+exports.handleProjectActiveUpdatePath = handleProjectActiveUpdatePath;
 exports.handleTicketsUpdatePath = handleTicketsUpdatePath;
 exports.handleTicketsCommentEditPath = handleTicketsCommentEditPath;
 // </Post Requests> -----------------------------------------------

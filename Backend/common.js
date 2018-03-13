@@ -276,9 +276,9 @@ exports.languages = languages;
 
 // common board types
 const boardTypes = Object.freeze({
-    UNKNOWN: { value: -1, text: 'unknown' },
-    KANBAN: { value: 0, text: 'kanban' },
-    SCRUM: { value: 1, text: 'scrum' }
+    UNKNOWN: { value: 0, text: 'unknown' },
+    KANBAN: { value: 1, text: 'kanban' },
+    SCRUM: { value: 2, text: 'scrum' }
 });
 exports.boardTypes = boardTypes;
 

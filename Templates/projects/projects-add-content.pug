@@ -16,10 +16,10 @@
     .col.s8
         .input-field#boardSelectionRow
             select(disabled=isActive).icons#boardSelection
-                option(value=0)
-                    | #{__('projects.type.scrum')}
-                option(value=1)
+                option(value=1, selected=selectedBoardType!==2)
                     | #{__('projects.type.kanban')}
+                option(value=2, selected=selectedBoardType===2)
+                    | #{__('projects.type.scrum')}
             label
                 | #{__('projects.type.label')}
 
