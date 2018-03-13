@@ -113,6 +113,8 @@ const modalTriggerId = '#modalTrigger';
 
 // General settings Ids
 const generalActivateButtonId = '#generalActivateButton';
+const generalActiveUpdateButtonId = '#generalActiveUpdateButton';
+const generalCloseButtonId = '#generalCloseButton';
 const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
 
@@ -647,8 +649,8 @@ function nonAdminChangeGroup(action, groupName, callback) {
         url: '/project/teams/update/me',
         data: {
             projectId: projectId,
-            action:action,
-            teamName:groupName
+            action: action,
+            teamName: groupName
         },
         success: function (data) {
             callback();
@@ -1161,7 +1163,7 @@ function leaveGroup(event) {
         });
     });
 
-    nonAdminChangeGroup('remove', oldGroup.name, function() {
+    nonAdminChangeGroup('remove', oldGroup.name, function () {
         const userObject = oldGroup.members.find(user => {
             return user.username === userName;
         });
@@ -1196,7 +1198,7 @@ function joinGroup(clicked, createdGroup, event) {
         return user.username === userName;
     });
 
-    nonAdminChangeGroup('add', groupName, function() {
+    nonAdminChangeGroup('add', groupName, function () {
         if (userObject) {
             moveFromUnassignedToGroup(groupName, userName);
         } else {

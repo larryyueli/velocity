@@ -10,12 +10,12 @@
         .switch.left
             label
                 | #{__('switch.off')}
-                input(type='checkbox', name='forceBoardType', checked=boardTypeForced)#canForceBoardType
+                input(type='checkbox', name='forceBoardType', checked=forceBoardType, disabled=isActive)#canForceBoardType
                 span.lever
                 | #{__('switch.on')}
     .col.s8
         .input-field#boardSelectionRow
-            select.icons#boardSelection
+            select(disabled=isActive).icons#boardSelection
                 option(value=0)
                     | #{__('projects.type.scrum')}
                 option(value=1)

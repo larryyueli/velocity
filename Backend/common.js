@@ -371,7 +371,8 @@ exports.commentStatus = commentStatus;
 // common sprint status
 const sprintStatus = Object.freeze({
     DELETED: { value: 0, text: 'deleted' },
-    ACTIVE: { value: 1, text: 'active' }
+    OPEN: { value: 1, text: 'open' },
+    ACTIVE: { value: 2, text: 'active' }
 });
 exports.sprintStatus = sprintStatus;
 

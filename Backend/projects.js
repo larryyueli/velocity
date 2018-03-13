@@ -66,6 +66,7 @@ const addProject = function (project, callback) {
     projectToAdd.teamSize = common.defaultTeamSize;
     projectToAdd.teamSelectionType = common.teamSelectionTypes.ADMIN.value;
     projectToAdd.teamPrefix = common.defaultTeamPrefix;
+    projectToAdd.boardType = common.boardTypes.UNKNOWN;
 
     db.addProject(projectToAdd, callback);
 }
@@ -119,6 +120,16 @@ const getProject = function (searchQuery, callback) {
  */
 const getProjectById = function (projectId, callback) {
     getProject({ $and: [{ _id: projectId }, { status: { $ne: common.projectStatus.DELETED.value } }] }, callback);
+}
+
+/**
+ * find a single active project by its Id
+ *
+ * @param {string} projectId project id
+ * @param {function} callback callback function
+ */
+const getActiveProjectById = function (projectId, callback) {
+    getProject({ $and: [{ _id: projectId }, { status: common.projectStatus.ACTIVE.value }] }, callback);
 }
 
 /**
@@ -183,6 +194,10 @@ const updateProject = function (projectId, updateParams, callback) {
         updateQuery.$set.teamPrefix = updateParams.teamPrefix;
     }
 
+    if (common.isValueInObjectWithKeys(updateParams.boardType, 'value', common.boardTypes)) {
+        updateQuery.$set.boardType = updateParams.boardType;
+    }
+
     if (common.isEmptyObject(updateQuery.$set)) {
         delete updateQuery.$set;
     }
@@ -209,6 +224,7 @@ exports.addProject = addProject;
 exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
+exports.getActiveProjectById = getActiveProjectById;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.initialize = initialize;
