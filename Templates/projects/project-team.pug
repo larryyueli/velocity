@@ -29,27 +29,50 @@ block content
 
     .container
         .row
+            button.btn.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left#backButton
+                i.material-icons arrow_back
+            button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
+                i.material-icons.right add
+        .row
             .col.s12
                 .row
                     ul.tabs
-                        li.tab.col.s4
+                        li.tab.col.s2
+                            a.noLineLink.active#option-board(href='#overview')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour assignment
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.overview.title')}
+                        li.tab.col.s2
                             a.noLineLink.active#option-board(href='#board')
                                 i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
                                 |
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.board.title')}
-                        li.tab.col.s4
+                        li.tab.col.s2
                             a.noLineLink#option-backlog(href='#backlog')
                                 i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour view_list
                                 |
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.backlog.title')}
-                        li.tab.col.s4
+                        li.tab.col.s2
                             a.noLineLink#option-issues(href='#issues')
-                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour assignment
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour message
                                 |
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.issues.title')}
+                        li.tab.col.s2
+                            a.noLineLink.active#option-board(href='#settings')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour settings
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.settings.title')}
+                        li.tab.col.s2
+                            a.noLineLink.active#option-board(href='#analytics')
+                                i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour timeline
+                                |
+                                .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.analytics.title')}
     .container
         .row
             .col.s12
+                #overview
+                    .card
+                        h5 overview test
                 #board
                     .card
                         h5 board test
@@ -58,6 +81,12 @@ block content
                 #issues
                     .card
                         h5 issues test
+                #settings
+                    .card
+                        h5 settings test
+                #analytics
+                    .card
+                        h5 analytics test
 
 block scripts
     script(src='/js/projects/project-team.js')

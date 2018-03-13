@@ -86,6 +86,9 @@
 			"label": "Status"
 		},
 		"tabs": {
+			"analytics": {
+				"title": "Analytics"
+			},
 			"backlog": {
 				"title": "Backlog"
 			},
@@ -94,6 +97,12 @@
 			},
 			"issues": {
 				"title": "Issues"
+			},
+			"overview": {
+				"title": "Overview"
+			},
+			"settings": {
+				"title": "Settings"
 			}
 		},
 		"title": "Velocity - Projects",
@@ -105,6 +114,9 @@
 	},
 	"projectPage": {
 		"tabs": {
+			"boards": {
+				"title": "Boards"
+			},
 			"general": {
 				"title": "General"
 			},

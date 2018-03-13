@@ -16,21 +16,26 @@ block content
                 .col.s12
                     .row
                         ul.tabs
-                            li.tab.col.s4
+                            li.tab.col.s3
                                 a.noLineLink.active#option-general(href='#general')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
-                            li.tab.col.s4
+                            li.tab.col.s3
                                 a.noLineLink#option-users(href='#users')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
-                            li.tab.col.s4
+                            li.tab.col.s3
                                 a.noLineLink#option-groups(href='#groups')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
+                            li.tab.col.s3
+                                a.noLineLink#option-groups(href='#boards')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
     .container
         .row
             .col.s12
