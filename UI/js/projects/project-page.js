@@ -117,6 +117,7 @@ const generalActiveUpdateButtonId = '#generalActiveUpdateButton';
 const generalCloseButtonId = '#generalCloseButton';
 const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
+const generalCloseButton = '#generalCloseButton';
 
 // Navbar Ids
 const navmProjectsId = '#navm-projects';
@@ -284,6 +285,7 @@ $(function () {
     $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
+    $(generalCloseButton).click(() => { generalCloseProject(); });
     $(canForceBoardType).change();
 
     // Loads the groups and unassigned users, and starts the loaders
@@ -493,20 +495,29 @@ function getGroupAssign() {
  * delete a project
  */
 function generalDeleteProject() {
-    $.ajax({
-        type: 'DELETE',
-        url: '/project/delete',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-            window.location.href = '/projects';
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+    swal({
+        text: translate('deleteProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canDelete => {
+        if (canDelete) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/project/delete',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    window.location.href = '/projects';
+                },
+                error: function (data) {
+                    handle401And404(data);
+        
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -567,45 +578,78 @@ function generalSaveProject() {
 
     const titleText = $(titleId).val();
     const descriptionText = $(descriptionId).summernote('code');
-
-    $.ajax({
-        type: 'POST',
-        url: '/project/update',
-        data: {
-            projectId: projectId,
-            title: titleText,
-            description: descriptionText
-        },
-        success: function (data) {
-            successSnackbar(translate('updatedProject'));
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+    swal({
+        text: translate('saveProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('save')]
+    }).then(canSave => {
+        if (canSave) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/update',
+                data: {
+                    projectId: projectId,
+                    title: titleText,
+                    description: descriptionText
+                },
+                success: function (data) {
+                    successSnackbar(translate('updatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+        
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
-    });
+    }); 
 }
 
 /**
  * activate a project
  */
 function generalActivateProject() {
-    $.ajax({
-        type: 'POST',
-        url: '/project/activate',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-            successSnackbar(translate('activatedProject'));
-        },
-        error: function (data) {
-            handle401And404(data);
+    swal({
+        text: translate('activateProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('activate')]
+    }).then(canActivate => {
+        if (canActivate) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/activate',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    successSnackbar(translate('activatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+        
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+/** 
+ * Closes a project
+ */
+function generalCloseProject() {
+    swal({
+        text: translate('closeProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('close')]
+    }).then(canClose => {
+        if (canClose) {
+            
         }
     });
 }
