@@ -118,6 +118,7 @@ const generalCloseButtonId = '#generalCloseButton';
 const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
 const generalCloseButton = '#generalCloseButton';
+const generalActiveUpdateButton = '#generalActiveUpdateButton';
 
 // Navbar Ids
 const navmProjectsId = '#navm-projects';
@@ -286,6 +287,7 @@ $(function () {
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
     $(generalCloseButton).click(() => { generalCloseProject(); });
+    $(generalActiveUpdateButton).click(() => { generalActiveUpdateProject(); });
     $(canForceBoardType).change();
 
     // Loads the groups and unassigned users, and starts the loaders
@@ -649,6 +651,22 @@ function generalCloseProject() {
         buttons: [translate('cancel'), translate('close')]
     }).then(canClose => {
         if (canClose) {
+            
+        }
+    });
+}
+
+/** 
+ * Updates a project
+ */
+function generalActiveUpdateProject() {
+    swal({
+        text: translate('updateProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('update')]
+    }).then(canUpdate => {
+        if (canUpdate) {
             
         }
     });
