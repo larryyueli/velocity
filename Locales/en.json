@@ -119,7 +119,7 @@
 				"title": "Boards"
 			},
 			"general": {
-				"forceBoardType": "Force board type for project",
+				"forceBoardType": "Force board type for teams",
 				"title": "General"
 			},
 			"groups": {

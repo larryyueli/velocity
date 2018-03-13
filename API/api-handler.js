@@ -631,7 +631,7 @@ const handleProjectByIdPath = function (req, res) {
     }
 
     const projectId = req.params.projectId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getProjectById(projectId, function (err, projectObj) { // TODO: change to use active projects
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -680,7 +680,8 @@ const handleProjectByIdPath = function (req, res) {
             description: projectObj.description,
             isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
             isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
-            isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value
+            isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value,
+            forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value
         });
     });
 }
@@ -708,8 +709,7 @@ const handleProjectUpdatePath = function (req, res) {
             return res.status(403).send(common_backend.getError(2037));
         }
 
-        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
-            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+        if (projectObj.status !== common_backend.projectStatus.DRAFT.value) {
             logger.error(JSON.stringify(common_backend.getError(2042)));
             return res.status(400).send(common_backend.getError(2042));
         }
@@ -992,8 +992,7 @@ const handleProjectActivatePath = function (req, res) {
             return res.status(403).send(common_backend.getError(2041));
         }
 
-        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
-            && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
+        if (projectObj.status !== common_backend.projectStatus.DRAFT.value) {
             logger.error(JSON.stringify(common_backend.getError(2042)));
             return res.status(400).send(common_backend.getError(2042));
         }
