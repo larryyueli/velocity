@@ -122,7 +122,7 @@ function getBacklog() {
             sprintsList = data.sprintsList;
 
             sprintsList.forEach(sprint => {
-                sprint.isActive = false;
+                sprint.isActive = true;
             });
 
             displaySprintsList();
