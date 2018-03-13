@@ -96,6 +96,11 @@ function getListOfAssignee() {
                 },
                 minLength: 0,
             });
+            $(assigneeAutocompleteId).on('keyup', function() {
+                selectedAssignee = $(assigneeAutocompleteId)[0].value;
+                startLoad(sprintsLoadId, sprintsListId);
+                displaySprintsList();
+            });
         },
         error: function (data) {
             handle401And404(data);
@@ -176,7 +181,7 @@ function fillSprintsRow(sprint) {
 }
 
 /**
- * Filters a group object to match filter parameters
+ * Filters a ticket object to match filter parameters
  *
  * @param {Object} group
  */
