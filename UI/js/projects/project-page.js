@@ -40,6 +40,9 @@ var isCollabMode = null;
 
 // Element Ids
 const assignedList = '#assignedList';
+const boardSelection = '#boardSelection';
+const boardSelectionRow = $('#boardSelectionRow');
+const canForceBoardType = '#canForceBoardType';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
 const deleteAllGroupsId = '#deleteAllGroups';
@@ -267,10 +270,19 @@ $(function () {
         }
     });
 
+    $(canForceBoardType).change(() => {
+        if ($(canForceBoardType).is(':checked')) {
+            boardSelectionRow.show();
+        } else {
+            boardSelectionRow.hide();
+        }
+    });
+
     // General actions
     $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
+    $(canForceBoardType).change();
 
     // Loads the groups and unassigned users, and starts the loaders
     startLoad(groupLoadId, groupListId);

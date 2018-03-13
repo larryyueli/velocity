@@ -106,6 +106,7 @@
 	"projectPage": {
 		"tabs": {
 			"general": {
+				"forceBoardType": "Force board type for project",
 				"title": "General"
 			},
 			"groups": {
