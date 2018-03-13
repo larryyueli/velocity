@@ -50,10 +50,16 @@ block content
                                         .container.center
                                             button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
                                                 i.material-icons.right close
-                                            button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
-                                                i.material-icons.right save
-                                            button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
-                                                i.material-icons.right send
+                                            if isActive
+                                                button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.close')}
+                                                    i.material-icons.right remove_circle
+                                                button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.update')}
+                                                    i.material-icons.right send
+                                            else
+                                                button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
+                                                    i.material-icons.right save
+                                                button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
+                                                    i.material-icons.right send
                 if isProjectAdmin
                     #users
                         .card

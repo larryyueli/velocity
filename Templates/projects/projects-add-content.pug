@@ -6,8 +6,8 @@
     #description #{description ? description : ""}
 .row
     .col.s4
-        span #{__('projectPage.tabs.general.forceBoardType')}
-        .switch
+        span.left #{`${__('projectPage.tabs.general.forceBoardType')}:`}
+        .switch.left
             label
                 | #{__('switch.off')}
                 input(type='checkbox', name='forceBoardType', checked=boardTypeForced)#canForceBoardType

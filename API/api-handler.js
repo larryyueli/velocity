@@ -679,7 +679,8 @@ const handleProjectByIdPath = function (req, res) {
             isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
             description: projectObj.description,
             isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
-            isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
+            isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
+            isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value
         });
     });
 }
