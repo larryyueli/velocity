@@ -1066,7 +1066,9 @@ const handleProjectActivatePath = function (req, res) {
             }
 
             let members = projectObj.admins;
+            let teamsIds = [];
             for (let i = 0; i < teamsList.length; i++) {
+                teamsIds.push(teamsList[i]._id);
                 members = common_backend.joinSets(members, teamsList[i].members);
             }
 
@@ -1074,13 +1076,21 @@ const handleProjectActivatePath = function (req, res) {
                 status: common_backend.projectStatus.ACTIVE.value,
                 members: members
             };
+
             projects.updateProject(req.body.projectId, newProject, function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(400).send(err);
                 }
 
-                return res.status(200).send('ok');
+                projects.setTeamsBoardType(projectId, teamsIds, projectObj.boardType, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
             });
         });
     });

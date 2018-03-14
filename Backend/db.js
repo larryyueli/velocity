@@ -91,6 +91,7 @@ exports.addTeam = db_teams.addTeam;
 exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
 exports.getTeam = db_teams.getTeam;
 exports.updateTeam = db_teams.updateTeam;
+exports.updateTeams = db_teams.updateTeams;
 // </Teams Collection> ---------------------------------------------
 
 // <Tickets Collection> ----------------------------------------------

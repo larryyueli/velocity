@@ -250,6 +250,7 @@ exports.getProjectTeams = teams.getProjectTeams;
 exports.getTeamInProjectById = teams.getTeamInProjectById;
 exports.getTeamInProjectByName = teams.getTeamInProjectByName;
 exports.getTeamByUserId = teams.getTeamByUserId;
+exports.setTeamsBoardType = teams.setTeamsBoardType;
 exports.updateTeamInProject = teams.updateTeamInProject;
 // </teams> ----------------------------------
 

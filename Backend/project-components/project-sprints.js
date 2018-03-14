@@ -99,7 +99,6 @@ const updateSprint = function (searchQuery, updateQuery, callback) {
     db.updateSprint(searchQuery, updateQuery, callback);
 }
 
-
 /**
  * update sprints found by the search query
  *

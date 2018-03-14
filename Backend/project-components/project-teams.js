@@ -57,6 +57,7 @@ const addTeam = function (projectId, team, callback) {
     teamToAdd.name = team.name;
     teamToAdd.status = common.teamStatus.ACTIVE.value;
     teamToAdd.members = team.members;
+    teamToAdd.boardType = common.boardTypes.UNKNOWN.value;
 
     db.addTeam(teamToAdd, callback);
 }
@@ -127,6 +128,53 @@ const getTeamByUserId = function (projectId, userId, callback) {
 }
 
 /**
+ * set teams board type
+ *
+ * @param {string} projectId project id
+ * @param {array} teamIds team ids
+ * @param {number} boardType boardType
+ * @param {function} callback callback function
+ */
+const setTeamsBoardType = function (projectId, teamIds, boardType, callback) {
+    if (!common.isValueInObjectWithKeys(boardType, 'value', common.boardTypes)) {
+        return callback(common.getError(6007), null);
+    }
+
+    let teamsIdsList = [];
+    for (let i = 0; i < teamIds.length; i++) {
+        teamsIdsList.push({ _id: teamIds[i] });
+    }
+
+    if (teamsIdsList.length === 0) {
+        return callback(null, 'ok');
+    }
+
+    updateTeams({ $and: [{ $or: teamsIdsList }, { projectId: projectId }, { status: common.teamStatus.ACTIVE.value }] }, { $set: { boardType: boardType } }, callback);
+}
+
+/**
+ * update a single team found by the search query
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateTeam = function (searchQuery, updateQuery, callback) {
+    db.updateTeam(searchQuery, updateQuery, callback);
+}
+
+/**
+ * update teams found by the search query
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateTeams = function (searchQuery, updateQuery, callback) {
+    db.updateTeams(searchQuery, updateQuery, callback);
+}
+
+/**
  * Update a team under a project
  *
  * @param {string} teamId team id
@@ -134,7 +182,7 @@ const getTeamByUserId = function (projectId, userId, callback) {
  * @param {object} updateParams team object to add
  * @param {function} callback callback function
  */
-const updateTeam = function (teamId, projectId, updateParams, callback) {
+const updateTeamById = function (teamId, projectId, updateParams, callback) {
     let searchQuery = {};
     searchQuery.$and = {};
     let updateQuery = {};
@@ -158,6 +206,10 @@ const updateTeam = function (teamId, projectId, updateParams, callback) {
         updateQuery.$set.status = updateParams.status;
     }
 
+    if (common.isValueInObjectWithKeys(updateParams.boardType, 'value', common.boardTypes)) {
+        updateQuery.$set.boardType = updateParams.boardType;
+    }
+
     if (Array.isArray(updateParams.members)) {
         updateQuery.$set.members = updateParams.members;
     }
@@ -173,7 +225,7 @@ const updateTeam = function (teamId, projectId, updateParams, callback) {
     updateQuery.$set.mtime = common.getDate();
     updateQuery.$set.imtime = common.getISODate();
 
-    db.updateTeam(searchQuery, updateQuery, callback);
+    updateTeam(searchQuery, updateQuery, callback);
 }
 
 // <exports> -----------------------------------
@@ -183,5 +235,6 @@ exports.getTeamInProjectById = getTeamById;
 exports.getTeamInProjectByName = getTeamByName;
 exports.getTeamByUserId = getTeamByUserId;
 exports.initialize = initialize;
-exports.updateTeamInProject = updateTeam;
+exports.setTeamsBoardType = setTeamsBoardType;
+exports.updateTeamInProject = updateTeamById;
 // </exports> ----------------------------------
