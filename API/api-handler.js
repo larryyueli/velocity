@@ -384,8 +384,33 @@ const handleTeamsListComponentPath = function (req, res) {
                 return res.status(500).send(err);
             }
 
+            const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+            let resolvedTeamsList = [];
+
+            for (let i = 0; i < teamsList.length; i++) {
+                let team = teamsList[i];
+                let resolvedMembers = [];
+                for (let j = 0; j < team.members.length; j++) {
+                    let member = usersIdObj[team.members[j]];
+                    if (member) {
+                        resolvedMembers.push(`${member.fname} ${member.lname} - ${member.username}`);
+                    }
+                }
+                resolvedTeamsList.push({
+                    teamId: team._id,
+                    projectId: team.projectId,
+                    ctime: team.ctime,
+                    mtime: team.mtime,
+                    name: team.name,
+                    members: resolvedMembers,
+                    newTickets: 4,
+                    progressTickets: 6,
+                    doneTickets: 1
+                });
+            }
+
             return res.status(200).send({
-                teamsList: teamsList
+                teamsList: resolvedTeamsList
             });
         });
     });

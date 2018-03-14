@@ -73,6 +73,23 @@ $(function () {
     /*
     $.ajax({
         type: 'GET',
+        url: '/components/teamsList',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
+
+    /*
+    $.ajax({
+        type: 'GET',
         url: '/components/ticketsList/activeSprint',
         data: {
             projectId: projectId,
