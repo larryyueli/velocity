@@ -276,6 +276,7 @@ app.post('/profile/update/picture', api.handleUpdateProfilePicturePath);
 app.post('/project/activate', api.handleProjectActivatePath);
 app.post('/project/admins/update', api.handleProjectAdminsUpdatePath);
 app.post('/project/close', api.handleProjectClosePath);
+app.post('/project/teams/update/boardType/me', api.handleProjectBoardTypeMePath);
 app.post('/project/teams/update', api.handleProjectTeamsUpdatePath);
 app.post('/project/teams/update/me', api.handleProjectTeamsUpdateMePath);
 app.post('/project/teams/config', api.handleProjectTeamsConfigPath);

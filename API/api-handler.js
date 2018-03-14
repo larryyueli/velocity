@@ -860,7 +860,8 @@ const handleProjectTeamsUpdatePath = function (req, res) {
                     }
                     resolvedTeamsList.push({
                         name: team.name,
-                        members: members
+                        members: members,
+                        boardType: projectObj.status === common_backend.projectStatus.ACTIVE.value ? projectObj.boardType : team.boardType
                     });
                 }
 
@@ -1228,6 +1229,64 @@ const handleProjectTeamsConfigPath = function (req, res) {
             }
 
             return res.status(200).send('ok');
+        });
+    });
+}
+
+/**
+ * path to update user's team board type
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectBoardTypeMePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const boardType = parseInt(req.body.boardType);
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common_backend.getError(2012)));
+            return res.status(403).send(common_backend.getError(2012));
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (teamObj.boardType !== common_backend.boardTypes.UNKNOWN.value) {
+                logger.error(JSON.stringify(common_backend.getError(1000)));
+                return res.status(400).send(common_backend.getError(1000));
+            }
+
+            if (boardType !== common_backend.boardTypes.KANBAN.value
+                && boardType !== common_backend.boardTypes.SCRUM.value) {
+                logger.error(JSON.stringify(common_backend.getError(1000)));
+                return res.status(400).send(common_backend.getError(1000));
+            }
+
+            projects.updateTeamInProject(teamObj._id, projectId, { boardType: boardType }, function (err, result) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                return res.status(200).send('ok');
+            });
         });
     });
 }
@@ -2661,6 +2720,7 @@ exports.handleProjectsAddPath = handleProjectsAddPath;
 exports.handleProjectActivatePath = handleProjectActivatePath;
 exports.handleProjectAdminsUpdatePath = handleProjectAdminsUpdatePath;
 exports.handleProjectClosePath = handleProjectClosePath;
+exports.handleProjectBoardTypeMePath = handleProjectBoardTypeMePath;
 exports.handleProjectTeamsUpdatePath = handleProjectTeamsUpdatePath;
 exports.handleProjectTeamsUpdateMePath = handleProjectTeamsUpdateMePath;
 exports.handleProjectTeamsConfigPath = handleProjectTeamsConfigPath;

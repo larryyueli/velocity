@@ -57,7 +57,7 @@ const addTeam = function (projectId, team, callback) {
     teamToAdd.name = team.name;
     teamToAdd.status = common.teamStatus.ACTIVE.value;
     teamToAdd.members = team.members;
-    teamToAdd.boardType = common.boardTypes.UNKNOWN.value;
+    teamToAdd.boardType = common.isValueInObjectWithKeys(team.boardType, 'value', common.boardTypes) ? team.boardType : common.boardTypes.UNKNOWN.value;
 
     db.addTeam(teamToAdd, callback);
 }
