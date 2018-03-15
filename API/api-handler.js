@@ -1841,6 +1841,7 @@ const handleProjectTeamPath = function (req, res) {
                     user: req.session.user,
                     project: projectObj,
                     team: resolvedTeamObj,
+                    ticketsList: ticketsObjList,
                     canSearch: true
                 });
             });
