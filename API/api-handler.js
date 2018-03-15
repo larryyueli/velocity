@@ -1824,7 +1824,8 @@ const handleProjectTeamPath = function (req, res) {
                         resolvedMembers.push({
                             fname: member.fname,
                             lname: member.lname,
-                            email: member.email
+                            email: member.email,
+                            picture: member.picture
                         });
                     }
                 }
