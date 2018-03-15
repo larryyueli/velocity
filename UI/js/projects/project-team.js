@@ -26,6 +26,11 @@ const teamId = splithref[6];
 $(function () {
     initSummernote(description);
     $(description).summernote('disable');
+    $(description).summernote({
+        disableDragAndDrop: true,
+        shortcuts: false
+    });
+    $('div.note-btn-group.btn-group button').remove();
 
     $(backButtonId).click(() => {
         window.location.href = '/projects';
