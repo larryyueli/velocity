@@ -410,33 +410,68 @@ const handleTeamsListComponentPath = function (req, res) {
 
             const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
             let resolvedTeamsList = [];
-
-            for (let i = 0; i < teamsList.length; i++) {
-                let team = teamsList[i];
-                let resolvedMembers = [];
-                for (let j = 0; j < team.members.length; j++) {
-                    let member = usersIdObj[team.members[j]];
-                    if (member) {
-                        resolvedMembers.push(`${member.fname} ${member.lname} - ${member.username}`);
+            if (teamsList.length !== 0) {
+                let finishedTeamsCount = 0;
+                for (let i = 0; i < teamsList.length; i++) {
+                    let team = teamsList[i];
+                    let resolvedMembers = [];
+                    for (let j = 0; j < team.members.length; j++) {
+                        let member = usersIdObj[team.members[j]];
+                        if (member) {
+                            resolvedMembers.push(`${member.fname} ${member.lname} - ${member.username}`);
+                        }
                     }
+                    projects.getTicketsByTeamId(projectId, team._id, function (err, ticketsList) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        let newCount = 0;
+                        let progressCount = 0;
+                        let doneCount = 0;
+                        for (let k = 0; k < ticketsList.length; k++) {
+                            let ticket = ticketsList[k];
+                            switch (ticket.state) {
+                                case common_backend.ticketStates.NEW.value:
+                                    newCount++;
+                                    break;
+                                case common_backend.ticketStates.DONE.value:
+                                    doneCount++;
+                                    break;
+                                default:
+                                    progressCount++;
+                                    break;
+                            }
+                        }
+
+                        resolvedTeamsList.push({
+                            teamId: team._id,
+                            projectId: team.projectId,
+                            ctime: team.ctime,
+                            mtime: team.mtime,
+                            name: team.name,
+                            members: resolvedMembers,
+                            newTickets: newCount,
+                            progressTickets: progressCount,
+                            doneTickets: doneCount
+                        });
+
+                        finishedTeamsCount++;
+                        if (finishedTeamsCount === teamsList.length) {
+                            return res.status(200).send({
+                                teamsList: resolvedTeamsList,
+                                teamRowHTML: common_api.pugComponents.teamEntryComponent()
+                            });
+                        }
+                    });
                 }
-                resolvedTeamsList.push({
-                    teamId: team._id,
-                    projectId: team.projectId,
-                    ctime: team.ctime,
-                    mtime: team.mtime,
-                    name: team.name,
-                    members: resolvedMembers,
-                    newTickets: 4,
-                    progressTickets: 6,
-                    doneTickets: 1
+            } else {
+                return res.status(200).send({
+                    teamsList: resolvedTeamsList,
+                    teamRowHTML: common_api.pugComponents.teamEntryComponent()
                 });
             }
-
-            return res.status(200).send({
-                teamsList: resolvedTeamsList,
-                teamRowHTML: common_api.pugComponents.teamEntryComponent()
-            });
         });
     });
 }
