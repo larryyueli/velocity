@@ -1816,11 +1816,27 @@ const handleProjectTeamPath = function (req, res) {
                     return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
+                const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                let resolvedMembers = [];
+                for (let i = 0; i < teamObj.members.length; i++) {
+                    let member = usersIdObj[teamObj.members[i]];
+                    if (member) {
+                        resolvedMembers.push(`${member.fname} ${member.lname}`);
+                    }
+                }
+                let resolvedTeamObj = {
+                    teamId: teamObj._id,
+                    projectId: teamObj.projectId,
+                    ctime: teamObj.ctime,
+                    mtime: teamObj.mtime,
+                    name: teamObj.name,
+                    members: resolvedMembers
+                };
+
                 return res.status(200).render(common_api.pugPages.projectTeam, {
                     user: req.session.user,
-                    projectId: projectId,
-                    teamId: teamId,
-                    ticketsList: ticketsObjList,
+                    project: projectObj,
+                    team: resolvedTeamObj,
                     canSearch: true
                 });
             });
