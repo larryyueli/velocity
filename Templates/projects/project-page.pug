@@ -15,7 +15,7 @@ block content
             .row
                 .col.s12
                     .row
-                        ul.tabs
+                        ul.tabs.overflow-x-hidden
                             li.tab.col.s3
                                 a.noLineLink.active#option-general(href='#general')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
@@ -187,6 +187,21 @@ block content
 
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
+                if isProjectAdmin
+                    #boards
+                        .row
+                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#teamsSearch(onclick='toggleVisibility($("#teamsFilter"))')
+                                i.material-icons search
+                        .row.hidden#teamsFilter
+                            form.col.s10.offset-s1
+                                .row
+                                    .input-field.col.s12
+                                        input#teamsSearchFilter.validate(type='text')
+                                        label(for='searchFilter')  #{__('users.searchFilter')}
+                        .row
+                            .col.s12
+                                #teamsload
+                                ul.collection.scroll-auto.margin-0#teamslist
 
     #groupCreateModal.modal
         .modal-content

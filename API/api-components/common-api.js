@@ -52,6 +52,7 @@ var pugComponents = {
     projectsGroupModalEntryComponent: null,
     projectsGroupUserEntryComponent: null,
     projectsUserEntryComponent: null,
+    teamEntryComponent: null,
     usersEntryComponent: null
 };
 exports.pugComponents = pugComponents;

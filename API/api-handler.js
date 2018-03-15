@@ -50,6 +50,7 @@ const initialize = function (pug, notificationsWS, callback) {
     common_api.pugComponents.projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
     common_api.pugComponents.projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
     common_api.pugComponents.projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
+    common_api.pugComponents.teamEntryComponent = pug.compileFile('Templates/projects/team-entry.pug');
     common_api.pugComponents.usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
     notifications_api.initialize(notificationsWS);
@@ -433,7 +434,8 @@ const handleTeamsListComponentPath = function (req, res) {
             }
 
             return res.status(200).send({
-                teamsList: resolvedTeamsList
+                teamsList: resolvedTeamsList,
+                teamRowHTML: common_api.pugComponents.teamEntryComponent()
             });
         });
     });
@@ -2150,7 +2152,7 @@ const handleProjectTeamTicketPath = function (req, res) {
 
 /**
  * root path for commenting on a ticket
- * 
+ *
  * @param {object} req req object
  * @param {object} res res object
  */

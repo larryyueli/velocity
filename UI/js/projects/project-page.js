@@ -32,6 +32,8 @@ var groupUserRow = null;
 var unassignedList = null;
 var projectAdminsList = null;
 var projectUsersList = null;
+var teamsList = null;
+var teamRow = null;
 
 // Permissions
 var isProjectAdmin = null;
@@ -47,7 +49,9 @@ const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
 const deleteAllGroupsId = '#deleteAllGroups';
 const deleteGroupId = '#deleteGroup';
+const doneTicketsId = '#doneTickets';
 const emailId = '#email';
+const goLinkId = '#goLink';
 const groupCreateModalId = '#groupCreateModal';
 const groupBodyId = '#groupBody';
 const groupIconId = '#groupIcon';
@@ -73,6 +77,8 @@ const membersId = '#members';
 const nameId = '#name';
 const newGroupNameId = '#newGroupName';
 const newGroupId = '#newGroup';
+const newTicketsId = '#newTickets';
+const progressTicketsId = '#progressTickets';
 const projectAdminsListId = '#projectAdminsList';
 const projectAdminsLoadId = '#projectAdminsLoad';
 const projectAdminsRowId = '#projectAdminsRow';
@@ -83,6 +89,10 @@ const removeId = '#remove';
 const saveAdminsConfigurationId = '#saveAdminsConfiguration';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
+const teamslistId = '#teamslist';
+const teamsloadId = '#teamsload';
+const teamsSearchId = '#teamsSearch';
+const teamsSearchFilterId = '#teamsSearchFilter';
 const titleId = '#title';
 const transferId = '#transfer';
 const typeId = '#type';
@@ -170,6 +180,11 @@ $(function () {
         startLoad(projectAdminsLoadId, projectAdminsListId);
         startLoad(projectUsersLoadId, projectUsersListId);
         displayAdminsList();
+    });
+
+    $(teamsSearchFilterId).on('keyup', function () {
+        startLoad(teamsloadId, teamslistId);
+        displayTeamList();
     });
 
     // Actions
@@ -298,6 +313,9 @@ $(function () {
     startLoad(projectAdminsLoadId, projectAdminsListId);
     startLoad(projectUsersLoadId, projectUsersListId);
     getUsersList();
+
+    startLoad(teamsloadId, teamslistId);
+    getTeamsList();
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -645,7 +663,7 @@ function generalActivateProject() {
     });
 }
 
-/** 
+/**
  * Closes a project
  */
 function generalCloseProject() {
@@ -676,7 +694,7 @@ function generalCloseProject() {
     });
 }
 
-/** 
+/**
  * Updates a project
  */
 function generalActiveUpdateProject() {
@@ -766,6 +784,33 @@ function nonAdminChangeGroup(action, groupName, callback) {
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * gets the list of both project admins and non project admins along with the
+ * HTML entry to bind
+ */
+function getTeamsList() {
+    $.ajax({
+        type: 'GET',
+        url: '/components/teamsList',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            teamRow = $(data.teamRowHTML);
+            teamsList = data.teamsList;
+            displayTeamList();
+        },
+        error: function (data) {
+          handle401And404(data);
+
+          $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+          $(teamsSearchId).addClass('hidden');
+
+          endLoad(teamsloadId, teamslistId);
         }
     });
 }
@@ -1540,3 +1585,58 @@ function deselectAllUsers() {
 }
 
 // ------------------------ End multiselect section -----------------------
+
+// ------------------------ Begin teams section -----------------------
+
+function displayTeamList() {
+    $(teamslistId).html('');
+    var rowPopulate = '';
+
+    teamsList.forEach(team => {
+        if (passTeamFilter(team)) {
+            $(teamslistId).append(fillTeamRow(team));
+        }
+    });
+
+    if ($(teamslistId).find('li').length === 0) {
+        $(teamslistId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
+    }
+
+    endLoad(teamsloadId, teamslistId);
+}
+
+function fillTeamRow(team) {
+    var bindedRow = teamRow;
+
+    bindedRow.find(iconId).html('assignment');
+    bindedRow.find(nameId).html(team.name);
+    bindedRow.find(newTicketsId).html(`${translate('newTickets')}: ${team.newTickets}`);
+    bindedRow.find(progressTicketsId).html(`${translate('progressTickets')}: ${team.progressTickets}`);
+    bindedRow.find(doneTicketsId).html(`${translate('doneTickets')}: ${team.doneTickets}`);
+    bindedRow.find(goLinkId)[0].href = `/project/${team.projectId}/team/${team.teamId}`;
+
+    if (team.members.length) {
+        bindedRow.find(membersId).html(`${translate('members')}:<br>${team.members.join('<br>')}`);
+    } else {
+        bindedRow.find(membersId).html(translate('noMembers'));
+    }
+
+    return bindedRow[0].outerHTML;
+}
+
+function passTeamFilter(team) {
+    const filterText = $(teamsSearchFilterId)[0].value.trim().toLowerCase();
+
+    // Team search filter
+    if (filterText !== '' &&
+        team.name.toLowerCase().indexOf(filterText) === -1 &&
+        team.members.every(user => {
+            return user.toLowerCase().indexOf(filterText) === -1
+        })) {
+        return false;
+    }
+
+    return true;
+}
+
+// ------------------------ End teams section -----------------------
