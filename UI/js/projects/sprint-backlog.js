@@ -61,7 +61,7 @@ $(function () {
 function getBacklog() {
     $.ajax({
         type: 'GET',
-        url: '/components/fullSprintsList',
+        url: '/components/team/backlog',
         data: {
             projectId: projectId,
             teamId: teamId

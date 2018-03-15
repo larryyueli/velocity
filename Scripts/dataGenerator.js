@@ -733,7 +733,7 @@ const getTicketIds = function (projectId, teamId, user, index) {
     const options = {
         hostname: config.hostName,
         port: config.httpsPort,
-        path: `/components/ticketsList?projectId=${projectId}&teamId=${teamId}`,
+        path: `/components/team/issues?projectId=${projectId}&teamId=${teamId}`,
         method: 'GET',
         rejectUnauthorized: false,
         headers: {

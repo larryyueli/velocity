@@ -45,7 +45,7 @@ $(function () {
 function getIssues() {
     $.ajax({
         type: 'GET',
-        url: '/components/ticketsList',
+        url: '/components/team/issues',
         data: {
             projectId: projectId,
             teamId: teamId

@@ -243,10 +243,10 @@ app.use(function (req, res, next) {
 app.get('/', api.handleRootPath);
 app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentPath);
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
+app.get('/components/team/backlog', api.handleProjectTeamSprintsFullListPath);
+app.get('/components/team/board', api.handleActiveSprintTicketsListComponentPath);
+app.get('/components/team/issues', api.handleTicketsListComponentPath);
 app.get('/components/teamsList', api.handleTeamsListComponentPath);
-app.get('/components/ticketsList', api.handleTicketsListComponentPath);
-app.get('/components/ticketsList/activeSprint', api.handleActiveSprintTicketsListComponentPath);
-app.get('/components/fullSprintsList', api.handleProjectTeamSprintsFullListPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
 app.get('/profilePicture/:pictureId', api.handleProfilePicturePath);

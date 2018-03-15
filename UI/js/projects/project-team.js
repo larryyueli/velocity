@@ -74,7 +74,7 @@ $(function () {
     /*
     $.ajax({
         type: 'GET',
-        url: '/components/fullSprintsList',
+        url: '/components/team/backlog',
         data: {
             projectId: projectId,
             teamId: teamId
@@ -109,7 +109,7 @@ $(function () {
     /*
     $.ajax({
         type: 'GET',
-        url: '/components/ticketsList/activeSprint',
+        url: '/components/team/board',
         data: {
             projectId: projectId,
             teamId: teamId
