@@ -10,35 +10,15 @@
             li.collection-item.center
                 span.title Team
                 br
-                | Group name
-            li.collection-item.avatar
-                i.material-icons.circle people
-                span.title Student 1
-                br
-                | student1
-                br
-                | Contact
-            li.collection-item.avatar
-                i.material-icons.circle people
-                span.title Student 2
-                br
-                | student2
-                br
-                | Contact
-            li.collection-item.avatar
-                i.material-icons.circle people
-                span.title Student 3
-                br
-                | student3
-                br
-                | Contact
-            li.collection-item.avatar
-                i.material-icons.circle people
-                span.title Student 4
-                br
-                | student4
-                br
-                | Contact
+                | #{team.name}
+            each member in team.members
+                li.collection-item.avatar
+                    img.circle(src=`/profilePicture/${member.picture}`, alt='')
+                    span.title #{member.fname} #{member.lname}
+                    br
+                    | #{member.username}
+                    br
+                    | #{member.email}
 .row
     .col.s12
         ul.collection
@@ -48,14 +28,16 @@
                 i.material-icons.circle people
                 span.title Deadline
                 br
-                | Impending doom written here
+                | We've got no deadlines as of yet, so this is here.
 .row
     .col.s12
         ul.collection
             li.collection-item
                 span.title Assigned tickets
-            li.collection-item.avatar
-                i.material-icons.circle people
-                span.title Ticket you are due to do
-                br
-                | Probably the same info as regular tickets in the backlog. Only if you are assigned to them though. Created too maybe
+            each ticket in ticketsList
+                if user._id === ticket.assignee
+                    li.collection-item.avatar
+                        i.material-icons.circle people
+                        span.title #{ticket.title}
+                        br
+                        | #{ticket.description}
