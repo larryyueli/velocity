@@ -1821,7 +1821,11 @@ const handleProjectTeamPath = function (req, res) {
                 for (let i = 0; i < teamObj.members.length; i++) {
                     let member = usersIdObj[teamObj.members[i]];
                     if (member) {
-                        resolvedMembers.push(`${member.fname} ${member.lname}`);
+                        resolvedMembers.push({
+                            fname: member.fname,
+                            lname: member.lname,
+                            email: member.email
+                        });
                     }
                 }
                 let resolvedTeamObj = {
