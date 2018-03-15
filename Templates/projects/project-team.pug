@@ -10,24 +10,6 @@ block title
 block content
     include ../navbar
     br
-    //.container
-    //    .row
-    //        button.btn.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left#backButton
-    //            i.material-icons arrow_back
-    //        button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
-    //            i.material-icons.right add
-    //    ul.collection
-    //        each ticket in ticketsList
-    //            li.collection-item.avatar
-    //                i.material-icons.circle.red note
-    //                span.title #{ticket.title}
-    //                p
-    //                    | First Line
-    //                    br
-    //                    | Second Line
-    //                a.secondary-content.ticketLink(href=`/project/${project._id}/team/${team._id}/ticket/${ticket._id}`)
-    //                    i.material-icons send
-
     .container
         .row
             button.btn.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left#backButton
@@ -77,10 +59,9 @@ block content
                     .card
                         h5 board test
                 #backlog
-                    include ../tickets/sprint-backlog
+                    include sprint-backlog
                 #issues
-                    .card
-                        h5 issues test
+                    include sprint-issues
                 #settings
                     .card
                         h5 settings test
@@ -90,5 +71,6 @@ block content
 
 block scripts
     script(src='/js/projects/project-team.js')
-    script(src='/js/tickets/sprint-backlog.js')
+    script(src='/js/projects/sprint-backlog.js')
+    script(src='/js/projects/sprint-issues.js')
     script(src='/summernote/summernote.js')

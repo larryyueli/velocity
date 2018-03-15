@@ -23,6 +23,14 @@ const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
 
+
+const assigneeAutocompleteIssueId = '#assigneeAutocompleteIssue';
+const assigneeAutocompleteId = '#assigneeAutocomplete';
+
+var selectedAssignee = null;
+var selectedAssigneeIssue = null;
+var usernamesArray = [];
+
 $(function () {
     initSummernote(description);
     $(description).summernote('disable');
@@ -39,6 +47,8 @@ $(function () {
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
+
+    getListOfAssignee();
 
     /*
     $.ajax({
@@ -114,3 +124,67 @@ $(function () {
         }
     });*/
 });
+
+
+/**
+ * list of possible assignee
+*/
+function getListOfAssignee() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/members/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let usersObj = {};
+            let usernameObj = {};
+            let nameObj = {};
+            for (let i = 0; i < data.length; i++) {
+                let user = data[i];
+                usersObj[`${user.fname} ${user.lname}`] = `/profilePicture/${user.picture}`;
+                usernameObj[`${user.fname} ${user.lname}`] = user.username;
+                nameObj[`${user.fname} ${user.lname}`] = `${user.fname} ${user.lname}`;
+                usernamesArray.push(user.username);
+            }
+            $(assigneeAutocompleteId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    selectedAssignee = nameObj[val];
+                    startLoad(sprintsLoadId, sprintsListId);
+                    displaySprintsList();
+                },
+                minLength: 0,
+            });
+            $(assigneeAutocompleteId).on('keyup', function() {
+                selectedAssignee = $(assigneeAutocompleteId)[0].value;
+                startLoad(sprintsLoadId, sprintsListId);
+                displaySprintsList();
+            });
+            $(assigneeAutocompleteIssueId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    selectedAssigneeIssue = nameObj[val];
+                    startLoad(issuesLoadId, issuesListId);
+                    displayIssuesList();
+                },
+                minLength: 0,
+            });
+            $(assigneeAutocompleteIssueId).on('keyup', function() {
+                selectedAssigneeIssue = $(assigneeAutocompleteIssueId)[0].value;
+                startLoad(issuesLoadId, issuesListId);
+                displayIssuesList();
+            });
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            endLoad(sprintsLoadId, sprintsListId);
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}

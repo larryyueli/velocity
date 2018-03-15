@@ -290,7 +290,7 @@ const handleTicketsListComponentPath = function (req, res) {
                 }
 
                 return res.status(200).send({
-                    ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                    issueEntryHTML: common_api.pugComponents.ticketEntryComponent(),
                     ticketsList: limitedTicketList
                 });
             });
