@@ -1824,13 +1824,14 @@ const handleProjectTeamPath = function (req, res) {
                         resolvedMembers.push({
                             fname: member.fname,
                             lname: member.lname,
+                            username: member.username,
                             email: member.email,
                             picture: member.picture
                         });
                     }
                 }
                 let resolvedTeamObj = {
-                    teamId: teamObj._id,
+                    _id: teamObj._id,
                     projectId: teamObj.projectId,
                     ctime: teamObj.ctime,
                     mtime: teamObj.mtime,
@@ -1842,7 +1843,6 @@ const handleProjectTeamPath = function (req, res) {
                     user: req.session.user,
                     project: projectObj,
                     team: resolvedTeamObj,
-                    ticketsList: ticketsObjList,
                     canSearch: true
                 });
             });
