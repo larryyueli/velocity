@@ -2,6 +2,7 @@ extends ../layout
 
 block styles
     link(rel='stylesheet' href='/stylesheets/css/projects.css')
+    link(rel='stylesheet' href='/summernote/summernote.css')
 
 block title
     title #{__('projects.title')}
@@ -71,8 +72,7 @@ block content
         .row
             .col.s12
                 #overview
-                    .card
-                        h5 overview test
+                    include project-overview
                 #board
                     .card
                         h5 board test
@@ -91,3 +91,4 @@ block content
 block scripts
     script(src='/js/projects/project-team.js')
     script(src='/js/tickets/sprint-backlog.js')
+    script(src='/summernote/summernote.js')

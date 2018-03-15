@@ -18,11 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const backButtonId = '#backButton'
 const createTicketButtonId = '#createTicketButton';
+const description = '#description';
 const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
 
 $(function () {
+    initSummernote(description);
+    $(description).summernote('disable');
+
     $(backButtonId).click(() => {
         window.location.href = '/projects';
     });
