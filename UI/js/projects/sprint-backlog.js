@@ -25,8 +25,6 @@ const issueCountId = '#issueCount';
 const sprintsListId = '#sprintsList';
 const titleId = '#title';
 
-
-
 const typeIconId = '#typeIcon';
 const priorityIconId = '#priorityIcon';
 const nameId = '#name';
@@ -36,10 +34,7 @@ const statusId = '#status';
 const imageId = '#image';
 
 const searchFilterId = '#searchFilter';
-const assigneeAutocompleteId = '#assigneeAutocomplete';
 const typeSelectionId = '#typeSelection';
-var selectedAssignee = null;
-var usernamesArray = [];
 
 const sprintsLoadId = '#sprintsLoad';
 const sprintHeaderId = '#sprintHeader';
@@ -60,58 +55,8 @@ $(function () {
     });
 
     startLoad(sprintsLoadId, sprintsListId);
-    getListOfAssignee();
     getBacklog();
 });
-
-/**
- * list of possible assignee
-*/
-function getListOfAssignee() {
-    $.ajax({
-        type: 'GET',
-        url: '/project/team/members/list',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            let usersObj = {};
-            let usernameObj = {};
-            let nameObj = {};
-            for (let i = 0; i < data.length; i++) {
-                let user = data[i];
-                usersObj[`${user.fname} ${user.lname}`] = `/profilePicture/${user.picture}`;
-                usernameObj[`${user.fname} ${user.lname}`] = user.username;
-                nameObj[`${user.fname} ${user.lname}`] = `${user.fname} ${user.lname}`;
-                usernamesArray.push(user.username);
-            }
-            $(assigneeAutocompleteId).autocomplete({
-                data: usersObj,
-                limit: 20,
-                onAutocomplete: function (val) {
-                    selectedAssignee = nameObj[val];
-                    startLoad(sprintsLoadId, sprintsListId);
-                    displaySprintsList();
-                },
-                minLength: 0,
-            });
-            $(assigneeAutocompleteId).on('keyup', function() {
-                selectedAssignee = $(assigneeAutocompleteId)[0].value;
-                startLoad(sprintsLoadId, sprintsListId);
-                displaySprintsList();
-            });
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            endLoad(sprintsLoadId, sprintsListId);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });
-}
-
 
 function getBacklog() {
     $.ajax({
@@ -223,8 +168,8 @@ function fillTicketRow(ticket) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (ticket.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="auto">');
-    }  else if (ticket.type === 3) {
-        bindedRow.find(typeIconId).html('<img src=/img/icon-purchase-order.png" alt="" height="25" width="auto">');
+    }  else if (ticket.type === 2) {
+        bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="auto">');
     }
 
     if (ticket.priority === 0 ) {
