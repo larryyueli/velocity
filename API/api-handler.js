@@ -265,9 +265,32 @@ const handleTicketsListComponentPath = function (req, res) {
                     return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
+                const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                let limitedTicketList = [];
+                for (let i = 0; i < ticketsObjList.length; i++) {
+                    let ticket = ticketsObjList[i];
+                    let ticketAssignee = usersObj[ticket.assignee];
+                    let ticketReporter = usersObj[ticket.reporter];
+                    limitedTicketList.push({
+                        _id: ticket._id,
+                        ctime: ticket.ctime,
+                        mtime: ticket.mtime,
+                        displayId: ticket.displayId,
+                        title: ticket.title,
+                        state: ticket.state,
+                        type: ticket.type,
+                        assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
+                        reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                        assigneePicture: ticketAssignee ? ticketAssignee.picture : null,
+                        reporterPicture: ticketReporter ? ticketReporter.picture : null,
+                        priority: ticket.priority,
+                        points: ticket.points
+                    });
+                }
+
                 return res.status(200).send({
                     ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                    ticketsList: ticketsObjList
+                    ticketsList: limitedTicketList
                 });
             });
         });
