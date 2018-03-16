@@ -98,6 +98,10 @@ function updateTicketAction() {
         return warningSnackbar(translate('descriptionCanNotBeEmpty'));
     }
 
+    if ($(assigneeAutocompleteId).val().trim().length === 0) {
+        selectedAssignee = 'No Assignee';
+    }
+
     $.ajax({
         type: 'POST',
         url: '/tickets/update',

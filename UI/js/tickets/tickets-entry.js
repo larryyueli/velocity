@@ -85,6 +85,10 @@ function createTicketAction() {
         return warningSnackbar(translate('descriptionCanNotBeEmpty'));
     }
 
+    if ($(assigneeAutocompleteId).val().trim().length === 0) {
+        selectedAssignee = 'No Assignee';
+    }
+
     $.ajax({
         type: 'PUT',
         url: '/tickets/create',

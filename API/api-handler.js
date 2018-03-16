@@ -340,19 +340,34 @@ const handleActiveSprintTicketsListComponentPath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                projects.getTicketsByIds(projectId, teamId, activeSprintObj.tickets, function (err, ticketsObjList) {
+                let activeSprintTickets = activeSprintObj ? activeSprintObj.tickets : [];
+                projects.getTicketsByIds(projectId, teamId, activeSprintTickets, function (err, ticketsObjList) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
 
                     const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
-                    let limitedTicketList = [];
+                    let board = {};
                     for (let i = 0; i < ticketsObjList.length; i++) {
                         let ticket = ticketsObjList[i];
                         let ticketAssignee = usersObj[ticket.assignee];
                         let ticketReporter = usersObj[ticket.reporter];
-                        limitedTicketList.push({
+                        let resolvedTicketAssignee = ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee;
+                        let resolvedTicketReporter = ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noAssignee;
+
+                        if (!board[resolvedTicketAssignee]) {
+                            board[resolvedTicketAssignee] = {
+                                new: [],
+                                inDevelopment: [],
+                                codeReview: [],
+                                readyForTest: [],
+                                inTest: [],
+                                done: []
+                            };
+                        }
+
+                        let limitedTicket = {
                             _id: ticket._id,
                             ctime: ticket.ctime,
                             mtime: ticket.mtime,
@@ -360,18 +375,41 @@ const handleActiveSprintTicketsListComponentPath = function (req, res) {
                             title: ticket.title,
                             state: ticket.state,
                             type: ticket.type,
-                            assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
-                            reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                            assignee: resolvedTicketAssignee,
+                            reporter: resolvedTicketReporter,
                             assigneePicture: ticketAssignee ? ticketAssignee.picture : null,
                             reporterPicture: ticketReporter ? ticketReporter.picture : null,
                             priority: ticket.priority,
                             points: ticket.points
-                        });
+                        };
+
+                        switch (limitedTicket.state) {
+                            case common_backend.ticketStates.NEW.value:
+                                board[resolvedTicketAssignee].new.push(limitedTicket);
+                                break;
+                            case common_backend.ticketStates.IN_DEVELOPMENT.value:
+                                board[resolvedTicketAssignee].inDevelopment.push(limitedTicket);
+                                break;
+                            case common_backend.ticketStates.CODE_REVIEW.value:
+                                board[resolvedTicketAssignee].codeReview.push(limitedTicket);
+                                break;
+                            case common_backend.ticketStates.READY_FOR_TEST.value:
+                                board[resolvedTicketAssignee].readyForTest.push(limitedTicket);
+                                break;
+                            case common_backend.ticketStates.IN_TEST.value:
+                                board[resolvedTicketAssignee].inTest.push(limitedTicket);
+                                break;
+                            case common_backend.ticketStates.DONE.value:
+                                board[resolvedTicketAssignee].done.push(limitedTicket);
+                                break;
+                            default:
+                                break;
+                        }
                     }
 
                     return res.status(200).send({
                         ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                        ticketsList: limitedTicketList
+                        board: board
                     });
                 });
             });
@@ -1730,6 +1768,8 @@ const handleTicketsUpdatePath = function (req, res) {
                                 ctime: common_backend.getDate()
                             };
                         }
+                    } else {
+                        updatedTicket.assignee = common_backend.noAssignee;
                     }
 
                     if (Array.isArray(sprints)) {
