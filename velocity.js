@@ -286,6 +286,7 @@ app.post('/tickets/update', api.handleTicketsUpdatePath);
 app.post('/tickets/comment/edit', api.handleTicketsCommentEditPath);
 app.post('/settings/reset', api.handleSettingsResetPath);
 app.post('/settings/update', api.handleSettingsUpdatePath);
+app.post('/sprints/close', api.handleSprintsClosePath);
 app.post('/users/update', api.handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
@@ -305,6 +306,7 @@ app.delete('/logout', api.handleLogoutPath);
 app.delete('/project/delete', api.handleProjectDeletePath);
 app.delete('/notification/delete', api.handleNotificationDeletePath);
 app.delete('/notifications/delete/all', api.handleDeleteAllNotificationsPath);
+app.delete('/sprints/delete', api.handleDeleteSprintPath);
 // </Delete Requests> -----------------------------------------------
 
 /**

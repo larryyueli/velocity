@@ -2218,7 +2218,8 @@ const handleProjectTeamTicketPath = function (req, res) {
 
                                 return resolvedContent.trim();
                             },
-                            canSearch: true
+                            canSearch: true,
+                            commonSprintState: common_backend.sprintStates
                         });
                     });
                 });
@@ -2428,6 +2429,127 @@ const handleCommentDeletePath = function (req, res) {
 
                         return res.status(200).send('ok');
                     });
+                });
+            });
+        });
+    });
+}
+
+/**
+ * root path to delete a sprint
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleDeleteSprintPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    const sprintId = req.body.sprintId;
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getSprintById(projectId, teamId, sprintId, function (err, sprintObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                if (sprintObj.state !== common_backend.sprintStates.OPEN.value) {
+                    logger.error(JSON.stringify(common_backend.getError(2019)));
+                    return res.status(400).send(common_backend.getError(2019));
+                }
+
+                let updatedSprint = { status: common_backend.sprintStatus.DELETED.value };
+                projects.updateSprintById(sprintId, teamId, projectId, updatedSprint, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            });
+        });
+    });
+}
+
+/**
+ * root path to close a sprint
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleSprintsClosePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    const sprintId = req.body.sprintId;
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getSprintById(projectId, teamId, sprintId, function (err, sprintObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let updatedSprint = { state: common_backend.sprintStates.CLOSED.value };
+                projects.updateSprintById(sprintId, teamId, projectId, updatedSprint, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
                 });
             });
         });
@@ -2875,6 +2997,7 @@ exports.handleProjectUpdatePath = handleProjectUpdatePath;
 exports.handleProjectActiveUpdatePath = handleProjectActiveUpdatePath;
 exports.handleTicketsUpdatePath = handleTicketsUpdatePath;
 exports.handleTicketsCommentEditPath = handleTicketsCommentEditPath;
+exports.handleSprintsClosePath = handleSprintsClosePath;
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
@@ -2883,6 +3006,7 @@ exports.handleTicketsCreatePath = handleTicketsCreatePath;
 exports.handleTicketsCommentPath = handleTicketsCommentPath;
 exports.handleProjectDeletePath = handleProjectDeletePath;
 exports.handleCommentDeletePath = handleCommentDeletePath;
+exports.handleDeleteSprintPath = handleDeleteSprintPath;
 // </Put Requests> -----------------------------------------------
 
 // <Settings Requests> ------------------------------------------------
