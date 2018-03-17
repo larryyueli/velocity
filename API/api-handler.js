@@ -1632,6 +1632,10 @@ const handleTicketsCreatePath = function (req, res) {
                         return res.status(500).send(err);
                     }
 
+                    if (ticketObj.assignee !== common_backend.noAssignee) {
+                        notifications_api.pushNotificationByUserId(ticketObj.assignee, `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`, common_backend.notifications.TICKET_ASSINGEE);
+                    }
+
                     if (Array.isArray(sprints)) {
                         projects.getSprintsByIds(projectId, teamId, sprints, function (err, sprintsList) {
                             if (err) {
@@ -2728,7 +2732,7 @@ const handleProjectTeamSprintsListPath = function (req, res) {
                 return res.status(400).send(common_backend.getError(2019));
             }
 
-            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+            projects.getAvailableSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
@@ -2816,7 +2820,7 @@ const handleProjectTeamSprintsFullListPath = function (req, res) {
                     });
                 }
 
-                projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+                projects.getAvailableSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);

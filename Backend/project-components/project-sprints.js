@@ -211,6 +211,17 @@ const getSprintsByTicketId = function (projectId, teamId, callback) {
 }
 
 /**
+ * find the list of active or open sprints
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getAvailableSprintsByTeamId = function (projectId, teamId, callback) {
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }, { state: { $ne: common.sprintStates.CLOSED.value } }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
  * find the active sprint under a team
  *
  * @param {string} projectId project id
@@ -314,6 +325,7 @@ const updateSprintById = function (sprintId, teamId, projectId, updateParams, ca
 exports.addSprint = addSprint;
 exports.addTicketToSprints = addTicketToSprints;
 exports.getActiveSprint = getActiveSprint;
+exports.getAvailableSprintsByTeamId = getAvailableSprintsByTeamId;
 exports.getSprintById = getSprintById;
 exports.getSprintsByIds = getSprintsByIds;
 exports.getSprintsByTeamId = getSprintsByTeamId;

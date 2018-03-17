@@ -192,6 +192,13 @@ const defaultError = 'unknown error';
 exports.defaultError = defaultError;
 // </Global Errors> ------------------------------------------
 
+// <Global Notifications> -------------------------------------------
+const notifications = Object.freeze({
+    TICKET_ASSINGEE: { name: 'You have been assigned to a ticket', type: 'assignment_ind' }
+});
+exports.notifications = notifications;
+// </Global Notifications> ------------------------------------------
+
 // <Global Constants> ------------------------------------------
 // all user types
 const userTypes = Object.freeze({

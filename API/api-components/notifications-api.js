@@ -103,14 +103,15 @@ setInterval(function () {
  * push a notification to a user
  *
  * @param {string} userId user id
+ * @param {string} link link used to redirect the user
  * @param {object} notificationObj notification obj
- * @param {function} callback callback function
  */
-const pushNotificationByUserId = function (userId, notificationObj, callback) {
+const pushNotificationByUserId = function (userId, link, notificationObj) {
+    notificationObj.userId = userId;
+    notificationObj.link = link;
     notifications.addNotification(notificationObj, function (err, resultObj) {
         if (err) {
-            logger.error(JSON.stringify(err));
-            return callback(err, null);
+            return logger.error(JSON.stringify(err));
         }
 
         for (let client of notificationsWS.clients) {
@@ -122,8 +123,6 @@ const pushNotificationByUserId = function (userId, notificationObj, callback) {
                 }
             }
         }
-
-        return callback(null, 'ok');
     });
 }
 
@@ -185,4 +184,5 @@ const initialize = function (nWS) {
 exports.deleteAllNotifications = deleteAllNotifications;
 exports.deleteNotification = deleteNotification;
 exports.initialize = initialize;
+exports.pushNotificationByUserId = pushNotificationByUserId;
 // </exports> -----------------------------------------------

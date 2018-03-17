@@ -235,6 +235,7 @@ exports.updateProject = updateProject;
 exports.addSprintToTeam = sprints.addSprint;
 exports.addTicketToSprints = sprints.addTicketToSprints;
 exports.getActiveSprintByTeamId = sprints.getActiveSprint;
+exports.getAvailableSprintsByTeamId = sprints.getAvailableSprintsByTeamId;
 exports.getSprintById = sprints.getSprintById;
 exports.getSprintsByIds = sprints.getSprintsByIds;
 exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
