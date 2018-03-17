@@ -104,7 +104,7 @@ block content
                                         each sprint in sprints
                                             .chip.sprint-chips(id=`${sprint._id}`)
                                                 | #{sprint.name}
-                                                if sprint.state === commonSprintState.OPEN.value
+                                                if sprint.state !== commonSprintState.CLOSED.value
                                                     i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) close
                                 .row
                                     .input-field.padding-10

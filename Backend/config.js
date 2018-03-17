@@ -50,7 +50,7 @@ exports.db_port = db_port;
 exports.db_name = db_name;
 
 // session related configuration
-const maxSessionAge = 60 * 60 * 1000;
+const maxSessionAge = 60 * 60;
 const sessionSecret = 'superSecretSecret';
 const sessionResave = false;
 const saveUninitializedSession = false;
