@@ -2,6 +2,7 @@ extends ../layout
 
 block styles
     link(rel='stylesheet' href='/stylesheets/css/project-team.css')
+    link(rel='stylesheet' href='/stylesheets/css/sprint-active.css')
     link(rel='stylesheet' href='/summernote/summernote.css')
 
 block title
@@ -56,8 +57,7 @@ block content
                 #overview
                     include project-overview
                 #board
-                    .card
-                        h5 board test
+                    include sprint-active
                 #backlog
                     include sprint-backlog
                 #issues
@@ -73,4 +73,5 @@ block scripts
     script(src='/js/projects/project-team.js')
     script(src='/js/projects/sprint-backlog.js')
     script(src='/js/projects/sprint-issues.js')
+    script(src='/js/projects/sprint-active.js')
     script(src='/summernote/summernote.js')

@@ -1,0 +1,26 @@
+// .board {
+//     td {
+//         background-color: gray;
+//     }
+//     table, th {
+//         border: 1px solid black;
+//         padding: 5px;
+//     }
+//     table {
+//         border-spacing: 15px;
+//     }
+//   }
+
+.board {
+    table {
+        border-collapse: separate;
+        border-spacing: 5px;
+    }
+
+    td {
+        background-color: lightgray;
+    }
+}
+.tickets-column {
+    background-color: lightgray;
+}
