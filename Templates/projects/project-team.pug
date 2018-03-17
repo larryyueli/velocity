@@ -51,23 +51,22 @@ block content
                                 i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour timeline
                                 |
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.analytics.title')}
-    .container
-        .row
-            .col.s12
-                #overview
-                    include project-overview
-                #board
-                    include sprint-active
-                #backlog
-                    include sprint-backlog
-                #issues
-                    include sprint-issues
-                #settings
-                    .card
-                        h5 settings test
-                #analytics
-                    .card
-                        h5 analytics test
+    .row.width-90
+        .col.s12
+            #overview
+                include project-overview
+            #board
+                include sprint-active
+            #backlog
+                include sprint-backlog
+            #issues
+                include sprint-issues
+            #settings
+                .card
+                    h5 settings test
+            #analytics
+                .card
+                    h5 analytics test
 
 block scripts
     script(src='/js/projects/project-team.js')

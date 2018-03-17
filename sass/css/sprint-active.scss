@@ -1,16 +1,3 @@
-// .board {
-//     td {
-//         background-color: gray;
-//     }
-//     table, th {
-//         border: 1px solid black;
-//         padding: 5px;
-//     }
-//     table {
-//         border-spacing: 15px;
-//     }
-//   }
-
 .board {
     table {
         border-collapse: separate;
@@ -18,9 +5,45 @@
     }
 
     td {
-        background-color: lightgray;
+        background-color: #ececec;
+        vertical-align: top;
+        width: 16.66666666%;
+    }
+
+    th {
+        text-align: center;
+        width: 16.66666666%;
+    }
+
+    .boardContents {
+        td {
+            padding: 0 3px !important;
+        }
     }
 }
-.tickets-column {
-    background-color: lightgray;
+
+.ticket {
+    margin-bottom: -15px;
+
+    .ticketTitle {
+        margin-bottom: -50px;
+    }
+
+    .profilePic {
+        max-width: 40px;
+        min-width: 25px;
+    }
+
+    .ticketPoints {
+        bottom: 20px;
+        position: absolute;
+        right: 0.75rem;
+    }
+
+    .truncateText {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+    }
 }
