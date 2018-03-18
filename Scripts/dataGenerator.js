@@ -264,7 +264,7 @@ const logUserIn = function (username) {
         res.on('data', (chunk) => { });
         res.on('end', () => {
             logger.info(`Logged in and stored the cookie of ${username}`);
-            userCookies.push({'username': username, 'cookie': res.headers['set-cookie'][0]});
+            userCookies.push({ 'username': username, 'cookie': res.headers['set-cookie'][0] });
             processedUsers++;
             let totalUsers;
             if (workingMode === common.modeTypes.CLASS) {
@@ -571,7 +571,7 @@ const getGroupIds = function (projectId) {
             logger.info(`Retrieved groupIds for project ${projectId}`);
             let groups = JSON.parse(projectGroups).teamsList;
             for (let i = 0; i < groups.length; i++) {
-                getGroupMembers(projectId, groups[i]._id);
+                getGroupMembers(projectId, groups[i].teamId);
             }
         });
     });
@@ -614,7 +614,7 @@ const getGroupMembers = function (projectId, groupId) {
             let teamObj = {
                 projectId: projectId,
                 teamId: groupId,
-                members: [] 
+                members: []
             };
             JSON.parse(groupMembers).forEach(user => {
                 teamObj.members.push(user.username);
@@ -641,9 +641,9 @@ const getGroupMembers = function (projectId, groupId) {
  * Generates all the tickets we will be adding
  */
 const createTickets = function () {
-    Object.keys(common.ticketStates).forEach( state => {
+    Object.keys(common.ticketStates).forEach(state => {
         for (let i = 0; i < numOfTicketsPerState; i++) {
-            Object.keys(common.ticketTypes).forEach( type => {
+            Object.keys(common.ticketTypes).forEach(type => {
                 ticketsList.push({
                     projectId: '',
                     teamId: '',
@@ -666,8 +666,8 @@ const createTickets = function () {
  * Pushes all created tickets to each group
  */
 const pushTickets = function () {
-    projectGroupIds.forEach( obj => {
-        ticketsList.forEach( ticket => {
+    projectGroupIds.forEach(obj => {
+        ticketsList.forEach(ticket => {
             ticket.projectId = obj.projectId;
             ticket.teamId = obj.teamId;
             ticket.assignee = obj.members[0];
@@ -752,8 +752,8 @@ const getTicketIds = function (projectId, teamId, user, index) {
             projectGroupIds[index].tickets = JSON.parse(ticketIdData).ticketsList;
             processedGroups++;
             if (processedGroups === numOfGroups) {
-                projectGroupIds.forEach( team => {
-                    team.tickets.forEach( ticket => {
+                projectGroupIds.forEach(team => {
+                    team.tickets.forEach(ticket => {
                         for (let z = 0; z < numOfCommentsPerTicket; z++) {
                             pushComment(team.projectId, team.teamId, ticket._id, team.members[0], z);
                         }
