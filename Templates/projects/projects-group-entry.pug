@@ -3,11 +3,11 @@ li#groupMembersList(ondragover="return false", ondrop="dragMovement(event)")
         i.material-icons assignment_ind
         .padding-right-5#title
         #groupSize
-        a.right.pointer(onclick='deleteGroup($(this))')#deleteGroup
+        a.right.pointer(onclick='deleteGroup($(this), event)')#deleteGroup
             i.material-icons close
-        a.right.pointer(onclick='joinGroup($(this))')#joinGroup
+        a.right.pointer(onclick='joinGroup($(this), null, event)')#joinGroup
             i.material-icons person_add
-        a.right.pointer(onclick='leaveGroup()')#leaveGroup
+        a.right.pointer(onclick='leaveGroup(event)')#leaveGroup
             i.material-icons backspace
     .collapsible-body.padding-0#groupBody
         ul.collection#assignedList

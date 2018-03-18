@@ -22,9 +22,13 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
+const db_comments = require('./dbs/db-comments.js');
+const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
 const db_settings = require('./dbs/db-settings.js');
+const db_sprints = require('./dbs/db-sprints.js');
 const db_teams = require('./dbs/db-teams.js');
+const db_tickets = require('./dbs/db-tickets.js');
 const db_users = require('./dbs/db-users.js');
 const db_vfs = require('./dbs/db-virtualFileSystem.js');
 
@@ -34,17 +38,21 @@ const db_vfs = require('./dbs/db-virtualFileSystem.js');
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    const url = `mongodb://${config.default_db_host}:${config.default_db_port}`;
+    const url = `mongodb://${config.db_host}:${config.db_port}`;
     mongoClient.connect(url, function (err, client) {
         if (err) {
             return callback(common.getError(1001), null);
         }
 
-        db_projects.initialize(client.db(config.default_db_name).collection('projects'));
-        db_settings.initialize(client.db(config.default_db_name).collection('settings'));
-        db_teams.initialize(client.db(config.default_db_name).collection('teams'));
-        db_users.initialize(client.db(config.default_db_name).collection('users'));
-        db_vfs.initialize(client.db(config.default_db_name).collection('virtualFileSystem'));
+        db_comments.initialize(client.db(config.db_name).collection('comments'));
+        db_notifications.initialize(client.db(config.db_name).collection('notifications'));
+        db_projects.initialize(client.db(config.db_name).collection('projects'));
+        db_settings.initialize(client.db(config.db_name).collection('settings'));
+        db_sprints.initialize(client.db(config.db_name).collection('sprints'));
+        db_teams.initialize(client.db(config.db_name).collection('teams'));
+        db_tickets.initialize(client.db(config.db_name).collection('tickets'));
+        db_users.initialize(client.db(config.db_name).collection('users'));
+        db_vfs.initialize(client.db(config.db_name).collection('virtualFileSystem'));
 
         return callback(null, 'ok');
     });
@@ -83,4 +91,36 @@ exports.addTeam = db_teams.addTeam;
 exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
 exports.getTeam = db_teams.getTeam;
 exports.updateTeam = db_teams.updateTeam;
+exports.updateTeams = db_teams.updateTeams;
 // </Teams Collection> ---------------------------------------------
+
+// <Tickets Collection> ----------------------------------------------
+exports.addTicket = db_tickets.addTicket;
+exports.getLimitedTicketsListSorted = db_tickets.getLimitedTicketsListSorted;
+exports.getTicket = db_tickets.getTicket;
+exports.updateTicket = db_tickets.updateTicket;
+// </Tickets Collection> ---------------------------------------------
+
+
+// <Comments Collection> ----------------------------------------------
+exports.addComment = db_comments.addComment;
+exports.getLimitedCommentsListSorted = db_comments.getLimitedCommentsListSorted;
+exports.getComment = db_comments.getComment;
+exports.updateComment = db_comments.updateComment;
+// </Comments Collection> ---------------------------------------------
+
+// <Notifications Collection> ----------------------------------------------
+exports.addNotification = db_notifications.addNotification;
+exports.deleteNotifications = db_notifications.deleteNotifications;
+exports.getLimitedNotificationsListSorted = db_notifications.getLimitedNotificationsListSorted;
+exports.getNotification = db_notifications.getNotification;
+exports.updateNotification = db_notifications.updateNotification;
+// </Notifications Collection> ---------------------------------------------
+
+// <Sprints Collection> ----------------------------------------------
+exports.addSprint = db_sprints.addSprint;
+exports.getLimitedSprintsListSorted = db_sprints.getLimitedSprintsListSorted;
+exports.getSprint = db_sprints.getSprint;
+exports.updateSprint = db_sprints.updateSprint;
+exports.updateSprints = db_sprints.updateSprints;
+// </Sprints Collection> ---------------------------------------------

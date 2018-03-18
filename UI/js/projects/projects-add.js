@@ -16,6 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const boardSelection = '#boardSelection';
+const boardSelectionRow = $('#boardSelectionRow');
+const canForceBoardType = '#canForceBoardType';
 const navProjectsId = '#nav-projects';
 const navmProjectsId = '#navm-projects';
 const descriptionId = '#description';
@@ -28,6 +31,16 @@ $(function () {
 
     $('select').material_select();
 
+    $(canForceBoardType).change(() => {
+        if ($(canForceBoardType).is(':checked')) {
+            boardSelectionRow.show();
+        } else {
+            boardSelectionRow.hide();
+        }
+    });
+
+    $(canForceBoardType).change();
+
     $(projectAddform).submit(function (evt) {
         evt.preventDefault();
 
@@ -37,13 +50,17 @@ $(function () {
 
         const titleText = $(titleId).val();
         const descriptionText = $(descriptionId).summernote('code');
+        const boardType = $(boardSelection).val();
+        const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
 
         $.ajax({
             type: 'PUT',
             url: '/projects/create',
             data: {
                 title: titleText,
-                description: descriptionText
+                description: descriptionText,
+                boardType: boardType,
+                canForceBoardType: canForceBoardTypeValue
             },
             success: function (data) {
                 window.location.href = `/project/${data}`;

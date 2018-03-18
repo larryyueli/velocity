@@ -1,0 +1,29 @@
+.row
+    .col.s12.l8
+        .card.center
+            .card-content
+                h5 #{project.title}
+            .card-action
+                #description #{project.description}
+    .col.s12.l4
+        ul.collection
+            li.collection-item.center
+                h5 #{team.name}
+            each member in team.members
+                li.collection-item.avatar
+                    img.circle(src=`/profilePicture/${member.picture}`, alt='')
+                    span.title #{member.fname} #{member.lname}
+                    br
+                    | #{member.username}
+                    br
+                    | #{member.email}
+.row
+    .col.s12
+        ul.collection
+            li.collection-item
+                span.title Deadlines
+            li.collection-item.avatar
+                i.material-icons.circle people
+                span.title Deadline
+                br
+                | We've got no deadlines as of yet, so this is here.

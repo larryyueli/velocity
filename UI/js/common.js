@@ -62,6 +62,7 @@ UI Translations for user display
 2000 -> system errors
 3000 -> settings errors
 4000 -> custom file system errors
+8000 -> comments
 */
 const translations = Object.freeze({
     //1000 system errors
@@ -81,7 +82,38 @@ const translations = Object.freeze({
     2008: 'Invalid profile picture extension',
     2009: 'Invalid users import file extension',
     2010: 'Permission denied',
-    2010: 'Password and confirm password do not match',
+    2011: 'Password and confirm password do not match',
+    2012: 'Project is already active',
+    2013: 'Project is already closed',
+    2014: 'Project is not in draft',
+    2015: 'Cant update team, invalid action',
+    2016: 'User is already in a team',
+    2017: 'User is not in a team',
+    2020: 'Cant exceed team size',
+    2021: 'Mismatching team names',
+    2022: 'Permission denied',
+    2023: 'Permission denied',
+    2024: 'Permission denied',
+    2025: 'Permission denied',
+    2026: 'Permission denied',
+    2027: 'Permission denied',
+    2028: 'Permission denied',
+    2029: 'Permission denied',
+    2030: 'Permission denied',
+    2031: 'Permission denied',
+    2032: 'Permission denied',
+    2033: 'Permission denied',
+    2034: 'Permission denied',
+    2035: 'Permission denied',
+    2036: 'Permission denied',
+    2037: 'Permission denied',
+    2038: 'Permission denied',
+    2039: 'Permission denied',
+    2040: 'Permission denied',
+    2041: 'Permission denied',
+    2042: 'Cant update project, project is in terminal status',
+    2043: 'Project is not active',
+    2044: 'Project is not active or closed',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
@@ -91,19 +123,55 @@ const translations = Object.freeze({
     //4000 custom file system errors
     4010: 'Permission denied',
 
+    //8000 comment
+    8001: 'Failed to add a comment',
+    8005: 'Failed to update comment',
+    8006: 'Failed to create a comment',
+    8007: 'Failed to update a comment',
+
+    activate: 'Activate',
+    activatedProject: 'Project has been activated',
+    closedProject: 'Project has been closed',
+    activateProjectPrompt: 'Are you sure you want to activate this project?',
+    adminConfigurationSuccess: 'Admins have been saved successfully',
+    alreadyInGroup: 'This user is already in this group',
+    cancel: 'Cancel',
+    close: 'Close',
+    closeProjectPrompt: 'Are you sure you want to close this project?',
     defaultError: 'Something went wrong, please try again!',
-    passwordsDontMatch: 'Passwords do not match',
-    uploadOnlyPicture: 'You can only upload one picture!',
-    noResultsFoundBasedOnSearch: 'No results found based on your search',
+    delete: 'Delete',
+    deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
+    deletedProject: 'Project has been deleted',
+    deleteProjectPrompt: 'Are you sure you want to delete this project?',
+    deletePremadeGroups: 'Would you like to delete the groups that are already made?',
+    doneTickets: 'Done Tickets',
+    emptyProjectDescription: 'Please enter your description in the editor.',
+    groupConfigurationSuccess: 'Groups have been saved successfully',
+    groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
+    groupNameAlreadyExists: 'Group name already exists',
+    groupNameCantBeEmpty: 'Group name can\'t be empty',
+    groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
+    groupSizeCantBeZero: 'Group size must be a positive integer',
+    issuesFound: 'issues found',
+    members: 'Members',
     mustBeCsv: 'File format must be csv!',
     mustImportOneFile: 'You can only import one file!',
-    successfulFileUpload: 'File uploaded successfully',
-    emptyProjectDescription: 'Please enter your description in the editor.',
+    newTickets: 'New Tickets',
+    noMembers: 'No Members',
+    noResultsFoundBasedOnSearch: 'No results found based on your search',
+    notInGroup: 'You are currently not in a group',
+    passwordsDontMatch: 'Passwords do not match',
+    progressTickets: 'In Progress Tickets',
+    randomize: 'Randomize',
+    randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
     selectGroup: 'Select Group',
     size: 'Size',
-    activatedProject: 'Project has been activated',
-    deletedProject: 'Project has been deleted',
+    successfulFileUpload: 'File uploaded successfully',
+    total: 'total',
+    uploadOnlyPicture: 'You can only upload one picture!',
+    update: 'Update',
     updatedProject: 'Project has been updated',
+    updateProjectPrompt: 'Are you sure you want to update the project with this new configuration?',
     alreadyInGroup: 'This user is already in this group',
     groupNameCantBeEmpty: 'Group name can\'t be empty',
     groupNamealreadyExists: 'Group name already exists',
@@ -114,10 +182,16 @@ const translations = Object.freeze({
     delete: 'Delete',
     cancel: 'Cancel',
     randomize: 'Randomize',
+    save: 'Save',
+    saveProjectPrompt: 'Are you sure you want to save the project with the current configurations?',
     groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
     groupConfigurationSuccess: 'Groups have been saved successfully',
+    adminConfigurationSuccess: 'Admins have been saved successfully',
     notInGroup: 'You are currently not in a group',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
+    titleCanNotBeEmpty: 'Title can not be empty!',
+    descriptionCanNotBeEmpty: 'Description can not be empty!',
+    commentCanNotBeEmpty: 'Comment can not be empty!',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',
@@ -125,6 +199,13 @@ const translations = Object.freeze({
     user3: 'Professor',
     user4: 'Teaching Assistant',
     user5: 'Student',
+
+    state0: 'New',
+    state1: 'In Development',
+    state2: 'Code Review',
+    state3: 'Ready For Test',
+    state4: 'In Test',
+    state5: 'Done',
 
     projectStatus0: 'Closed',
     projectStatus1: 'Draft',
@@ -197,11 +278,11 @@ function getNotification(notification) {
                         ${notification.name}
                     </a>
                     <span class="right right-icons">
-                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), ${notification.id})">keyboard_arrow_down</i>
-                        <span class="pointer clear-notification padding-right-10" id="${notification.id}-clear" onclick="clearNotification($(this), ${notification.id})">X</span>
+                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), '${notification._id}')">keyboard_arrow_down</i>
+                        <span class="pointer clear-notification padding-right-10" id="${notification._id}-clear" onclick="clearNotification($(this), '${notification._id}')">X</span>
                     </span>
                 </li>
-                <li class="full-description hidden" id="${notification.id}-desc">
+                <li class="full-description hidden" id="${notification._id}-desc">
                     ${notification.name}
                 </li>
             </span>`;
@@ -275,4 +356,87 @@ function handle401And404(data) {
     } else if (data['status'] === 404) {
         window.location.href = '/pageNotFound';
     }
+}
+
+
+/**
+ * toggle visibility
+ *
+ * @param {Object} element element
+ */
+function toggleVisibility(element) {
+    if (element.hasClass('hidden')) {
+        element.removeClass('hidden');
+        element.animateCss('fadeIn');
+    } else {
+        element.addClass('hidden');
+    }
+}
+
+/**
+ * Initialize the summernote and all its sub modal
+ *
+ * @param {Object} element element
+ */
+const initSummernote = function (descriptionId) {
+    $(descriptionId).summernote({ height: 200 });
+    $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
+    $('div.note-btn-group.btn-group.note-insert button').unbind();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
+        $('#mediaModal0').modal('open');
+        $('#mediaModal0 > div > div > div.modal-footer > button')
+            .unbind()
+            .removeClass('disabled')
+            .removeAttr('href')
+            .prop('disabled', false)
+            .prop('type', 'button')
+            .click(function () {
+                var text = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(1) > input').val();
+                var url = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(2) > input').val();
+                $(descriptionId).summernote('createLink', {
+                    text: text,
+                    url: url,
+                    isNewWindow: true
+                });
+                $('#mediaModal0').modal('close');
+            });
+        $('#mediaModal0 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal0').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').click(function () {
+        $('#mediaModal1').modal('open');
+        $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-select-from-files').hide();
+        $('#mediaModal1 > div > div > div.modal-footer > button')
+            .unbind()
+            .removeClass('disabled')
+            .removeAttr('href')
+            .prop('disabled', false)
+            .prop('type', 'button')
+            .click(function () {
+                var url = $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-image-url > input').val();
+                $(descriptionId).summernote('insertImage', url);
+                $('#mediaModal1').modal('close');
+            });
+        $('#mediaModal1 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal1').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
+        $('#mediaModal3').modal('open');
+        $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal3').modal('close');
+        });
+    });
+    $('.modal').modal({
+        dismissible: false
+    });
+    $('div.note-editor.note-frame.panel.panel-default .modal').each(function (i) {
+        $(this).attr('id', 'mediaModal' + i);
+        $('#mediaModal' + i + '> div > div').removeClass('modal-content');
+    });
+
+    $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
 }

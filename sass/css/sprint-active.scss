@@ -1,0 +1,49 @@
+.board {
+    table {
+        border-collapse: separate;
+        border-spacing: 5px;
+    }
+
+    td {
+        background-color: #ececec;
+        vertical-align: top;
+        width: 16.66666666%;
+    }
+
+    th {
+        text-align: center;
+        width: 16.66666666%;
+    }
+
+    .boardContents {
+        td {
+            padding: 0 3px !important;
+        }
+    }
+}
+
+.ticket {
+    margin-bottom: -15px;
+
+    .ticketTitle {
+        margin-bottom: -50px;
+    }
+
+    .profilePic {
+        max-width: 40px;
+        min-width: 25px;
+    }
+
+    .ticketPoints {
+        bottom: 20px;
+        position: absolute;
+        right: 0.75rem;
+    }
+
+    .truncateText {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+    }
+}

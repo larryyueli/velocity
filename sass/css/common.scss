@@ -1,11 +1,35 @@
 @import 'app.scss';
 
+.barrier-right {
+    border-right: 1px solid #464646;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.display-inline-flex {
+    display: inline-flex;
+}
+
+.display-flow-root {
+    display: flow-root;
+}
+
+.display-flex {
+    display: flex;
+}
+
 .full-width {
     width: 100% !important;
 }
 
 .padding-0 {
     padding: 0 !important;
+}
+
+.padding-left-0 {
+    padding-left: 0 !important;
 }
 
 .padding-right-0 {
@@ -40,6 +64,14 @@
     margin-top: 0px;
 }
 
+.margin-10 {
+    margin: 10 !important;
+}
+
+.margin-right-5 {
+    margin-right: 5px !important;
+}
+
 .margin-right-10 {
     margin-right: 10px !important;
 }
@@ -58,6 +90,14 @@
 
 .noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
     text-decoration: none;
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+
+.light-border {
+    border: 1px solid #e0e0e0;
 }
 
 .select-wrapper span.caret {
@@ -116,6 +156,12 @@
 .secondaryColour-background-colour {
     @include themify($themes) {
         background-color: themed('secondaryColour') !important;
+    }
+}
+
+.secondaryColour-border-colour {
+    @include themify($themes) {
+        border-color: themed('secondaryColour') !important;
     }
 }
 
@@ -193,4 +239,84 @@
 div.note-editor.note-frame.panel.panel-default{
     border: 1px solid #eaeaea;
     border-radius: 0px;
+}
+
+// Common elements
+.ticketPoints {
+    background: #666;
+    border: 2px solid #666;
+    border-radius: 100px;
+    color: #fff;
+    display: inline-block;
+    height: 25px;
+    min-width: 23px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+}
+
+.ticketStatus {
+    border-radius: 100px;
+    display: inline-block;
+    height: 25px;
+    min-width: 23px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+
+    &.state0 {
+        @include themify($themes) {
+            background: themed('standardBlue') !important;
+            border: 2px solid themed('standardBlue') !important;
+            color: #fff;
+        }
+    }
+
+    &.state1 {
+        @include themify($themes) {
+            background: themed('StandardYellow') !important;
+            border: 2px solid themed('StandardYellow') !important;
+            color: #000;
+        }
+    }
+
+    &.state2 {
+        @include themify($themes) {
+            background: themed('standardRed') !important;
+            border: 2px solid themed('standardRed') !important;
+            color: #000;
+        }
+    }
+
+    &.state3 {
+        @include themify($themes) {
+            background: themed('standardLightBlue') !important;
+            border: 2px solid themed('standardLightBlue') !important;
+            color: #000;
+        }
+    }
+
+    &.state4 {
+        @include themify($themes) {
+            background: themed('standardOrange') !important;
+            border: 2px solid themed('standardOrange') !important;
+            color: #fff;
+        }
+    }
+
+    &.state5 {
+        @include themify($themes) {
+            background: themed('standardGreen') !important;
+            border: 2px solid themed('standardGreen') !important;
+            color: #fff;
+        }
+    }
+}
+
+.clickable-item {
+    cursor: pointer;
+}
+
+.clickable-item:hover {
+    background-color: #ececec;
 }

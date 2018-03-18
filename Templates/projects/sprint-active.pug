@@ -1,0 +1,28 @@
+.row
+    .card.board
+        table(border='1')
+            tr
+                th TODO
+                th IN PROGRESS
+                th CODE REVIEW
+                th READY FOR TEST
+                th IN TEST
+                th DONE
+            tr.boardContents
+                td(valign="top")
+                    include ../tickets/board-entry
+                    include ../tickets/board-entry
+                td(valign="top")
+                    include ../tickets/board-entry
+                    include ../tickets/board-entry
+                    include ../tickets/board-entry
+                    include ../tickets/board-entry
+                td(valign="top")
+                    include ../tickets/board-entry
+                    include ../tickets/board-entry
+                td(valign="top")
+                td(valign="top")
+                    include ../tickets/board-entry
+                td(valign="top")
+                    include ../tickets/board-entry
+                    include ../tickets/board-entry

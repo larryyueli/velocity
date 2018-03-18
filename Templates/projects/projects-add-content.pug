@@ -4,6 +4,24 @@
         label(for='title') #{__('projects.form.fields.title')}
 .row
     #description #{description ? description : ""}
+.row
+    .col.s4
+        span.left #{`${__('projectPage.tabs.general.forceBoardType')}:`}
+        .switch.left
+            label
+                | #{__('switch.off')}
+                input(type='checkbox', name='forceBoardType', checked=forceBoardType, disabled=isActive)#canForceBoardType
+                span.lever
+                | #{__('switch.on')}
+    .col.s8
+        .input-field#boardSelectionRow
+            select(disabled=isActive).icons#boardSelection
+                option(value=1, selected=selectedBoardType!==2)
+                    | #{__('projects.type.kanban')}
+                option(value=2, selected=selectedBoardType===2)
+                    | #{__('projects.type.scrum')}
+            label
+                | #{__('projects.type.label')}
 
 block scripts
     script(src='/js/projects/projects-add-content.js')

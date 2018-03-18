@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const projectId = window.location.href.split('/project/')[1];
 
 // Global variables from the request
+var adminUserRow = null;
 var groupList = [];
 var groupModalEntryHTML = null;
 var groupModalHTML = null;
@@ -31,7 +32,8 @@ var groupUserRow = null;
 var unassignedList = null;
 var projectAdminsList = null;
 var projectUsersList = null;
-var adminUserRow = null;
+var teamsList = null;
+var teamRow = null;
 
 // Permissions
 var isProjectAdmin = null;
@@ -40,11 +42,16 @@ var isCollabMode = null;
 
 // Element Ids
 const assignedList = '#assignedList';
+const boardSelection = '#boardSelection';
+const boardSelectionRow = $('#boardSelectionRow');
+const canForceBoardType = '#canForceBoardType';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
 const deleteAllGroupsId = '#deleteAllGroups';
 const deleteGroupId = '#deleteGroup';
+const doneTicketsId = '#doneTickets';
 const emailId = '#email';
+const goLinkId = '#goLink';
 const groupCreateModalId = '#groupCreateModal';
 const groupBodyId = '#groupBody';
 const groupIconId = '#groupIcon';
@@ -55,7 +62,9 @@ const groupModalListId = '#groupModalList';
 const groupNameId = '#groupName';
 const groupPrefixId = '#groupPrefix';
 const groupPrefixLabelId = '#groupPrefixLabel';
+const groupsRowId = '#groupsRow';
 const groupSelection = $('#groupSelect');
+const groupSelectionCardId = '#groupSelectionCard';
 const groupSizeId = '#groupSize';
 const groupSizeLabelId = '#groupSizeLabel';
 const groupStatusId = '#groupStatus';
@@ -67,32 +76,45 @@ const leaveGroupId = '#leaveGroup';
 const membersId = '#members';
 const nameId = '#name';
 const newGroupNameId = '#newGroupName';
+const newGroupId = '#newGroup';
+const newTicketsId = '#newTickets';
+const progressTicketsId = '#progressTickets';
 const projectAdminsListId = '#projectAdminsList';
 const projectAdminsLoadId = '#projectAdminsLoad';
+const projectAdminsRowId = '#projectAdminsRow';
 const projectUsersListId = '#projectUsersList';
 const projectUsersLoadId = '#projectUsersLoad';
 const randomizeRemainingId = '#randomizeRemaining';
 const removeId = '#remove';
+const saveAdminsConfigurationId = '#saveAdminsConfiguration';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
+const teamslistId = '#teamslist';
+const teamsloadId = '#teamsload';
+const teamsSearchId = '#teamsSearch';
+const teamsSearchFilterId = '#teamsSearchFilter';
 const titleId = '#title';
 const transferId = '#transfer';
 const typeId = '#type';
 const unassignedLoadId = '#unassignedLoad'
 const unassignedUserListId = '#unassignedList';
 const unassignedUserListName = 'unassignedList';
+const unassignedUsersRowId = '#unassignedUsersRow';
 const userGroupId = '#userGroup';
 
 // Options in the select
 const optionGroups = $('#option-groups');
 
 // Filter Ids
+const adminsSearchId = '#adminsSearch';
+const groupsSearchId = '#groupsSearch';
 const groupSizeFilterId = '#groupSizeFilter';
 const searchAdminFilterId = '#searchAdminFilter';
 const searchGroupFilterId = '#searchGroupFilter';
 const searchUserFilterId = '#searchUserFilter';
 const typeFilterId = '#typeFilter';
 const typeAdminFilterId = '#typeAdminFilter';
+const unassignedSearchId = '#unassignedSearch';
 
 // Modal Ids
 const groupModalId = '#groupModal';
@@ -101,8 +123,12 @@ const modalTriggerId = '#modalTrigger';
 
 // General settings Ids
 const generalActivateButtonId = '#generalActivateButton';
+const generalActiveUpdateButtonId = '#generalActiveUpdateButton';
+const generalCloseButtonId = '#generalCloseButton';
 const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
+const generalCloseButton = '#generalCloseButton';
+const generalActiveUpdateButton = '#generalActiveUpdateButton';
 
 // Navbar Ids
 const navmProjectsId = '#navm-projects';
@@ -156,6 +182,11 @@ $(function () {
         displayAdminsList();
     });
 
+    $(teamsSearchFilterId).on('keyup', function () {
+        startLoad(teamsloadId, teamslistId);
+        displayTeamList();
+    });
+
     // Actions
     $(randomizeRemainingId).click(() => {
         if (!groupSize || groupSize < 1) {
@@ -176,6 +207,10 @@ $(function () {
 
     $(saveGroupConfigurationId).click(() => {
         saveGroupConfiguration();
+    });
+
+    $(saveAdminsConfigurationId).click(() => {
+        saveAdminsConfiguration();
     });
 
     $(groupStatusId).on('change', function () {
@@ -224,7 +259,7 @@ $(function () {
         if (groupName === '') {
             failSnackbar(translate('groupNameCantBeEmpty'));
         } else if (groupList.find(group => group.name === groupName)) {
-            failSnackbar(translate('groupNamealreadyExists'));
+            failSnackbar(translate('groupNameAlreadyExists'));
         } else {
             groupList.push(makeGroupObject(false, [], groupName));
 
@@ -254,10 +289,21 @@ $(function () {
         }
     });
 
+    $(canForceBoardType).change(() => {
+        if ($(canForceBoardType).is(':checked')) {
+            boardSelectionRow.show();
+        } else {
+            boardSelectionRow.hide();
+        }
+    });
+
     // General actions
     $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
+    $(generalCloseButton).click(() => { generalCloseProject(); });
+    $(generalActiveUpdateButton).click(() => { generalActiveUpdateProject(); });
+    $(canForceBoardType).change();
 
     // Loads the groups and unassigned users, and starts the loaders
     startLoad(groupLoadId, groupListId);
@@ -268,20 +314,8 @@ $(function () {
     startLoad(projectUsersLoadId, projectUsersListId);
     getUsersList();
 
-    /*
-    $.ajax({
-        type: 'POST',
-        url: '/project/teams/update/me',
-        data: {projectId: projectId, action:"remove", teamName:"asdasdasdasd"},
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
+    startLoad(teamsloadId, teamslistId);
+    getTeamsList();
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -456,8 +490,23 @@ function getGroupAssign() {
         error: function (data) {
             handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            $(groupListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(unassignedUserListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+
+            $(unassignedSearchId).addClass('hidden');
+            $(groupsSearchId).addClass('hidden');
+            $(saveGroupConfigurationId).addClass('hidden');
+            $(deleteAllGroupsId).addClass('hidden');
+            $(newGroupId).addClass('hidden');
+            $(randomizeRemainingId).addClass('hidden');
+            $(groupSelectionCardId).addClass('hidden');
+            $(groupsRowId).addClass('hidden');
+            $(unassignedUsersRow).addClass('hidden');
+            $(groupListId).addClass('light-border');
+            $(groupListId).removeClass('collapsible');
+
+            endLoad(groupLoadId, groupListId);
+            endLoad(unassignedLoadId, unassignedUserListId);
         }
     });
 }
@@ -466,20 +515,29 @@ function getGroupAssign() {
  * delete a project
  */
 function generalDeleteProject() {
-    $.ajax({
-        type: 'DELETE',
-        url: '/project/delete',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-            window.location.href = '/projects';
-        },
-        error: function (data) {
-            handle401And404(data);
+    swal({
+        text: translate('deleteProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canDelete => {
+        if (canDelete) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/project/delete',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    window.location.href = '/projects';
+                },
+                error: function (data) {
+                    handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -508,26 +566,18 @@ function saveGroupConfiguration() {
 }
 
 /**
- * update a project
+ * Updates the admin configuration
  */
-function generalSaveProject() {
-    if ($(descriptionId).summernote('isEmpty')) {
-        return warningSnackbar(translate('emptyProjectDescription'));
-    }
-
-    const titleText = $(titleId).val();
-    const descriptionText = $(descriptionId).summernote('code');
-
+function saveAdminsConfiguration() {
     $.ajax({
         type: 'POST',
-        url: '/project/update',
+        url: '/project/admins/update',
         data: {
             projectId: projectId,
-            title: titleText,
-            description: descriptionText
+            adminsList: projectAdminsList ? projectAdminsList : []
         },
         success: function (data) {
-            successSnackbar(translate('updatedProject'));
+            successSnackbar(translate('adminConfigurationSuccess'));
         },
         error: function (data) {
             handle401And404(data);
@@ -539,17 +589,195 @@ function generalSaveProject() {
 }
 
 /**
+ * update a project
+ */
+function generalSaveProject() {
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('emptyProjectDescription'));
+    }
+
+    const titleText = $(titleId).val();
+    const descriptionText = $(descriptionId).summernote('code');
+    const boardType = $(boardSelection).val();
+    const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
+
+    swal({
+        text: translate('saveProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('save')]
+    }).then(canSave => {
+        if (canSave) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/update',
+                data: {
+                    projectId: projectId,
+                    title: titleText,
+                    description: descriptionText,
+                    boardType: boardType,
+                    canForceBoardType: canForceBoardTypeValue
+                },
+                success: function (data) {
+                    successSnackbar(translate('updatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
  * activate a project
  */
 function generalActivateProject() {
+    swal({
+        text: translate('activateProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('activate')]
+    }).then(canActivate => {
+        if (canActivate) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/activate',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    successSnackbar(translate('activatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Closes a project
+ */
+function generalCloseProject() {
+    swal({
+        text: translate('closeProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('close')]
+    }).then(canClose => {
+        if (canClose) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/close',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    successSnackbar(translate('closedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Updates a project
+ */
+function generalActiveUpdateProject() {
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('emptyProjectDescription'));
+    }
+
+    const titleText = $(titleId).val();
+    const descriptionText = $(descriptionId).summernote('code');
+
+    swal({
+        text: translate('updateProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('update')]
+    }).then(canUpdate => {
+        if (canUpdate) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/update/active',
+                data: {
+                    projectId: projectId,
+                    title: titleText,
+                    description: descriptionText
+                },
+                success: function (data) {
+                    successSnackbar(translate('updatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * gets the list of both project admins and non project admins along with the
+ * HTML entry to bind
+ */
+function getUsersList() {
     $.ajax({
-        type: 'POST',
-        url: '/project/activate',
+        type: 'GET',
+        url: '/components/projectsAdminsList',
         data: {
             projectId: projectId
         },
         success: function (data) {
-            successSnackbar(translate('activatedProject'));
+            adminUserRow = $(data.usersEntryHTML);
+            projectAdminsList = data.projectAdmins;
+            projectUsersList = data.projectUsers;
+            displayAdminsList();
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            $(projectAdminsListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(projectUsersListId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+
+            $(adminsSearchId).addClass('hidden');
+            $(saveAdminsConfigurationId).addClass('hidden');
+            $(projectAdminsRowId).addClass('hidden');
+
+            endLoad(projectAdminsLoadId, projectAdminsListId);
+            endLoad(projectUsersLoadId, projectUsersListId);
+        }
+    });
+}
+
+function nonAdminChangeGroup(action, groupName, callback) {
+    $.ajax({
+        type: 'POST',
+        url: '/project/teams/update/me',
+        data: {
+            projectId: projectId,
+            action: action,
+            teamName: groupName
+        },
+        success: function (data) {
+            callback();
         },
         error: function (data) {
             handle401And404(data);
@@ -564,24 +792,25 @@ function generalActivateProject() {
  * gets the list of both project admins and non project admins along with the
  * HTML entry to bind
  */
-function getUsersList() {
+function getTeamsList() {
     $.ajax({
         type: 'GET',
-        url: '/projectsAdminsListComponent',
+        url: '/components/teamsList',
         data: {
             projectId: projectId
         },
         success: function (data) {
-            adminUserRow = $(data.usersEntryHTML);
-            projectAdminsList = data.projectAdmins;
-            projectUsersList = data.projectUsers;
-            displayAdminsList();
+            teamRow = $(data.teamRowHTML);
+            teamsList = data.teamsList;
+            displayTeamList();
         },
         error: function (data) {
-            handle401And404(data);
+          handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+          $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+          $(teamsSearchId).addClass('hidden');
+
+          endLoad(teamsloadId, teamslistId);
         }
     });
 }
@@ -702,6 +931,10 @@ function fillUserRow(user, isUnassigned) {
 
     if (!isProjectAdmin) {
         bindedRow.find(modalTriggerId).addClass('hidden');
+        bindedRow.attr('draggable', null)
+        bindedRow.attr('ondrag', null)
+        bindedRow.attr('ondragend', null)
+        bindedRow.attr('onclick', null)
     } else {
         bindedRow.find(modalTriggerId).removeClass('hidden');
     }
@@ -813,6 +1046,11 @@ function fillGroupRow(group, isInGroup) {
             bindedRow.find(deleteGroupId).removeClass('hidden');
             bindedRow.find(joinGroupId).addClass('hidden');
         }
+    }
+
+    if (!isProjectAdmin) {
+        bindedRow.attr('ondragover', null)
+        bindedRow.attr('ondrop', null)
     }
 
     if (group.isActive) {
@@ -1032,7 +1270,8 @@ function removeFromGroup(event, clicked) {
  *
  * @param {Object} clicked
  */
-function deleteGroup(clicked) {
+function deleteGroup(clicked, event) {
+    event.stopPropagation();
     const groupName = clicked.parent().find('#title').text().trim();
 
     const groupToDelete = groupList.find(group => {
@@ -1065,7 +1304,8 @@ function deleteGroup(clicked) {
 /**
  * Removes the current user from a group
  */
-function leaveGroup() {
+function leaveGroup(event) {
+    event.stopPropagation();
     const userName = meObject.username;
 
     const oldGroup = groupList.find(group => {
@@ -1074,18 +1314,21 @@ function leaveGroup() {
         });
     });
 
-    const userObject = oldGroup.members.find(user => {
-        return user.username === userName;
+    nonAdminChangeGroup('remove', oldGroup.name, function () {
+        const userObject = oldGroup.members.find(user => {
+            return user.username === userName;
+        });
+
+        unassignedList.push(userObject);
+
+        oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
+
+        if (oldGroup.members.length === 0) {
+            groupList.splice(groupList.indexOf(oldGroup), 1);
+        }
+
+        reloadAllLists();
     });
-
-    unassignedList.push(userObject);
-
-    oldGroup.members.splice(oldGroup.members.indexOf(userObject), 1);
-
-    if (oldGroup.members.length === 0) {
-        groupList.splice(groupList.indexOf(oldGroup), 1);
-    }
-    reloadAllLists();
 }
 
 /**
@@ -1094,7 +1337,11 @@ function leaveGroup() {
  * @param {Object} clicked
  * @param {String} createdGroup
  */
-function joinGroup(clicked, createdGroup) {
+function joinGroup(clicked, createdGroup, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+
     const userName = meObject.username;
     const groupName = createdGroup || clicked.parent().find(titleId).text();
 
@@ -1102,11 +1349,13 @@ function joinGroup(clicked, createdGroup) {
         return user.username === userName;
     });
 
-    if (userObject) {
-        moveFromUnassignedToGroup(groupName, userName);
-    } else {
-        moveFromGroupToGroup(groupName, userName);
-    }
+    nonAdminChangeGroup('add', groupName, function () {
+        if (userObject) {
+            moveFromUnassignedToGroup(groupName, userName);
+        } else {
+            moveFromGroupToGroup(groupName, userName);
+        }
+    });
 }
 
 // ------------------------ End User Movement section -----------------------
@@ -1222,6 +1471,12 @@ function fillAdminsRow(user) {
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
     bindedRow.find(typeId).html(`${translate(`user${user.type}`)}`);
     bindedRow.find(emailId).html(user.email);
+
+    if (user.username === meObject.username) {
+        bindedRow.find(transferId).addClass('hidden');
+    } else {
+        bindedRow.find(transferId).removeClass('hidden');
+    }
     return bindedRow[0].outerHTML;
 }
 
@@ -1330,3 +1585,58 @@ function deselectAllUsers() {
 }
 
 // ------------------------ End multiselect section -----------------------
+
+// ------------------------ Begin teams section -----------------------
+
+function displayTeamList() {
+    $(teamslistId).html('');
+    var rowPopulate = '';
+
+    teamsList.forEach(team => {
+        if (passTeamFilter(team)) {
+            $(teamslistId).append(fillTeamRow(team));
+        }
+    });
+
+    if ($(teamslistId).find('li').length === 0) {
+        $(teamslistId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
+    }
+
+    endLoad(teamsloadId, teamslistId);
+}
+
+function fillTeamRow(team) {
+    var bindedRow = teamRow;
+
+    bindedRow.find(iconId).html('assignment');
+    bindedRow.find(nameId).html(team.name);
+    bindedRow.find(newTicketsId).html(`${translate('newTickets')}: ${team.newTickets}`);
+    bindedRow.find(progressTicketsId).html(`${translate('progressTickets')}: ${team.progressTickets}`);
+    bindedRow.find(doneTicketsId).html(`${translate('doneTickets')}: ${team.doneTickets}`);
+    bindedRow.find(goLinkId)[0].href = `/project/${team.projectId}/team/${team.teamId}`;
+
+    if (team.members.length) {
+        bindedRow.find(membersId).html(`${translate('members')}:<br>${team.members.join('<br>')}`);
+    } else {
+        bindedRow.find(membersId).html(translate('noMembers'));
+    }
+
+    return bindedRow[0].outerHTML;
+}
+
+function passTeamFilter(team) {
+    const filterText = $(teamsSearchFilterId)[0].value.trim().toLowerCase();
+
+    // Team search filter
+    if (filterText !== '' &&
+        team.name.toLowerCase().indexOf(filterText) === -1 &&
+        team.members.every(user => {
+            return user.toLowerCase().indexOf(filterText) === -1
+        })) {
+        return false;
+    }
+
+    return true;
+}
+
+// ------------------------ End teams section -----------------------

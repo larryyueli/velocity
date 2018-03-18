@@ -32,8 +32,11 @@ const uuidv1 = require('uuid/v1');
  * 4000 -> custom file system
  * 5000 -> projects
  * 6000 -> teams
+ * 7000 -> tickets
+ * 8000 -> comments
+ * 9000 -> tickets
+ * 10,000 -> sprints
  */
-
 const errors = Object.freeze({
     //1000 system
     1000: 'invalid request',
@@ -47,6 +50,7 @@ const errors = Object.freeze({
     1008: 'failed to get the users list, database issue',
     1009: 'failed to parse csv file',
     1010: 'mode setup is not complete',
+    1011: 'failed to parse list',
 
     //2000 users
     2000: 'missing requirement',
@@ -61,6 +65,39 @@ const errors = Object.freeze({
     2009: 'invalid users import file extension',
     2010: 'permission denied',
     2011: 'password and confirm password do not match',
+    2012: 'cant update team, project is active',
+    2013: 'cant update team, project is closed',
+    2014: 'cant update team, project is not in draft',
+    2015: 'cant update team, invalid action',
+    2016: 'cant add to team, user is already in a team',
+    2017: 'cant remove from team, user is not in a team',
+    2018: 'user is not a member of the project',
+    2019: 'user is not a member of the team',
+    2020: 'cant add to team, cant exceed size limit',
+    2021: 'cant add to team, mismatching team names',
+    2022: 'cant access users page, permission denied',
+    2023: 'cant access users page components, permission denied',
+    2024: 'cant access users add page, permission denied',
+    2025: 'cant create a user, permission denied',
+    2026: 'cant access users add page, permission denied',
+    2027: 'cant update a user, permission denied',
+    2028: 'cant access users import page, permission denied',
+    2029: 'cant import users, permission denied',
+    2030: 'cant access settings page, permission denied',
+    2031: 'cant reset settings, permission denied',
+    2032: 'cant update settings, permission denied',
+    2033: 'cant access projects page, permission denied',
+    2034: 'cant access projects page components, permission denied',
+    2035: 'cant access projects add page, permission denied',
+    2036: 'cant create a project, permission denied',
+    2037: 'cant update a project, permission denied',
+    2038: 'cant access a project, permission denied',
+    2039: 'cant update team, permission denied',
+    2040: 'cant delete a project, permission denied',
+    2041: 'cant activate a project, permission denied',
+    2042: 'cant update project, project is in terminal status',
+    2043: 'project is not active',
+    2044: 'project is not active or closed',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -105,12 +142,62 @@ const errors = Object.freeze({
     6005: 'failed to update team, database issue',
     6006: 'failed to create a team, missing information',
     6007: 'failed to update a team, missing information',
+
+    //7000 tickets
+    7000: 'missing requirement',
+    7001: 'failed to add a ticket, database issue',
+    7002: 'failed to get tickets list, database issue',
+    7003: 'failed to get a ticket, database issue',
+    7004: 'ticket not found',
+    7005: 'failed to update ticket, database issue',
+    7006: 'failed to create a ticket, missing information',
+    7007: 'failed to update a ticket, missing information',
+
+    //8000 comment
+    8000: 'missing requirement',
+    8001: 'failed to add a comment, database issue',
+    8002: 'failed to get comment list, database issue',
+    8003: 'failed to get a comment, database issue',
+    8004: 'comment not found',
+    8005: 'failed to update comment, database issue',
+    8006: 'failed to create a comment, missing information',
+    8007: 'failed to update a comment, missing information',
+
+    //9000 notifications
+    9000: 'missing requirement',
+    9001: 'failed to add a notification, database issue',
+    9002: 'failed to get notifications list, database issue',
+    9003: 'failed to get a notification, database issue',
+    9004: 'notification not found',
+    9005: 'failed to update notification, database issue',
+    9006: 'failed to create a notification, missing information',
+    9007: 'failed to update a notification, missing information',
+    9008: 'failed to delete a notification, database issue',
+    9009: 'failed to delete a notification, missing information',
+    9010: 'failed to delete a notification, database issue',
+
+    //10,000 sprints
+    10000: 'missing requirement',
+    10001: 'failed to add a sprint, database issue',
+    10002: 'failed to get sprints list, database issue',
+    10003: 'failed to get a sprint, database issue',
+    10004: 'sprint not found',
+    10005: 'failed to update sprint, database issue',
+    10006: 'failed to create a sprint, missing information',
+    10007: 'failed to update a sprint, missing information',
 });
 exports.errors = errors;
 
 const defaultError = 'unknown error';
 exports.defaultError = defaultError;
 // </Global Errors> ------------------------------------------
+
+// <Global Notifications> -------------------------------------------
+const notifications = Object.freeze({
+    TICKET_ASSINGEE: { name: 'You have been assigned to a ticket', type: 'assignment_ind' }
+});
+exports.notifications = notifications;
+// </Global Notifications> ------------------------------------------
 
 // <Global Constants> ------------------------------------------
 // all user types
@@ -146,7 +233,7 @@ exports.variableTypes = variableTypes;
 // all color themes
 const colorThemes = Object.freeze({
     DEFAULT: 'theme-default',
-    AHMED: 'theme-ahmed'
+    BLUESKY: 'theme-blueSky'
 });
 exports.colorThemes = colorThemes;
 
@@ -196,8 +283,9 @@ exports.languages = languages;
 
 // common board types
 const boardTypes = Object.freeze({
-    KANBAN: { value: 0, text: 'kanban' },
-    SCRUM: { value: 1, text: 'scrum' }
+    UNKNOWN: { value: 0, text: 'unknown' },
+    KANBAN: { value: 1, text: 'kanban' },
+    SCRUM: { value: 2, text: 'scrum' }
 });
 exports.boardTypes = boardTypes;
 
@@ -226,7 +314,6 @@ const teamSelectionTypes = Object.freeze({
 });
 exports.teamSelectionTypes = teamSelectionTypes;
 
-
 // default team prefix
 const defaultTeamPrefix = 'group-';
 exports.defaultTeamPrefix = defaultTeamPrefix;
@@ -234,6 +321,85 @@ exports.defaultTeamPrefix = defaultTeamPrefix;
 // default team size
 const defaultTeamSize = 1;
 exports.defaultTeamSize = defaultTeamSize;
+
+// common ticket status
+const ticketStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.ticketStatus = ticketStatus;
+
+// common ticket states
+const ticketStates = Object.freeze({
+    NEW: { value: 0, text: 'new' },
+    IN_DEVELOPMENT: { value: 1, text: 'in_development' },
+    CODE_REVIEW: { value: 2, text: 'code_review' },
+    READY_FOR_TEST: { value: 3, text: 'ready_for_test' },
+    IN_TEST: { value: 4, text: 'in_test' },
+    DONE: { value: 5, text: 'done' }
+});
+exports.ticketStates = ticketStates;
+
+// common ticket types
+const ticketTypes = Object.freeze({
+    BUG: { value: 0, text: 'bug' },
+    STORY: { value: 1, text: 'story' },
+    MILESTONE: { value: 2, text: 'milestone' }
+});
+exports.ticketTypes = ticketTypes;
+
+// common ticket default assignee
+const noAssignee = 'No Assignee'; // TODO: find another unique text
+exports.noAssignee = noAssignee;
+
+// common ticket default reporter
+const noReporter = 'No Reporter'; // TODO: find another unique text
+exports.noReporter = noReporter;
+
+// common ticket default points
+const defaultPoints = 0;
+exports.defaultPoints = defaultPoints;
+
+// common ticket priority
+const ticketPriority = Object.freeze({
+    LOW: { value: 0, text: 'low' },
+    MEDIUM: { value: 1, text: 'medium' },
+    HIGH: { value: 2, text: 'high' }
+});
+exports.ticketPriority = ticketPriority;
+
+// common comment status
+const commentStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.commentStatus = commentStatus;
+
+// common sprint status
+const sprintStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.sprintStatus = sprintStatus;
+
+// common sprint states
+const sprintStates = Object.freeze({
+    CLOSED: { value: 0, text: 'closed' },
+    ACTIVE: { value: 1, text: 'active' },
+    OPEN: { value: 2, text: 'open' }
+});
+exports.sprintStates = sprintStates;
+
+// all ticket link types
+const ticketLinkTypes = Object.freeze({
+    BLOCKS: { value: 0, text: 'blocks' },
+    BLOCKED_BY: { value: 1, text: 'blocked_by' },
+    DUPLICATES: { value: 2, text: 'duplicates' },
+    DUPLICATED_BY: { value: 3, text: 'duplicated_by' },
+    FIXES: { value: 4, text: 'fixes' },
+    FIXED_BY: { value: 5, text: 'fixed_by' }
+});
+exports.ticketLinkTypes = ticketLinkTypes;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -374,6 +540,16 @@ const getDateFormatted = function (format) {
     return date().format(format);
 }
 exports.getDateFormatted = getDateFormatted;
+
+/**
+ * return the current date iso formatted
+ *
+ * @return {string} date formatted
+ */
+const getISODate = function () {
+    return date().toISOString();
+}
+exports.getISODate = getISODate;
 
 /**
  * return an array of elements in the main array that are not in the secondary array
