@@ -1,0 +1,28 @@
+li
+    .collapsible-header#boardHeader(onclick='setActive($(this))')
+        #image
+        #title
+        span &nbsp;
+        em#ticketCount
+    .collapsible-body.padding-0#boardBody
+        table(border='1')
+            tr
+                th#todoTitle
+                th#inProgressTitle
+                th#codeReviewTitle
+                th#readyForTestTitle
+                th#inTestTitle
+                th#doneTitle
+            tr.boardContents
+                td(valign="top")
+                    #todoTickets
+                td(valign="top")
+                    #inProgressTickets
+                td(valign="top")
+                    #codeReviewTickets
+                td(valign="top")
+                    #readyForTestTickets
+                td(valign="top")
+                    #inTestTickets
+                td(valign="top")
+                    #doneTickets

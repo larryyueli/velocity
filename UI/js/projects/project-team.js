@@ -23,11 +23,12 @@ const splithref = window.location.href.split('/');
 const projectId = splithref[4];
 const teamId = splithref[6];
 
-
+const assigneeAutocompleteBoardId = '#assigneeAutocompleteBoard';
 const assigneeAutocompleteIssueId = '#assigneeAutocompleteIssue';
 const assigneeAutocompleteId = '#assigneeAutocomplete';
 
 var selectedAssignee = null;
+var selectedAssigneeBoard = null;
 var selectedAssigneeIssue = null;
 var usernamesArray = [];
 
@@ -177,6 +178,21 @@ function getListOfAssignee() {
                 selectedAssigneeIssue = $(assigneeAutocompleteIssueId)[0].value;
                 startLoad(issuesLoadId, issuesListId);
                 displayIssuesList();
+            });
+            $(assigneeAutocompleteBoardId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    selectedAssigneeBoard = nameObj[val];
+                    startLoad(boardsUserLoadId, boardsUserListId);
+                    displayBoard();
+                },
+                minLength: 0,
+            });
+            $(assigneeAutocompleteBoardId).on('keyup', function() {
+                selectedAssigneeBoard = $(assigneeAutocompleteBoardId)[0].value;
+                startLoad(boardsUserLoadId, boardsUserListId);
+                displayBoard();
             });
         },
         error: function (data) {

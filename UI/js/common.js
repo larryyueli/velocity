@@ -167,6 +167,7 @@ const translations = Object.freeze({
     selectGroup: 'Select Group',
     size: 'Size',
     successfulFileUpload: 'File uploaded successfully',
+    tickets: 'Tickets',
     total: 'total',
     uploadOnlyPicture: 'You can only upload one picture!',
     update: 'Update',
@@ -192,6 +193,13 @@ const translations = Object.freeze({
     titleCanNotBeEmpty: 'Title can not be empty!',
     descriptionCanNotBeEmpty: 'Description can not be empty!',
     commentCanNotBeEmpty: 'Comment can not be empty!',
+
+    todoTitle: 'TODO',
+    inProgressTitle: 'IN PROGRESS',
+    codeReviewTitle: 'CODE REVIEW',
+    readyForTestTitle: 'READY FOR TEST',
+    inTestTitle: 'IN TEST',
+    doneTitle: 'DONE',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',

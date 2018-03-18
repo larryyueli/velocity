@@ -3,14 +3,14 @@
         .col.s9.padding-left-0
             .row.ticketTitle
                 .col.s12.display-inline-flex
-                    img.margin-right-5(src='/img/icon-ladybird.png', alt='', height='25', width='25')
-                    h6 Ticket ID
+                    #typeIcon
+                    h6#displayId
             .row
                 .col.s12.display-inline-flex
-                    img.margin-right-5(src='/img/icon-low-priority.png', alt='', height='25', width='25')
-                    p.truncateText This is the kinda long title that this ticket has here for testing purposes
+                    #priorityIcon
+                    p.truncateText#name
         .col.s3.padding-left-0
             .row
-                img.profilePic(src='/profilePicture/null', alt='', height='auto', width='95%')
+                #image
             .row
-                span.ticketPoints 21
+                span.ticketPoints#estimate

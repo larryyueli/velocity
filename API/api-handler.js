@@ -43,6 +43,8 @@ const users = require('../Backend/users.js');
  */
 const initialize = function (pug, notificationsWS, callback) {
     common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/tickets/ticket-entry.pug');
+    common_api.pugComponents.boardTicketEntryComponent = pug.compileFile('Templates/tickets/board-entry.pug');
+    common_api.pugComponents.boardUserOutlineComponent = pug.compileFile('Templates/projects/sprint-active-user-outline.pug');
     common_api.pugComponents.sprintEntryComponent = pug.compileFile('Templates/tickets/sprint-entry.pug');
     common_api.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
     common_api.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
@@ -408,7 +410,8 @@ const handleActiveSprintTicketsListComponentPath = function (req, res) {
                     }
 
                     return res.status(200).send({
-                        ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                        boardTicketEntryHTML: common_api.pugComponents.boardTicketEntryComponent(),
+                        userOutlineEntryHTML: common_api.pugComponents.boardUserOutlineComponent(),
                         board: board
                     });
                 });
