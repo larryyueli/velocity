@@ -17,13 +17,35 @@
                     | #{member.username}
                     br
                     | #{member.email}
-.row
-    .col.s12
-        ul.collection
-            li.collection-item
-                span.title Deadlines
-            li.collection-item.avatar
-                i.material-icons.circle people
-                span.title Deadline
-                br
-                | We've got no deadlines as of yet, so this is here.
+if !isProjectClosed && isUnKnownBoardType
+    .row
+        .col.s12
+            .card.center
+                .card-content
+                    h5 #{__('projectPage.tabs.general.boardTypeSelection')}
+                .card-action
+                    .row
+                        .col.s10
+                            .input-field
+                                select.icons#boardTypeSelection
+                                    option(value=1)
+                                        | #{__('projects.type.kanban')}
+                                    option(value=2)
+                                        | #{__('projects.type.scrum')}
+                                label
+                                    | #{__('projects.type.label')}
+                        .col.s2
+                            a.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='saveBoardType()')
+                                i.material-icons.left save
+                                | #{__('actions.save')}
+if !isUnKnownBoardType
+    .row
+        .col.s12
+            ul.collection
+                li.collection-item
+                    span.title Deadlines
+                li.collection-item.avatar
+                    i.material-icons.circle people
+                    span.title Deadline
+                    br
+                    | We've got no deadlines as of yet, so this is here.

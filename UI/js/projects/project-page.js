@@ -650,7 +650,7 @@ function generalActivateProject() {
                     projectId: projectId
                 },
                 success: function (data) {
-                    successSnackbar(translate('activatedProject'));
+                    window.location.reload();
                 },
                 error: function (data) {
                     handle401And404(data);
@@ -681,7 +681,7 @@ function generalCloseProject() {
                     projectId: projectId
                 },
                 success: function (data) {
-                    successSnackbar(translate('closedProject'));
+                    window.location.reload();
                 },
                 error: function (data) {
                     handle401And404(data);

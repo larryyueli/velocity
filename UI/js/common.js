@@ -193,6 +193,7 @@ const translations = Object.freeze({
     titleCanNotBeEmpty: 'Title can not be empty!',
     descriptionCanNotBeEmpty: 'Description can not be empty!',
     commentCanNotBeEmpty: 'Comment can not be empty!',
+    saveBoardType:'BE CAREFUL, this can NOT be changed!',
 
     todoTitle: 'TODO',
     inProgressTitle: 'IN PROGRESS',

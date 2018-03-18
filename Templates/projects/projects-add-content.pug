@@ -10,12 +10,12 @@
         .switch.left
             label
                 | #{__('switch.off')}
-                input(type='checkbox', name='forceBoardType', checked=forceBoardType, disabled=isActive)#canForceBoardType
+                input(type='checkbox', name='forceBoardType', checked=forceBoardType, disabled=isActive || isClosed)#canForceBoardType
                 span.lever
                 | #{__('switch.on')}
     .col.s8
         .input-field#boardSelectionRow
-            select(disabled=isActive).icons#boardSelection
+            select(disabled=isActive || isClosed).icons#boardSelection
                 option(value=1, selected=selectedBoardType!==2)
                     | #{__('projects.type.kanban')}
                 option(value=2, selected=selectedBoardType===2)

@@ -95,17 +95,18 @@ block content
                                     .input-field.padding-10
                                         input.autocomplete(type='text')
                                         label(for='autocomplete-input') #{__('tickets.release')}
-                                .row
-                                    .input-field.padding-10
-                                        input.autocomplete(type='text')#sprintsAutocomplete
-                                        label(for='sprintsAutocomplete')  #{__('tickets.sprints')}
-                                .row
-                                    .input-field.padding-10#ticketSprintsDivId
-                                        each sprint in sprints
-                                            .chip.sprint-chips(id=`${sprint._id}`)
-                                                | #{sprint.name}
-                                                if sprint.state !== commonSprintState.CLOSED.value
-                                                    i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) close
+                                if isScrumBoardType
+                                    .row
+                                        .input-field.padding-10
+                                            input.autocomplete(type='text')#sprintsAutocomplete
+                                            label(for='sprintsAutocomplete')  #{__('tickets.sprints')}
+                                    .row
+                                        .input-field.padding-10#ticketSprintsDivId
+                                            each sprint in sprints
+                                                .chip.sprint-chips(id=`${sprint._id}`)
+                                                    | #{sprint.name}
+                                                    if sprint.state !== commonSprintState.CLOSED.value
+                                                        i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) close
                                 .row
                                     .input-field.padding-10
                                         input.autocomplete(type='text')

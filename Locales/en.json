@@ -120,7 +120,8 @@
 			},
 			"general": {
 				"forceBoardType": "Force board type for teams",
-				"title": "General"
+				"title": "General",
+				"boardTypeSelection":"Select your board type:"
 			},
 			"groups": {
 				"deleteGroups": "Delete Groups",

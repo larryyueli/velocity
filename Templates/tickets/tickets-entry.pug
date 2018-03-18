@@ -95,12 +95,13 @@ block content
                                     .input-field.padding-10
                                         input.autocomplete(type='text')
                                         label(for='autocomplete-input') #{__('tickets.release')}
-                                .row
-                                    .input-field.padding-10
-                                        input.autocomplete(type='text')#sprintsAutocomplete
-                                        label(for='sprintsAutocomplete')  #{__('tickets.sprints')}
-                                .row
-                                    .input-field.padding-10#ticketSprintsDivId
+                                if isScrumBoardType
+                                    .row
+                                        .input-field.padding-10
+                                            input.autocomplete(type='text')#sprintsAutocomplete
+                                            label(for='sprintsAutocomplete')  #{__('tickets.sprints')}
+                                    .row
+                                        .input-field.padding-10#ticketSprintsDivId
                                 .row
                                     .input-field.padding-10
                                         input.autocomplete(type='text')

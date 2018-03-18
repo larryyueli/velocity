@@ -16,7 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const backButtonId = '#backButton'
+const backButtonId = '#backButton';
+const boardTypeSelectionId = '#boardTypeSelection';
 const createTicketButtonId = '#createTicketButton';
 const description = '#description';
 const splithref = window.location.href.split('/');
@@ -159,7 +160,7 @@ function getListOfAssignee() {
                 },
                 minLength: 0,
             });
-            $(assigneeAutocompleteId).on('keyup', function() {
+            $(assigneeAutocompleteId).on('keyup', function () {
                 selectedAssignee = $(assigneeAutocompleteId)[0].value;
                 startLoad(sprintsLoadId, sprintsListId);
                 displaySprintsList();
@@ -174,7 +175,7 @@ function getListOfAssignee() {
                 },
                 minLength: 0,
             });
-            $(assigneeAutocompleteIssueId).on('keyup', function() {
+            $(assigneeAutocompleteIssueId).on('keyup', function () {
                 selectedAssigneeIssue = $(assigneeAutocompleteIssueId)[0].value;
                 startLoad(issuesLoadId, issuesListId);
                 displayIssuesList();
@@ -189,7 +190,7 @@ function getListOfAssignee() {
                 },
                 minLength: 0,
             });
-            $(assigneeAutocompleteBoardId).on('keyup', function() {
+            $(assigneeAutocompleteBoardId).on('keyup', function () {
                 selectedAssigneeBoard = $(assigneeAutocompleteBoardId)[0].value;
                 startLoad(boardsUserLoadId, boardsUserListId);
                 displayBoard();
@@ -201,6 +202,39 @@ function getListOfAssignee() {
             endLoad(sprintsLoadId, sprintsListId);
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * save board type
+*/
+function saveBoardType() {
+    let boardTypeValue = $(boardTypeSelectionId).val();
+    swal({
+        text: translate('saveBoardType'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('save')]
+    }).then(canDelete => {
+        if (canDelete) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/teams/update/boardType/me',
+                data: {
+                    projectId: projectId,
+                    boardType: boardTypeValue
+                },
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
