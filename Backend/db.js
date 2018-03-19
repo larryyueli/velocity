@@ -25,8 +25,10 @@ const config = require('./config.js');
 const db_comments = require('./dbs/db-comments.js');
 const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
+const db_releases = require('./dbs/db-releases.js');
 const db_settings = require('./dbs/db-settings.js');
 const db_sprints = require('./dbs/db-sprints.js');
+const db_tags = require('./dbs/db-tags.js');
 const db_teams = require('./dbs/db-teams.js');
 const db_tickets = require('./dbs/db-tickets.js');
 const db_users = require('./dbs/db-users.js');
@@ -47,8 +49,10 @@ const initialize = function (callback) {
         db_comments.initialize(client.db(config.db_name).collection('comments'));
         db_notifications.initialize(client.db(config.db_name).collection('notifications'));
         db_projects.initialize(client.db(config.db_name).collection('projects'));
+        db_releases.initialize(client.db(config.db_name).collection('releases'));
         db_settings.initialize(client.db(config.db_name).collection('settings'));
         db_sprints.initialize(client.db(config.db_name).collection('sprints'));
+        db_tags.initialize(client.db(config.db_name).collection('tags'));
         db_teams.initialize(client.db(config.db_name).collection('teams'));
         db_tickets.initialize(client.db(config.db_name).collection('tickets'));
         db_users.initialize(client.db(config.db_name).collection('users'));
@@ -58,49 +62,6 @@ const initialize = function (callback) {
     });
 }
 exports.initialize = initialize;
-
-// <Users Collection> -------------------------------------------------
-exports.addUser = db_users.addUser;
-exports.getLimitedUsersListSorted = db_users.getLimitedUsersListSorted;
-exports.getUser = db_users.getUser;
-exports.updateUser = db_users.updateUser;
-// </Users Collection> ------------------------------------------------
-
-// <Settings Collection> ----------------------------------------------
-exports.addAllSettings = db_settings.addAllSettings;
-exports.getAllSettings = db_settings.getAllSettings;
-exports.removeAllSettings = db_settings.removeAllSettings;
-exports.updateAllSettings = db_settings.updateAllSettings;
-// </Settings Collection> ---------------------------------------------
-
-// <Virtual File System Collection> -----------------------------------
-exports.addToVirtualFileSystem = db_vfs.addToVirtualFileSystem;
-exports.removeFromVirtualFileSystem = db_vfs.removeFromVirtualFileSystem;
-exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
-// </Virtual File System Collection> ----------------------------------
-
-// <Projects Collection> ----------------------------------------------
-exports.addProject = db_projects.addProject;
-exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
-exports.getProject = db_projects.getProject;
-exports.updateProject = db_projects.updateProject;
-// </Projects Collection> ---------------------------------------------
-
-// <Teams Collection> ----------------------------------------------
-exports.addTeam = db_teams.addTeam;
-exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
-exports.getTeam = db_teams.getTeam;
-exports.updateTeam = db_teams.updateTeam;
-exports.updateTeams = db_teams.updateTeams;
-// </Teams Collection> ---------------------------------------------
-
-// <Tickets Collection> ----------------------------------------------
-exports.addTicket = db_tickets.addTicket;
-exports.getLimitedTicketsListSorted = db_tickets.getLimitedTicketsListSorted;
-exports.getTicket = db_tickets.getTicket;
-exports.updateTicket = db_tickets.updateTicket;
-// </Tickets Collection> ---------------------------------------------
-
 
 // <Comments Collection> ----------------------------------------------
 exports.addComment = db_comments.addComment;
@@ -117,6 +78,28 @@ exports.getNotification = db_notifications.getNotification;
 exports.updateNotification = db_notifications.updateNotification;
 // </Notifications Collection> ---------------------------------------------
 
+// <Projects Collection> ----------------------------------------------
+exports.addProject = db_projects.addProject;
+exports.getLimitedProjectsListSorted = db_projects.getLimitedProjectsListSorted;
+exports.getProject = db_projects.getProject;
+exports.updateProject = db_projects.updateProject;
+// </Projects Collection> ---------------------------------------------
+
+// <Releases Collection> ----------------------------------------------
+exports.addRelease = db_releases.addRelease;
+exports.getLimitedReleasesListSorted = db_releases.getLimitedReleasesListSorted;
+exports.getRelease = db_releases.getRelease;
+exports.updateRelease = db_releases.updateRelease;
+exports.updateReleases = db_releases.updateReleases;
+// </Releases Collection> ---------------------------------------------
+
+// <Settings Collection> ----------------------------------------------
+exports.addAllSettings = db_settings.addAllSettings;
+exports.getAllSettings = db_settings.getAllSettings;
+exports.removeAllSettings = db_settings.removeAllSettings;
+exports.updateAllSettings = db_settings.updateAllSettings;
+// </Settings Collection> ---------------------------------------------
+
 // <Sprints Collection> ----------------------------------------------
 exports.addSprint = db_sprints.addSprint;
 exports.getLimitedSprintsListSorted = db_sprints.getLimitedSprintsListSorted;
@@ -124,3 +107,39 @@ exports.getSprint = db_sprints.getSprint;
 exports.updateSprint = db_sprints.updateSprint;
 exports.updateSprints = db_sprints.updateSprints;
 // </Sprints Collection> ---------------------------------------------
+
+// <Tags Collection> ----------------------------------------------
+exports.addTag = db_tags.addTag;
+exports.getLimitedTagsListSorted = db_tags.getLimitedTagsListSorted;
+exports.getTag = db_tags.getTag;
+exports.updateTag = db_tags.updateTag;
+exports.updateTags = db_tags.updateTags;
+// </Tags Collection> ---------------------------------------------
+
+// <Teams Collection> ----------------------------------------------
+exports.addTeam = db_teams.addTeam;
+exports.getLimitedTeamsListSorted = db_teams.getLimitedTeamsListSorted;
+exports.getTeam = db_teams.getTeam;
+exports.updateTeam = db_teams.updateTeam;
+exports.updateTeams = db_teams.updateTeams;
+// </Teams Collection> ---------------------------------------------
+
+// <Tickets Collection> ----------------------------------------------
+exports.addTicket = db_tickets.addTicket;
+exports.getLimitedTicketsListSorted = db_tickets.getLimitedTicketsListSorted;
+exports.getTicket = db_tickets.getTicket;
+exports.updateTicket = db_tickets.updateTicket;
+// </Tickets Collection> ---------------------------------------------
+
+// <Users Collection> -------------------------------------------------
+exports.addUser = db_users.addUser;
+exports.getLimitedUsersListSorted = db_users.getLimitedUsersListSorted;
+exports.getUser = db_users.getUser;
+exports.updateUser = db_users.updateUser;
+// </Users Collection> ------------------------------------------------
+
+// <Virtual File System Collection> -----------------------------------
+exports.addToVirtualFileSystem = db_vfs.addToVirtualFileSystem;
+exports.removeFromVirtualFileSystem = db_vfs.removeFromVirtualFileSystem;
+exports.findInVirtualFileSystem = db_vfs.findInVirtualFileSystem;
+// </Virtual File System Collection> ----------------------------------

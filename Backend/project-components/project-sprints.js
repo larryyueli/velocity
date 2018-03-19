@@ -59,7 +59,6 @@ const addSprint = function (sprint, callback) {
     sprintToAdd.name = sprint.name;
     sprintToAdd.startDate = sprint.startDate;
     sprintToAdd.endDate = sprint.endDate;
-    sprintToAdd.state = common.sprintStates.ACTIVE.value;
     sprintToAdd.status = common.sprintStatus.ACTIVE.value;
     sprintToAdd.tickets = Array.isArray(sprint.tickets) ? sprint.tickets : [];
 
@@ -218,7 +217,7 @@ const getSprintsByTicketId = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const getAvailableSprintsByTeamId = function (projectId, teamId, callback) {
-    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }, { state: { $ne: common.sprintStates.CLOSED.value } }] }, { status: -1, name: 1 }, 0, callback);
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
@@ -229,7 +228,7 @@ const getAvailableSprintsByTeamId = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const getActiveSprint = function (projectId, teamId, callback) {
-    getSprint({ $and: [{ projectId: projectId }, { teamId: teamId }, { state: common.sprintStates.ACTIVE.value }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
+    getSprint({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
 }
 
 /**
@@ -241,15 +240,15 @@ const getActiveSprint = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const setActiveSprint = function (projectId, teamId, sprintId, callback) {
-    let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId } }, { projectId: projectId }, { teamId: teamId }] };
-    let deactivateUpdateQuery = { $set: { state: common.sprintStates.CLOSED.value, mtime: common.getDate(), imtime: common.getISODate() } };
+    let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId, status: common.sprintStatus.DELETED.value } }, { projectId: projectId }, { teamId: teamId }] };
+    let deactivateUpdateQuery = { $set: { status: common.sprintStatus.CLOSED.value, mtime: common.getDate(), imtime: common.getISODate() } };
     updateSprints(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
         if (err) {
             return callback(err, null);
         }
 
         let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }] };
-        let activateUpdateQuery = { $set: { state: common.sprintStates.ACTIVE.value } };
+        let activateUpdateQuery = { $set: { status: common.sprintStatus.ACTIVE.value } };
         updateSprint(activateSearchQuery, activateUpdateQuery, callback);
     });
 }
@@ -297,10 +296,6 @@ const updateSprintById = function (sprintId, teamId, projectId, updateParams, ca
 
     if (common.isValueInObjectWithKeys(updateParams.status, 'value', common.sprintStatus)) {
         updateQuery.$set.status = updateParams.status;
-    }
-
-    if (common.isValueInObjectWithKeys(updateParams.state, 'value', common.sprintStates)) {
-        updateQuery.$set.state = updateParams.state;
     }
 
     if (Array.isArray(updateParams.tickets)) {

@@ -36,6 +36,8 @@ const uuidv1 = require('uuid/v1');
  * 8000 -> comments
  * 9000 -> tickets
  * 10,000 -> sprints
+ * 11,000 -> release
+ * 12,000 -> tag
  */
 const errors = Object.freeze({
     //1000 system
@@ -185,6 +187,26 @@ const errors = Object.freeze({
     10005: 'failed to update sprint, database issue',
     10006: 'failed to create a sprint, missing information',
     10007: 'failed to update a sprint, missing information',
+
+    //11,000 releases
+    11000: 'missing requirement',
+    11001: 'failed to add a release, database issue',
+    11002: 'failed to get releases list, database issue',
+    11003: 'failed to get a release, database issue',
+    11004: 'release not found',
+    11005: 'failed to update release, database issue',
+    11006: 'failed to create a release, missing information',
+    11007: 'failed to update a release, missing information',
+
+    //12,000 tags
+    12000: 'missing requirement',
+    12001: 'failed to add a tag, database issue',
+    12002: 'failed to get tags list, database issue',
+    12003: 'failed to get a tag, database issue',
+    12004: 'tag not found',
+    12005: 'failed to update tag, database issue',
+    12006: 'failed to create a tag, missing information',
+    12007: 'failed to update a tag, missing information',
 });
 exports.errors = errors;
 
@@ -378,17 +400,11 @@ exports.commentStatus = commentStatus;
 // common sprint status
 const sprintStatus = Object.freeze({
     DELETED: { value: 0, text: 'deleted' },
-    ACTIVE: { value: 1, text: 'active' }
+    CLOSED: { value: 1, text: 'closed' },
+    ACTIVE: { value: 2, text: 'active' },
+    OPEN: { value: 3, text: 'open' }
 });
 exports.sprintStatus = sprintStatus;
-
-// common sprint states
-const sprintStates = Object.freeze({
-    CLOSED: { value: 0, text: 'closed' },
-    ACTIVE: { value: 1, text: 'active' },
-    OPEN: { value: 2, text: 'open' }
-});
-exports.sprintStates = sprintStates;
 
 // all ticket link types
 const ticketLinkTypes = Object.freeze({
@@ -400,6 +416,22 @@ const ticketLinkTypes = Object.freeze({
     FIXED_BY: { value: 5, text: 'fixed_by' }
 });
 exports.ticketLinkTypes = ticketLinkTypes;
+
+// common tag status
+const tagStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    CLOSED: { value: 1, text: 'closed' },
+    OPEN: { value: 2, text: 'open' }
+});
+exports.tagStatus = tagStatus;
+
+// common release status
+const releaseStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    CLOSED: { value: 1, text: 'closed' },
+    OPEN: { value: 2, text: 'open' }
+});
+exports.releaseStatus = releaseStatus;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

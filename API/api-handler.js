@@ -2263,7 +2263,7 @@ const handleProjectTeamTicketPath = function (req, res) {
                                 return resolvedContent.trim();
                             },
                             canSearch: true,
-                            commonSprintState: common_backend.sprintStates,
+                            commonSprintStatus: common_backend.sprintStatus,
                             isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
                             isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
                             isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value
@@ -2526,7 +2526,7 @@ const handleDeleteSprintPath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                if (sprintObj.state !== common_backend.sprintStates.OPEN.value) {
+                if (sprintObj.status !== common_backend.sprintStatus.OPEN.value) {
                     logger.error(JSON.stringify(common_backend.getError(2019)));
                     return res.status(400).send(common_backend.getError(2019));
                 }
@@ -2589,7 +2589,7 @@ const handleSprintsClosePath = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                let updatedSprint = { state: common_backend.sprintStates.CLOSED.value };
+                let updatedSprint = { status: common_backend.sprintStatus.CLOSED.value };
                 projects.updateSprintById(sprintId, teamId, projectId, updatedSprint, function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
