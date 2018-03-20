@@ -158,7 +158,7 @@ const getTicketsByIds = function (projectId, teamId, ticketsIds, callback) {
         return callback(null, []);
     }
 
-    getLimitedTicketsListSorted({ $and: [{ $or: ticketsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+    getLimitedTicketsListSorted({ $and: [{ $or: ticketsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
 }
 
 /**
@@ -169,7 +169,7 @@ const getTicketsByIds = function (projectId, teamId, ticketsIds, callback) {
  * @param {function} callback callback function
  */
 const getTicketsWithNoSprints = function (projectId, teamId, callback) {
-    getLimitedTicketsListSorted({ $and: [{ sprints: { $size: 0 } }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+    getLimitedTicketsListSorted({ $and: [{ sprints: { $size: 0 } }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
 }
 
 /**

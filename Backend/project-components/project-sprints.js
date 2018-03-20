@@ -118,7 +118,7 @@ const updateSprints = function (searchQuery, updateQuery, callback) {
  * @param {function} callback callback function
  */
 const getSprintById = function (projectId, teamId, sprintId, callback) {
-    getSprint({ $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, callback);
+    getSprint({ $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { status: { $ne: common.sprintStatus.DELETED.value } }] }, callback);
 }
 
 /**
@@ -139,7 +139,7 @@ const getSprintsByIds = function (projectId, teamId, sprintsIds, callback) {
         return callback(null, []);
     }
 
-    getLimitedSprintsListSorted({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+    getLimitedSprintsListSorted({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: { $ne: common.sprintStatus.DELETED.value } }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
@@ -161,7 +161,7 @@ const addTicketToSprints = function (ticketId, projectId, teamId, sprintsIds, ca
         return callback(null, 'ok');
     }
 
-    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $addToSet: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
+    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { $or: [{ status: common.sprintStatus.ACTIVE.value }, { status: common.sprintStatus.OPEN.value }] }] }, { $addToSet: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
 }
 
 /**
@@ -183,7 +183,7 @@ const removeTicketFromSprints = function (ticketId, projectId, teamId, sprintsId
         return callback(null, 'ok');
     }
 
-    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { $pull: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
+    updateSprints({ $and: [{ $or: sprintsIdsList }, { projectId: projectId }, { teamId: teamId }, { $or: [{ status: common.sprintStatus.ACTIVE.value }, { status: common.sprintStatus.OPEN.value }] }] }, { $pull: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
 }
 
 /**
@@ -194,7 +194,7 @@ const removeTicketFromSprints = function (ticketId, projectId, teamId, sprintsId
  * @param {function} callback callback function
  */
 const getSprintsByTeamId = function (projectId, teamId, callback) {
-    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: { $ne: common.sprintStatus.DELETED.value } }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
@@ -206,7 +206,7 @@ const getSprintsByTeamId = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const getSprintsByTicketId = function (projectId, teamId, callback) {
-    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { tickets: ticketId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { tickets: ticketId }, { status: { $ne: common.sprintStatus.DELETED.value } }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
@@ -217,7 +217,7 @@ const getSprintsByTicketId = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const getAvailableSprintsByTeamId = function (projectId, teamId, callback) {
-    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+    getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { $or: [{ status: common.sprintStatus.ACTIVE.value }, { status: common.sprintStatus.OPEN.value }] }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**
@@ -240,14 +240,14 @@ const getActiveSprint = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const setActiveSprint = function (projectId, teamId, sprintId, callback) {
-    let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId, status: common.sprintStatus.DELETED.value } }, { projectId: projectId }, { teamId: teamId }] };
+    let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId, status: common.sprintStatus.DELETED.value, status: common.sprintStatus.CLOSED.value } }, { projectId: projectId }, { teamId: teamId }] };
     let deactivateUpdateQuery = { $set: { status: common.sprintStatus.CLOSED.value, mtime: common.getDate(), imtime: common.getISODate() } };
     updateSprints(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
         if (err) {
             return callback(err, null);
         }
 
-        let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }] };
+        let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { $ne: { status: common.sprintStatus.DELETED.value } }] };
         let activateUpdateQuery = { $set: { status: common.sprintStatus.ACTIVE.value } };
         updateSprint(activateSearchQuery, activateUpdateQuery, callback);
     });
@@ -280,7 +280,7 @@ const updateSprintById = function (sprintId, teamId, projectId, updateParams, ca
         return callback(common.getError(10007), null);
     }
 
-    searchQuery.$and = [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { status: common.sprintStatus.ACTIVE.value }];
+    searchQuery.$and = [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { $or: [{ status: common.sprintStatus.ACTIVE.value }, { status: common.sprintStatus.OPEN.value }] }];
 
     if (typeof (updateParams.name) === common.variableTypes.STRING) {
         updateQuery.$set.name = updateParams.name;
