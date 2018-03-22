@@ -56,6 +56,7 @@ const addRelease = function (release, callback) {
     releaseToAdd.teamId = release.teamId;
     releaseToAdd.name = release.name;
     releaseToAdd.status = common.releaseStatus.ACTIVE.value;
+    releaseToAdd.tickets = Array.isArray(release.tickets) ? release.tickets : [];
 
     db.addRelease(releaseToAdd, callback);
 }
@@ -80,6 +81,71 @@ const getLimitedReleasesListSorted = function (searchQuery, sortQuery, lim, call
  */
 const getRelease = function (searchQuery, callback) {
     db.getRelease(searchQuery, callback);
+}
+
+/**
+ * find the list of releases by their ids
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} releasesIds releases ids
+ * @param {function} callback callback function
+ */
+const getReleasesByIds = function (projectId, teamId, releasesIds, callback) {
+    let releasesIdsList = [];
+    for (let i = 0; i < releasesIds.length; i++) {
+        releasesIdsList.push({ _id: releasesIds[i] });
+    }
+
+    if (releasesIds.length === 0) {
+        return callback(null, []);
+    }
+
+    getLimitedReleasesListSorted({ $and: [{ $or: releasesIdsList }, { projectId: projectId }, { teamId: teamId }, { status: { $ne: common.releaseStatus.DELETED.value } }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
+ * update the given releases by adding the ticket to them
+ *
+ * @param {string} ticketId ticket id
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} releasesIds releases ids
+ * @param {function} callback callback function
+ */
+const addTicketToReleases = function (ticketId, projectId, teamId, releasesIds, callback) {
+    let releasesIdsList = [];
+    for (let i = 0; i < releasesIds.length; i++) {
+        releasesIdsList.push({ _id: releasesIds[i] });
+    }
+
+    if (releasesIds.length === 0) {
+        return callback(null, 'ok');
+    }
+
+    updateReleases({ $and: [{ $or: releasesIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.releaseStatus.ACTIVE.value }] }, { $addToSet: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
+}
+
+/**
+ * update the given releases by removing the ticket from their tickets list
+ *
+ * @param {string} ticketId ticket id
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} releasesIds releases ids
+ * @param {function} callback callback function
+ */
+const removeTicketFromReleases = function (ticketId, projectId, teamId, releasesIds, callback) {
+    let releasesIdsList = [];
+    for (let i = 0; i < releasesIds.length; i++) {
+        releasesIdsList.push({ _id: releasesIds[i] });
+    }
+
+    if (releasesIds.length === 0) {
+        return callback(null, 'ok');
+    }
+
+    updateReleases({ $and: [{ $or: releasesIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.releaseStatus.ACTIVE.value }] }, { $pull: { tickets: ticketId }, $set: { mtime: common.getDate(), imtime: common.getISODate() } }, callback);
 }
 
 /**
@@ -141,6 +207,10 @@ const updateReleaseById = function (releaseId, teamId, projectId, updateParams, 
         updateQuery.$set.status = updateParams.status;
     }
 
+    if (Array.isArray(updateParams.tickets)) {
+        updateQuery.$set.tickets = updateParams.tickets;
+    }
+
     if (common.isEmptyObject(updateQuery.$set)) {
         delete updateQuery.$set;
     }
@@ -157,6 +227,9 @@ const updateReleaseById = function (releaseId, teamId, projectId, updateParams, 
 
 // <exports> -----------------------------------
 exports.addRelease = addRelease;
+exports.addTicketToReleases = addTicketToReleases;
+exports.getReleasesByIds = getReleasesByIds;
 exports.initialize = initialize;
+exports.removeTicketFromReleases = removeTicketFromReleases;
 exports.updateReleaseById = updateReleaseById;
 // </exports> ----------------------------------

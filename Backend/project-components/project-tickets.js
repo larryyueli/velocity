@@ -70,6 +70,8 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
     ticketToAdd.sprints = Array.isArray(ticket.sprints) ? ticket.sprints : [];
+    ticketToAdd.releases = Array.isArray(ticket.releases) ? ticket.releases : [];
+    ticketToAdd.tags = Array.isArray(ticket.tags) ? ticket.tags : [];
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
@@ -311,6 +313,14 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
 
     if (Array.isArray(updateParams.sprints)) {
         updateQuery.$set.sprints = updateParams.sprints;
+    }
+
+    if (Array.isArray(updateParams.releases)) {
+        updateQuery.$set.releases = updateParams.releases;
+    }
+
+    if (Array.isArray(updateParams.tags)) {
+        updateQuery.$set.tags = updateParams.tags;
     }
 
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {

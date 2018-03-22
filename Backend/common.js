@@ -420,8 +420,7 @@ exports.ticketLinkTypes = ticketLinkTypes;
 // common tag status
 const tagStatus = Object.freeze({
     DELETED: { value: 0, text: 'deleted' },
-    CLOSED: { value: 1, text: 'closed' },
-    OPEN: { value: 2, text: 'open' }
+    ACTIVE: { value: 1, text: 'active' }
 });
 exports.tagStatus = tagStatus;
 
@@ -429,7 +428,7 @@ exports.tagStatus = tagStatus;
 const releaseStatus = Object.freeze({
     DELETED: { value: 0, text: 'deleted' },
     CLOSED: { value: 1, text: 'closed' },
-    OPEN: { value: 2, text: 'open' }
+    ACTIVE: { value: 2, text: 'active' }
 });
 exports.releaseStatus = releaseStatus;
 // </Global Constants> ------------------------------------------

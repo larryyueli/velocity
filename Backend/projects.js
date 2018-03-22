@@ -22,7 +22,9 @@ const common = require('./common.js');
 const db = require('./db.js');
 
 const comments = require('./project-components/project-comments.js');
+const releases = require('./project-components/project-releases.js');
 const sprints = require('./project-components/project-sprints.js');
+const tags = require('./project-components/project-tags.js');
 const teams = require('./project-components/project-teams.js');
 const tickets = require('./project-components/project-tickets.js');
 
@@ -231,6 +233,14 @@ exports.initialize = initialize;
 exports.updateProject = updateProject;
 // </exports> ----------------------------------
 
+// <releases> -----------------------------------
+exports.addReleaseToTeam = releases.addRelease;
+exports.addTicketToReleases = releases.addTicketToReleases;
+exports.getReleasesByIds = releases.getReleasesByIds;
+exports.removeTicketFromReleases = releases.removeTicketFromReleases;
+exports.updateReleaseById = releases.updateReleaseById;
+// </releases> ----------------------------------
+
 // <sprints> -----------------------------------
 exports.addSprintToTeam = sprints.addSprint;
 exports.addTicketToSprints = sprints.addTicketToSprints;
@@ -244,6 +254,14 @@ exports.removeTicketFromSprints = sprints.removeTicketFromSprints;
 exports.setActiveSprintByTeamId = sprints.setActiveSprint;
 exports.updateSprintById = sprints.updateSprintById;
 // </sprints> ----------------------------------
+
+// <tags> -----------------------------------
+exports.addTagsToTeam = tags.addRelease;
+exports.addTicketToTags = tags.addTicketToTags;
+exports.getTagsByIds = tags.getTagsByIds;
+exports.removeTicketFromTags = tags.removeTicketFromTags;
+exports.updateReleaseById = tags.updateReleaseById;
+// </tags> ----------------------------------
 
 // <teams> -----------------------------------
 exports.addTeamToProject = teams.addTeamToProject;

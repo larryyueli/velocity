@@ -1602,6 +1602,8 @@ const handleTicketsCreatePath = function (req, res) {
     const teamId = req.body.teamId;
     const assignee = req.body.assignee;
     const sprints = req.body.sprints;
+    const releases = req.body.releases;
+    const tags = req.body.tags;
 
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
@@ -1669,24 +1671,97 @@ const handleTicketsCreatePath = function (req, res) {
                         notifications_api.pushNotificationByUserId(ticketObj.assignee, `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`, common_backend.notifications.TICKET_ASSINGEE);
                     }
 
-                    if (Array.isArray(sprints)) {
-                        projects.getSprintsByIds(projectId, teamId, sprints, function (err, sprintsList) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
-                                return res.status(500).send(err);
-                            }
+                    let sprintsIdsList = [];
+                    let releasesIdsList = [];
+                    let tagsIdsList = [];
 
-                            let sprintsIdsList = [];
-                            for (let i = 0; i < sprintsList.length; i++) {
-                                sprintsIdsList.push(sprintsList[i]['_id']);
-                            }
-                            projects.addTicketToSprints(ticketObj._id, projectId, teamId, sprintsIdsList, function (err, result) {
+                    let processSprints = function (callback) {
+                        if (Array.isArray(sprints)) {
+                            projects.getSprintsByIds(projectId, teamId, sprints, function (err, sprintsList) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     return res.status(500).send(err);
                                 }
 
-                                projects.updateTicket(ticketObj._id, teamId, projectId, { sprints: sprintsIdsList }, function (err, result) {
+                                for (let i = 0; i < sprintsList.length; i++) {
+                                    sprintsIdsList.push(sprintsList[i]['_id']);
+                                }
+
+                                projects.addTicketToSprints(ticketObj._id, projectId, teamId, sprintsIdsList, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    callback();
+                                });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }
+
+                    let processReleases = function (callback) {
+                        if (Array.isArray(releases)) {
+                            projects.getReleasesByIds(projectId, teamId, releases, function (err, releasesList) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                for (let i = 0; i < releasesList.length; i++) {
+                                    releasesIdsList.push(releasesList[i]['_id']);
+                                }
+
+                                projects.addTicketToReleases(ticketObj._id, projectId, teamId, releasesIdsList, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    callback();
+                                });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }
+
+                    let processTags = function (callback) {
+                        if (Array.isArray(tags)) {
+                            projects.getTagsByIds(projectId, teamId, tags, function (err, tagsList) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                for (let i = 0; i < tagsList.length; i++) {
+                                    tagsIdsList.push(tagsList[i]['_id']);
+                                }
+
+                                projects.addTicketToTags(ticketObj._id, projectId, teamId, tagsList, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    callback();
+                                });
+                            });
+                        } else {
+                            callback();
+                        }
+                    }
+
+                    processSprints(function () {
+                        processReleases(function () {
+                            processTags(function () {
+                                let updateObj = {
+                                    sprints: sprintsIdsList,
+                                    release: releasesIdsList,
+                                    tags: tagsIdsList
+                                };
+                                projects.updateTicket(ticketObj._id, teamId, projectId, updateObj, function (err, result) {
                                     if (err) {
                                         logger.error(JSON.stringify(err));
                                         return res.status(500).send(err);
@@ -1696,9 +1771,7 @@ const handleTicketsCreatePath = function (req, res) {
                                 });
                             });
                         });
-                    } else {
-                        return res.status(200).send('ok');
-                    }
+                    });
                 });
             });
         });
@@ -1722,6 +1795,8 @@ const handleTicketsUpdatePath = function (req, res) {
     const ticketId = req.body.ticketId;
     const assignee = req.body.assignee;
     const sprints = req.body.sprints;
+    const releases = req.body.releases;
+    const tags = req.body.tags;
 
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
@@ -1809,71 +1884,182 @@ const handleTicketsUpdatePath = function (req, res) {
                         updatedTicket.assignee = common_backend.noAssignee;
                     }
 
-                    if (Array.isArray(sprints)) {
-                        let allSprints = common_backend.joinSets(ticketObj.sprints, sprints);
-                        projects.getSprintsByIds(projectId, teamId, allSprints, function (err, sprintsList) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
-                                return res.status(500).send(err);
-                            }
-
-                            let allSprintsId = [];
-                            for (let i = 0; i < sprintsList.length; i++) {
-                                allSprintsId.push(sprintsList[i]['_id']);
-                            }
-
-                            let validSprintIds = [];
-                            for (let i = 0; i < sprints.length; i++) {
-                                let sprintId = sprints[i];
-                                if (allSprintsId.indexOf(sprintId) !== -1) {
-                                    validSprintIds.push(sprintId);
-                                }
-                            }
-
-                            let sprintsToRemove = common_backend.getArrayDiff(allSprintsId, validSprintIds);
-
-                            projects.addTicketToSprints(ticketObj._id, projectId, teamId, validSprintIds, function (err, result) {
+                    let processSprints = function (callback) {
+                        if (Array.isArray(sprints)) {
+                            let allSprints = common_backend.joinSets(ticketObj.sprints, sprints);
+                            projects.getSprintsByIds(projectId, teamId, allSprints, function (err, sprintsList) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     return res.status(500).send(err);
                                 }
 
-                                projects.removeTicketFromSprints(ticketObj._id, projectId, teamId, sprintsToRemove, function (err, result) {
+                                let allSprintsId = [];
+                                for (let i = 0; i < sprintsList.length; i++) {
+                                    allSprintsId.push(sprintsList[i]['_id']);
+                                }
+
+                                let validSprintIds = [];
+                                for (let i = 0; i < sprints.length; i++) {
+                                    let sprintId = sprints[i];
+                                    if (allSprintsId.indexOf(sprintId) !== -1) {
+                                        validSprintIds.push(sprintId);
+                                    }
+                                }
+
+                                let sprintsToRemove = common_backend.getArrayDiff(allSprintsId, validSprintIds);
+
+                                projects.addTicketToSprints(ticketObj._id, projectId, teamId, validSprintIds, function (err, result) {
                                     if (err) {
                                         logger.error(JSON.stringify(err));
                                         return res.status(500).send(err);
                                     }
 
-                                    updatedTicket.sprints = validSprintIds;
-                                    projects.updateTicket(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
+                                    projects.removeTicketFromSprints(ticketObj._id, projectId, teamId, sprintsToRemove, function (err, result) {
                                         if (err) {
                                             logger.error(JSON.stringify(err));
                                             return res.status(500).send(err);
                                         }
 
-                                        return res.status(200).send('ok');
+                                        updatedTicket.sprints = validSprintIds;
+                                        callback();
                                     });
                                 });
                             });
-                        });
-                    } else {
-                        updatedTicket.sprints = [];
-                        projects.removeTicketFromSprints(ticketObj._id, projectId, teamId, ticketObj.sprints, function (err, result) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
-                                return res.status(500).send(err);
-                            }
-
-                            projects.updateTicket(ticketId, teamId, projectId, updatedTicket, function (err, result) {
+                        } else {
+                            updatedTicket.sprints = [];
+                            projects.removeTicketFromSprints(ticketObj._id, projectId, teamId, ticketObj.sprints, function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     return res.status(500).send(err);
                                 }
 
-                                return res.status(200).send('ok');
+                                callback();
+                            });
+                        }
+                    }
+
+                    let processReleases = function (callback) {
+                        if (Array.isArray(releases)) {
+                            let allReleases = common_backend.joinSets(ticketObj.releases, releases);
+                            projects.getReleasesByIds(projectId, teamId, allReleases, function (err, releasesList) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                let allReleasesId = [];
+                                for (let i = 0; i < releasesList.length; i++) {
+                                    allReleasesId.push(releasesList[i]['_id']);
+                                }
+
+                                let validReleasesIds = [];
+                                for (let i = 0; i < releases.length; i++) {
+                                    let releaseId = releases[i];
+                                    if (allReleasesId.indexOf(releaseId) !== -1) {
+                                        validReleasesIds.push(releaseId);
+                                    }
+                                }
+
+                                let releasesToRemove = common_backend.getArrayDiff(validReleasesIds, validReleasesIds);
+
+                                projects.addTicketToReleases(ticketObj._id, projectId, teamId, validReleasesIds, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    projects.removeTicketFromReleases(ticketObj._id, projectId, teamId, releasesToRemove, function (err, result) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                            return res.status(500).send(err);
+                                        }
+
+                                        updatedTicket.releases = validReleasesIds;
+                                        callback();
+                                    });
+                                });
+                            });
+                        } else {
+                            updatedTicket.releases = [];
+                            projects.removeTicketFromReleases(ticketObj._id, projectId, teamId, ticketObj.releases, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                callback();
+                            });
+                        }
+                    }
+
+                    let processTags = function (callback) {
+                        if (Array.isArray(tags)) {
+                            let allTags = common_backend.joinSets(ticketObj.tags, tags);
+                            projects.getTagsByIds(projectId, teamId, allTags, function (err, tagsList) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                let allTagsId = [];
+                                for (let i = 0; i < tagsList.length; i++) {
+                                    allTagsId.push(tagsList[i]['_id']);
+                                }
+
+                                let validTagsIds = [];
+                                for (let i = 0; i < tags.length; i++) {
+                                    let tagId = tags[i];
+                                    if (allTagsId.indexOf(tagId) !== -1) {
+                                        validTagsIds.push(tagId);
+                                    }
+                                }
+
+                                let tagsToRemove = common_backend.getArrayDiff(validTagsIds, validTagsIds);
+
+                                projects.addTicketToTags(ticketObj._id, projectId, teamId, validTagsIds, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    projects.removeTicketFromTags(ticketObj._id, projectId, teamId, tagsToRemove, function (err, result) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                            return res.status(500).send(err);
+                                        }
+
+                                        updatedTicket.tags = validTagsIds;
+                                        callback();
+                                    });
+                                });
+                            });
+                        } else {
+                            updatedTicket.tags = [];
+                            projects.removeTicketFromTags(ticketObj._id, projectId, teamId, ticketObj.tags, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                callback();
+                            });
+                        }
+                    }
+
+                    processSprints(function () {
+                        processReleases(function () {
+                            processTags(function () {
+                                projects.updateTicket(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    return res.status(200).send('ok');
+                                });
                             });
                         });
-                    }
+                    });
                 });
             });
         });

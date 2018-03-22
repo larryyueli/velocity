@@ -122,7 +122,7 @@ const getSprintById = function (projectId, teamId, sprintId, callback) {
 }
 
 /**
- * find the list of sprints under a team
+ * find the list of sprints by their ids
  *
  * @param {string} projectId project id
  * @param {string} teamId team id
