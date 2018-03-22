@@ -1739,7 +1739,7 @@ const handleTicketsCreatePath = function (req, res) {
                                     tagsIdsList.push(tagsList[i]['_id']);
                                 }
 
-                                projects.addTicketToTags(ticketObj._id, projectId, teamId, tagsList, function (err, result) {
+                                projects.addTicketToTags(ticketObj._id, projectId, teamId, tagsIdsList, function (err, result) {
                                     if (err) {
                                         logger.error(JSON.stringify(err));
                                         return res.status(500).send(err);
@@ -1960,7 +1960,7 @@ const handleTicketsUpdatePath = function (req, res) {
                                     }
                                 }
 
-                                let releasesToRemove = common_backend.getArrayDiff(validReleasesIds, validReleasesIds);
+                                let releasesToRemove = common_backend.getArrayDiff(allReleasesId, validReleasesIds);
 
                                 projects.addTicketToReleases(ticketObj._id, projectId, teamId, validReleasesIds, function (err, result) {
                                     if (err) {
@@ -2014,7 +2014,7 @@ const handleTicketsUpdatePath = function (req, res) {
                                     }
                                 }
 
-                                let tagsToRemove = common_backend.getArrayDiff(validTagsIds, validTagsIds);
+                                let tagsToRemove = common_backend.getArrayDiff(allTagsId, validTagsIds);
 
                                 projects.addTicketToTags(ticketObj._id, projectId, teamId, validTagsIds, function (err, result) {
                                     if (err) {
