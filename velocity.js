@@ -256,7 +256,9 @@ app.get('/project/:projectId/team/:teamId/search', api.handleProjectTeamSearchPa
 app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTicketsAddPath);
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
+app.get('/project/team/releases/list', api.handleProjectTeamReleasesListPath);
 app.get('/project/team/sprints/list', api.handleProjectTeamSprintsListPath);
+app.get('/project/team/tags/list', api.handleProjectTeamTagsListPath);
 app.get('/projects', api.handleProjectsPath);
 app.get('/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/projects/add', api.handleProjectsAddPath);
@@ -291,10 +293,12 @@ app.post('/users/update', api.handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
 // <Put Requests> ------------------------------------------------
+app.put('/comment/create', api.handleTicketsCommentPath);
+app.put('/releases/create', api.handleReleasesCreatePath);
 app.put('/projects/create', api.handleProjectsCreatePath);
 app.put('/sprints/create', api.handleSprintsCreatePath);
+app.put('/tags/create', api.handleTagsCreatePath);
 app.put('/tickets/create', api.handleTicketsCreatePath);
-app.put('/comment/create', api.handleTicketsCommentPath);
 app.put('/users/create', api.handleUsersCreatePath);
 app.put('/users/import/file', api.handleUsersImportFilePath);
 app.put('/users/request/access', api.handleUsersRequestAccessPath);

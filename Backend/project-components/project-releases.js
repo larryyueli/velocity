@@ -105,6 +105,17 @@ const getReleasesByIds = function (projectId, teamId, releasesIds, callback) {
 }
 
 /**
+ * find the list of active releases
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getAvailableReleasesByTeamId = function (projectId, teamId, callback) {
+    getLimitedReleasesListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.releaseStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
  * update the given releases by adding the ticket to them
  *
  * @param {string} ticketId ticket id
@@ -228,6 +239,7 @@ const updateReleaseById = function (releaseId, teamId, projectId, updateParams, 
 // <exports> -----------------------------------
 exports.addRelease = addRelease;
 exports.addTicketToReleases = addTicketToReleases;
+exports.getAvailableReleasesByTeamId = getAvailableReleasesByTeamId;
 exports.getReleasesByIds = getReleasesByIds;
 exports.initialize = initialize;
 exports.removeTicketFromReleases = removeTicketFromReleases;

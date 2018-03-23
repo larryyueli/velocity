@@ -93,8 +93,10 @@ block content
                                         label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                 .row
                                     .input-field.padding-10
-                                        input.autocomplete(type='text')
-                                        label(for='autocomplete-input') #{__('tickets.release')}
+                                        input.autocomplete(type='text')#releasesAutocomplete
+                                        label(for='releasesAutocomplete') #{__('tickets.release')}
+                                .row
+                                    .input-field.padding-10#ticketReleasesDivId
                                 if isScrumBoardType
                                     .row
                                         .input-field.padding-10
@@ -104,8 +106,10 @@ block content
                                         .input-field.padding-10#ticketSprintsDivId
                                 .row
                                     .input-field.padding-10
-                                        input.autocomplete(type='text')
-                                        label(for='autocomplete-input')  #{__('tickets.tags')}
+                                        input.autocomplete(type='text')#tagsAutocomplete
+                                        label(for='tagsAutocomplete')  #{__('tickets.tags')}
+                                .row
+                                    .input-field.padding-10#ticketTagsDivId
                         .row
                             button.waves-effect.waves-light.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
                                 i.material-icons.right add

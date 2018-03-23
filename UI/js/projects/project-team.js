@@ -55,6 +55,44 @@ $(function () {
     /*
     $.ajax({
         type: 'PUT',
+        url: '/tags/create',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            name: 'Tag 2'
+        },
+        success: function (data) {
+            alert(data);
+        },
+        error: function (data) {
+            handle401And404(data);
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
+
+    /*
+    $.ajax({
+        type: 'PUT',
+        url: '/releases/create',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            name: 'Release 1'
+        },
+        success: function (data) {
+            alert(data);
+        },
+        error: function (data) {
+            handle401And404(data);
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
+
+    /*
+    $.ajax({
+        type: 'PUT',
         url: '/sprints/create',
         data: {
             projectId: projectId,
@@ -117,6 +155,44 @@ $(function () {
             teamId: teamId
         },
         success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
+
+    /*
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/releases/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            alert(JSON.stringify(data));
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });*/
+
+    /*
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/tags/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            alert(JSON.stringify(data));
         },
         error: function (data) {
             handle401And404(data);

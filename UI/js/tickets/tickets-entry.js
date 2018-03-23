@@ -28,16 +28,24 @@ const projectId = splithref[4];
 const teamId = splithref[6];
 const assigneeAutocompleteId = '#assigneeAutocomplete';
 const sprintsAutocompleteId = '#sprintsAutocomplete';
+const releasesAutocompleteId = '#releasesAutocomplete';
+const tagsAutocompleteId = '#tagsAutocomplete';
 const titleFieldId = '#titleField';
 const typeSelectionId = '#typeSelection';
 const stateSelectionId = '#stateSelection';
 const prioritySelectionId = '#prioritySelection';
 const pointsId = '#pointsSelection';
 const ticketSprintsDivId = '#ticketSprintsDivId';
+const ticketReleasesDivId = '#ticketReleasesDivId';
+const ticketTagsDivId = '#ticketTagsDivId';
 
 var selectedAssignee = null;
 var selectedSprints = [];
+var selectedReleases = [];
+var selectedTags = [];
 var sprintIdsObj = {};
+var releaseIdsObj = {};
+var tagIdsObj = {};
 
 typeSelection.change(function () {
     if (typeSelection.val() == 0) {
@@ -60,6 +68,8 @@ $(function () {
 
     getListOfAssignee();
     getListOfSprints();
+    getListOfReleases();
+    getListOfTags();
 
     $(createTicketButtonId).click(() => {
         createTicketAction();
@@ -102,7 +112,9 @@ function createTicketAction() {
             state: stateValue,
             points: pointsValue,
             assignee: selectedAssignee,
-            sprints: selectedSprints
+            sprints: selectedSprints,
+            releases: selectedReleases,
+            tags: selectedTags
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}`;
@@ -200,6 +212,108 @@ function getListOfSprints() {
 */
 function removeSprintId(sprintId) {
     if (selectedSprints.indexOf(sprintId) !== -1) {
-        selectedSprints.splice(selectedSprints.indexOf(sprintId),1);
+        selectedSprints.splice(selectedSprints.indexOf(sprintId), 1);
+    }
+}
+
+/**
+ * list of possible releases
+*/
+function getListOfReleases() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/releases/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let releasesObj = {};
+
+            for (let i = 0; i < data.releasesList.length; i++) {
+                let release = data.releasesList[i];
+                releasesObj[`${release.name}`] = null;
+                releaseIdsObj[`${release.name}`] = release._id;
+            }
+            $(releasesAutocompleteId).autocomplete({
+                data: releasesObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    if (selectedReleases.indexOf(releaseIdsObj[val]) === -1) {
+                        selectedReleases.push(releaseIdsObj[val]);
+                        $(ticketReleasesDivId).append(`<div class="chip sprint-chips" id=${releaseIdsObj[val]}>${val}<i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">close</i></div>`);
+                    }
+                },
+                minLength: 0,
+            });
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * list of possible releases
+ * 
+ * @param {string} id release id
+*/
+function removeReleaseId(releaseId) {
+    if (selectedReleases.indexOf(releaseId) !== -1) {
+        selectedReleases.splice(selectedReleases.indexOf(releaseId), 1);
+    }
+}
+
+/**
+ * list of possible tags
+*/
+function getListOfTags() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/team/tags/list',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            let tagsObj = {};
+
+            for (let i = 0; i < data.tagsList.length; i++) {
+                let tag = data.tagsList[i];
+                tagsObj[`${tag.name}`] = null;
+                tagIdsObj[`${tag.name}`] = tag._id;
+            }
+            $(tagsAutocompleteId).autocomplete({
+                data: tagsObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    if (selectedTags.indexOf(tagIdsObj[val]) === -1) {
+                        selectedTags.push(tagIdsObj[val]);
+                        $(ticketTagsDivId).append(`<div class="chip sprint-chips" id=${tagIdsObj[val]}>${val}<i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">close</i></div>`);
+                    }
+                },
+                minLength: 0,
+            });
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * list of possible tags
+ * 
+ * @param {string} id tag id
+*/
+function removeTagId(tagId) {
+    if (selectedTags.indexOf(tagId) !== -1) {
+        selectedTags.splice(selectedTags.indexOf(tagId), 1);
     }
 }

@@ -105,6 +105,17 @@ const getTagsByIds = function (projectId, teamId, tagsIds, callback) {
 }
 
 /**
+ * find the list of active tags
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getAvailableTagsByTeamId = function (projectId, teamId, callback) {
+    getLimitedTagsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.tagStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
+}
+
+/**
  * update the given tags by adding the ticket to them
  *
  * @param {string} ticketId ticket id
@@ -114,7 +125,7 @@ const getTagsByIds = function (projectId, teamId, tagsIds, callback) {
  * @param {function} callback callback function
  */
 const addTicketToTags = function (ticketId, projectId, teamId, tagsIds, callback) {
-    let releatagsIdsListsesIdsList = [];
+    let tagsIdsList = [];
     for (let i = 0; i < tagsIds.length; i++) {
         tagsIdsList.push({ _id: tagsIds[i] });
     }
@@ -227,7 +238,9 @@ const updateTagById = function (tagId, teamId, projectId, updateParams, callback
 
 // <exports> -----------------------------------
 exports.addTicketToTags = addTicketToTags;
-exports.addTagToTeam = addTag;
+exports.addTag = addTag;
+exports.getAvailableTagsByTeamId = getAvailableTagsByTeamId;
+exports.getTagsByIds = getTagsByIds;
 exports.initialize = initialize;
 exports.removeTicketFromTags = removeTicketFromTags;
 exports.updateTagById = updateTagById;

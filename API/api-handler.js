@@ -1758,7 +1758,7 @@ const handleTicketsCreatePath = function (req, res) {
                             processTags(function () {
                                 let updateObj = {
                                     sprints: sprintsIdsList,
-                                    release: releasesIdsList,
+                                    releases: releasesIdsList,
                                     tags: tagsIdsList
                                 };
                                 projects.updateTicket(ticketObj._id, teamId, projectId, updateObj, function (err, result) {
@@ -2987,6 +2987,118 @@ const handleProjectTeamSprintsListPath = function (req, res) {
 }
 
 /**
+ * root path to get the tags list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamTagsListPath = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getAvailableTagsByTeamId(projectId, teamId, function (err, tagsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let tagsList = [];
+                for (let i = 0; i < tagsObjList.length; i++) {
+                    let tag = tagsObjList[i];
+                    tagsList.push({
+                        _id: tag._id,
+                        name: tag.name
+                    });
+                }
+
+                return res.status(200).send({
+                    tagsList: tagsList
+                });
+            });
+        });
+    });
+}
+
+/**
+ * root path to get the releases list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleProjectTeamReleasesListPath = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getAvailableReleasesByTeamId(projectId, teamId, function (err, releasesObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let releasesList = [];
+                for (let i = 0; i < releasesObjList.length; i++) {
+                    let release = releasesObjList[i];
+                    releasesList.push({
+                        _id: release._id,
+                        name: release.name
+                    });
+                }
+
+                return res.status(200).send({
+                    releasesList: releasesList
+                });
+            });
+        });
+    });
+}
+
+/**
  * root path to get the list of sprints
  *
  * @param {object} req req object
@@ -3190,6 +3302,112 @@ const handleSprintsCreatePath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to create a releases
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleReleasesCreatePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            let newRelease = {
+                projectId: projectId,
+                teamId: teamId,
+                name: req.body.name
+            };
+            projects.addReleaseToTeam(newRelease, function (err, releaseObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                return res.status(200).send(releaseObj);
+            });
+        });
+    });
+}
+
+/**
+ * root path to create a tag
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleTagsCreatePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            let newTag = {
+                projectId: projectId,
+                teamId: teamId,
+                name: req.body.name
+            };
+            projects.addTagToTeam(newTag, function (err, tagObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                return res.status(200).send(tagObj);
+            });
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <common Requests> ------------------------------------------------
@@ -3207,8 +3425,10 @@ exports.handleProjectTeamSearchPath = handleProjectTeamSearchPath;
 exports.handleProjectTeamTicketsAddPath = handleProjectTeamTicketsAddPath;
 exports.handleProjectTeamTicketPath = handleProjectTeamTicketPath;
 exports.handleProjectTeamMembersListPath = handleProjectTeamMembersListPath;
+exports.handleProjectTeamReleasesListPath = handleProjectTeamReleasesListPath;
 exports.handleProjectTeamSprintsListPath = handleProjectTeamSprintsListPath;
 exports.handleProjectTeamSprintsFullListPath = handleProjectTeamSprintsFullListPath;
+exports.handleProjectTeamTagsListPath = handleProjectTeamTagsListPath;
 exports.handleProjectsPath = handleProjectsPath;
 exports.handleProjectsListComponentPath = handleProjectsListComponentPath;
 exports.handleTeamsListComponentPath = handleTeamsListComponentPath;
@@ -3242,6 +3462,10 @@ exports.handleCommentDeletePath = handleCommentDeletePath;
 exports.handleDeleteSprintPath = handleDeleteSprintPath;
 // </Put Requests> -----------------------------------------------
 
+// <Releases Requests> ------------------------------------------------
+exports.handleReleasesCreatePath = handleReleasesCreatePath;
+// </Releases Requests> -----------------------------------------------
+
 // <Settings Requests> ------------------------------------------------
 exports.handleSettingsPath = settings_api.renderSettingsPage;
 exports.handleSettingsResetPath = settings_api.resetSettings;
@@ -3251,6 +3475,10 @@ exports.handleSettingsUpdatePath = settings_api.updateSettings;
 // <Sprints Requests> ------------------------------------------------
 exports.handleSprintsCreatePath = handleSprintsCreatePath;
 // </Sprints Requests> -----------------------------------------------
+
+// <Tags Requests> ------------------------------------------------
+exports.handleTagsCreatePath = handleTagsCreatePath;
+// </Tags Requests> -----------------------------------------------
 
 // <Users Requests> ------------------------------------------------
 exports.handleLoginPath = users_api.login;
