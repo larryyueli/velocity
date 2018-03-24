@@ -121,7 +121,7 @@
 			"general": {
 				"forceBoardType": "Force board type for teams",
 				"title": "General",
-				"boardTypeSelection":"Select your board type:"
+				"boardTypeSelection": "Select your board type:"
 			},
 			"groups": {
 				"deleteGroups": "Delete Groups",
@@ -196,8 +196,11 @@
 		"subtasks": "Subtasks",
 		"tabs": {
 			"comments": "Comments",
-			"state": "State history",
-			"assignee": "Assignee history"
+			"state": "State History",
+			"assignee": "Assignee History",
+			"ticket": "Ticket",
+			"comment": "Comment",
+			"history": "History"
 		},
 		"tags": "Tags",
 		"ticketDescription": "Ticket Description",

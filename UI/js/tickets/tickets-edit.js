@@ -248,14 +248,16 @@ function deleteComment(commentId) {
 function changeToInput(commentId) {
     let fullId = `#comment_${commentId}`;
     let label = $(fullId);
-    label.after(`<div>
-                    <div class="input-field">
-                        <textarea id='edit_${commentId}' class="materialize-textarea"></textarea>
-                        <label >Edit Comment</label>
-                    </div>
-                    <div  class="right">
-                        <button id='edit_${commentId}_save' class="btn btn-flat waves-effect waves-light comment-buttons" onclick="updateComment('${commentId}')"><i class="material-icons right">save</i></button>
-                        <button id='edit_${commentId}_close' class="btn btn-flat waves-effect waves-light comment-buttons"><i class="material-icons right">close</i></button>
+    label.after(`<div >
+                    <div class="row col12 margin-0">
+                        <div class="input-field">
+                            <textarea id='edit_${commentId}' class="materialize-textarea"></textarea>
+                            <label >Edit Comment</label>
+                        </div>
+                        <div class="right">
+                            <button id='edit_${commentId}_save' class="btn btn-flat waves-effect waves-light comment-buttons" onclick="updateComment('${commentId}')"><i class="material-icons right">save</i></button>
+                            <button id='edit_${commentId}_close' class="btn btn-flat waves-effect waves-light comment-buttons"><i class="material-icons right">close</i></button>
+                        </div>
                     </div>
                 </div>`);
 
