@@ -157,6 +157,12 @@
 				"projectAdmins": "Project Admins",
 				"projectUsers": "Project Users",
 				"title": "Users"
+			},
+			"management": {
+				"releases": "Releases",
+				"tags": "Tags",
+				"noReleases": "No Releases",
+				"noTags": "No Tags"
 			}
 		},
 		"title": "Velocity - Project"

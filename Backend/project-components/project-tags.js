@@ -111,7 +111,7 @@ const getTagsByIds = function (projectId, teamId, tagsIds, callback) {
  * @param {string} teamId team id
  * @param {function} callback callback function
  */
-const getAvailableTagsByTeamId = function (projectId, teamId, callback) {
+const getTagsByTeamId = function (projectId, teamId, callback) {
     getLimitedTagsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.tagStatus.ACTIVE.value }] }, { status: -1, name: 1 }, 0, callback);
 }
 
@@ -239,7 +239,7 @@ const updateTagById = function (tagId, teamId, projectId, updateParams, callback
 // <exports> -----------------------------------
 exports.addTicketToTags = addTicketToTags;
 exports.addTag = addTag;
-exports.getAvailableTagsByTeamId = getAvailableTagsByTeamId;
+exports.getTagsByTeamId = getTagsByTeamId;
 exports.getTagsByIds = getTagsByIds;
 exports.initialize = initialize;
 exports.removeTicketFromTags = removeTicketFromTags;

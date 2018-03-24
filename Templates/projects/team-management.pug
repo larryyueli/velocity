@@ -1,51 +1,26 @@
 .row
-    .col.s12.l8
-        .row
-            .card.center
-                .card-content
-                    h5 #{project.title}
-                .card-action
-                    #description #{project.description}
-        if !isProjectClosed && isUnKnownBoardType
+    .col.s12
+        #releases #{__('projectPage.tabs.management.releases')}
+            hr
             .row
-                .card.center
-                    .card-content
-                        h5 #{__('projectPage.tabs.general.boardTypeSelection')}
-                    .card-action
-                        .row
-                            .col.s10
-                                .input-field
-                                    select.icons#boardTypeSelection
-                                        option(value=1)
-                                            | #{__('projects.type.kanban')}
-                                        option(value=2)
-                                            | #{__('projects.type.scrum')}
-                                    label
-                                        | #{__('projects.type.label')}
-                            .col.s2
-                                a.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='saveBoardType()')
-                                    i.material-icons.left save
-                                    | #{__('actions.save')}
-        if !isUnKnownBoardType
-            if forceDeadline
-                .row
+                if releasesList.length === 0
+                    h6.center #{__('projectPage.tabs.management.noReleases')}
+                else
                     ul.collection
-                        li.collection-item
-                            span.title #{__('projectPage.tabs.general.deadlines')}
-                        li.collection-item.avatar
-                            i.material-icons.circle folder
-                            span.title #{__('projectPage.tabs.general.deadline')}
-                            br
-                            | #{`${deadlineDate} ${deadlineTime}`}
-    .col.s12.l4
-        ul.collection
-            li.collection-item.center
-                h5 #{team.name}
-            each member in team.members
-                li.collection-item.avatar
-                    img.circle(src=`/profilePicture/${member.picture}`, alt='')
-                    span.title #{member.fname} #{member.lname}
-                    br
-                    | #{member.username}
-                    br
-                    | #{member.email}
+                        each release in releasesList
+                            li.collection-item.avatar
+                                i.material-icons.circle compare_arrows
+                                span.title #{release.name}
+.row
+    .col.s12
+        #tags #{__('projectPage.tabs.management.tags')}
+            hr
+            .row
+                if tagsList.length === 0
+                    h6.center #{__('projectPage.tabs.management.noTags')}
+                else
+                    ul.collection
+                        each tag in tagsList
+                            li.collection-item.avatar
+                                i.material-icons.circle compare_arrows
+                                span.title #{tag.name}
