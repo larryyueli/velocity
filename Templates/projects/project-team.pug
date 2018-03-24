@@ -58,25 +58,24 @@ block content
     .row.width-90
         .col.s12
             #overview
-                include project-overview
+                include team-overview
             if !isUnKnownBoardType
                 #board
-                    include sprint-active
+                    include team-board
                 if isScrumBoardType
                     #backlog
-                        include sprint-backlog
+                        include team-backlog
                 #issues
-                    include sprint-issues
+                    include team-issues
                 #analytics
                     .card
                         h5 analytics test
                 #management
-                    .card
-                        h5 settings test
+                    include team-management
 
 block scripts
     script(src='/js/projects/project-team.js')
-    script(src='/js/projects/sprint-backlog.js')
-    script(src='/js/projects/sprint-issues.js')
-    script(src='/js/projects/sprint-active.js')
+    script(src='/js/projects/team-backlog.js')
+    script(src='/js/projects/team-issues.js')
+    script(src='/js/projects/team-board.js')
     script(src='/summernote/summernote.js')

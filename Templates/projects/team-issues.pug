@@ -1,14 +1,14 @@
 .row
-    a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#ticketsFilter"))')
+    a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#issuesFilter"))')
         i.material-icons search
-.row.hidden#ticketsFilter
+.row.hidden#issuesFilter
     form.col.s10.offset-s1
         .row
             .input-field.col.s12
-                input#searchFilter.validate(type='text')
+                input#searchFilterIssue.validate(type='text')
                 label(for='searchFilter')  #{__('users.searchFilter')}
             .input-field.col.s12.m6
-                select.icons#typeSelection
+                select.icons#typeSelectionIssue
                     option(value=-1)
                         | #{__('filters.all')}
                     option(value=0, data-icon='/img/icon-ladybird.png')
@@ -20,9 +20,9 @@
                 label
                     | #{__('tickets.type')}
             .input-field.col.s12.m6
-                input.autocomplete(type='text', name='assigneeAutocomplete')#assigneeAutocomplete
-                label(for='assigneeAutocomplete') #{__('tickets.assignee')}
+                input.autocomplete(type='text', name='assigneeAutocompleteIssue')#assigneeAutocompleteIssue
+                label(for='assigneeAutocompleteIssue') #{__('tickets.assignee')}
 .row
     .card
-        ul.collapsible(data-collapsible='expandable')#sprintsList
-        #sprintsLoad
+        ul.collection.scroll-auto.margin-0#issuesList
+        #issuesLoad
