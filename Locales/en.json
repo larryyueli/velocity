@@ -110,6 +110,9 @@
 			},
 			"settings": {
 				"title": "Settings"
+			},
+			"management": {
+				"title": "Management"
 			}
 		},
 		"title": "Velocity - Projects",

@@ -51,10 +51,10 @@ block content
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.analytics.title')}
                             li.tab.col.s2
-                                a.noLineLink.active#option-board(href='#settings')
+                                a.noLineLink.active#option-board(href='#management')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour settings
                                     |
-                                    .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.settings.title')}
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.management.title')}
     .row.width-90
         .col.s12
             #overview
@@ -67,12 +67,12 @@ block content
                         include sprint-backlog
                 #issues
                     include sprint-issues
-                #settings
-                    .card
-                        h5 settings test
                 #analytics
                     .card
                         h5 analytics test
+                #management
+                    .card
+                        h5 settings test
 
 block scripts
     script(src='/js/projects/project-team.js')

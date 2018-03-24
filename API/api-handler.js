@@ -390,7 +390,9 @@ const handleActiveSprintTicketsListComponentPath = function (req, res) {
                             board[resolvedTicketAssignee].inTest.push(limitedTicket);
                             break;
                         case common_backend.ticketStates.DONE.value:
-                            board[resolvedTicketAssignee].done.push(limitedTicket);
+                            if (board[resolvedTicketAssignee].done.length < 20) {
+                                board[resolvedTicketAssignee].done.push(limitedTicket);
+                            }
                             break;
                         default:
                             break;
