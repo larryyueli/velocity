@@ -31,11 +31,12 @@ block content
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
-                            li.tab.col.s3
-                                a.noLineLink#option-groups(href='#boards')
-                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
-                                    |
-                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
+                            if (isActive || isClosed)
+                                li.tab.col.s3
+                                    a.noLineLink#option-groups(href='#boards')
+                                        i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
+                                        |
+                                        .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
     .container
         .row
             .col.s12
@@ -61,6 +62,9 @@ block content
                                                         i.material-icons.right save
                                                     button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
                                                         i.material-icons.right send
+                                            else
+                                                button.waves-effect.waves-light.btn.col.s12.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                                    i.material-icons.right close
                 if isProjectAdmin
                     #users
                         .card
@@ -190,7 +194,7 @@ block content
 
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
-                if isProjectAdmin
+                if isProjectAdmin && (isActive || isClosed)
                     #boards
                         .row
                             a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#teamsSearch(onclick='toggleVisibility($("#teamsFilter"))')

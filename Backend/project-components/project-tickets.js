@@ -200,6 +200,8 @@ const searchTicketsByProjectId = function (projectId, term, callback) {
                 {
                     $or: [
                         {
+                            displayId: { $regex: `(.*)${term}(.*)`, $options: 'i' }
+                        }, {
                             title: { $regex: `(.*)${term}(.*)`, $options: 'i' }
                         }, {
                             description: { $regex: `(.*)${term}(.*)`, $options: 'i' }
@@ -235,6 +237,8 @@ const searchTicketsByTeamId = function (projectId, teamId, term, callback) {
                 {
                     $or: [
                         {
+                            displayId: { $regex: `(.*)${term}(.*)`, $options: 'i' }
+                        }, {
                             title: { $regex: `(.*)${term}(.*)`, $options: 'i' }
                         }, {
                             description: { $regex: `(.*)${term}(.*)`, $options: 'i' }

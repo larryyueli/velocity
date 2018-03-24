@@ -722,7 +722,10 @@ const handleProjectsAddPath = function (req, res) {
         isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
         isActive: false,
         isClosed: false,
-        selectedBoardType: common_backend.boardTypes.KANBAN.value
+        selectedBoardType: common_backend.boardTypes.KANBAN.value,
+        forceDeadline: false,
+        deadlineDate: '',
+        deadlineTime: ''
     });
 }
 
@@ -744,18 +747,32 @@ const handleProjectsCreatePath = function (req, res) {
     }
 
     const parsedBoardType = parseInt(req.body.boardType);
+    const deadlineDateText = req.body.deadlineDate;
+    const deadlineTimeText = req.body.deadlineTime;
     const boardType = common_backend.convertStringToBoolean(req.body.canForceBoardType)
         ? typeof (parsedBoardType) === common_backend.variableTypes.NUMBER
             ? parsedBoardType
             : common_backend.boardTypes.UNKNOWN.value
         : common_backend.boardTypes.UNKNOWN.value;
+    const deadlineDate = common_backend.convertStringToBoolean(req.body.canForceDeadline)
+        ? typeof (deadlineDateText) === common_backend.variableTypes.STRING
+            ? deadlineDateText
+            : null
+        : null;
+    const deadlineTime = common_backend.convertStringToBoolean(req.body.canForceDeadline)
+        ? typeof (deadlineTimeText) === common_backend.variableTypes.STRING
+            ? deadlineTimeText
+            : null
+        : null;
 
     const newProject = {
         title: req.body.title,
         description: req.body.description,
         status: common_backend.projectStatus.DRAFT.value,
         admins: [req.session.user._id],
-        boardType: boardType
+        boardType: boardType,
+        deadlineDate: deadlineDate,
+        deadlineTime: deadlineTime
     };
 
     projects.addProject(newProject, function (err, projectObj) {
@@ -848,7 +865,10 @@ const handleProjectByIdPath = function (req, res) {
             isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value,
             isClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
             forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value,
-            selectedBoardType: projectObj.boardType
+            selectedBoardType: projectObj.boardType,
+            forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+            deadlineDate: projectObj.deadlineDate,
+            deadlineTime: projectObj.deadlineTime
         });
     });
 }
@@ -882,16 +902,30 @@ const handleProjectUpdatePath = function (req, res) {
         }
 
         const parsedBoardType = parseInt(req.body.boardType);
+        const deadlineDateText = req.body.deadlineDate;
+        const deadlineTimeText = req.body.deadlineTime;
         const boardType = common_backend.convertStringToBoolean(req.body.canForceBoardType)
             ? typeof (parsedBoardType) === common_backend.variableTypes.NUMBER
                 ? parsedBoardType
                 : common_backend.boardTypes.UNKNOWN.value
             : common_backend.boardTypes.UNKNOWN.value;
+        const deadlineDate = common_backend.convertStringToBoolean(req.body.canForceDeadline)
+            ? typeof (deadlineDateText) === common_backend.variableTypes.STRING
+                ? deadlineDateText
+                : null
+            : '';
+        const deadlineTime = common_backend.convertStringToBoolean(req.body.canForceDeadline)
+            ? typeof (deadlineTimeText) === common_backend.variableTypes.STRING
+                ? deadlineTimeText
+                : null
+            : '';
 
         let newProject = {
             title: req.body.title,
             description: req.body.description,
-            boardType: boardType
+            boardType: boardType,
+            deadlineDate: deadlineDate,
+            deadlineTime: deadlineTime
         };
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
@@ -2145,7 +2179,10 @@ const handleProjectTeamPath = function (req, res) {
                     isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
                     isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
                     isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
-                    isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value
+                    isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
+                    forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+                    deadlineDate: projectObj.deadlineDate,
+                    deadlineTime: projectObj.deadlineTime
                 });
             });
         });

@@ -163,29 +163,37 @@ block content
                     .row
                         .col.s12
                             #states #{__('tickets.tabs.state')}
+                                hr
                                 .row
-                                    ul.collection
-                                        each entry in ticket.stateHistory
-                                            li.collection-item.avatar
-                                                i.material-icons.circle compare_arrows
-                                                span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
-                                                br
-                                                | Before: #{__(`tickets.states.${resolveState(entry.from)}`)}
-                                                br
-                                                | After: #{__(`tickets.states.${resolveState(entry.to)}`)}
+                                    if ticket.stateHistory.length === 0
+                                        h6.center #{__('tickets.noHistory')}
+                                    else
+                                        ul.collection
+                                            each entry in ticket.stateHistory
+                                                li.collection-item.avatar
+                                                    i.material-icons.circle compare_arrows
+                                                    span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
+                                                    br
+                                                    | Before: #{__(`tickets.states.${resolveState(entry.from)}`)}
+                                                    br
+                                                    | After: #{__(`tickets.states.${resolveState(entry.to)}`)}
                     .row
                         .col.s12
                             #assignees #{__('tickets.tabs.assignee')}
+                                hr
                                 .row
-                                    ul.collection
-                                        each entry in ticket.assigneeHistory
-                                            li.collection-item.avatar
-                                                i.material-icons.circle people
-                                                span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
-                                                br
-                                                | Before: #{resolveUsername(entry.from)}
-                                                br
-                                                | After: #{resolveUsername(entry.to)}
+                                    if ticket.assigneeHistory.length === 0
+                                        h6.center #{__('tickets.noHistory')}
+                                    else
+                                        ul.collection
+                                            each entry in ticket.assigneeHistory
+                                                li.collection-item.avatar
+                                                    i.material-icons.circle people
+                                                    span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
+                                                    br
+                                                    | Before: #{resolveUsername(entry.from)}
+                                                    br
+                                                    | After: #{resolveUsername(entry.to)}
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')

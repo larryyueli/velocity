@@ -13,11 +13,12 @@
                 if user.canAccessSettings
                     li#nav-settings
                         a.navbarLink(href='/settings') #{__('pageNames.settings')}
-                if user.canAccessGrades
-                    li#nav-grades
-                        a.navbarLink(href='#!') #{__('pageNames.grades')}
-                li#nav-chatRoom
-                    a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
+                if false
+                    if user.canAccessGrades
+                        li#nav-grades
+                            a.navbarLink(href='#!') #{__('pageNames.grades')}
+                    li#nav-chatRoom
+                        a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
             ul.right
                 if canSearch
                     li
@@ -54,15 +55,16 @@ ul#mobile.side-nav
             a.navbarLinkHidden(href='/settings')
                 i.material-icons settings
                 | #{__('pageNames.settings')}
-    if user.canAccessGrades
-        li#navm-grades
+    if false
+        if user.canAccessGrades
+            li#navm-grades
+                a.navbarLinkHidden(href='#!')
+                    i.material-icons edit
+                    | #{__('pageNames.grades')}
+        li#navm-chatRoom
             a.navbarLinkHidden(href='#!')
-                i.material-icons edit
-                | #{__('pageNames.grades')}
-    li#navm-chatRoom
-        a.navbarLinkHidden(href='#!')
-            i.material-icons chat
-            | #{__('pageNames.chatRoom')}
+                i.material-icons chat
+                | #{__('pageNames.chatRoom')}
 
 ul#account_nav.side-nav
     li#nav-info

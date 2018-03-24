@@ -18,11 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const boardSelection = '#boardSelection';
 const boardSelectionRow = $('#boardSelectionRow');
+const deadlineSelectionRow = $('#deadlineSelectionRow');
 const canForceBoardType = '#canForceBoardType';
+const canForceDeadline = '#canForceDeadline';
 const navProjectsId = '#nav-projects';
 const navmProjectsId = '#navm-projects';
 const descriptionId = '#description';
 const titleId = '#title';
+const datepickerId = '#datepicker';
+const timepickerId = '#timepicker';
 const projectAddform = '#projectAddform';
 
 $(function () {
@@ -39,7 +43,16 @@ $(function () {
         }
     });
 
+    $(canForceDeadline).change(() => {
+        if ($(canForceDeadline).is(':checked')) {
+            deadlineSelectionRow.show();
+        } else {
+            deadlineSelectionRow.hide();
+        }
+    });
+
     $(canForceBoardType).change();
+    $(canForceDeadline).change();
 
     $(projectAddform).submit(function (evt) {
         evt.preventDefault();
@@ -52,6 +65,9 @@ $(function () {
         const descriptionText = $(descriptionId).summernote('code');
         const boardType = $(boardSelection).val();
         const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
+        const canForceDeadlineValue = $(canForceDeadline).is(':checked');
+        const deadlineDate = $(datepickerId).val();
+        const deadlineTime = $(timepickerId).val();
 
         $.ajax({
             type: 'PUT',
@@ -60,7 +76,10 @@ $(function () {
                 title: titleText,
                 description: descriptionText,
                 boardType: boardType,
-                canForceBoardType: canForceBoardTypeValue
+                deadlineDate: deadlineDate,
+                deadlineTime: deadlineTime,
+                canForceBoardType: canForceBoardTypeValue,
+                canForceDeadline: canForceDeadlineValue
             },
             success: function (data) {
                 window.location.href = `/project/${data}`;

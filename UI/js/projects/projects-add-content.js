@@ -18,4 +18,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 $(function () {
     initSummernote(descriptionId);
+    $('#datepicker').pickadate({
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
+    });
+
+    $('#timepicker').pickatime({
+        default: translate('now'),
+        fromnow: 0, 
+        twelvehour: true,
+        donetext: translate('ok'),
+        cleartext: translate('clear'),
+        canceltext: translate('cancel'),
+        container: undefined,
+        autoclose: false,
+        ampmclickable: true
+      });
 });

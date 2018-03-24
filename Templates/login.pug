@@ -17,8 +17,9 @@ block content
                         a.noLineLink.active(href='#loginDiv') #{__('login.signIn')}
                     li.tab
                         a.noLineLink(href='#signupDiv') #{__('login.signUp')}
-                    li.tab
-                        a.noLineLink(href='#forgotPasswordDiv') #{__('login.forgotPassword')}
+                    if false
+                        li.tab
+                            a.noLineLink(href='#forgotPasswordDiv') #{__('login.forgotPassword')}
             .card-content.grey.lighten-4
                 #loginDiv
                     form.form-login#loginForm
@@ -70,6 +71,7 @@ block content
                                 input.form-control#signupForm_confirmPassword(type='password' name='confirmPassword' placeholder=__('userInformation.confirmPassword') required)
                                 label.sr-only(for='confirmPassword') #{__('userInformation.confirmPassword')}
                         button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signUp')}
-                #forgotPasswordDiv Forgot Password
+                if false
+                    #forgotPasswordDiv Forgot Password
 block scripts
     script(src='/js/login.js')

@@ -129,17 +129,13 @@ const translations = Object.freeze({
     8006: 'Failed to create a comment',
     8007: 'Failed to update a comment',
 
-    activate: 'Activate',
     activatedProject: 'Project has been activated',
     closedProject: 'Project has been closed',
     activateProjectPrompt: 'Are you sure you want to activate this project?',
     adminConfigurationSuccess: 'Admins have been saved successfully',
     alreadyInGroup: 'This user is already in this group',
-    cancel: 'Cancel',
-    close: 'Close',
     closeProjectPrompt: 'Are you sure you want to close this project?',
     defaultError: 'Something went wrong, please try again!',
-    delete: 'Delete',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
     deletedProject: 'Project has been deleted',
     deleteProjectPrompt: 'Are you sure you want to delete this project?',
@@ -180,10 +176,7 @@ const translations = Object.freeze({
     groupSizeCantBeZero: 'Group size must be a positive integer',
     deletePremadeGroups: 'Would you like to delete the groups that are already made?',
     randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
-    delete: 'Delete',
-    cancel: 'Cancel',
     randomize: 'Randomize',
-    save: 'Save',
     saveProjectPrompt: 'Are you sure you want to save the project with the current configurations?',
     groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
     groupConfigurationSuccess: 'Groups have been saved successfully',
@@ -193,7 +186,7 @@ const translations = Object.freeze({
     titleCanNotBeEmpty: 'Title can not be empty!',
     descriptionCanNotBeEmpty: 'Description can not be empty!',
     commentCanNotBeEmpty: 'Comment can not be empty!',
-    saveBoardType:'BE CAREFUL, this can NOT be changed!',
+    saveBoardType: 'BE CAREFUL, this can NOT be changed!',
 
     todoTitle: 'TODO',
     inProgressTitle: 'IN PROGRESS',
@@ -218,7 +211,18 @@ const translations = Object.freeze({
 
     projectStatus0: 'Closed',
     projectStatus1: 'Draft',
-    projectStatus2: 'Active'
+    projectStatus2: 'Active',
+
+    ok: 'Ok',
+    close: 'Close',
+    clear: 'Clear',
+    cancel: 'Cancel',
+    activate: 'Activate',
+    delete: 'Delete',
+    save: 'Save',
+
+    today: 'Today',
+    now: 'Now'
 });
 
 const userIcons = Object.freeze({

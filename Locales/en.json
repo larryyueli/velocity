@@ -78,7 +78,13 @@
 				"title": "Title",
 				"description": "Description"
 			},
-			"title": "Create a new Project"
+			"title": "Create a new Project",
+			"deadline": {
+				"date": "Date",
+				"time": "Time",
+				"label": "Deadline",
+				"forcelabel": "Force Deadline"
+			}
 		},
 		"status": {
 			"active": "Active",
@@ -121,7 +127,9 @@
 			"general": {
 				"forceBoardType": "Force board type for teams",
 				"title": "General",
-				"boardTypeSelection": "Select your board type:"
+				"boardTypeSelection": "Select your board type:",
+				"deadlines": "Deadlines",
+				"deadline": "Project Deadline"
 			},
 			"groups": {
 				"deleteGroups": "Delete Groups",
@@ -212,7 +220,8 @@
 			"milestone": "Milestone",
 			"story": "Story"
 		},
-		"writeComment": "Write Comment"
+		"writeComment": "Write Comment",
+		"noHistory": "No History"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",

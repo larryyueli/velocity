@@ -44,7 +44,11 @@ var isCollabMode = null;
 const assignedList = '#assignedList';
 const boardSelection = '#boardSelection';
 const boardSelectionRow = $('#boardSelectionRow');
+const deadlineSelectionRow = $('#deadlineSelectionRow');
 const canForceBoardType = '#canForceBoardType';
+const canForceDeadline = '#canForceDeadline';
+const datepickerId = '#datepicker';
+const timepickerId = '#timepicker';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
 const deleteAllGroupsId = '#deleteAllGroups';
@@ -297,6 +301,14 @@ $(function () {
         }
     });
 
+    $(canForceDeadline).change(() => {
+        if ($(canForceDeadline).is(':checked')) {
+            deadlineSelectionRow.show();
+        } else {
+            deadlineSelectionRow.hide();
+        }
+    });
+
     // General actions
     $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
@@ -304,6 +316,7 @@ $(function () {
     $(generalCloseButton).click(() => { generalCloseProject(); });
     $(generalActiveUpdateButton).click(() => { generalActiveUpdateProject(); });
     $(canForceBoardType).change();
+    $(canForceDeadline).change();
 
     // Loads the groups and unassigned users, and starts the loaders
     startLoad(groupLoadId, groupListId);
@@ -600,6 +613,9 @@ function generalSaveProject() {
     const descriptionText = $(descriptionId).summernote('code');
     const boardType = $(boardSelection).val();
     const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
+    const canForceDeadlineValue = $(canForceDeadline).is(':checked');
+    const deadlineDate = $(datepickerId).val();
+    const deadlineTime = $(timepickerId).val();
 
     swal({
         text: translate('saveProjectPrompt'),
@@ -616,7 +632,10 @@ function generalSaveProject() {
                     title: titleText,
                     description: descriptionText,
                     boardType: boardType,
-                    canForceBoardType: canForceBoardTypeValue
+                    deadlineDate: deadlineDate,
+                    deadlineTime: deadlineTime,
+                    canForceBoardType: canForceBoardTypeValue,
+                    canForceDeadline: canForceDeadlineValue
                 },
                 success: function (data) {
                     successSnackbar(translate('updatedProject'));
@@ -805,12 +824,12 @@ function getTeamsList() {
             displayTeamList();
         },
         error: function (data) {
-          handle401And404(data);
+            handle401And404(data);
 
-          $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
-          $(teamsSearchId).addClass('hidden');
+            $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(teamsSearchId).addClass('hidden');
 
-          endLoad(teamsloadId, teamslistId);
+            endLoad(teamsloadId, teamslistId);
         }
     });
 }
