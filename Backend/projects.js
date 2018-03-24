@@ -270,7 +270,6 @@ exports.updateSprintById = sprints.updateSprintById;
 // <tags> -----------------------------------
 exports.addTagToTeam = tags.addTag;
 exports.addTicketToTags = tags.addTicketToTags;
-exports.getTagsByTeamId = tags.getTagsByTeamId;
 exports.getTagsByIds = tags.getTagsByIds;
 exports.getTagsByTeamId = tags.getTagsByTeamId;
 exports.removeTicketFromTags = tags.removeTicketFromTags;

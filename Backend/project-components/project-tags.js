@@ -239,8 +239,8 @@ const updateTagById = function (tagId, teamId, projectId, updateParams, callback
 // <exports> -----------------------------------
 exports.addTicketToTags = addTicketToTags;
 exports.addTag = addTag;
-exports.getTagsByTeamId = getTagsByTeamId;
 exports.getTagsByIds = getTagsByIds;
+exports.getTagsByTeamId = getTagsByTeamId;
 exports.initialize = initialize;
 exports.removeTicketFromTags = removeTicketFromTags;
 exports.updateTagById = updateTagById;
