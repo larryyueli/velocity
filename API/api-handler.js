@@ -2468,60 +2468,77 @@ const handleProjectTeamTicketPath = function (req, res) {
                             return res.status(404).render(common_api.pugPages.pageNotFound);
                         }
 
-                        return res.status(200).render(common_api.pugPages.ticketModification, {
-                            user: req.session.user,
-                            projectId: projectId,
-                            teamId: teamId,
-                            reporter: reporter,
-                            assignee: assignee,
-                            ticket: ticketObj,
-                            comments: commentsList,
-                            sprints: sprintsObjList,
-                            resolveState: (state) => {
-                                return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
-                            },
-                            resolveUsername: (userId) => {
-                                return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
-                            },
-                            resolveCommentContent: (content) => {
-                                let splitContent = content.split(' ');
-                                let resolvedContent = '';
+                        projects.getReleasesByTicketId(projectId, teamId, ticketId, function (err, releasesObjList) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(404).render(common_api.pugPages.pageNotFound);
+                            }
 
-                                for (let i = 0; i < splitContent.length; i++) {
-                                    let phrase = splitContent[i];
-                                    let firstChar = phrase.charAt(0);
-                                    switch (firstChar) {
-                                        case '@':
-                                            let userId = phrase.slice(1);
-                                            let user = usersIdObj[userId];
-                                            if (user) {
-                                                resolvedContent += `<b>@${user.username}</b> `;
-                                            } else {
-                                                resolvedContent += `@UNKNOWN `;
-                                            }
-                                            break;
-                                        case '#':
-                                            let ticketId = phrase.slice(1);
-                                            let ticket = ticketsIdObj[ticketId];
-                                            if (ticket) {
-                                                resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
-                                            } else {
-                                                resolvedContent += `#UNKNOWN `;
-                                            }
-                                            break;
-                                        default:
-                                            resolvedContent += `${phrase} `;
-                                            break;
-                                    }
+                            projects.getTagsByTicketId(projectId, teamId, ticketId, function (err, tagsObjList) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(404).render(common_api.pugPages.pageNotFound);
                                 }
 
-                                return resolvedContent.trim();
-                            },
-                            canSearch: true,
-                            commonSprintStatus: common_backend.sprintStatus,
-                            isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
-                            isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
-                            isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value
+                                return res.status(200).render(common_api.pugPages.ticketModification, {
+                                    user: req.session.user,
+                                    projectId: projectId,
+                                    teamId: teamId,
+                                    reporter: reporter,
+                                    assignee: assignee,
+                                    ticket: ticketObj,
+                                    comments: commentsList,
+                                    sprints: sprintsObjList,
+                                    releases: releasesObjList,
+                                    tags: tagsObjList,
+                                    resolveState: (state) => {
+                                        return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
+                                    },
+                                    resolveUsername: (userId) => {
+                                        return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
+                                    },
+                                    resolveCommentContent: (content) => {
+                                        let splitContent = content.split(' ');
+                                        let resolvedContent = '';
+
+                                        for (let i = 0; i < splitContent.length; i++) {
+                                            let phrase = splitContent[i];
+                                            let firstChar = phrase.charAt(0);
+                                            switch (firstChar) {
+                                                case '@':
+                                                    let userId = phrase.slice(1);
+                                                    let user = usersIdObj[userId];
+                                                    if (user) {
+                                                        resolvedContent += `<b>@${user.username}</b> `;
+                                                    } else {
+                                                        resolvedContent += `@UNKNOWN `;
+                                                    }
+                                                    break;
+                                                case '#':
+                                                    let ticketId = phrase.slice(1);
+                                                    let ticket = ticketsIdObj[ticketId];
+                                                    if (ticket) {
+                                                        resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
+                                                    } else {
+                                                        resolvedContent += `#UNKNOWN `;
+                                                    }
+                                                    break;
+                                                default:
+                                                    resolvedContent += `${phrase} `;
+                                                    break;
+                                            }
+                                        }
+
+                                        return resolvedContent.trim();
+                                    },
+                                    canSearch: true,
+                                    commonSprintStatus: common_backend.sprintStatus,
+                                    commonReleaseStatus: common_backend.releaseStatus,
+                                    isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
+                                    isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
+                                    isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value
+                                });
+                            });
                         });
                     });
                 });

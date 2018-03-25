@@ -112,13 +112,20 @@ block content
                                             label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                     .row
                                         .input-field.padding-10
-                                            input.autocomplete(type='text')
-                                            label(for='autocomplete-input') #{__('tickets.release')}
+                                            input.autocomplete(type='text')#releasesAutocomplete
+                                            label(for='releasesAutocomplete') #{__('tickets.release')}
+                                    .row
+                                        .input-field.padding-10#ticketReleasesDivId
+                                            each release in releases
+                                                    .chip.release-chips(id=`${release._id}`)
+                                                        | #{release.name}
+                                                        if release.status !== commonReleaseStatus.CLOSED.value
+                                                            i.close.material-icons(onclick=`removeReleaseId('${release._id}')`) close
                                     if isScrumBoardType
                                         .row
                                             .input-field.padding-10
                                                 input.autocomplete(type='text')#sprintsAutocomplete
-                                                label(for='sprintsAutocomplete')  #{__('tickets.sprints')}
+                                                label(for='sprintsAutocomplete') #{__('tickets.sprints')}
                                         .row
                                             .input-field.padding-10#ticketSprintsDivId
                                                 each sprint in sprints
@@ -128,8 +135,14 @@ block content
                                                             i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) close
                                     .row
                                         .input-field.padding-10
-                                            input.autocomplete(type='text')
-                                            label(for='autocomplete-input')  #{__('tickets.tags')}
+                                            input.autocomplete(type='text')#tagsAutocomplete
+                                            label(for='tagsAutocomplete') #{__('tickets.tags')}
+                                    .row
+                                        .input-field.padding-10#ticketTagsDivId
+                                            each tag in tags
+                                                .chip.tag-chips(id=`${tag._id}`)
+                                                    | #{tag.name}
+                                                    i.close.material-icons(onclick=`removeTagId('${tag._id}')`) close
                             .row
                                 button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                     i.material-icons.right save

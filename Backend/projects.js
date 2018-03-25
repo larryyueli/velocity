@@ -249,6 +249,7 @@ exports.addTicketToReleases = releases.addTicketToReleases;
 exports.getAvailableReleasesByTeamId = releases.getAvailableReleasesByTeamId;
 exports.getReleasesByIds = releases.getReleasesByIds;
 exports.getReleasesByTeamId = releases.getReleasesByTeamId;
+exports.getReleasesByTicketId = releases.getReleasesByTicketId;
 exports.removeTicketFromReleases = releases.removeTicketFromReleases;
 exports.updateReleaseById = releases.updateReleaseById;
 // </releases> ----------------------------------
@@ -272,6 +273,7 @@ exports.addTagToTeam = tags.addTag;
 exports.addTicketToTags = tags.addTicketToTags;
 exports.getTagsByIds = tags.getTagsByIds;
 exports.getTagsByTeamId = tags.getTagsByTeamId;
+exports.getTagsByTicketId = tags.getTagsByTicketId;
 exports.removeTicketFromTags = tags.removeTicketFromTags;
 exports.updateReleaseById = tags.updateReleaseById;
 // </tags> ----------------------------------

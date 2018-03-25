@@ -205,7 +205,7 @@ const getSprintsByTeamId = function (projectId, teamId, callback) {
  * @param {string} ticketId ticket id
  * @param {function} callback callback function
  */
-const getSprintsByTicketId = function (projectId, teamId, callback) {
+const getSprintsByTicketId = function (projectId, teamId, ticketId, callback) {
     getLimitedSprintsListSorted({ $and: [{ projectId: projectId }, { teamId: teamId }, { tickets: ticketId }, { status: { $ne: common.sprintStatus.DELETED.value } }] }, { status: -1, name: 1 }, 0, callback);
 }
 

@@ -241,7 +241,7 @@ function getListOfReleases() {
                 onAutocomplete: function (val) {
                     if (selectedReleases.indexOf(releaseIdsObj[val]) === -1) {
                         selectedReleases.push(releaseIdsObj[val]);
-                        $(ticketReleasesDivId).append(`<div class="chip sprint-chips" id=${releaseIdsObj[val]}>${val}<i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">close</i></div>`);
+                        $(ticketReleasesDivId).append(`<div class="chip release-chips" id=${releaseIdsObj[val]}>${val}<i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">close</i></div>`);
                     }
                 },
                 minLength: 0,
@@ -292,7 +292,7 @@ function getListOfTags() {
                 onAutocomplete: function (val) {
                     if (selectedTags.indexOf(tagIdsObj[val]) === -1) {
                         selectedTags.push(tagIdsObj[val]);
-                        $(ticketTagsDivId).append(`<div class="chip sprint-chips" id=${tagIdsObj[val]}>${val}<i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">close</i></div>`);
+                        $(ticketTagsDivId).append(`<div class="chip tag-chips" id=${tagIdsObj[val]}>${val}<i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">close</i></div>`);
                     }
                 },
                 minLength: 0,
