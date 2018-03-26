@@ -230,7 +230,19 @@
 			"story": "Story"
 		},
 		"writeComment": "Write Comment",
-		"noHistory": "No History"
+		"noHistory": "No History",
+		"relation": {
+			"blocks": "Blocks",
+			"blocked_by": "Blocked By",
+			"duplicates": "Duplicates",
+			"duplicated_by": "Duplicated By",
+			"fixes": "Fixes",
+			"fixed_by": "Fixed By",
+			"label": "Related Tickets"
+		},
+		"label": "Ticket",
+		"id": "Ticket Id",
+		"displayId": "Display Id"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",

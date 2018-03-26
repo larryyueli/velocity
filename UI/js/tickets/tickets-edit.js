@@ -42,12 +42,17 @@ const newCommentField = '#newComment';
 const ticketSprintsDivId = '#ticketSprintsDivId';
 const ticketReleasesDivId = '#ticketReleasesDivId';
 const ticketTagsDivId = '#ticketTagsDivId';
+const saveLinkButton = '#saveLinkButton';
+const relatedInput = '#relatedInput';
+const relatedTicketDivId = '#relatedTicketDivId';
+const relatedSelectedInput = '#relatedSelectedInput';
 
 var selectedAssignee = null;
 var usernamesArray = [];
 var selectedSprints = [];
 var selectedReleases = [];
 var selectedTags = [];
+var selectedRelatedObj = {};
 var sprintIdsObj = {};
 var releaseIdsObj = {};
 var tagIdsObj = {};
@@ -136,7 +141,8 @@ function updateTicketAction() {
             assignee: selectedAssignee,
             sprints: selectedSprints,
             releases: selectedReleases,
-            tags: selectedTags
+            tags: selectedTags,
+            links: selectedRelatedObj
         },
         success: function (data) {
             window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
@@ -481,4 +487,52 @@ function removeTagId(tagId) {
     if (selectedTags.indexOf(tagId) !== -1) {
         selectedTags.splice(selectedTags.indexOf(tagId), 1);
     }
+}
+
+/**
+ * save link function
+*/
+function saveLinkFunction() {
+    const relatedTicket = $(relatedInput).val();
+    const relatedText = $(`${relatedSelectedInput} option:selected`).text();
+    const relatedValue = $(`${relatedSelectedInput} option:selected`).val();
+
+    $(saveLinkButton).attr('disabled', true);
+
+    $.ajax({
+        type: 'GET',
+        url: '/lookup/ticket/by/displayId',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            displayId: relatedTicket
+        },
+        success: function (data) {
+            if (selectedRelatedObj[data._id]) {
+                delete selectedRelatedObj[data._id];
+                $(`#${data._id} > .close`).trigger('click');
+            }
+
+            selectedRelatedObj[data._id] = relatedValue;
+            $(relatedTicketDivId).append(`<div class="chip related-chips" id=${data._id}>${relatedText}: ${relatedTicket}<i class="close material-icons" onClick="removeRelatedId('${data._id}')">close</i></div>`);
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function (data) {
+            $(saveLinkButton).attr('disabled', false);
+        }
+    });
+}
+
+/**
+ * list of possible related id
+ * 
+ * @param {string} id related id
+*/
+function removeRelatedId(relatedId) {
+    delete selectedRelatedObj[relatedId];
 }

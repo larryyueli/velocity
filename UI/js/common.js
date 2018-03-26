@@ -63,6 +63,10 @@ UI Translations for user display
 3000 -> settings errors
 4000 -> custom file system errors
 8000 -> comments
+9000 -> notifications
+10000 -> sprints
+11000 -> releases
+12000 -> tags
 */
 const translations = Object.freeze({
     //1000 system errors
@@ -123,11 +127,76 @@ const translations = Object.freeze({
     //4000 custom file system errors
     4010: 'Permission denied',
 
+    //5000 projects
+    5001: 'Failed to add a project',
+    5002: 'Failed to get projects list',
+    5003: 'Failed to get a project',
+    5004: 'Project not found',
+    5005: 'Failed to update projects',
+    5006: 'Failed to update project',
+
+    //6000 teams
+    6001: 'Failed to add a team',
+    6002: 'Failed to get teams list',
+    6003: 'Failed to get a team',
+    6004: 'Team not found',
+    6005: 'Failed to update team',
+    6006: 'Failed to create a team',
+    6007: 'Failed to update a team',
+
+    //7000 tickets
+    7001: 'Failed to add a ticket',
+    7002: 'Failed to get tickets list',
+    7003: 'Failed to get a ticket',
+    7004: 'Ticket not found',
+    7005: 'Failed to update ticket',
+    7006: 'Failed to create a ticket',
+    7007: 'Failed to update a ticket',
+
     //8000 comment
     8001: 'Failed to add a comment',
     8005: 'Failed to update comment',
     8006: 'Failed to create a comment',
     8007: 'Failed to update a comment',
+
+    //9000 notifications
+    9001: 'Failed to add a notification',
+    9002: 'Failed to get notifications list',
+    9003: 'Failed to get a notification',
+    9004: 'Notification not found',
+    9005: 'Failed to update notification',
+    9006: 'Failed to create a notification',
+    9007: 'Failed to update a notification',
+    9008: 'Failed to delete a notification',
+    9009: 'Failed to delete a notification',
+    9010: 'Failed to delete a notification',
+
+    //10,000 sprints
+    10001: 'Failed to add a sprint',
+    10002: 'Failed to get sprints list',
+    10003: 'Failed to get a sprint',
+    10004: 'Sprint not found',
+    10005: 'Failed to update sprint',
+    10006: 'Failed to create a sprint',
+    10007: 'Failed to update a sprint',
+
+    //11,000 releases
+    11001: 'Failed to add a release',
+    11002: 'Failed to get releases list',
+    11003: 'Failed to get a release',
+    11004: 'Release not found',
+    11005: 'Failed to update release',
+    11006: 'Failed to create a release',
+    11007: 'Failed to update a release',
+
+    //12,000 tags
+    12001: 'Failed to add a tag',
+    12002: 'Failed to get tags list',
+    12003: 'Failed to get a tag',
+    12004: 'Tag not found',
+    12005: 'Failed to update tag',
+    12006: 'Failed to create a tag',
+    12007: 'Failed to update a tag',
 
     activatedProject: 'Project has been activated',
     closedProject: 'Project has been closed',

@@ -29,12 +29,12 @@ var nextTicketId = 1;
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    getLimitedTicketsListSorted({}, {}, 0, function (err, commentsList) {
+    getLimitedTicketsListSorted({}, {}, 0, function (err, ticketsList) {
         if (err) {
             return callback(err, null);
         }
 
-        nextTicketId += commentsList.length;
+        nextTicketId += ticketsList.length;
         return callback(null, 'ok');
     });
 }
@@ -72,6 +72,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.sprints = Array.isArray(ticket.sprints) ? ticket.sprints : [];
     ticketToAdd.releases = Array.isArray(ticket.releases) ? ticket.releases : [];
     ticketToAdd.tags = Array.isArray(ticket.tags) ? ticket.tags : [];
+    ticketToAdd.links = Array.isArray(ticket.links) ? ticket.links : [];
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
@@ -84,7 +85,14 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.stateHistory = [];
     ticketToAdd.assigneeHistory = [];
 
-    db.addTicket(ticketToAdd, callback);
+    db.addTicket(ticketToAdd, function (err, ticketObj) {
+        if (err) {
+            return callback(err, null);
+        }
+
+        nextTicketId++;
+        return callback(null, ticketObj);
+    });
 }
 
 /**
@@ -140,6 +148,18 @@ const getTicketsByProjectId = function (projectId, callback) {
  */
 const getTicketById = function (projectId, teamId, ticketId, callback) {
     getTicket({ $and: [{ _id: ticketId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, callback);
+}
+
+/**
+ * find a ticket by its display id
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} ticketDisplayId ticket display id
+ * @param {function} callback callback function
+ */
+const getTicketByDisplayId = function (projectId, teamId, ticketDisplayId, callback) {
+    getTicket({ $and: [{ displayId: ticketDisplayId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, callback);
 }
 
 /**
@@ -327,6 +347,10 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
         updateQuery.$set.tags = updateParams.tags;
     }
 
+    if (Array.isArray(updateParams.links)) {
+        updateQuery.$set.links = updateParams.links;
+    }
+
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {
         updateQuery.$set.priority = updateParams.priority;
     }
@@ -363,6 +387,7 @@ const updateTicket = function (ticketId, teamId, projectId, updateParams, callba
 
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
+exports.getTicketByDisplayId = getTicketByDisplayId;
 exports.getTicketById = getTicketById;
 exports.getTicketsByIds = getTicketsByIds;
 exports.getTicketsBySprintId = getTicketsBySprintId;

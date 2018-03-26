@@ -290,6 +290,7 @@ exports.updateTeamInProject = teams.updateTeamInProject;
 
 // <tickets> -----------------------------------
 exports.addTicketToTeam = tickets.addTicket;
+exports.getTicketByDisplayId = tickets.getTicketByDisplayId;
 exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByIds = tickets.getTicketsByIds;
 exports.getTicketsByProjectId = tickets.getTicketsByProjectId;

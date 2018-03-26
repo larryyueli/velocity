@@ -79,9 +79,23 @@ block content
                                         input.validate(type='text', name='milestoneIssues')
                                         label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
                                 .row
-                                    .input-field.padding-10
-                                        input.autocomplete(type='text')
-                                        label(for='autocomplete-input') #{__('tickets.relatedTickets')}
+                                    .input-field.col.s4
+                                        select#relatedSelectedInput
+                                            option(value='0') #{__('tickets.relation.blocks')}
+                                            option(value='1') #{__('tickets.relation.blocked_by')}
+                                            option(value='2') #{__('tickets.relation.duplicates')}
+                                            option(value='3') #{__('tickets.relation.duplicated_by')}
+                                            option(value='4') #{__('tickets.relation.fixes')}
+                                            option(value='5') #{__('tickets.relation.fixed_by')}
+                                        label #{__('tickets.relation.label')}
+                                    .input-field.col.s6
+                                        input#relatedInput.validate(type='text')
+                                        label(for='relatedInput') #{__('tickets.id')}
+                                    .input-field.col.s2
+                                        button.btn.btn-flat.waves-effect.waves-light.right.comment-buttons(onclick='saveLinkFunction()')#saveLinkButton
+                                            i.material-icons.right save
+                                .row
+                                    .input-field.padding-10#relatedTicketDivId
                             .col.s12.l4
                                 .row
                                     .input-field.padding-10
