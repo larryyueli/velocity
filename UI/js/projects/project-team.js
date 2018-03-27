@@ -22,6 +22,14 @@ const createTicketButtonId = '#createTicketButton';
 const description = '#description';
 const splithref = window.location.href.split('/');
 const projectId = splithref[4];
+const releaseCreations = '#releaseCreation';
+const releaseField = '#releaseField';
+const releaseInputRow = '.releaseInputRow';
+const releaseVisibility = '#releaseVisibility';
+const tagCreations = '#tagCreation';
+const tagField = '#tagField';
+const tagInputRow = '.tagInputRow';
+const tagVisibility = '#tagVisibility';
 const teamId = splithref[6];
 
 const assigneeAutocompleteBoardId = '#assigneeAutocompleteBoard';
@@ -41,6 +49,27 @@ $(function () {
         shortcuts: false
     });
     $('div.note-btn-group.btn-group button').remove();
+
+    $(releaseInputRow).hide();
+    $(tagInputRow).hide();
+
+    $(releaseVisibility).click(() => {
+        $(releaseInputRow).show();
+        $(releaseVisibility).hide();
+    });
+
+    $(tagVisibility).click(() => {
+        $(tagInputRow).show();
+        $(tagVisibility).hide();
+    });
+
+    $(releaseCreation).click(() => {
+        createRelease();
+    });
+
+    $(tagCreation).click(() => {
+        createTag();
+    });
 
     $(backButtonId).click(() => {
         window.location.href = '/projects';
@@ -203,6 +232,58 @@ $(function () {
     });*/
 });
 
+
+/**
+ * Creates a release
+ */
+function createRelease() {
+    if ($(releaseField).val() === "") {
+        failSnackbar('Release field cannot be empty');
+    } else {
+        $.ajax({
+            type: 'PUT',
+            url: '/releases/create',
+            data: {
+                projectId: projectId,
+                teamId: teamId,
+                name: $(releaseField).val()
+            },
+            success: function (data) {
+                window.location.href = `/project/${projectId}/team/${teamId}`;
+            },
+            error: function (data) {
+                const jsonResponse = data.responseJSON;
+                failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            }
+        });
+    }
+}
+
+/**
+ * Creates a tag
+ */
+function createTag() {
+    if ($(tagField).val() === "") {
+        failSnackbar('Tag field cannot be empty');
+    } else {
+        $.ajax({
+            type: 'PUT',
+            url: '/tags/create',
+            data: {
+                projectId: projectId,
+                teamId: teamId,
+                name: $(tagField).val()
+            },
+            success: function (data) {
+                window.location.href = `/project/${projectId}/team/${teamId}`;
+            },
+            error: function (data) {
+                const jsonResponse = data.responseJSON;
+                failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            }
+        });
+    }
+}
 
 /**
  * list of possible assignee

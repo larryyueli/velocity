@@ -1,26 +1,54 @@
 .row
     .col.s12
-        #releases #{__('projectPage.tabs.management.releases')}
-            hr
-            .row
-                if releasesList.length === 0
-                    h6.center #{__('projectPage.tabs.management.noReleases')}
-                else
-                    ul.collection
-                        each release in releasesList
-                            li.collection-item.avatar
-                                i.material-icons.circle compare_arrows
-                                span.title #{release.name}
+        .row
+            .col.s8
+                h5#releases #{__('projectPage.tabs.management.releases')}
+            .col.s4
+                a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#releaseVisibility
+                    i.material-icons add
+        hr
+        .row.releaseInputRow
+            .col.s8
+                .input-field
+                    input.validate(type='text', name='tags')#releaseField
+                    label(for='tags') #{__('tickets.ticketTitle')}
+            .col.s4
+                button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#releaseCreation #{__('actions.create')}
+                    i.material-icons.right add
+        hr.releaseInputRow
+        .row
+            if releasesList.length === 0
+                h6.center #{__('projectPage.tabs.management.noReleases')}
+            else
+                ul.collection
+                    each release in releasesList
+                        li.collection-item.avatar
+                            i.material-icons.circle compare_arrows
+                            span.title #{release.name}
 .row
     .col.s12
-        #tags #{__('projectPage.tabs.management.tags')}
-            hr
-            .row
-                if tagsList.length === 0
-                    h6.center #{__('projectPage.tabs.management.noTags')}
-                else
-                    ul.collection
-                        each tag in tagsList
-                            li.collection-item.avatar
-                                i.material-icons.circle compare_arrows
-                                span.title #{tag.name}
+        .row
+            .col.s8
+                h5#tags #{__('projectPage.tabs.management.tags')}
+            .col.s4
+                a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#tagVisibility
+                    i.material-icons add
+        hr
+        .row.tagInputRow
+            .col.s8
+                .input-field
+                    input.validate(type='text', name='tags')#tagField
+                    label(for='tags') #{__('tickets.ticketTitle')}
+            .col.s4
+                button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#tagCreation #{__('actions.create')}
+                    i.material-icons.right add
+        hr.tagInputRow
+        .row
+            if tagsList.length === 0
+                h6.center #{__('projectPage.tabs.management.noTags')}
+            else
+                ul.collection
+                    each tag in tagsList
+                        li.collection-item.avatar
+                            i.material-icons.circle compare_arrows
+                            span.title #{tag.name}
