@@ -73,7 +73,38 @@ const getTicketByDisplayId = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                return res.status(200).send(ticketObj);
+                const resolvedUsers = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                const resolvedReporter = resolvedUsers[ticketObj.reporter] ? `${resolvedUsers[ticketObj.reporter].fname} ${resolvedUsers[ticketObj.reporter].lname}` : common_backend.noReporter;
+                const resolvedAssignee = resolvedUsers[ticketObj.assignee] ? `$${resolvedUsers[ticketObj.assignee].fname} ${resolvedUsers[ticketObj.assignee].lname}}` : common_backend.noReporter;
+                const reporterPicture = resolvedUsers[ticketObj.reporter] ? resolvedUsers[ticketObj.reporter].picture : null;
+                const assigneePicture = resolvedUsers[ticketObj.assignee] ? resolvedUsers[ticketObj.assignee].picture : null;
+                let resolvedTicket = {
+                    _id: ticketObj._id,
+                    reporterId: ticketObj.reporter,
+                    assigneeId: ticketObj.assignee,
+                    reporter: resolvedReporter,
+                    assignee: resolvedAssignee,
+                    reporterPicture: reporterPicture,
+                    assigneePicture: assigneePicture,
+                    ctime: ticketObj.ctime,
+                    mtime: ticketObj.mtime,
+                    displayId: ticketObj.displayId,
+                    projectId: ticketObj.projectId,
+                    teamId: ticketObj.teamId,
+                    sprints: ticketObj.sprints,
+                    releases: ticketObj.releases,
+                    tags: ticketObj.tags,
+                    links: ticketObj.links,
+                    title: ticketObj.title,
+                    description: ticketObj.description,
+                    status: ticketObj.status,
+                    state: ticketObj.state,
+                    type: ticketObj.type,
+                    priority: ticketObj.priority,
+                    points: ticketObj.points
+                };
+
+                return res.status(200).send(resolvedTicket);
             });
         });
     });

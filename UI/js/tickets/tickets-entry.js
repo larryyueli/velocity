@@ -150,7 +150,7 @@ function getListOfAssignee() {
             let usernameObj = {};
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
-                usersObj[`${user.fname} ${user.lname}`] = `/profilePicture/${user.picture}`;
+                usersObj[`${user.fname} ${user.lname}`] = `/picture/${user.picture}`;
                 usernameObj[`${user.fname} ${user.lname}`] = user.username;
             }
             $(assigneeAutocompleteId).autocomplete({
@@ -349,7 +349,14 @@ function saveLinkFunction() {
             }
 
             selectedRelatedObj[data._id] = relatedValue;
-            $(relatedTicketDivId).append(`<div class="chip related-chips" id=${data._id}>${relatedText}: ${relatedTicket}<i class="close material-icons" onClick="removeRelatedId('${data._id}')">close</i></div>`);
+            $(relatedTicketDivId).append(`
+                <div class="row">
+                    <div class="chip full-width related-chips text-left truncateText" id=${data._id}>
+                        <img src="/picture/${data.assigneePicture}">
+                        ${relatedText}: ${relatedTicket}. ${data.title} 
+                        <i class="close material-icons" onClick="removeRelatedId('${data._id}')">delete_forever</i>
+                    </div>
+                </div>`);
         },
         error: function (data) {
             handle401And404(data);

@@ -43,7 +43,7 @@
                 h5 #{team.name}
             each member in team.members
                 li.collection-item.avatar
-                    img.circle(src=`/profilePicture/${member.picture}`, alt='')
+                    img.circle(src=`/picture/${member.picture}`, alt='')
                     span.title #{member.fname} #{member.lname}
                     br
                     | #{member.username}

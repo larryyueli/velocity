@@ -183,7 +183,7 @@ function fillTicketRow(ticket) {
     bindedRow.find(nameId).html(ticket.title);
     bindedRow.find(estimateId).html(ticket.points);
     bindedRow.find(statusId).html(translate(`state${ticket.state}`));
-    bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${ticket.assigneePicture}" alt="" height="25" width="25">`);
+    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${ticket.assigneePicture}" alt="" height="25" width="25">`);
     bindedRow.find(statusId).addClass(`state${ticket.state}`);
 
     bindedRow.find(openTicketId)[0].href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;

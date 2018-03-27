@@ -320,3 +320,11 @@ div.note-editor.note-frame.panel.panel-default{
 .clickable-item:hover {
     background-color: #ececec;
 }
+
+.truncateText {
+    display: inline-block !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 70%;
+}

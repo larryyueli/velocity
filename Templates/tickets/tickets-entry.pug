@@ -70,10 +70,11 @@ block content
                                         label(for='description') #{__('tickets.description')}
                                     .input-field.padding-10
                                         #description
-                                .row.subtasksRow
-                                    .input-field.padding-10#subtasksSelection
-                                        input.validate(type='text', name='subtasks')
-                                        label(for='description') #{__('tickets.subtasks')}
+                                if false
+                                    .row.subtasksRow
+                                        .input-field.padding-10#subtasksSelection
+                                            input.validate(type='text', name='subtasks')
+                                            label(for='description') #{__('tickets.subtasks')}
                                 .row.milestoneIssuesRow
                                     .input-field.padding-10#milestoneIssuesSelection
                                         input.validate(type='text', name='milestoneIssues')
