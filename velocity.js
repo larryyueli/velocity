@@ -250,7 +250,7 @@ app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/lookup/ticket/by/displayId', api.handleLookupTicketByDisplayIdPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
-app.get('/profilePicture/:pictureId', api.handleProfilePicturePath);
+app.get('/picture/:pictureId', api.handleProfilePicturePath);
 app.get('/project/:projectId', api.handleProjectByIdPath);
 app.get('/project/:projectId/team/:teamId', api.handleProjectTeamPath);
 app.get('/project/:projectId/team/:teamId/search', api.handleProjectTeamSearchPath);

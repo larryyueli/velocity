@@ -105,7 +105,7 @@ function fillIssuesRow(issue) {
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
     bindedRow.find(statusId).html(translate(`state${issue.state}`));
-    bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${issue.assigneePicture}" alt="" height="25" width="25">`);
+    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="25" width="25">`);
     bindedRow.find(statusId).addClass(`state${issue.state}`);
 
     bindedRow.find(openTicketId)[0].href = `/project/${projectId}/team/${teamId}/ticket/${issue._id}`;

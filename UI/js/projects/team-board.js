@@ -167,7 +167,7 @@ function fillUserBoardRow(user, statuses) {
                                            statuses['readyForTest'].length + 
                                            statuses['inTest'].length + 
                                            statuses['done'].length} ${translate('tickets')})`);
-    // bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${issue.assigneePicture}" alt="" height="25" width="25">`);
+    // bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="25" width="25">`);
     
     return bindedRow[0].outerHTML;
 }
@@ -194,7 +194,7 @@ function fillBoardTicketRow(issue) {
     bindedRow.find(displayIdId).html(issue.displayId);
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
-    bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${issue.assigneePicture}" alt="" height="auto" width="95%" class="profilePic">`);
+    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="auto" width="95%" class="profilePic">`);
     
     return bindedRow[0].outerHTML;
 }
