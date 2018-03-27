@@ -32,7 +32,13 @@
             //        each sprint in sprintList
             //            li.collection-item.avatar
             //                i.material-icons.circle compare_arrows
+            //                button(onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right
+            //                    i.material-icons.right close
             //                span.title #{sprint.name}
+            //                p
+            //                    | #{sprint.startDate}
+            //                    br
+            //                    | #{sprint.endDate}
 .row
     .col.s12
         .row
@@ -59,6 +65,8 @@
                     each release in releasesList
                         li.collection-item.avatar
                             i.material-icons.circle compare_arrows
+                            button(onclick=`deleteRelease('${release.name}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right
+                                i.material-icons.right close
                             span.title #{release.name}
 .row
     .col.s12
@@ -86,4 +94,6 @@
                     each tag in tagsList
                         li.collection-item.avatar
                             i.material-icons.circle compare_arrows
+                            button(onclick=`deleteTag('${tag.name}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right
+                                i.material-icons.right close
                             span.title #{tag.name}

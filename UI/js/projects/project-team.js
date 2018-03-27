@@ -463,3 +463,57 @@ function saveBoardType() {
         }
     });
 }
+
+/**
+ * Deletes a release
+ * @param {*} releaseId release id
+ * @param {*} releaseName release name
+ */
+function deleteRelease(releaseId, releaseName) {
+    swal({
+        text: translate('deleteReleaseWarning'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canDelete => {
+        if (canDelete) {
+            alert('Deleting release.');
+        }
+    });
+}
+
+/**
+ * Deletes a tag
+ * @param {*} tagId tag id
+ * @param {*} tagName tag name
+ */
+function deleteTag(tagId, tagName) {
+    swal({
+        text: translate('deleteTagWarning'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canDelete => {
+        if (canDelete) {
+            alert('Deleting tag.');
+        }
+    });
+}
+
+/**
+ * Deletes a sprint
+ * @param {*} sprintId sprint id
+ * @param {*} sprintName sprint name
+ */
+function deleteSprint(sprintId, sprintName) {
+    swal({
+        text: translate('deleteSprintWarning'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canDelete => {
+        if (canDelete) {
+            alert('Deleting sprint.');
+        }
+    });
+}
