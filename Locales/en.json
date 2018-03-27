@@ -160,9 +160,14 @@
 			},
 			"management": {
 				"releases": "Releases",
+				"sprints": "Sprints",
 				"tags": "Tags",
 				"noReleases": "No Releases",
-				"noTags": "No Tags"
+				"noTags": "No Tags",
+				"noSprints": "No Sprints",
+				"newRelease": "New Release",
+				"newTag": "New Tag",
+				"newSprint": "New Sprint"
 			}
 		},
 		"title": "Velocity - Project"

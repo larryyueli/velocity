@@ -10,8 +10,8 @@
         .row.releaseInputRow
             .col.s8
                 .input-field
-                    input.validate(type='text', name='tags')#releaseField
-                    label(for='tags') #{__('tickets.ticketTitle')}
+                    input.validate(type='text', name='release')#releaseField
+                    label(for='release') #{__('projectPage.tabs.management.newRelease')}
             .col.s4
                 button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#releaseCreation #{__('actions.create')}
                     i.material-icons.right add
@@ -38,7 +38,7 @@
             .col.s8
                 .input-field
                     input.validate(type='text', name='tags')#tagField
-                    label(for='tags') #{__('tickets.ticketTitle')}
+                    label(for='tags') #{__('projectPage.tabs.management.newTag')}
             .col.s4
                 button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#tagCreation #{__('actions.create')}
                     i.material-icons.right add
@@ -52,3 +52,27 @@
                         li.collection-item.avatar
                             i.material-icons.circle compare_arrows
                             span.title #{tag.name}
+
+.row
+    .col.s12
+        .row
+            .col.s8
+                h5#sprints #{__('projectPage.tabs.management.sprints')}
+            .col.s4
+                a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintVisibility
+                    i.material-icons add
+        hr
+        .row.sprintInputRow
+            .col.s8
+                .input-field
+                    input.validate(type='text', name='tags')#sprintField
+                    label(for='tags') #{__('projectPage.tabs.management.newSprint')}
+            .col.s4
+                button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintCreation #{__('actions.create')}
+                    i.material-icons.right add
+        hr.sprintInputRow
+        //.row
+        //    if tagsList.length === 0
+        //        h6.center #{__('projectPage.tabs.management.noSprints')}
+        //    else
+        //        ul.collection
