@@ -26,6 +26,12 @@ const releaseCreations = '#releaseCreation';
 const releaseField = '#releaseField';
 const releaseInputRow = '.releaseInputRow';
 const releaseVisibility = '#releaseVisibility';
+const sprintCreations = '#sprintCreation';
+const sprintEnd = '#endDatePicker'
+const sprintField = '#sprintField';
+const sprintInputRow = '.sprintInputRow';
+const sprintStart = '#startDatePicker';
+const sprintVisibility = '#sprintVisibility'
 const tagCreations = '#tagCreation';
 const tagField = '#tagField';
 const tagInputRow = '.tagInputRow';
@@ -52,6 +58,7 @@ $(function () {
 
     $(releaseInputRow).hide();
     $(tagInputRow).hide();
+    $(sprintInputRow).hide();
 
     $(releaseVisibility).click(() => {
         $(releaseInputRow).show();
@@ -63,6 +70,11 @@ $(function () {
         $(tagVisibility).hide();
     });
 
+    $(sprintVisibility).click(() => {
+        $(sprintInputRow).show();
+        $(sprintVisibility).hide();
+    });
+
     $(releaseCreation).click(() => {
         createRelease();
     });
@@ -71,12 +83,36 @@ $(function () {
         createTag();
     });
 
+    $(sprintCreation).click(() => {
+        createSprint();
+    });
+
     $(backButtonId).click(() => {
         window.location.href = '/projects';
     });
 
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
+    });
+
+    $(sprintStart).pickadate({
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
+    });
+
+    $(sprintEnd).pickadate({
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
     });
 
     getListOfAssignee();
@@ -273,6 +309,38 @@ function createTag() {
                 projectId: projectId,
                 teamId: teamId,
                 name: $(tagField).val()
+            },
+            success: function (data) {
+                window.location.href = `/project/${projectId}/team/${teamId}`;
+            },
+            error: function (data) {
+                const jsonResponse = data.responseJSON;
+                failSnackbar(getErrorMessageFromResponse(jsonResponse));
+            }
+        });
+    }
+}
+
+/**
+ * Creates a sprint
+ */
+function createSprint() {
+    if ($(sprintField).val() === "") {
+        failSnackbar('Tag field cannot be empty');
+    } else if ($(sprintStart).val() === "") {
+        failSnackbar('Start date cannot be empty');
+    } else if ($(sprintEnd).val() === "") {
+        failSnackbar('End date cannot be empty');
+    } else {
+        $.ajax({
+            type: 'PUT',
+            url: '/sprints/create',
+            data: {
+                projectId: projectId,
+                teamId: teamId,
+                name: $(sprintField).val(),
+                startDate: $(sprintStart).val(),
+                endDate: $(sprintEnd).val()
             },
             success: function (data) {
                 window.location.href = `/project/${projectId}/team/${teamId}`;

@@ -63,16 +63,28 @@
                     i.material-icons add
         hr
         .row.sprintInputRow
-            .col.s8
+            .col.s4
                 .input-field
                     input.validate(type='text', name='tags')#sprintField
                     label(for='tags') #{__('projectPage.tabs.management.newSprint')}
-            .col.s4
+            .col.s3
+                .input-field
+                    input.datepicker(type='text', name='startDate')#startDatePicker
+                    label(for='startDate') #{__('projectPage.tabs.management.sprintStart')}
+            .col.s3
+                .input-field
+                    input.datepicker(type='text', name='endDate')#endDatePicker
+                    label(for='endDate') #{__('projectPage.tabs.management.sprintEnd')}
+            .col.s2
                 button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintCreation #{__('actions.create')}
                     i.material-icons.right add
         hr.sprintInputRow
-        //.row
-        //    if tagsList.length === 0
-        //        h6.center #{__('projectPage.tabs.management.noSprints')}
-        //    else
-        //        ul.collection
+        .row
+            //if sprintList.length === 0
+            //    h6.center #{__('projectPage.tabs.management.noSprints')}
+            //else
+            //    ul.collection
+            //        each sprint in sprintList
+            //            li.collection-item.avatar
+            //                i.material-icons.circle compare_arrows
+            //                span.title #{sprint.name}
