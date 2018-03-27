@@ -57,26 +57,21 @@ block content
                                     .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.management.title')}
     .row
         .col.s12
-            .container
-                #overview
-                    include team-overview
+            #overview
+                include team-overview
             if !isUnKnownBoardType
                 #board
                     include team-board
                 if isScrumBoardType
-                    .container
-                        #backlog
-                            include team-backlog
-                .container
-                    #issues
-                        include team-issues
-                .container
-                    #analytics
-                        .card
-                            h5 analytics test
-                .container
-                    #management
-                        include team-management
+                    #backlog
+                        include team-backlog
+                #issues
+                    include team-issues
+                #analytics
+                    .card
+                        h5 analytics test
+                #management
+                    include team-management
 
 block scripts
     script(src='/js/projects/project-team.js')
