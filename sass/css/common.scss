@@ -64,6 +64,10 @@
     margin-top: 0px;
 }
 
+.margin-bottom-0 {
+    margin-bottom: 0px;
+}
+
 .margin-10 {
     margin: 10 !important;
 }
@@ -313,6 +317,50 @@ div.note-editor.note-frame.panel.panel-default{
     }
 }
 
+.ticketStatusColors {
+    &.state0 {
+        @include themify($themes) {
+            background: themed('standardBlue') !important;
+            color: #fff;
+        }
+    }
+
+    &.state1 {
+        @include themify($themes) {
+            background: themed('StandardYellow') !important;
+            color: #000;
+        }
+    }
+
+    &.state2 {
+        @include themify($themes) {
+            background: themed('standardRed') !important;
+            color: #000;
+        }
+    }
+
+    &.state3 {
+        @include themify($themes) {
+            background: themed('standardLightBlue') !important;
+            color: #000;
+        }
+    }
+
+    &.state4 {
+        @include themify($themes) {
+            background: themed('standardOrange') !important;
+            color: #fff;
+        }
+    }
+
+    &.state5 {
+        @include themify($themes) {
+            background: themed('standardGreen') !important;
+            color: #fff;
+        }
+    }
+}
+
 .clickable-item {
     cursor: pointer;
 }
@@ -326,5 +374,5 @@ div.note-editor.note-frame.panel.panel-default{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 70%;
+    width: 80%;
 }

@@ -514,7 +514,14 @@ function saveLinkFunction() {
             }
 
             selectedRelatedObj[data._id] = relatedValue;
-            $(relatedTicketDivId).append(`<div class="chip related-chips" id=${data._id}>${relatedText}: ${relatedTicket}<i class="close material-icons" onClick="removeRelatedId('${data._id}')">close</i></div>`);
+            $(relatedTicketDivId).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div class="chip full-width related-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
+                        <img src="/picture/${data.assigneePicture}">
+                        <p class="truncateText">${relatedText}: ${relatedTicket}. ${data.title}</p>
+                        <i class="close material-icons" onClick="removeRelatedId('${data._id}')">delete_forever</i>
+                    </div>
+                </div>`);
         },
         error: function (data) {
             handle401And404(data);

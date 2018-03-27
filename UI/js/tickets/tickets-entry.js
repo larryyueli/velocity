@@ -350,10 +350,10 @@ function saveLinkFunction() {
 
             selectedRelatedObj[data._id] = relatedValue;
             $(relatedTicketDivId).append(`
-                <div class="row">
-                    <div class="chip full-width related-chips text-left truncateText" id=${data._id}>
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div class="chip full-width related-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
-                        ${relatedText}: ${relatedTicket}. ${data.title} 
+                        <p class="truncateText">${relatedText}: ${relatedTicket}. ${data.title}</p>
                         <i class="close material-icons" onClick="removeRelatedId('${data._id}')">delete_forever</i>
                     </div>
                 </div>`);
