@@ -26,6 +26,8 @@ const projects = require('../../Backend/projects.js');
 const settings = require('../../Backend/settings.js');
 const users = require('../../Backend/users.js');
 
+const notifications_api = require('./notifications-api.js');
+
 /**
  * lookup a ticket by its display id
  *
