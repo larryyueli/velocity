@@ -501,6 +501,39 @@ const renderTicketPage = function (req, res) {
                         }
                     }
 
+                    let resolvedRelatedTickets = [];
+                    for (let i = 0; i < ticketObj.links.length; i++) {
+                        let relatedTicket = ticketsIdObj[ticketObj.links[i].ticketId];
+                        if (relatedTicket) {
+                            const resolvedReporter = usersIdObj[relatedTicket.reporter] ? `${usersIdObj[relatedTicket.reporter].fname} ${usersIdObj[relatedTicket.reporter].lname}` : common_backend.noReporter;
+                            const resolvedAssignee = usersIdObj[relatedTicket.assignee] ? `$${usersIdObj[relatedTicket.assignee].fname} ${usersIdObj[relatedTicket.assignee].lname}}` : common_backend.noReporter;
+                            const reporterPicture = usersIdObj[relatedTicket.reporter] ? usersIdObj[relatedTicket.reporter].picture : null;
+                            const assigneePicture = usersIdObj[relatedTicket.assignee] ? usersIdObj[relatedTicket.assignee].picture : null;
+                            let resolvedTicket = {
+                                _id: relatedTicket._id,
+                                reporterId: relatedTicket.reporter,
+                                assigneeId: relatedTicket.assignee,
+                                reporter: resolvedReporter,
+                                assignee: resolvedAssignee,
+                                reporterPicture: reporterPicture,
+                                assigneePicture: assigneePicture,
+                                ctime: relatedTicket.ctime,
+                                mtime: relatedTicket.mtime,
+                                displayId: relatedTicket.displayId,
+                                title: relatedTicket.title,
+                                status: relatedTicket.status,
+                                state: relatedTicket.state,
+                                type: relatedTicket.type,
+                                priority: relatedTicket.priority,
+                                points: relatedTicket.points,
+                                relation: ticketObj.links[i].relation,
+                                relatedText: common_backend.getValueInObjectByKey(ticketObj.links[i].relation, 'value', 'text', common_backend.ticketLinkTypes)
+                            };
+                            resolvedRelatedTickets.push(resolvedTicket);
+                        }
+                    }
+
+
                     projects.getSprintsByIds(projectId, teamId, ticketObj.sprints, function (err, sprintsObjList) {
                         if (err) {
                             logger.error(JSON.stringify(err));
@@ -530,6 +563,7 @@ const renderTicketPage = function (req, res) {
                                     sprints: sprintsObjList,
                                     releases: releasesObjList,
                                     tags: tagsObjList,
+                                    relatedTickets: resolvedRelatedTickets,
                                     resolveState: (state) => {
                                         return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
                                     },

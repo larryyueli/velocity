@@ -86,6 +86,13 @@ $(function () {
         selectedTags.push($(this).attr('id'));
     });
 
+    $('.related-chips').each(function (index) {
+        let id = $(this).attr('id').split('_')[0];
+        let value = $(this).attr('id').split('_')[1];
+        selectedRelatedObj[id] = value;
+        $(this).attr('id', id);
+    });
+
     initSummernote(descriptionId);
 
     getListOfAssignee();
