@@ -35,6 +35,11 @@ const numOfProjects = 3;
 const numOfProjectsToActivate = 2;
 const numOfTicketsPerState = 1;
 const numOfCommentsPerTicket = 2;
+const numOfReleasesPerProject = 3;
+const numOfTagsPerProject = 3;
+const numOfSprintsPerProject = 2;
+const sprintStartDate = '1/2/2018';
+const sprintEndDate = '1/20/2018';
 const groupSize = 5;
 const userPassword = 'asd';
 var userCookies = [];
@@ -49,6 +54,7 @@ var processedUsers = 0;
 var processedProjects = 0;
 var processedGroups = 0;
 var processedTickets = 0;
+var processedExtras = 0;
 var totalTickets = 0;
 
 var adminCookie; // Stores the cookie we use throughout all 
@@ -623,6 +629,159 @@ const getGroupMembers = function (projectId, groupId) {
             processedGroups++;
             if (processedGroups === numOfGroups) {
                 processedGroups = 0;
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    for (let j = 0; j < numOfReleasesPerProject; j++) {
+                        createRelease(projectGroupIds[i].projectId, projectGroupIds[i].teamId, j);
+                    }
+                }
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.end();
+}
+
+/**
+ * Creates a release
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} number number of release
+ */
+const createRelease = function (projectId, teamId, number) {
+    const releaseObject = querystring.stringify({
+        'projectId': projectId,
+        'teamId': teamId,
+        'name': `Release numero ${number}`
+    });
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/releases/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(releaseObject),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Created release ${number} on ${teamId} in ${projectId}`);
+            processedExtras++;
+            if (processedExtras === numOfReleasesPerProject * numOfGroups) {
+                processedExtras = 0;
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    for (let j = 0; j < numOfTagsPerProject; j++) {
+                        createTag(projectGroupIds[i].projectId, projectGroupIds[i].teamId, j);
+                    }
+                }
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(releaseObject);
+    req.end();
+}
+
+/**
+ * Creates a tag
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} number number of tag
+ */
+const createTag = function (projectId, teamId, number) {
+    const tagObject = querystring.stringify({
+        'projectId': projectId,
+        'teamId': teamId,
+        'name': `Tag numero ${number}`
+    });
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/tags/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(tagObject),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Created tag ${number} on ${teamId} in ${projectId}`);
+            processedExtras++;
+            if (processedExtras === numOfTagsPerProject * numOfGroups) {
+                processedExtras = 0;
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    for (let j = 0; j < numOfSprintsPerProject; j++) {
+                        createSprint(projectGroupIds[i].projectId, projectGroupIds[i].teamId, j);
+                    }
+                }
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(tagObject);
+    req.end();
+}
+
+/**
+ * Creates a sprint
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} number number of sprint
+ */
+const createSprint = function (projectId, teamId, number) {
+    const sprintObject = querystring.stringify({
+        'projectId': projectId,
+        'teamId': teamId,
+        'name': `Sprint numero ${number}`,
+        'startDate': sprintStartDate,
+        'endDate': sprintEndDate
+    });
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: '/sprints/create',
+        method: 'PUT',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(sprintObject),
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => { });
+        res.on('end', () => {
+            logger.info(`Created sprint ${number} on ${teamId} in ${projectId}`);
+            processedExtras++;
+            if (processedExtras === numOfSprintsPerProject * numOfGroups) {
                 createTickets();
                 pushTickets();
             }
@@ -634,6 +793,7 @@ const getGroupMembers = function (projectId, groupId) {
         process.exit(1);
     });
 
+    req.write(sprintObject);
     req.end();
 }
 
