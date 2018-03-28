@@ -670,8 +670,8 @@ const pushTickets = function () {
         ticketsList.forEach(ticket => {
             ticket.projectId = obj.projectId;
             ticket.teamId = obj.teamId;
-            ticket.assignee = obj.members[0];
-            sendTicket(ticket, obj.members[0]);
+            ticket.assignee = getRandomGroupMember(obj.members);
+            sendTicket(ticket, getRandomGroupMember(obj.members));
         });
     });
 }
@@ -755,7 +755,7 @@ const getTicketIds = function (projectId, teamId, user, index) {
                 projectGroupIds.forEach(team => {
                     team.tickets.forEach(ticket => {
                         for (let z = 0; z < numOfCommentsPerTicket; z++) {
-                            pushComment(team.projectId, team.teamId, ticket._id, team.members[0], z);
+                            pushComment(team.projectId, team.teamId, ticket._id, getRandomGroupMember(team.members), z);
                         }
                     });
                 });
@@ -826,6 +826,14 @@ const getUserCookie = function (name) {
         }
     }
     return null;
+}
+
+/**
+ * Returns a random member from a list with members
+ * @param {*} membersList list of members
+ */
+const getRandomGroupMember = function(membersList) {
+    return membersList[Math.floor(Math.random()*membersList.length)]
 }
 
 dataGenerator();
