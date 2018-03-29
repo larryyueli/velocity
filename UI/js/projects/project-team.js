@@ -16,6 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const addFieldDiv = '#appendFieldDiv';
+const addSprintDiv = '#appendSprintDiv';
+const addTagDiv = '#appendTagDiv';
 const backButtonId = '#backButton';
 const boardTypeSelectionId = '#boardTypeSelection';
 const createTicketButtonId = '#createTicketButton';
@@ -42,9 +45,12 @@ const assigneeAutocompleteBoardId = '#assigneeAutocompleteBoard';
 const assigneeAutocompleteIssueId = '#assigneeAutocompleteIssue';
 const assigneeAutocompleteId = '#assigneeAutocomplete';
 
+var releaseComponent = null;
 var selectedAssignee = null;
 var selectedAssigneeBoard = null;
 var selectedAssigneeIssue = null;
+var sprintComponent = null;
+var tagComponent = null;
 var usernamesArray = [];
 
 $(function () {
@@ -116,6 +122,9 @@ $(function () {
     });
 
     getListOfAssignee();
+    getReleaseComponent();
+    getSprintComponent();
+    getTagComponent();
 
     /*
     $.ajax({
@@ -268,6 +277,80 @@ $(function () {
     });*/
 });
 
+/**
+ * Gets the release component
+ */
+function getReleaseComponent() {
+    /*
+    $.ajax({
+        type: 'GET',
+        url: '/components/releases',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            releaseComponent = data.releaseComponent;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+    */
+}
+
+/**
+ * Gets the sprint component
+ */
+function getSprintComponent() {
+    /*
+    $.ajax({
+        type: 'GET',
+        url: '/components/sprints',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            sprintComponent = data.sprintComponent;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+    */
+}
+
+/**
+ * Gets the release component
+ */
+function getTagComponent() {
+    /*
+    $.ajax({
+        type: 'GET',
+        url: '/components/tags',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            tagComponent = data.tagComponent;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+    */
+}
 
 /**
  * Creates a release

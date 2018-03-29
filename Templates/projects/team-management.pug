@@ -28,7 +28,7 @@
             if sprintsList.length === 0
                 h6.center #{__('projectPage.tabs.management.noSprints')}
             else
-                ul.collection
+                ul.collection#appendSprintDiv
                     each sprint in sprintsList
                         li.collection-item.avatar
                             i.material-icons.circle date_range
@@ -61,7 +61,7 @@
             if releasesList.length === 0
                 h6.center #{__('projectPage.tabs.management.noReleases')}
             else
-                ul.collection
+                ul.collection#appendReleaseDiv
                     each release in releasesList
                         li.collection-item.avatar
                             i.material-icons.circle dns
@@ -90,7 +90,7 @@
             if tagsList.length === 0
                 h6.center #{__('projectPage.tabs.management.noTags')}
             else
-                ul.collection
+                ul.collection#appendTagDiv
                     each tag in tagsList
                         li.collection-item.avatar
                             i.material-icons.circle bookmark
