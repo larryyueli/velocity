@@ -247,6 +247,7 @@ app.get('/components/team/backlog', api.handleProjectTeamSprintsFullListPath);
 app.get('/components/team/board', api.handleActiveSprintTicketsListComponentPath);
 app.get('/components/team/issues', api.handleTicketsListComponentPath);
 app.get('/components/teamsList', api.handleTeamsListComponentPath);
+app.get('/components/ticket/edit/page', api.handleTicketEditPageComponentsPath);
 app.get('/lookup/ticket/by/displayId', api.handleLookupTicketByDisplayIdPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);

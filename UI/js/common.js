@@ -29,7 +29,7 @@ const snack = Object.freeze({
     success: '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
     warning: '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
     fail: '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp',
-    close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+    close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons pointer">close</i>'
 });
 
 /* This function slides down a success snakbar */
@@ -235,7 +235,6 @@ const translations = Object.freeze({
     tickets: 'Tickets',
     total: 'total',
     uploadOnlyPicture: 'You can only upload one picture!',
-    update: 'Update',
     updatedProject: 'Project has been updated',
     updateProjectPrompt: 'Are you sure you want to update the project with this new configuration?',
     alreadyInGroup: 'This user is already in this group',
@@ -259,6 +258,7 @@ const translations = Object.freeze({
     descriptionCanNotBeEmpty: 'Description can not be empty!',
     commentCanNotBeEmpty: 'Comment can not be empty!',
     saveBoardType: 'BE CAREFUL, this can NOT be changed!',
+    updatedTicket:'Ticket has been updated',
 
     todoTitle: 'TODO',
     inProgressTitle: 'IN PROGRESS',
@@ -292,6 +292,7 @@ const translations = Object.freeze({
     activate: 'Activate',
     delete: 'Delete',
     save: 'Save',
+    update: 'Update',
 
     today: 'Today',
     now: 'Now'

@@ -46,6 +46,7 @@ const saveLinkButton = '#saveLinkButton';
 const relatedInput = '#relatedInput';
 const relatedTicketDivId = '#relatedTicketDivId';
 const relatedSelectedInput = '#relatedSelectedInput';
+const appendCommentDiv = '#appendCommentDiv';
 
 var selectedAssignee = null;
 var usernamesArray = [];
@@ -56,6 +57,8 @@ var selectedRelatedObj = {};
 var sprintIdsObj = {};
 var releaseIdsObj = {};
 var tagIdsObj = {};
+
+var commentComponent = null;
 
 $(function () {
     typeSelection.change(function () {
@@ -100,6 +103,8 @@ $(function () {
     getListOfReleases();
     getListOfTags();
 
+    getEditPageComponents();
+
     $(saveTicketButtonId).click(() => {
         updateTicketAction();
     });
@@ -108,6 +113,30 @@ $(function () {
         addNewCommentFunction();
     });
 });
+
+/**
+ * get edit page components
+*/
+function getEditPageComponents() {
+    $.ajax({
+        type: 'GET',
+        url: '/components/ticket/edit/page',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            ticketId: ticketId
+        },
+        success: function (data) {
+            commentComponent = data.ticketCommentEntry;
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
 
 /**
  * update ticket action
@@ -132,6 +161,8 @@ function updateTicketAction() {
         selectedAssignee = 'No Assignee';
     }
 
+    $(saveTicketButtonId).attr('disabled', true);
+
     $.ajax({
         type: 'POST',
         url: '/tickets/update',
@@ -152,13 +183,16 @@ function updateTicketAction() {
             links: selectedRelatedObj
         },
         success: function (data) {
-            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
+            successSnackbar(translate('updatedTicket'));
         },
         error: function (data) {
             handle401And404(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function (data) {
+            $(saveTicketButtonId).attr('disabled', false);
         }
     });
 }
@@ -173,6 +207,8 @@ function addNewCommentFunction() {
         return warningSnackbar(translate('commentCanNotBeEmpty'));
     }
 
+    $(addNewCommentId).attr('disabled', true);
+
     $.ajax({
         type: 'PUT',
         url: '/comment/create',
@@ -183,13 +219,23 @@ function addNewCommentFunction() {
             content: newCommentValue
         },
         success: function (data) {
-            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
+            let comment = commentComponent;
+            comment = comment.replace(new RegExp('comment._id', 'g'), data._id);
+            comment = comment.replace('user.picture', meObject.picture);
+            comment = comment.replace('comment.mtime', data.mtime);
+            comment = comment.replace('comment.username', `${meObject.fname} ${meObject.lname}`);
+            comment = comment.replace('comment.content', data.content);
+            $(appendCommentDiv).append(comment);
         },
         error: function (data) {
             handle401And404(data);
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function (data) {
+            $(addNewCommentId).attr('disabled', false);
+            $(newCommentField).val('');
         }
     });
 }
@@ -331,7 +377,6 @@ function updateComment(commentId) {
             content: updatedCommentValue
         },
         success: function (data) {
-            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticketId}`;
         },
         error: function (data) {
             handle401And404(data);
@@ -367,7 +412,11 @@ function getListOfSprints() {
                 onAutocomplete: function (val) {
                     if (selectedSprints.indexOf(sprintIdsObj[val]) === -1) {
                         selectedSprints.push(sprintIdsObj[val]);
-                        $(ticketSprintsDivId).append(`<div class="chip sprint-chips" id=${sprintIdsObj[val]}>${val}<i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">close</i></div>`);
+                        $(ticketSprintsDivId).append(`
+                            <div class="chip sprint-chips" id=${sprintIdsObj[val]}>
+                                ${val}
+                                <i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">delete_forever</i>
+                            </div>`);
                     }
                 },
                 minLength: 0,
@@ -419,7 +468,11 @@ function getListOfReleases() {
                 onAutocomplete: function (val) {
                     if (selectedReleases.indexOf(releaseIdsObj[val]) === -1) {
                         selectedReleases.push(releaseIdsObj[val]);
-                        $(ticketReleasesDivId).append(`<div class="chip release-chips" id=${releaseIdsObj[val]}>${val}<i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">close</i></div>`);
+                        $(ticketReleasesDivId).append(`
+                            <div class="chip release-chips" id=${releaseIdsObj[val]}>
+                                ${val}
+                                <i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">delete_forever</i>
+                            </div>`);
                     }
                 },
                 minLength: 0,
@@ -470,7 +523,11 @@ function getListOfTags() {
                 onAutocomplete: function (val) {
                     if (selectedTags.indexOf(tagIdsObj[val]) === -1) {
                         selectedTags.push(tagIdsObj[val]);
-                        $(ticketTagsDivId).append(`<div class="chip tag-chips" id=${tagIdsObj[val]}>${val}<i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">close</i></div>`);
+                        $(ticketTagsDivId).append(`
+                            <div class="chip tag-chips" id=${tagIdsObj[val]}>
+                                ${val}
+                                <i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">delete_forever</i>
+                            </div>`);
                     }
                 },
                 minLength: 0,

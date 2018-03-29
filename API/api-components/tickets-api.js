@@ -341,7 +341,7 @@ const createTicket = function (req, res) {
                                             return res.status(500).send(err);
                                         }
 
-                                        return res.status(200).send('ok');
+                                        return res.status(200).send(ticketObj._id);
                                     });
                                 });
                             });
@@ -1065,8 +1065,61 @@ const updateTicket = function (req, res) {
     });
 }
 
+/**
+ * root path to get edit page components
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getEditPageComponents = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    const ticketId = req.query.ticketId;
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                return res.status(200).send({
+                    ticketCommentEntry: common_api.pugComponents.ticketCommentEntry()
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createTicket = createTicket;
+exports.getEditPageComponents = getEditPageComponents;
 exports.getTicketByDisplayId = getTicketByDisplayId;
 exports.renderCreateTicketPage = renderCreateTicketPage;
 exports.renderTicketPage = renderTicketPage;

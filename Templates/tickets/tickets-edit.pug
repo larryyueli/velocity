@@ -145,7 +145,7 @@ block content
                                                     .chip.release-chips(id=`${release._id}`)
                                                         | #{release.name}
                                                         if release.status !== commonReleaseStatus.CLOSED.value
-                                                            i.close.material-icons(onclick=`removeReleaseId('${release._id}')`) close
+                                                            i.close.material-icons(onclick=`removeReleaseId('${release._id}')`) delete_forever
                                     if isScrumBoardType
                                         .row
                                             .input-field.padding-10
@@ -157,7 +157,7 @@ block content
                                                     .chip.sprint-chips(id=`${sprint._id}`)
                                                         | #{sprint.name}
                                                         if sprint.status !== commonSprintStatus.CLOSED.value
-                                                            i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) close
+                                                            i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) delete_forever
                                     .row
                                         .input-field.padding-10
                                             input.autocomplete(type='text')#tagsAutocomplete
@@ -167,20 +167,20 @@ block content
                                             each tag in tags
                                                 .chip.tag-chips(id=`${tag._id}`)
                                                     | #{tag.name}
-                                                    i.close.material-icons(onclick=`removeTagId('${tag._id}')`) close
+                                                    i.close.material-icons(onclick=`removeTagId('${tag._id}')`) delete_forever
                             .row
                                 button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                     i.material-icons.right save
                 #comments
                     .row
                         .col.s12
-                            ul.collection
+                            ul.collection#appendCommentDiv
                                 each comment in comments
                                     li(id=`comment_${comment._id}`).collection-item.avatar
                                         img.circle(src=`/picture/${user.picture}`, alt='')
                                         if comment.userId === user._id
                                             button(onclick=`deleteComment('${comment._id}')`).btn.btn-flat.waves-effect.waves-light.right.comment-buttons
-                                                i.material-icons.right close
+                                                i.material-icons.right delete_forever
                                         if comment.userId === user._id
                                             button(onclick=`changeToInput('${comment._id}')`).btn.btn-flat.waves-effect.waves-light.right.comment-buttons
                                                 i.material-icons.right mode_edit

@@ -123,7 +123,7 @@ function createTicketAction() {
             links: selectedRelatedObj
         },
         success: function (data) {
-            window.location.href = `/project/${projectId}/team/${teamId}`;
+            window.location.href = `/project/${projectId}/team/${teamId}/ticket/${data}`;
         },
         error: function (data) {
             handle401And404(data);

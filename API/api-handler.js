@@ -46,17 +46,18 @@ const users = require('../Backend/users.js');
  * @param {function} callback callback function
  */
 const initialize = function (pug, notificationsWS, callback) {
-    common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/tickets/ticket-entry.pug');
     common_api.pugComponents.boardTicketEntryComponent = pug.compileFile('Templates/tickets/board-entry.pug');
     common_api.pugComponents.boardUserOutlineComponent = pug.compileFile('Templates/projects/sprint-active-user-outline.pug');
-    common_api.pugComponents.sprintEntryComponent = pug.compileFile('Templates/tickets/sprint-entry.pug');
     common_api.pugComponents.projectsEntryComponent = pug.compileFile('Templates/projects/projects-entry.pug');
     common_api.pugComponents.projectsGroupEntryComponent = pug.compileFile('Templates/projects/projects-group-entry.pug');
     common_api.pugComponents.projectsGroupModalComponent = pug.compileFile('Templates/projects/projects-group-modal.pug');
     common_api.pugComponents.projectsGroupModalEntryComponent = pug.compileFile('Templates/projects/projects-group-modal-entry.pug');
     common_api.pugComponents.projectsGroupUserEntryComponent = pug.compileFile('Templates/projects/projects-group-user-entry.pug');
     common_api.pugComponents.projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
+    common_api.pugComponents.sprintEntryComponent = pug.compileFile('Templates/tickets/sprint-entry.pug');
     common_api.pugComponents.teamEntryComponent = pug.compileFile('Templates/projects/team-entry.pug');
+    common_api.pugComponents.ticketCommentEntry = pug.compileFile('Templates/tickets/tickets-comments-entry.pug');
+    common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/tickets/ticket-entry.pug');
     common_api.pugComponents.usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
 
     notifications_api.initialize(notificationsWS);
@@ -1947,7 +1948,7 @@ const handleTicketsCommentPath = function (req, res) {
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    return res.status(200).send(result);
                 });
             });
         });
@@ -2562,6 +2563,7 @@ exports.handleTagsCreatePath = tags_api.createTag;
 exports.handleLookupTicketByDisplayIdPath = tickets_api.getTicketByDisplayId;
 exports.handleProjectTeamTicketPath = tickets_api.renderTicketPage;
 exports.handleProjectTeamTicketsAddPath = tickets_api.renderCreateTicketPage;
+exports.handleTicketEditPageComponentsPath = tickets_api.getEditPageComponents;
 exports.handleTicketsCreatePath = tickets_api.createTicket;
 exports.handleTicketsUpdatePath = tickets_api.updateTicket;
 // </Tickets Requests> -----------------------------------------------

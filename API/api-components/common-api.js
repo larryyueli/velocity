@@ -44,17 +44,18 @@ exports.pugPages = pugPages;
 
 // all pages components
 var pugComponents = {
-    sprintEntryComponent: null,
     boardTicketEntryComponent: null,
     boardUserOutlineComponent: null,
-    ticketEntryComponent: null,
     projectsEntryComponent: null,
     projectsGroupEntryComponent: null,
     projectsGroupModalComponent: null,
     projectsGroupModalEntryComponent: null,
     projectsGroupUserEntryComponent: null,
     projectsUserEntryComponent: null,
+    sprintEntryComponent: null,
     teamEntryComponent: null,
+    ticketCommentEntry: null,
+    ticketEntryComponent: null,
     usersEntryComponent: null
 };
 exports.pugComponents = pugComponents;
