@@ -45,6 +45,9 @@ const userPassword = 'asd';
 var userCookies = [];
 var projectList = [];
 var activeProjectList = [];
+var releaseList = [];
+var tagList = [];
+var sprintList = [];
 var groupList = [];
 var ticketsList = [];
 var projectGroupIds = [];
@@ -620,7 +623,10 @@ const getGroupMembers = function (projectId, groupId) {
             let teamObj = {
                 projectId: projectId,
                 teamId: groupId,
-                members: []
+                members: [],
+                tags: [],
+                releases: [],
+                sprints: []
             };
             JSON.parse(groupMembers).forEach(user => {
                 teamObj.members.push(user.username);
@@ -782,6 +788,149 @@ const createSprint = function (projectId, teamId, number) {
             logger.info(`Created sprint ${number} on ${teamId} in ${projectId}`);
             processedExtras++;
             if (processedExtras === numOfSprintsPerProject * numOfGroups) {
+                processedExtras = 0;
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    getReleases(projectGroupIds[i].projectId, projectGroupIds[i].teamId, i);
+                }
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.write(sprintObject);
+    req.end();
+}
+
+/**
+ * Gets all created releases
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} index index of group in projectGroupIds
+ */
+const getReleases = function (projectId, teamId, index) {
+    let releaseData = '';
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: `/project/team/releases/list?projectId=${projectId}&teamId=${teamId}`,
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            releaseData += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved releases for ${teamId} in ${projectId}`);
+            projectGroupIds[index].releases = JSON.parse(releaseData).releasesList;
+            processedGroups++;
+            if (processedGroups === numOfGroups) {
+                processedGroups = 0;
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    getTags(projectGroupIds[i].projectId, projectGroupIds[i].teamId, i);
+                }
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.end();
+}
+
+/**
+ * Gets all created tags
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} index index of group in projectGroupIds
+ */
+const getTags = function (projectId, teamId, index) {
+    let tagData = '';
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: `/project/team/tags/list?projectId=${projectId}&teamId=${teamId}`,
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            tagData += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved tags for ${teamId} in ${projectId}`);
+            projectGroupIds[index].tags = JSON.parse(tagData).tagsList;
+            processedGroups++;
+            if (processedGroups === numOfGroups) {
+                processedGroups = 0;
+                for (let i = 0; i < projectGroupIds.length; i++) {
+                    getSprints(projectGroupIds[i].projectId, projectGroupIds[i].teamId, i);
+                }
+            }
+        });
+    });
+
+    req.on('error', (e) => {
+        logger.error(`Problem with request: ${e.message}`);
+        process.exit(1);
+    });
+
+    req.end();
+}
+
+/**
+ * Gets all created sprints
+ * @param {*} projectId project id
+ * @param {*} teamId team id
+ * @param {*} index index of group in projectGroupIds
+ */
+const getSprints = function (projectId, teamId, index) {
+    let sprintData = '';
+
+    const options = {
+        hostname: config.hostName,
+        port: config.httpsPort,
+        path: `/project/team/sprints/list?projectId=${projectId}&teamId=${teamId}`,
+        method: 'GET',
+        rejectUnauthorized: false,
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': adminCookie
+        }
+    };
+
+    const req = https.request(options, (res) => {
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => {
+            sprintData += chunk;
+        });
+        res.on('end', () => {
+            logger.info(`Retrieved sprints for ${teamId} in ${projectId}`);
+            projectGroupIds[index].sprints = JSON.parse(sprintData).sprintsList;
+            processedGroups++;
+            if (processedGroups === numOfGroups) {
+                processedGroups = 0;
                 createTickets();
                 pushTickets();
             }
@@ -793,7 +942,6 @@ const createSprint = function (projectId, teamId, number) {
         process.exit(1);
     });
 
-    req.write(sprintObject);
     req.end();
 }
 
@@ -813,7 +961,10 @@ const createTickets = function () {
                     priority: common.ticketPriority.LOW.value,
                     state: common.ticketStates[state].value,
                     points: 1,
-                    assignee: ''
+                    assignee: '',
+                    releases: [],
+                    tags: [],
+                    sprints: []
                 });
                 totalTickets++;
             });
@@ -828,9 +979,13 @@ const createTickets = function () {
 const pushTickets = function () {
     projectGroupIds.forEach(obj => {
         ticketsList.forEach(ticket => {
+            let extras = getRandomListOfExtras(obj.releases, obj.tags, obj.sprints);
             ticket.projectId = obj.projectId;
             ticket.teamId = obj.teamId;
             ticket.assignee = getRandomGroupMember(obj.members);
+            ticket.releases = JSON.stringify([extras[0]]);
+            ticket.tags = JSON.stringify([extras[1]]);
+            ticket.sprints = JSON.stringify([extras[2]]);
             sendTicket(ticket, getRandomGroupMember(obj.members));
         });
     });
@@ -992,8 +1147,22 @@ const getUserCookie = function (name) {
  * Returns a random member from a list with members
  * @param {*} membersList list of members
  */
-const getRandomGroupMember = function(membersList) {
+const getRandomGroupMember = function (membersList) {
     return membersList[Math.floor(Math.random()*membersList.length)]
+}
+
+/**
+ * Returns a list with a randomly chosen [releaseId, tagId, sprintId]
+ * @param {*} releaseList list of releases
+ * @param {*} tagList list of tags
+ * @param {*} sprintList list of sprints
+ */
+const getRandomListOfExtras = function (releaseList, tagList, sprintList) {
+    let result = [];
+    result.push(releaseList[Math.floor(Math.random()*releaseList.length)]._id);
+    result.push(tagList[Math.floor(Math.random()*tagList.length)]._id);
+    result.push(sprintList[Math.floor(Math.random()*sprintList.length)]._id);
+    return result;
 }
 
 dataGenerator();
