@@ -25,20 +25,20 @@
                     i.material-icons.right add
         hr.sprintInputRow
         .row
-            //if sprintList.length === 0
-            //    h6.center #{__('projectPage.tabs.management.noSprints')}
-            //else
-            //    ul.collection
-            //        each sprint in sprintList
-            //            li.collection-item.avatar
-            //                i.material-icons.circle compare_arrows
-            //                button(onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right
-            //                    i.material-icons.right close
-            //                span.title #{sprint.name}
-            //                p
-            //                    | #{sprint.startDate}
-            //                    br
-            //                    | #{sprint.endDate}
+            if sprintsList.length === 0
+                h6.center #{__('projectPage.tabs.management.noSprints')}
+            else
+                ul.collection
+                    each sprint in sprintsList
+                        li.collection-item.avatar
+                            i.material-icons.circle date_range
+                            button(onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                i.material-icons.right delete_forever
+                            span.title #{sprint.name}
+                            p
+                                | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
+                                br
+                                | #{`${__('projectPage.tabs.management.sprintEnd')}: ${sprint.endDate}`}
 .row
     .col.s12
         .row
@@ -64,9 +64,9 @@
                 ul.collection
                     each release in releasesList
                         li.collection-item.avatar
-                            i.material-icons.circle compare_arrows
-                            button(onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right
-                                i.material-icons.right close
+                            i.material-icons.circle dns
+                            button(onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                i.material-icons.right delete_forever
                             span.title #{release.name}
 .row
     .col.s12
@@ -93,7 +93,7 @@
                 ul.collection
                     each tag in tagsList
                         li.collection-item.avatar
-                            i.material-icons.circle compare_arrows
-                            button(onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right
-                                i.material-icons.right close
+                            i.material-icons.circle bookmark
+                            button(onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                i.material-icons.right delete_forever
                             span.title #{tag.name}

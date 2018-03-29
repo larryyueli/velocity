@@ -1670,75 +1670,69 @@ const handleProjectTeamPath = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            projects.getReleasesByTeamId(projectId, teamId, function (err, releasesObjList) {
+            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
-                let releasesList = [];
-                for (let i = 0; i < releasesObjList.length; i++) {
-                    releasesList.push({
-                        name: releasesObjList[i].name
-                    });
-                }
-
-                projects.getTagsByTeamId(projectId, teamId, function (err, tagsObjList) {
+                projects.getReleasesByTeamId(projectId, teamId, function (err, releasesObjList) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(404).render(common_api.pugPages.pageNotFound);
                     }
 
-                    let tagsList = [];
-                    for (let i = 0; i < tagsObjList.length; i++) {
-                        tagsList.push({
-                            name: tagsObjList[i].name
-                        });
-                    }
-
-                    projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObjList) {
+                    projects.getTagsByTeamId(projectId, teamId, function (err, tagsObjList) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             return res.status(404).render(common_api.pugPages.pageNotFound);
                         }
 
-                        const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
-                        let resolvedMembers = [];
-                        for (let i = 0; i < teamObj.members.length; i++) {
-                            let member = usersIdObj[teamObj.members[i]];
-                            if (member) {
-                                resolvedMembers.push({
-                                    fname: member.fname,
-                                    lname: member.lname,
-                                    username: member.username,
-                                    email: member.email,
-                                    picture: member.picture
-                                });
+                        projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObjList) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(404).render(common_api.pugPages.pageNotFound);
                             }
-                        }
-                        let resolvedTeamObj = {
-                            _id: teamObj._id,
-                            projectId: teamObj.projectId,
-                            ctime: teamObj.ctime,
-                            mtime: teamObj.mtime,
-                            name: teamObj.name,
-                            members: resolvedMembers
-                        };
 
-                        return res.status(200).render(common_api.pugPages.projectTeam, {
-                            user: req.session.user,
-                            project: projectObj,
-                            team: resolvedTeamObj,
-                            canSearch: true,
-                            releasesList: releasesObjList,
-                            tagsList: tagsList,
-                            isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
-                            isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
-                            isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
-                            isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
-                            forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
-                            deadlineDate: projectObj.deadlineDate,
-                            deadlineTime: projectObj.deadlineTime
+                            const usersIdObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                            let resolvedMembers = [];
+                            for (let i = 0; i < teamObj.members.length; i++) {
+                                let member = usersIdObj[teamObj.members[i]];
+                                if (member) {
+                                    resolvedMembers.push({
+                                        fname: member.fname,
+                                        lname: member.lname,
+                                        username: member.username,
+                                        email: member.email,
+                                        picture: member.picture
+                                    });
+                                }
+                            }
+                            let resolvedTeamObj = {
+                                _id: teamObj._id,
+                                projectId: teamObj.projectId,
+                                ctime: teamObj.ctime,
+                                mtime: teamObj.mtime,
+                                name: teamObj.name,
+                                members: resolvedMembers
+                            };
+
+                            return res.status(200).render(common_api.pugPages.projectTeam, {
+                                user: req.session.user,
+                                project: projectObj,
+                                team: resolvedTeamObj,
+                                canSearch: true,
+                                sprintsList: sprintsObjList,
+                                releasesList: releasesObjList,
+                                tagsList: tagsObjList,
+                                isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
+                                isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
+                                isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
+                                isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
+                                forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+                                deadlineDate: projectObj.deadlineDate,
+                                deadlineTime: projectObj.deadlineTime
+                            });
                         });
                     });
                 });

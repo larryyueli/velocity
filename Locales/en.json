@@ -161,8 +161,8 @@
 			"management": {
 				"releases": "Releases",
 				"sprints": "Sprints",
-				"sprintEnd": "Sprint end",
-				"sprintStart": "Sprint start",
+				"sprintEnd": "End Date",
+				"sprintStart": "Start Date",
 				"tags": "Tags",
 				"noReleases": "No Releases",
 				"noTags": "No Tags",
