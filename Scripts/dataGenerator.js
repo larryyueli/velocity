@@ -42,6 +42,7 @@ const sprintStartDate = '1/2/2018';
 const sprintEndDate = '1/20/2018';
 const groupSize = 5;
 const userPassword = 'asd';
+const boardType = common.boardTypes.SCRUM.value;
 var userCookies = [];
 var projectList = [];
 var activeProjectList = [];
@@ -338,7 +339,8 @@ const createGroup = function (name, members) {
 const createProject = function (title, description) {
     const projectObject = querystring.stringify({
         'title': title,
-        'description': description
+        'description': description,
+        'boardType': boardType
     });
 
     const options = {
