@@ -124,10 +124,34 @@ const createTicket = function (req, res) {
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
     const assignee = req.body.assignee;
-    const sprints = req.body.sprints;
-    const releases = req.body.releases;
-    const tags = req.body.tags;
     const links = req.body.links;
+    let sprints = req.body.sprints;
+    let releases = req.body.releases;
+    let tags = req.body.tags;
+
+    try {
+        sprints = JSON.parse(sprints);
+    }
+    catch (err) {
+        logger.error(common_backend.getError(1011));
+        sprints = [];
+    }
+
+    try {
+        releases = JSON.parse(releases);
+    }
+    catch (err) {
+        logger.error(common_backend.getError(1011));
+        releases = [];
+    }
+
+    try {
+        tags = JSON.parse(tags);
+    }
+    catch (err) {
+        logger.error(common_backend.getError(1011));
+        tags = [];
+    }
 
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
@@ -655,10 +679,34 @@ const updateTicket = function (req, res) {
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
     const assignee = req.body.assignee;
-    const sprints = req.body.sprints;
-    const releases = req.body.releases;
-    const tags = req.body.tags;
     const links = req.body.links;
+    let sprints = req.body.sprints;
+    let releases = req.body.releases;
+    let tags = req.body.tags;
+
+    try {
+        sprints = JSON.parse(sprints);
+    }
+    catch (err) {
+        logger.error(common_backend.getError(1011));
+        sprints = [];
+    }
+
+    try {
+        releases = JSON.parse(releases);
+    }
+    catch (err) {
+        logger.error(common_backend.getError(1011));
+        releases = [];
+    }
+
+    try {
+        tags = JSON.parse(tags);
+    }
+    catch (err) {
+        logger.error(common_backend.getError(1011));
+        tags = [];
+    }
 
     projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
