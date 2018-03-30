@@ -1,7 +1,9 @@
-li
-    .collapsible-header#sprintHeader(onclick='setActive($(this))')
-        #title
-        span &nbsp;&nbsp;
-        em#issueCount
-    .collapsible-body.padding-0#sprintBody
-        ul.collection#backlogTicketList
+li(id=`sprint_sprint._id`).collection-item.avatar
+    i.material-icons.circle date_range
+    button(onclick=`deleteSprint('sprint._id', 'sprint.name')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+        i.material-icons.right delete_forever
+    span.title sprint.name
+    p
+        | #{`${__('projectPage.tabs.management.sprintStart')}: sprint.startDate`}
+        br
+        | #{`${__('projectPage.tabs.management.sprintEnd')}: sprint.endDate`}

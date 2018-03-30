@@ -1,7 +1,5 @@
-li
-    .collapsible-header#sprintHeader(onclick='setActive($(this))')
-        #title
-        span &nbsp;&nbsp;
-        em#issueCount
-    .collapsible-body.padding-0#sprintBody
-        ul.collection#backlogTicketList
+li(id=`tag_tag._id`).collection-item.avatar
+    i.material-icons.circle bookmark
+    button(onclick=`deleteTag('tag._id', 'tag.name')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+        i.material-icons.right delete_forever
+    span.title tag.name

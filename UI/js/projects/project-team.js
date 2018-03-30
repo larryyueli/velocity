@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const addFieldDiv = '#appendFieldDiv';
+const addReleaseDiv = '#appendReleaseDiv';
 const addSprintDiv = '#appendSprintDiv';
 const addTagDiv = '#appendTagDiv';
 const backButtonId = '#backButton';
@@ -318,7 +318,11 @@ function createRelease() {
                 name: $(releaseField).val()
             },
             success: function (data) {
-                window.location.href = `/project/${projectId}/team/${teamId}`;
+                let release = releaseComponent;
+                release = release.replace(new RegExp('release._id', 'g'), data._id);
+                release = release.replace(new RegExp('release.name', 'g'), data.name);
+                //release = release.replace('comment.mtime', data.mtime);
+                $(addReleaseDiv).append(release);
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -344,7 +348,11 @@ function createTag() {
                 name: $(tagField).val()
             },
             success: function (data) {
-                window.location.href = `/project/${projectId}/team/${teamId}`;
+                let tag = tagComponent;
+                tag = tag.replace(new RegExp('tag._id', 'g'), tag._id);
+                tag = tag.replace(new RegExp('tag.name', 'g'), tag.name);
+                //release = release.replace('comment.mtime', data.mtime);
+                $(addTagDiv).append(tag);
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
