@@ -56,6 +56,9 @@ const initialize = function (pug, notificationsWS, callback) {
     common_api.pugComponents.projectsUserEntryComponent = pug.compileFile('Templates/projects/projects-users-entry.pug');
     common_api.pugComponents.sprintEntryComponent = pug.compileFile('Templates/tickets/sprint-entry.pug');
     common_api.pugComponents.teamEntryComponent = pug.compileFile('Templates/projects/team-entry.pug');
+    common_api.pugComponents.teamManagementReleaseEntryComponent = pug.compileFile('Templates/projects/team-management-release-entry.pug');
+    common_api.pugComponents.teamManagementSprintEntryComponent = pug.compileFile('Templates/projects/team-management-sprint-entry.pug');
+    common_api.pugComponents.teamManagementTagEntryComponent = pug.compileFile('Templates/projects/team-management-tag-entry.pug');
     common_api.pugComponents.ticketCommentEntry = pug.compileFile('Templates/tickets/tickets-comments-entry.pug');
     common_api.pugComponents.ticketEntryComponent = pug.compileFile('Templates/tickets/ticket-entry.pug');
     common_api.pugComponents.usersEntryComponent = pug.compileFile('Templates/users/users-entry.pug');
@@ -2479,6 +2482,22 @@ const handleProjectTeamSprintsFullListPath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to get the list of components for the team page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleTeamPageComponentsPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    return res.status(200).send({
+        tagsEntry: common_api.pugComponents.ticketCommentEntry()
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <common Requests> ------------------------------------------------
@@ -2505,6 +2524,8 @@ exports.handleTicketsListComponentPath = handleTicketsListComponentPath;
 exports.handleProjectsAdminsListComponentPath = handleProjectsAdminsListComponentPath;
 exports.handleProjectsGroupAssignPath = handleProjectsGroupAssignPath;
 exports.handleProjectsAddPath = handleProjectsAddPath;
+
+exports.handleTeamPageComponentsPath = handleTeamPageComponentsPath;
 // </Get Requests> -----------------------------------------------
 
 // <Post Requests> -----------------------------------------------

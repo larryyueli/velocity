@@ -54,6 +54,9 @@ var pugComponents = {
     projectsUserEntryComponent: null,
     sprintEntryComponent: null,
     teamEntryComponent: null,
+    teamManagementSprintEntryComponent: null,
+    teamManagementReleaseEntryComponent: null,
+    teamManagementTagEntryComponent: null,
     ticketCommentEntry: null,
     ticketEntryComponent: null,
     usersEntryComponent: null
