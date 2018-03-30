@@ -321,8 +321,10 @@ function createRelease() {
                 let release = releaseComponent;
                 release = release.replace(new RegExp('release._id', 'g'), data._id);
                 release = release.replace(new RegExp('release.name', 'g'), data.name);
-                //release = release.replace('comment.mtime', data.mtime);
                 $(addReleaseDiv).append(release);
+                $(releaseInputRow).hide();
+                $(releaseVisibility).show();
+                $(releaseField).val('');
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -349,10 +351,12 @@ function createTag() {
             },
             success: function (data) {
                 let tag = tagComponent;
-                tag = tag.replace(new RegExp('tag._id', 'g'), tag._id);
-                tag = tag.replace(new RegExp('tag.name', 'g'), tag.name);
-                //release = release.replace('comment.mtime', data.mtime);
+                tag = tag.replace(new RegExp('tag._id', 'g'), data._id);
+                tag = tag.replace(new RegExp('tag.name', 'g'), data.name);
                 $(addTagDiv).append(tag);
+                $(tagInputRow).hide();
+                $(tagVisibility).show();
+                $(tagField).val('');
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -384,7 +388,17 @@ function createSprint() {
                 endDate: $(sprintEnd).val()
             },
             success: function (data) {
-                window.location.href = `/project/${projectId}/team/${teamId}`;
+                let sprint = sprintComponent;
+                sprint = sprint.replace(new RegExp('sprint._id', 'g'), data._id);
+                sprint = sprint.replace(new RegExp('sprint.name', 'g'), data.name);
+                sprint = sprint.replace('sprint.startDate', `${translate('startDate')}${data.startDate}`);
+                sprint = sprint.replace('sprint.endDate', `${translate('endDate')}${data.endDate}`);
+                $(addSprintDiv).append(sprint);
+                $(sprintInputRow).hide();
+                $(sprintVisibility).show();
+                $(sprintField).val('');
+                $(sprintStart).val('');
+                $(sprintEnd).val('');
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;

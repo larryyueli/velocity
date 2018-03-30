@@ -259,6 +259,8 @@ const translations = Object.freeze({
     commentCanNotBeEmpty: 'Comment can not be empty!',
     saveBoardType: 'BE CAREFUL, this can NOT be changed!',
     updatedTicket:'Ticket has been updated',
+    startDate: 'Start Date: ',
+    endDate: 'End Date: ',
 
     todoTitle: 'TODO',
     inProgressTitle: 'IN PROGRESS',
