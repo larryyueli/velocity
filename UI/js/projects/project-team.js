@@ -122,9 +122,7 @@ $(function () {
     });
 
     getListOfAssignee();
-    getReleaseComponent();
-    getSprintComponent();
-    getTagComponent();
+    getComponents();
 
     /*
     $.ajax({
@@ -278,19 +276,21 @@ $(function () {
 });
 
 /**
- * Gets the release component
+ * Gets the release, tag, and sprint component
  */
-function getReleaseComponent() {
-    /*
+function getComponents() {
+    
     $.ajax({
         type: 'GET',
-        url: '/components/releases',
+        url: '/components/team/page',
         data: {
             projectId: projectId,
             teamId: teamId
         },
         success: function (data) {
-            releaseComponent = data.releaseComponent;
+            releaseComponent = data.releaseEntryComponent;
+            sprintComponent = data.sprintEntryComponent;
+            tagComponent = data.tagEntryComponent;
         },
         error: function (data) {
             handle401And404(data);
@@ -299,57 +299,7 @@ function getReleaseComponent() {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
-    */
-}
-
-/**
- * Gets the sprint component
- */
-function getSprintComponent() {
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/sprints',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            sprintComponent = data.sprintComponent;
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });
-    */
-}
-
-/**
- * Gets the release component
- */
-function getTagComponent() {
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/tags',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            tagComponent = data.tagComponent;
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });
-    */
+    
 }
 
 /**
@@ -596,7 +546,24 @@ function deleteSprint(sprintId, sprintName) {
         buttons: [translate('cancel'), translate('delete')]
     }).then(canDelete => {
         if (canDelete) {
-            alert('Deleting sprint.');
+            $.ajax({
+                type: 'DELETE',
+                url: '/sprints/delete',
+                data: {
+                    projectId: projectId,
+                    teamId: teamId,
+                    sprintId: sprintId
+                },
+                success: function (data) {
+                    $(`#sprint_${sprintId}`).hide();
+                },
+                error: function (data) {
+                    handle401And404(data);
+                    
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
