@@ -1125,9 +1125,7 @@ const getEditPageComponents = function (req, res) {
     }
 
     return res.status(200).send({
-        releaseEntryComponent: common_api.pugComponents.teamManagementReleaseEntryComponent(),
-        sprintEntryComponent: common_api.pugComponents.teamManagementSprintEntryComponent(),
-        tagEntryComponent: common_api.pugComponents.teamManagementTagEntryComponent()
+        ticketCommentEntry: common_api.pugComponents.ticketCommentEntry()
     });
 }
 

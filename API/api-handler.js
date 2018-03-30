@@ -2495,7 +2495,9 @@ const handleTeamPageComponentsPath = function (req, res) {
     }
 
     return res.status(200).send({
-        tagsEntry: common_api.pugComponents.ticketCommentEntry()
+        releaseEntryComponent: common_api.pugComponents.teamManagementReleaseEntryComponent(),
+        sprintEntryComponent: common_api.pugComponents.teamManagementSprintEntryComponent(),
+        tagEntryComponent: common_api.pugComponents.teamManagementTagEntryComponent()
     });
 }
 // </Requests Function> -----------------------------------------------
