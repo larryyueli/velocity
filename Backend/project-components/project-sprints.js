@@ -59,7 +59,7 @@ const addSprint = function (sprint, callback) {
     sprintToAdd.name = sprint.name;
     sprintToAdd.startDate = sprint.startDate;
     sprintToAdd.endDate = sprint.endDate;
-    sprintToAdd.status = common.sprintStatus.ACTIVE.value;
+    sprintToAdd.status = common.sprintStatus.OPEN.value;
     sprintToAdd.tickets = Array.isArray(sprint.tickets) ? sprint.tickets : [];
 
     db.addSprint(sprintToAdd, callback);
