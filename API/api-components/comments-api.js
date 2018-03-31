@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
 const common_api = require('./common-api.js');
+const notifications_api = require('./notifications-api.js');
 
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
@@ -99,6 +100,12 @@ const addComment = function (req, res) {
                             let user = userNamesObj[username];
                             if (user) {
                                 resolvedContent += `@${user._id} `;
+
+                                if (req.session.user._id !== user._id) {
+                                    let notifObj = common_backend.notifications.COMMENT_MENTION;
+                                    notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+                                    notifications_api.notifyUserById(user._id, notifObj);
+                                }
                             } else {
                                 resolvedContent += `@UNKNOWN `;
                             }
@@ -132,6 +139,16 @@ const addComment = function (req, res) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
+                    }
+
+                    let notifObj = common_backend.notifications.COMMENT_ADDED;
+                    notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+
+                    if (req.session.user._id !== ticketObj.assignee) {
+                        notifications_api.notifyUserById(ticketObj.assignee, notifObj);
+                    }
+                    if (req.session.user._id !== ticketObj.reporter) {
+                        notifications_api.notifyUserById(ticketObj.reporter, notifObj);
                     }
 
                     return res.status(200).send(result);

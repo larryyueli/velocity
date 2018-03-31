@@ -214,8 +214,11 @@ const createTicket = function (req, res) {
                         return res.status(500).send(err);
                     }
 
-                    if (ticketObj.assignee !== common_backend.noAssignee) {
-                        notifications_api.pushNotificationByUserId(ticketObj.assignee, `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`, common_backend.notifications.TICKET_ASSINGEE);
+                    if (ticketObj.assignee !== common_backend.noAssignee
+                        && ticketObj.assignee !== req.session.user._id) {
+                        let notifObj = common_backend.notifications.TICKET_ASSINGEE;
+                        notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+                        notifications_api.notifyUserById(ticketObj.assignee, notifObj);
                     }
 
                     let sprintsIdsList = [];
@@ -743,7 +746,7 @@ const updateTicket = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                users.getUserByUsername(assignee, function (err, assigneeObj) {
+                users.getUserById(assignee, function (err, assigneeObj) {
                     if (err && err.code !== 2003) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
@@ -797,6 +800,35 @@ const updateTicket = function (req, res) {
                         }
                     } else {
                         updatedTicket.assignee = common_backend.noAssignee;
+                    }
+
+                    if (updatedTicket.assignee !== ticketObj.assignee) {
+                        if (updatedTicket.assignee !== common_backend.noAssignee
+                            && updatedTicket.assignee !== req.session.user._id) {
+                            let notifObj = common_backend.notifications.TICKET_ASSINGEE;
+                            notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+                            notifications_api.notifyUserById(updatedTicket.assignee, notifObj);
+                        }
+
+                        if (ticketObj.assignee !== common_backend.noAssignee
+                            && ticketObj.assignee !== req.session.user._id) {
+                            let notifObj = common_backend.notifications.TICKET_UPDATED;
+                            notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+                            notifications_api.notifyUserById(ticketObj.assignee, notifObj);
+                        }
+                    } else {
+                        if (updatedTicket.assignee !== common_backend.noAssignee) {
+                            let notifObj = common_backend.notifications.TICKET_UPDATED;
+                            notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+                            notifications_api.notifyUserById(updatedTicket.assignee, notifObj);
+                        }
+                    }
+
+                    if (ticketObj.reporter !== common_backend.noReporter
+                        && ticketObj.reporter !== req.session.user._id) {
+                        let notifObj = common_backend.notifications.TICKET_UPDATED;
+                        notifObj.link = `/project/${projectId}/team/${teamId}/ticket/${ticketObj._id}`;
+                        notifications_api.notifyUserById(ticketObj.reporter, notifObj);
                     }
 
                     let processSprints = function (callback) {

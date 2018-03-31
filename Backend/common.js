@@ -216,7 +216,10 @@ exports.defaultError = defaultError;
 
 // <Global Notifications> -------------------------------------------
 const notifications = Object.freeze({
-    TICKET_ASSINGEE: { name: 'You have been assigned to a ticket', type: 'assignment_ind' }
+    COMMENT_ADDED: { name: 'User commented on your ticket', type: 'comment', link: '/' },
+    COMMENT_MENTION: { name: 'You have been mentioned in a comment', type: 'comment', link: '/' },
+    TICKET_ASSINGEE: { name: 'You have been assigned to a ticket', type: 'assignment_ind', link: '/' },
+    TICKET_UPDATED: { name: 'Ticket has been updated', type: 'note', link: '/' }
 });
 exports.notifications = notifications;
 // </Global Notifications> ------------------------------------------

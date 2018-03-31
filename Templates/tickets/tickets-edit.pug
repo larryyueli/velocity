@@ -135,11 +135,12 @@ block content
                                         .input-field.padding-10
                                             input.autocomplete(type='text', value=`${assignee}`, name='assigneeAutocomplete')#assigneeAutocomplete
                                             label(for='assigneeAutocomplete') #{__('tickets.assignee')}
-                                    .row
+                                    .row.hidden#current-ticket-assingee #{ticket.assignee}
+                                    .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
                                             input.autocomplete(type='text')#releasesAutocomplete
                                             label(for='releasesAutocomplete') #{__('tickets.release')}
-                                    .row
+                                    .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10#ticketReleasesDivId
                                             each release in releases
                                                     .chip.release-chips(id=`${release._id}`)
@@ -147,22 +148,22 @@ block content
                                                         if release.status !== commonReleaseStatus.CLOSED.value
                                                             i.close.material-icons(onclick=`removeReleaseId('${release._id}')`) delete_forever
                                     if isScrumBoardType
-                                        .row
+                                        .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10
                                                 input.autocomplete(type='text')#sprintsAutocomplete
                                                 label(for='sprintsAutocomplete') #{__('tickets.sprints')}
-                                        .row
+                                        .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10#ticketSprintsDivId
                                                 each sprint in sprints
                                                     .chip.sprint-chips(id=`${sprint._id}`)
                                                         | #{sprint.name}
                                                         if sprint.status !== commonSprintStatus.CLOSED.value
                                                             i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) delete_forever
-                                    .row
+                                    .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
                                             input.autocomplete(type='text')#tagsAutocomplete
                                             label(for='tagsAutocomplete') #{__('tickets.tags')}
-                                    .row
+                                    .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10#ticketTagsDivId
                                             each tag in tags
                                                 .chip.tag-chips(id=`${tag._id}`)

@@ -22,7 +22,7 @@ const path = require('path');
 
 const common_api = require('./common-api.js');
 
-const notifications = require('../../Backend/notifications.js');
+const notifications_backend = require('../../Backend/notifications.js');
 const logger = require('../../Backend/logger.js');
 
 var notificationsWS;
@@ -44,7 +44,7 @@ const handleNotificationsConnection = function (client, req) {
     client.on('message', function incoming(message) {
     });
 
-    notifications.getNotificationsByUserId(req.session.user._id, function (err, notifList) {
+    notifications_backend.getNotificationsByUserId(req.session.user._id, function (err, notifList) {
         if (err) {
             logger.error(JSON.stringify(err));
         }
@@ -94,7 +94,7 @@ setInterval(function ping() {
 setInterval(function () {
     //if (notificationsWS) {
     //    for (let client of notificationsWS.clients) {
-    //        pushNotificationByUserId(client.userId, { userId: client.userId, name: 'new notifi', type: 'save', link: 'https://www.google.ca' }, (err, res) => { });
+    //        notifyUserById(client.userId, { userId: client.userId, name: 'new notifi', type: 'save', link: 'https://www.google.ca' }, (err, res) => { });
     //    }
     //}
 }, 1000);
@@ -103,13 +103,11 @@ setInterval(function () {
  * push a notification to a user
  *
  * @param {string} userId user id
- * @param {string} link link used to redirect the user
  * @param {object} notificationObj notification obj
  */
-const pushNotificationByUserId = function (userId, link, notificationObj) {
+const notifyUserById = function (userId, notificationObj) {
     notificationObj.userId = userId;
-    notificationObj.link = link;
-    notifications.addNotification(notificationObj, function (err, resultObj) {
+    notifications_backend.addNotification(notificationObj, function (err, resultObj) {
         if (err) {
             return logger.error(JSON.stringify(err));
         }
@@ -138,7 +136,7 @@ const deleteNotification = function (req, res) {
     }
 
     const notificationId = req.body.notificationId;
-    notifications.deleteNotificationById(notificationId, function (err, result) {
+    notifications_backend.deleteNotificationById(notificationId, function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -159,7 +157,7 @@ const deleteAllNotifications = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    notifications.deleteAllNotificationsByuserId(req.session.user._id, function (err, result) {
+    notifications_backend.deleteAllNotificationsByuserId(req.session.user._id, function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -184,5 +182,5 @@ const initialize = function (nWS) {
 exports.deleteAllNotifications = deleteAllNotifications;
 exports.deleteNotification = deleteNotification;
 exports.initialize = initialize;
-exports.pushNotificationByUserId = pushNotificationByUserId;
+exports.notifyUserById = notifyUserById;
 // </exports> -----------------------------------------------

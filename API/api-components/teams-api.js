@@ -559,6 +559,7 @@ const getMembersList = function (req, res) {
                 let memberObj = usersObj[memberId];
                 if (memberObj) {
                     usersList.push({
+                        _id: memberObj._id,
                         username: memberObj.username,
                         fname: memberObj.fname,
                         lname: memberObj.lname,

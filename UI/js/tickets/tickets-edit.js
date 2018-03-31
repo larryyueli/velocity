@@ -47,6 +47,7 @@ const relatedInput = '#relatedInput';
 const relatedTicketDivId = '#relatedTicketDivId';
 const relatedSelectedInput = '#relatedSelectedInput';
 const appendCommentDiv = '#appendCommentDiv';
+const currentTicketAssignee = '#current-ticket-assingee';
 
 var selectedAssignee = null;
 var usernamesArray = [];
@@ -57,6 +58,7 @@ var selectedRelatedObj = {};
 var sprintIdsObj = {};
 var releaseIdsObj = {};
 var tagIdsObj = {};
+let usersIdObj = {};
 
 var commentComponent = null;
 
@@ -95,6 +97,8 @@ $(function () {
         selectedRelatedObj[id] = value;
         $(this).attr('id', id);
     });
+
+    selectedAssignee = $(currentTicketAssignee).html();
 
     initSummernote(descriptionId);
 
@@ -253,11 +257,10 @@ function getListOfAssignee() {
         },
         success: function (data) {
             let usersObj = {};
-            let usernameObj = {};
             for (let i = 0; i < data.length; i++) {
                 let user = data[i];
                 usersObj[`${user.fname} ${user.lname}`] = `/picture/${user.picture}`;
-                usernameObj[`${user.fname} ${user.lname}`] = user.username;
+                usersIdObj[`${user.fname} ${user.lname}`] = user._id;
                 usernamesArray.push(user.username);
             }
             $(newCommentField).atwho({
@@ -268,7 +271,7 @@ function getListOfAssignee() {
                 data: usersObj,
                 limit: 20,
                 onAutocomplete: function (val) {
-                    selectedAssignee = usernameObj[val];
+                    selectedAssignee = usersIdObj[val];
                 },
                 minLength: 0,
             });

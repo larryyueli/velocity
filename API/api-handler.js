@@ -150,18 +150,18 @@ const handleModeSelectPath = function (req, res) {
 }
 // </Requests Function> -----------------------------------------------
 
+// <Comments Requests> ------------------------------------------------
+exports.handleTicketsCommentPath = comment_api.addComment;
+exports.handleTicketsCommentEditPath = comment_api.updateComment;
+exports.handleCommentDeletePath = comment_api.deleteComment;
+// </Comments Requests> -----------------------------------------------
+
 // <Common Requests> ------------------------------------------------
 exports.handleModeSelectPath = handleModeSelectPath;
 exports.handleRootPath = handleRootPath;
 exports.initialize = initialize;
 exports.isActiveSession = common_api.isActiveSession;
 // </Common Requests> -----------------------------------------------
-
-// <Comments Requests> ------------------------------------------------
-exports.handleTicketsCommentPath = comment_api.addComment;
-exports.handleTicketsCommentEditPath = comment_api.updateComment;
-exports.handleCommentDeletePath = comment_api.deleteComment;
-// </Comments Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
 exports.handleDeleteAllNotificationsPath = notifications_api.deleteAllNotifications;
