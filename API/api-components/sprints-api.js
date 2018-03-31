@@ -23,6 +23,7 @@ const common_api = require('./common-api.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
+const settings = require('../../Backend/settings.js');
 
 /**
  * root path to create a sprint
@@ -186,6 +187,11 @@ const closeSprint = function (req, res) {
                     return res.status(500).send(err);
                 }
 
+                if (sprintObj.status !== common_backend.sprintStatus.ACTIVE.value) {
+                    logger.error(JSON.stringify(common_backend.getError(2019)));
+                    return res.status(400).send(common_backend.getError(2019));
+                }
+
                 let updatedSprint = { status: common_backend.sprintStatus.CLOSED.value };
                 projects.updateSprintById(sprintId, teamId, projectId, updatedSprint, function (err, result) {
                     if (err) {
@@ -200,9 +206,68 @@ const closeSprint = function (req, res) {
     });
 }
 
+/**
+ * root path to get the sprints list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getSprintsList = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getAvailableSprintsByTeamId(projectId, teamId, function (err, sprintsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let sprintsList = [];
+                for (let i = 0; i < sprintsObjList.length; i++) {
+                    let sprint = sprintsObjList[i];
+                    sprintsList.push({
+                        _id: sprint._id,
+                        name: sprint.name,
+                        startDate: sprint.startDate,
+                        endDate: sprint.endDate
+                    });
+                }
+
+                return res.status(200).send({
+                    sprintsList: sprintsList
+                });
+            });
+        });
+    });
+}
+
 
 // <exports> ------------------------------------------------
 exports.closeSprint = closeSprint;
 exports.createSprint = createSprint;
 exports.deleteSprint = deleteSprint;
+exports.getSprintsList = getSprintsList;
 // </exports> -----------------------------------------------

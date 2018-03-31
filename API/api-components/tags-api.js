@@ -23,6 +23,7 @@ const common_api = require('./common-api.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
+const settings = require('../../Backend/settings.js');
 
 /**
  * root path to create a tag
@@ -77,6 +78,63 @@ const createTag = function (req, res) {
     });
 }
 
+/**
+ * root path to get the tags list
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getTagsList = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getTagsByTeamId(projectId, teamId, function (err, tagsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let tagsList = [];
+                for (let i = 0; i < tagsObjList.length; i++) {
+                    let tag = tagsObjList[i];
+                    tagsList.push({
+                        _id: tag._id,
+                        name: tag.name
+                    });
+                }
+
+                return res.status(200).send({
+                    tagsList: tagsList
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createTag = createTag;
+exports.getTagsList = getTagsList;
 // </exports> -----------------------------------------------

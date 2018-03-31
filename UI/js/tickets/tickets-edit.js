@@ -224,7 +224,7 @@ function addNewCommentFunction() {
             comment = comment.replace('user.picture', meObject.picture);
             comment = comment.replace('comment.mtime', data.mtime);
             comment = comment.replace('comment.username', `${meObject.fname} ${meObject.lname}`);
-            comment = comment.replace('comment.content', data.content);
+            comment = comment.replace('comment.content', newCommentValue);
             $(appendCommentDiv).append(comment);
         },
         error: function (data) {
@@ -324,8 +324,8 @@ function changeToInput(commentId) {
                             <label >Edit Comment</label>
                         </div>
                         <div class="right">
-                            <button id='edit_${commentId}_save' class="btn btn-flat waves-effect waves-light comment-buttons" onclick="updateComment('${commentId}')"><i class="material-icons right">save</i></button>
-                            <button id='edit_${commentId}_close' class="btn btn-flat waves-effect waves-light comment-buttons"><i class="material-icons right">close</i></button>
+                            <button id='edit_${commentId}_save' class="btn btn-flat waves-effect waves-light no-text-flat-buttons" onclick="updateComment('${commentId}')"><i class="material-icons right">save</i></button>
+                            <button id='edit_${commentId}_close' class="btn btn-flat waves-effect waves-light no-text-flat-buttons margin-right-1-5em"><i class="material-icons right">close</i></button>
                         </div>
                     </div>
                 </div>`);

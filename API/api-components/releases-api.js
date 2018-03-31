@@ -23,6 +23,7 @@ const common_api = require('./common-api.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
+const settings = require('../../Backend/settings.js');
 
 /**
  * root path to create a releases
@@ -77,6 +78,63 @@ const createRelease = function (req, res) {
     });
 }
 
+/**
+ * root path to get the releases list of a team
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getReleasesList = function (req, res) {
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getAvailableReleasesByTeamId(projectId, teamId, function (err, releasesObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                let releasesList = [];
+                for (let i = 0; i < releasesObjList.length; i++) {
+                    let release = releasesObjList[i];
+                    releasesList.push({
+                        _id: release._id,
+                        name: release.name
+                    });
+                }
+
+                return res.status(200).send({
+                    releasesList: releasesList
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createRelease = createRelease;
+exports.getReleasesList = getReleasesList;
 // </exports> -----------------------------------------------

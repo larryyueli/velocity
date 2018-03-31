@@ -243,12 +243,12 @@ app.use(function (req, res, next) {
 app.get('/', api.handleRootPath);
 app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentPath);
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
-app.get('/components/team/backlog', api.handleProjectTeamSprintsFullListPath);
+app.get('/components/team/backlog', api.handleProjectTeamBacklogPath);
 app.get('/components/team/board', api.handleActiveSprintTicketsListComponentPath);
 app.get('/components/team/issues', api.handleTicketsListComponentPath);
+app.get('/components/team/management', api.handleTeamManagementComponentsPath);
 app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/components/ticket/edit/page', api.handleTicketEditPageComponentsPath);
-app.get('/components/team/page', api.handleTeamPageComponentsPath);
 app.get('/lookup/ticket/by/displayId', api.handleLookupTicketByDisplayIdPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
@@ -259,9 +259,9 @@ app.get('/project/:projectId/team/:teamId/search', api.handleProjectTeamSearchPa
 app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTicketsAddPath);
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
-app.get('/project/team/releases/list', api.handleProjectTeamReleasesListPath);
-app.get('/project/team/sprints/list', api.handleProjectTeamSprintsListPath);
-app.get('/project/team/tags/list', api.handleProjectTeamTagsListPath);
+app.get('/project/team/releases/list', api.handleReleasesListPath);
+app.get('/project/team/sprints/list', api.handleSprintsListPath);
+app.get('/project/team/tags/list', api.handleTagsListPath);
 app.get('/projects', api.handleProjectsPath);
 app.get('/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/projects/add', api.handleProjectsAddPath);
@@ -298,7 +298,7 @@ app.post('/users/update', api.handleUsersUpdatePath);
 // <Put Requests> ------------------------------------------------
 app.put('/comment/create', api.handleTicketsCommentPath);
 app.put('/releases/create', api.handleReleasesCreatePath);
-app.put('/projects/create', api.handleProjectsCreatePath);
+app.put('/projects/create', api.handleProjectCreatePath);
 app.put('/sprints/create', api.handleSprintsCreatePath);
 app.put('/tags/create', api.handleTagsCreatePath);
 app.put('/tickets/create', api.handleTicketsCreatePath);
@@ -313,7 +313,7 @@ app.delete('/logout', api.handleLogoutPath);
 app.delete('/project/delete', api.handleProjectDeletePath);
 app.delete('/notification/delete', api.handleNotificationDeletePath);
 app.delete('/notifications/delete/all', api.handleDeleteAllNotificationsPath);
-app.delete('/sprints/delete', api.handleDeleteSprintPath);
+app.delete('/sprints/delete', api.handleSprintsDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 /**

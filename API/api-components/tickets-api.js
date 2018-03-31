@@ -19,14 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
 const common_api = require('./common-api.js');
+const notifications_api = require('./notifications-api.js');
 
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
 const settings = require('../../Backend/settings.js');
 const users = require('../../Backend/users.js');
-
-const notifications_api = require('./notifications-api.js');
 
 /**
  * lookup a ticket by its display id
@@ -684,28 +683,34 @@ const updateTicket = function (req, res) {
     let releases = req.body.releases;
     let tags = req.body.tags;
 
-    try {
-        sprints = JSON.parse(sprints);
-    }
-    catch (err) {
-        logger.error(common_backend.getError(1011));
-        sprints = [];
-    }
-
-    try {
-        releases = JSON.parse(releases);
-    }
-    catch (err) {
-        logger.error(common_backend.getError(1011));
-        releases = [];
+    if (!Array.isArray(sprints)) {
+        try {
+            sprints = JSON.parse(sprints);
+        }
+        catch (err) {
+            logger.error(common_backend.getError(1011));
+            sprints = [];
+        }
     }
 
-    try {
-        tags = JSON.parse(tags);
+    if (!Array.isArray(releases)) {
+        try {
+            releases = JSON.parse(releases);
+        }
+        catch (err) {
+            logger.error(common_backend.getError(1011));
+            releases = [];
+        }
     }
-    catch (err) {
-        logger.error(common_backend.getError(1011));
-        tags = [];
+
+    if (!Array.isArray(tags)) {
+        try {
+            tags = JSON.parse(tags);
+        }
+        catch (err) {
+            logger.error(common_backend.getError(1011));
+            tags = [];
+        }
     }
 
     projects.getProjectById(projectId, function (err, projectObj) {
@@ -1129,11 +1134,180 @@ const getEditPageComponents = function (req, res) {
     });
 }
 
+/**
+ * root path to search for tickets in projects
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const searchByText = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    const terms = req.query.criteria;
+
+    let searchForTickets = function (projectId, teamId, terms) {
+        if (settings.getModeType() === common_backend.modeTypes.COLLABORATORS) {
+            projects.searchTicketsByProjectId(projectId, terms, function (err, ticketsList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).render(common_api.pugPages.ticketSearch, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    ticketsList: ticketsList,
+                    canSearch: true
+                });
+            });
+        } else {
+            projects.searchTicketsByTeamId(projectId, teamId, terms, function (err, ticketsList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).render(common_api.pugPages.ticketSearch, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    ticketsList: ticketsList,
+                    canSearch: true
+                });
+            });
+        }
+    }
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
+            logger.error(JSON.stringify(common_backend.getError(2043)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (typeof (teamId) === common_backend.variableTypes.UNDEFINED) {
+            projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                searchForTickets(projectId, teamObj._id, terms);
+            });
+        } else {
+            projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                if (projectObj.admins.indexOf(req.session.user._id) === -1
+                    && teamObj.members.indexOf(req.session.user._id) === -1) {
+                    logger.error(JSON.stringify(common_backend.getError(2019)));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                searchForTickets(projectId, teamId, terms);
+            });
+        }
+    });
+}
+
+/**
+ * path to get the tickets list component
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getTicketsListComponent = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObjList) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                let limitedTicketList = [];
+                for (let i = 0; i < ticketsObjList.length; i++) {
+                    let ticket = ticketsObjList[i];
+                    let ticketAssignee = usersObj[ticket.assignee];
+                    let ticketReporter = usersObj[ticket.reporter];
+                    limitedTicketList.push({
+                        _id: ticket._id,
+                        ctime: ticket.ctime,
+                        mtime: ticket.mtime,
+                        displayId: ticket.displayId,
+                        title: ticket.title,
+                        state: ticket.state,
+                        type: ticket.type,
+                        assignee: ticketAssignee ? `${ticketAssignee.fname} ${ticketAssignee.lname}` : common_backend.noAssignee,
+                        reporter: ticketReporter ? `${ticketReporter.fname} ${ticketReporter.lname}` : common_backend.noReporter,
+                        assigneePicture: ticketAssignee ? ticketAssignee.picture : null,
+                        reporterPicture: ticketReporter ? ticketReporter.picture : null,
+                        priority: ticket.priority,
+                        points: ticket.points
+                    });
+                }
+
+                return res.status(200).send({
+                    issueEntryHTML: common_api.pugComponents.ticketEntryComponent(),
+                    ticketsList: limitedTicketList
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createTicket = createTicket;
 exports.getEditPageComponents = getEditPageComponents;
 exports.getTicketByDisplayId = getTicketByDisplayId;
+exports.getTicketsListComponent = getTicketsListComponent;
 exports.renderCreateTicketPage = renderCreateTicketPage;
 exports.renderTicketPage = renderTicketPage;
+exports.searchByText = searchByText;
 exports.updateTicket = updateTicket;
 // </exports> -----------------------------------------------

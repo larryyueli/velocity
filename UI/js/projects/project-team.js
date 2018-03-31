@@ -282,7 +282,7 @@ function getComponents() {
     
     $.ajax({
         type: 'GET',
-        url: '/components/team/page',
+        url: '/components/team/management',
         data: {
             projectId: projectId,
             teamId: teamId
