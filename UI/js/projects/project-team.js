@@ -636,7 +636,6 @@ function activateSprint(sprintId, sprintName) {
     swal({
         text: translate('activateSprintWarning'),
         icon: 'warning',
-        dangerMode: true,
         buttons: [translate('cancel'), translate('activate')]
     }).then(canActivate => {
         if (canActivate) {

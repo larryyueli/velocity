@@ -39,7 +39,7 @@
                                 button(class=`sprintOpen_${sprint._id}`, onclick=`activateSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right check
                             button(class=`sprintActive_${sprint._id} ${sprint.status === commonSprintStatus.ACTIVE.value ? '' : 'hidden'}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right close
+                                i.material-icons.right remove_circle
                             span.title #{sprint.name}
                             p
                                 | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
@@ -76,7 +76,7 @@
                                     i.material-icons.right delete_forever
                             if release.status === commonReleaseStatus.ACTIVE.value
                                 button(class=`releaseButton_${release._id}`, onclick=`closeRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                    i.material-icons.right close
+                                    i.material-icons.right remove_circle
                             span.title #{release.name}
 .row
     .col.s12
