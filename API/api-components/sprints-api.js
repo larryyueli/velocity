@@ -68,6 +68,8 @@ const createSprint = function (req, res) {
                 startDate: req.body.startDate,
                 endDate: req.body.endDate
             };
+
+            //TODO: check values of start date and end date
             projects.addSprintToTeam(newSprint, function (err, sprintObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
@@ -125,8 +127,8 @@ const deleteSprint = function (req, res) {
                 }
 
                 if (sprintObj.status !== common_backend.sprintStatus.OPEN.value) {
-                    logger.error(JSON.stringify(common_backend.getError(2019)));
-                    return res.status(400).send(common_backend.getError(2019));
+                    logger.error(JSON.stringify(common_backend.getError(2051)));
+                    return res.status(400).send(common_backend.getError(2051));
                 }
 
                 let updatedSprint = { status: common_backend.sprintStatus.DELETED.value };
@@ -188,8 +190,8 @@ const closeSprint = function (req, res) {
                 }
 
                 if (sprintObj.status !== common_backend.sprintStatus.ACTIVE.value) {
-                    logger.error(JSON.stringify(common_backend.getError(2019)));
-                    return res.status(400).send(common_backend.getError(2019));
+                    logger.error(JSON.stringify(common_backend.getError(2052)));
+                    return res.status(400).send(common_backend.getError(2052));
                 }
 
                 let updatedSprint = { status: common_backend.sprintStatus.CLOSED.value };
@@ -309,8 +311,8 @@ const activateSprint = function (req, res) {
                 }
 
                 if (sprintObj.status !== common_backend.sprintStatus.OPEN.value) {
-                    logger.error(JSON.stringify(common_backend.getError(2019)));
-                    return res.status(400).send(common_backend.getError(2019));
+                    logger.error(JSON.stringify(common_backend.getError(2053)));
+                    return res.status(400).send(common_backend.getError(2053));
                 }
 
                 projects.setActiveSprintByTeamId(projectId, teamId, sprintId, function (err, result) {

@@ -179,8 +179,8 @@ const deleteRelease = function (req, res) {
                 }
 
                 if (releaseObj.status !== common_backend.releaseStatus.ACTIVE.value) {
-                    logger.error(JSON.stringify(common_backend.getError(2019)));
-                    return res.status(400).send(common_backend.getError(2019));
+                    logger.error(JSON.stringify(common_backend.getError(2049)));
+                    return res.status(400).send(common_backend.getError(2049));
                 }
 
                 let updatedRelease = { status: common_backend.releaseStatus.DELETED.value };
@@ -242,8 +242,8 @@ const closeRelease = function (req, res) {
                 }
 
                 if (releaseObj.status !== common_backend.releaseStatus.ACTIVE.value) {
-                    logger.error(JSON.stringify(common_backend.getError(2019)));
-                    return res.status(400).send(common_backend.getError(2019));
+                    logger.error(JSON.stringify(common_backend.getError(2050)));
+                    return res.status(400).send(common_backend.getError(2050));
                 }
 
                 let updatedRelease = { status: common_backend.releaseStatus.CLOSED.value };

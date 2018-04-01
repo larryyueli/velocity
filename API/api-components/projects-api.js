@@ -62,7 +62,7 @@ const renderProjectPage = function (req, res) {
             return projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
-                    return res.status(404).send(err);
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
                 return res.redirect(`/project/${projectId}/team/${teamObj._id}`);
@@ -85,7 +85,7 @@ const renderProjectPage = function (req, res) {
             return projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
-                    return res.status(404).send(err);
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
                 }
 
                 return res.redirect(`/project/${projectId}/team/${teamObj._id}`);
@@ -135,7 +135,7 @@ const activateProject = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2041)));
-            return res.status(403).send(common_backend.getError(2041));
+            return res.status(400).send(common_backend.getError(2041));
         }
 
         if (projectObj.status !== common_backend.projectStatus.DRAFT.value) {
@@ -164,7 +164,7 @@ const activateProject = function (req, res) {
             projects.updateProject(req.body.projectId, newProject, function (err, result) {
                 if (err) {
                     logger.error(JSON.stringify(err));
-                    return res.status(400).send(err);
+                    return res.status(500).send(err);
                 }
 
                 projects.setTeamsBoardType(projectId, teamsIds, projectObj.boardType, function (err, result) {
@@ -200,12 +200,12 @@ const closeProject = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2041)));
-            return res.status(403).send(common_backend.getError(2041));
+            return res.status(400).send(common_backend.getError(2041));
         }
 
         if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common_backend.getError(2042)));
-            return res.status(400).send(common_backend.getError(2042));
+            logger.error(JSON.stringify(common_backend.getError(2043)));
+            return res.status(400).send(common_backend.getError(2043));
         }
 
         let newProject = {
@@ -214,7 +214,7 @@ const closeProject = function (req, res) {
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(400).send(err);
+                return res.status(500).send(err);
             }
 
             return res.status(200).send('ok');
@@ -242,7 +242,7 @@ const deleteProject = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2040)));
-            return res.status(403).send(common_backend.getError(2040));
+            return res.status(400).send(common_backend.getError(2040));
         }
 
         let newProject = {
@@ -251,7 +251,7 @@ const deleteProject = function (req, res) {
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(400).send(err);
+                return res.status(500).send(err);
             }
 
             return res.status(200).send('ok');
@@ -279,12 +279,12 @@ const updateActiveProject = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2037)));
-            return res.status(403).send(common_backend.getError(2037));
+            return res.status(400).send(common_backend.getError(2037));
         }
 
         if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
-            logger.error(JSON.stringify(common_backend.getError(2042)));
-            return res.status(400).send(common_backend.getError(2042));
+            logger.error(JSON.stringify(common_backend.getError(2043)));
+            return res.status(400).send(common_backend.getError(2043));
         }
 
         let newProject = {
@@ -294,7 +294,7 @@ const updateActiveProject = function (req, res) {
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(400).send(err);
+                return res.status(500).send(err);
             }
 
             return res.status(200).send('ok');
@@ -322,13 +322,13 @@ const updateProjectAdminsList = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2037)));
-            return res.status(403).send(common_backend.getError(2037));
+            return res.status(400).send(common_backend.getError(2037));
         }
 
         if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
             && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common_backend.getError(2042)));
-            return res.status(400).send(common_backend.getError(2042));
+            logger.error(JSON.stringify(common_backend.getError(2048)));
+            return res.status(400).send(common_backend.getError(2048));
         }
 
         const inputAdminsList = req.body.adminsList;
@@ -382,7 +382,7 @@ const createProject = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2036)));
-        return res.status(403).send(common_backend.getError(2036));
+        return res.status(400).send(common_backend.getError(2036));
     }
 
     const parsedBoardType = parseInt(req.body.boardType);
@@ -444,13 +444,13 @@ const updateProjectTeamsList = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2039)));
-            return res.status(403).send(common_backend.getError(2039));
+            return res.status(400).send(common_backend.getError(2039));
         }
 
         if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
             && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common_backend.getError(2042)));
-            return res.status(400).send(common_backend.getError(2042));
+            logger.error(JSON.stringify(common_backend.getError(2048)));
+            return res.status(400).send(common_backend.getError(2048));
         }
 
         let inputTeamsList = req.body.teamsList;
@@ -624,18 +624,18 @@ const updateProjectTeamsMe = function (req, res) {
 
         if (projectObj.status === common_backend.projectStatus.ACTIVE.value) {
             logger.error(JSON.stringify(common_backend.getError(2012)));
-            return res.status(403).send(common_backend.getError(2012));
+            return res.status(400).send(common_backend.getError(2012));
         }
 
         if (projectObj.status === common_backend.projectStatus.CLOSED.value) {
             logger.error(JSON.stringify(common_backend.getError(2013)));
-            return res.status(403).send(common_backend.getError(2013));
+            return res.status(400).send(common_backend.getError(2013));
         }
 
         if (projectObj.status !== common_backend.projectStatus.DRAFT.value
             && projectObj.teamSelectionType !== common_backend.teamSelectionTypes.USER.value) {
             logger.error(JSON.stringify(common_backend.getError(2014)));
-            return res.status(403).send(common_backend.getError(2014));
+            return res.status(400).send(common_backend.getError(2014));
         }
 
         projects.getTeamByUserId(projectId, req.session.user._id, function (err, teamObj) {
@@ -759,7 +759,7 @@ const updateProjectTeamsConfiguration = function (req, res) {
         && req.session.user.type !== common_backend.userTypes.TA.value
         && req.session.user.type !== common_backend.userTypes.STUDENT.value) {
         logger.error(JSON.stringify(common_backend.getError(1000)));
-        return res.status(403).send(common_backend.getError(1000));
+        return res.status(400).send(common_backend.getError(1000));
     }
 
     const projectId = req.body.projectId;
@@ -771,13 +771,13 @@ const updateProjectTeamsConfiguration = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2037)));
-            return res.status(403).send(common_backend.getError(2037));
+            return res.status(400).send(common_backend.getError(2037));
         }
 
         if (projectObj.status !== common_backend.projectStatus.ACTIVE.value
             && projectObj.status !== common_backend.projectStatus.DRAFT.value) {
-            logger.error(JSON.stringify(common_backend.getError(2042)));
-            return res.status(400).send(common_backend.getError(2042));
+            logger.error(JSON.stringify(common_backend.getError(2048)));
+            return res.status(400).send(common_backend.getError(2048));
         }
 
         let newProject = {
@@ -788,7 +788,7 @@ const updateProjectTeamsConfiguration = function (req, res) {
         projects.updateProject(projectId, newProject, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
-                return res.status(400).send(err);
+                return res.status(500).send(err);
             }
 
             return res.status(200).send('ok');
@@ -816,7 +816,7 @@ const updateDraftProject = function (req, res) {
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2037)));
-            return res.status(403).send(common_backend.getError(2037));
+            return res.status(400).send(common_backend.getError(2037));
         }
 
         if (projectObj.status !== common_backend.projectStatus.DRAFT.value) {
@@ -925,7 +925,7 @@ const getTeamsAssignmentComponent = function (req, res) {
 
     if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2034)));
-        return res.status(403).send(common_backend.getError(2034));
+        return res.status(400).send(common_backend.getError(2034));
     }
 
     const projectId = req.query.projectId;
@@ -940,24 +940,24 @@ const getTeamsAssignmentComponent = function (req, res) {
 
         if (projectObj.status === common_backend.projectStatus.ACTIVE.value && !userIsMember) {
             logger.error(JSON.stringify(common_backend.getError(2034)));
-            return res.status(403).send(common_backend.getError(2034));
+            return res.status(400).send(common_backend.getError(2034));
         }
 
         if (projectObj.status === common_backend.projectStatus.DRAFT.value
             && !userIsAdmin
             && projectObj.teamSelectionType !== common_backend.teamSelectionTypes.USER.value) {
             logger.error(JSON.stringify(common_backend.getError(2034)));
-            return res.status(403).send(common_backend.getError(2034));
+            return res.status(400).send(common_backend.getError(2034));
         }
 
         if (projectObj.status === common_backend.projectStatus.CLOSED.value && !userIsMember) {
             logger.error(JSON.stringify(common_backend.getError(2034)));
-            return res.status(403).send(common_backend.getError(2034));
+            return res.status(400).send(common_backend.getError(2034));
         }
 
         if (projectObj.status === common_backend.projectStatus.DELETED.value) {
             logger.error(JSON.stringify(common_backend.getError(2034)));
-            return res.status(403).send(common_backend.getError(2034));
+            return res.status(400).send(common_backend.getError(2034));
         }
 
         projects.getProjectTeams(projectId, function (err, teamsList) {
@@ -1048,8 +1048,8 @@ const getAdminsListComponent = function (req, res) {
         }
 
         if (projectObj.admins.indexOf(req.session.user._id) === -1) {
-            logger.error(JSON.stringify(common_backend.getError(2010)));
-            return res.status(403).send(common_backend.getError(2010));
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
         }
 
         const fullUserObjectsList = users.getActiveUsersList();
@@ -1109,7 +1109,7 @@ const getProjectsListComponent = function (req, res) {
 
     if (req.session.user.type === common_backend.userTypes.MODE_SELECTOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2034)));
-        return res.status(403).send(common_backend.getError(2034));
+        return res.status(400).send(common_backend.getError(2034));
     }
 
     projects.getProjectsListByUserId(req.session.user._id, function (err, projectsList) {

@@ -1172,7 +1172,7 @@ const getEditPageComponents = function (req, res) {
  * @param {object} req req object
  * @param {object} res res object
  */
-const searchByText = function (req, res) {
+const renderSearchPage = function (req, res) {
     if (!common_api.isActiveSession(req)) {
         return res.status(401).render(common_api.pugPages.login);
     }
@@ -1340,6 +1340,6 @@ exports.getTicketByDisplayId = getTicketByDisplayId;
 exports.getTicketsListComponent = getTicketsListComponent;
 exports.renderCreateTicketPage = renderCreateTicketPage;
 exports.renderTicketPage = renderTicketPage;
-exports.searchByText = searchByText;
+exports.renderSearchPage = renderSearchPage;
 exports.updateTicket = updateTicket;
 // </exports> -----------------------------------------------

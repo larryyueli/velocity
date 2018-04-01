@@ -64,7 +64,7 @@ const resetSettings = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2031)));
-        return res.status(403).send(common_backend.getError(2031));
+        return res.status(400).send(common_backend.getError(2031));
     }
 
     settings.resetAllSettings(function (err, result) {
@@ -91,7 +91,7 @@ const updateSettings = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2032)));
-        return res.status(403).send(common_backend.getError(2032));
+        return res.status(400).send(common_backend.getError(2032));
     }
 
     const updateObject = {

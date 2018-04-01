@@ -211,8 +211,8 @@ const updateComment = function (req, res) {
                     }
 
                     if (commentObj.userId !== req.session.user._id) {
-                        logger.error(JSON.stringify(common_backend.getError(2018)));
-                        return res.status(400).send(common_backend.getError(2018));
+                        logger.error(JSON.stringify(common_backend.getError(2046)));
+                        return res.status(400).send(common_backend.getError(2046));
                     }
 
                     let updatedComment = { content: req.body.content };
@@ -283,8 +283,8 @@ const deleteComment = function (req, res) {
                     }
 
                     if (commentObj.userId !== req.session.user._id) {
-                        logger.error(JSON.stringify(common_backend.getError(2018)));
-                        return res.status(400).send(common_backend.getError(2018));
+                        logger.error(JSON.stringify(common_backend.getError(2047)));
+                        return res.status(400).send(common_backend.getError(2047));
                     }
 
                     let updatedComment = { status: common_backend.commentStatus.DELETED.value };

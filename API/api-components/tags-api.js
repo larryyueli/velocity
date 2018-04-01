@@ -179,8 +179,8 @@ const deleteTag = function (req, res) {
                 }
 
                 if (tagObj.status !== common_backend.tagStatus.ACTIVE.value) {
-                    logger.error(JSON.stringify(common_backend.getError(2019)));
-                    return res.status(400).send(common_backend.getError(2019));
+                    logger.error(JSON.stringify(common_backend.getError(2054)));
+                    return res.status(400).send(common_backend.getError(2054));
                 }
 
                 let updatedTag = { status: common_backend.tagStatus.DELETED.value };

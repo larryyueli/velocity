@@ -355,7 +355,7 @@ const updateBoardType = function (req, res) {
 
         if (projectObj.status !== common_backend.projectStatus.ACTIVE.value) {
             logger.error(JSON.stringify(common_backend.getError(2012)));
-            return res.status(403).send(common_backend.getError(2012));
+            return res.status(400).send(common_backend.getError(2012));
         }
 
         if (projectObj.members.indexOf(req.session.user._id) === -1) {

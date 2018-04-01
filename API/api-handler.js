@@ -227,7 +227,7 @@ exports.handleTeamsListComponentPath = teams_api.getTeamsListComponent;
 
 // <Tickets Requests> ------------------------------------------------
 exports.handleLookupTicketByDisplayIdPath = tickets_api.getTicketByDisplayId;
-exports.handleProjectTeamSearchPath = tickets_api.searchByText;
+exports.handleProjectTeamSearchPath = tickets_api.renderSearchPage;
 exports.handleProjectTeamTicketPath = tickets_api.renderTicketPage;
 exports.handleProjectTeamTicketsAddPath = tickets_api.renderCreateTicketPage;
 exports.handleTicketEditPageComponentsPath = tickets_api.getEditPageComponents;

@@ -66,7 +66,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.mtime = currentDate;
     ticketToAdd.ictime = currentISODate;
     ticketToAdd.imtime = currentISODate;
-    ticketToAdd.displayId = `TICKET-${nextTicketId}`;
+    ticketToAdd.displayId = `TICKET-${nextTicketId++}`;
     ticketToAdd.projectId = ticket.projectId;
     ticketToAdd.teamId = ticket.teamId;
     ticketToAdd.sprints = Array.isArray(ticket.sprints) ? ticket.sprints : [];
@@ -85,14 +85,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.stateHistory = [];
     ticketToAdd.assigneeHistory = [];
 
-    db.addTicket(ticketToAdd, function (err, ticketObj) {
-        if (err) {
-            return callback(err, null);
-        }
-
-        nextTicketId++;
-        return callback(null, ticketObj);
-    });
+    db.addTicket(ticketToAdd, callback);
 }
 
 /**
