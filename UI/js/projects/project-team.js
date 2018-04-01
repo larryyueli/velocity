@@ -647,8 +647,8 @@ function activateSprint(sprintId, sprintName) {
                     sprintId: sprintId
                 },
                 success: function (data) {
-                    $("[id^='sprintOpen']").show();
-                    $("[id^='sprintActive']").hide();
+                    $("[class^='sprintOpen']").show();
+                    $("[class^='sprintActive']").hide();
                     $(`#sprintOpen_${sprintId}`).hide();
                     $(`#sprintActive_${sprintId}`).show();
                 },
