@@ -134,7 +134,135 @@ const getReleasesList = function (req, res) {
     });
 }
 
+/**
+ * root path to delete a release
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const deleteRelease = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    const releaseId = req.body.releaseId;
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getReleaseById(projectId, teamId, releaseId, function (err, releaseObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                if (releaseObj.status !== common_backend.releaseStatus.ACTIVE.value) {
+                    logger.error(JSON.stringify(common_backend.getError(2019)));
+                    return res.status(400).send(common_backend.getError(2019));
+                }
+
+                let updatedRelease = { status: common_backend.releaseStatus.DELETED.value };
+                projects.updateReleaseById(releaseId, teamId, projectId, updatedRelease, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            });
+        });
+    });
+}
+
+/**
+ * root path to close a release
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const closeRelease = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
+    const releaseId = req.body.releaseId;
+
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getReleaseById(projectId, teamId, releaseId, function (err, releaseObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                if (releaseObj.status !== common_backend.releaseStatus.ACTIVE.value) {
+                    logger.error(JSON.stringify(common_backend.getError(2019)));
+                    return res.status(400).send(common_backend.getError(2019));
+                }
+
+                let updatedRelease = { status: common_backend.releaseStatus.CLOSED.value };
+                projects.updateReleaseById(releaseId, teamId, projectId, updatedRelease, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createRelease = createRelease;
+exports.closeRelease = closeRelease;
+exports.deleteRelease = deleteRelease;
 exports.getReleasesList = getReleasesList;
 // </exports> -----------------------------------------------

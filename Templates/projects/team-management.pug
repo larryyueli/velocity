@@ -32,8 +32,15 @@
                     each sprint in sprintsList
                         li(id=`sprint_${sprint._id}`).collection-item.avatar
                             i.material-icons.circle date_range
-                            button(onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right delete_forever
+                            if sprint.status === commonSprintStatus.OPEN.value
+                                button(onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right delete_forever
+                            if sprint.status === commonSprintStatus.OPEN.value
+                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right check
+                            if sprint.status === commonSprintStatus.ACTIVE.value
+                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right close
                             span.title #{sprint.name}
                             p
                                 | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
@@ -65,8 +72,12 @@
                     each release in releasesList
                         li(id=`release_${release._id}`).collection-item.avatar
                             i.material-icons.circle dns
-                            button(onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right delete_forever
+                            if release.status === commonReleaseStatus.ACTIVE.value
+                                button(onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right delete_forever
+                            if release.status === commonReleaseStatus.ACTIVE.value
+                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right close
                             span.title #{release.name}
 .row
     .col.s12

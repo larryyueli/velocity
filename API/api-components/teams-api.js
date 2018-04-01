@@ -495,7 +495,9 @@ const renderTeamPage = function (req, res) {
                                 isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
                                 forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
                                 deadlineDate: projectObj.deadlineDate,
-                                deadlineTime: projectObj.deadlineTime
+                                deadlineTime: projectObj.deadlineTime,
+                                commonSprintStatus: common_backend.sprintStatus,
+                                commonReleaseStatus: common_backend.releaseStatus
                             });
                         });
                     });

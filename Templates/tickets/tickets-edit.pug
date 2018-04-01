@@ -211,7 +211,9 @@ block content
                                             each entry in ticket.stateHistory
                                                 li.collection-item.avatar
                                                     i.material-icons.circle compare_arrows
-                                                    span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
+                                                    span.title #{resolveUsername(entry.actor)}
+                                                    br
+                                                    | #{entry.ctime}
                                                     br
                                                     | Before: #{__(`tickets.states.${resolveState(entry.from)}`)}
                                                     br
@@ -228,7 +230,9 @@ block content
                                             each entry in ticket.assigneeHistory
                                                 li.collection-item.avatar
                                                     i.material-icons.circle people
-                                                    span.title [#{entry.ctime}] #{resolveUsername(entry.actor)}
+                                                    span.title #{resolveUsername(entry.actor)}
+                                                    br
+                                                    | #{entry.ctime}
                                                     br
                                                     | Before: #{resolveUsername(entry.from)}
                                                     br

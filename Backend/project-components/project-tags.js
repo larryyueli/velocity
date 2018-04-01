@@ -84,6 +84,18 @@ const getTag = function (searchQuery, callback) {
 }
 
 /**
+ * find the tag by its id
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} tagId tag id
+ * @param {function} callback callback function
+ */
+const getTagById = function (projectId, teamId, tagId, callback) {
+    getTag({ $and: [{ _id: tagId }, { projectId: projectId }, { teamId: teamId }, { status: { $ne: common.tagStatus.DELETED.value } }] }, callback);
+}
+
+/**
  * find the list of tags by their ids
  *
  * @param {string} projectId project id
@@ -251,6 +263,7 @@ const updateTagById = function (tagId, teamId, projectId, updateParams, callback
 // <exports> -----------------------------------
 exports.addTicketToTags = addTicketToTags;
 exports.addTag = addTag;
+exports.getTagById = getTagById;
 exports.getTagsByIds = getTagsByIds;
 exports.getTagsByTeamId = getTagsByTeamId;
 exports.getTagsByTicketId = getTagsByTicketId;

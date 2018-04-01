@@ -247,6 +247,7 @@ exports.updateProject = updateProject;
 exports.addReleaseToTeam = releases.addRelease;
 exports.addTicketToReleases = releases.addTicketToReleases;
 exports.getAvailableReleasesByTeamId = releases.getAvailableReleasesByTeamId;
+exports.getReleaseById = releases.getReleaseById;
 exports.getReleasesByIds = releases.getReleasesByIds;
 exports.getReleasesByTeamId = releases.getReleasesByTeamId;
 exports.getReleasesByTicketId = releases.getReleasesByTicketId;
@@ -271,11 +272,12 @@ exports.updateSprintById = sprints.updateSprintById;
 // <tags> -----------------------------------
 exports.addTagToTeam = tags.addTag;
 exports.addTicketToTags = tags.addTicketToTags;
+exports.getTagById = tags.getTagById;
 exports.getTagsByIds = tags.getTagsByIds;
 exports.getTagsByTeamId = tags.getTagsByTeamId;
 exports.getTagsByTicketId = tags.getTagsByTicketId;
 exports.removeTicketFromTags = tags.removeTicketFromTags;
-exports.updateReleaseById = tags.updateReleaseById;
+exports.updateTagById = tags.updateTagById;
 // </tags> ----------------------------------
 
 // <teams> -----------------------------------

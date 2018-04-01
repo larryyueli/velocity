@@ -287,11 +287,12 @@ app.post('/project/teams/update/me', api.handleProjectTeamsUpdateMePath);
 app.post('/project/teams/config', api.handleProjectTeamsConfigPath);
 app.post('/project/update', api.handleProjectUpdatePath);
 app.post('/project/update/active', api.handleProjectActiveUpdatePath);
-app.post('/tickets/update', api.handleTicketsUpdatePath);
-app.post('/tickets/comment/edit', api.handleTicketsCommentEditPath);
+app.post('/releases/close', api.handleReleasesClosePath);
 app.post('/settings/reset', api.handleSettingsResetPath);
 app.post('/settings/update', api.handleSettingsUpdatePath);
 app.post('/sprints/close', api.handleSprintsClosePath);
+app.post('/tickets/update', api.handleTicketsUpdatePath);
+app.post('/tickets/comment/edit', api.handleTicketsCommentEditPath);
 app.post('/users/update', api.handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------
 
@@ -313,7 +314,9 @@ app.delete('/logout', api.handleLogoutPath);
 app.delete('/project/delete', api.handleProjectDeletePath);
 app.delete('/notification/delete', api.handleNotificationDeletePath);
 app.delete('/notifications/delete/all', api.handleDeleteAllNotificationsPath);
+app.delete('/releases/delete', api.handleReleasesDeletePath);
 app.delete('/sprints/delete', api.handleSprintsDeletePath);
+app.delete('/tags/delete', api.handleTagsDeletePath);
 // </Delete Requests> -----------------------------------------------
 
 /**

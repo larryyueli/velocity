@@ -190,6 +190,8 @@ exports.handleProjectUpdatePath = projects_api.updateDraftProject;
 
 // <Releases Requests> ------------------------------------------------
 exports.handleReleasesCreatePath = releases_api.createRelease;
+exports.handleReleasesClosePath = releases_api.closeRelease;
+exports.handleReleasesDeletePath = releases_api.deleteRelease;
 exports.handleReleasesListPath = releases_api.getReleasesList;
 // </Releases Requests> -----------------------------------------------
 
@@ -208,6 +210,7 @@ exports.handleSprintsListPath = sprints_api.getSprintsList;
 
 // <Tags Requests> ------------------------------------------------
 exports.handleTagsCreatePath = tags_api.createTag;
+exports.handleTagsDeletePath = tags_api.deleteTag;
 exports.handleTagsListPath = tags_api.getTagsList;
 // </Tags Requests> -----------------------------------------------
 
