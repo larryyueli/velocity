@@ -520,6 +520,41 @@ function saveBoardType() {
 }
 
 /**
+ * Closes a release
+ * @param {*} releaseId release id
+ * @param {*} releaseName release name 
+ */
+function closeRelease(releaseId, releaseName) {
+    swal({
+        text: translate('closeReleaseWarning'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('close')]
+    }).then(canClose => {
+        if (canClose) {
+            $.ajax({
+                type: 'POST',
+                url: '/releases/close',
+                data: {
+                    projectId: projectId,
+                    teamId: teamId,
+                    releaseId: releaseId
+                },
+                success: function (data) {
+                    $(`.releaseButton_${releaseId}`).hide();
+                },
+                error: function (data) {
+                    handle401And404(data);
+                    
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
  * Deletes a release
  * @param {*} releaseId release id
  * @param {*} releaseName release name
@@ -532,7 +567,24 @@ function deleteRelease(releaseId, releaseName) {
         buttons: [translate('cancel'), translate('delete')]
     }).then(canDelete => {
         if (canDelete) {
-            alert('Deleting release.');
+            $.ajax({
+                type: 'DELETE',
+                url: '/releases/delete',
+                data: {
+                    projectId: projectId,
+                    teamId: teamId,
+                    releaseId: releaseId
+                },
+                success: function (data) {
+                    $(`#release_${releaseId}`).hide();
+                },
+                error: function (data) {
+                    handle401And404(data);
+                    
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -550,7 +602,24 @@ function deleteTag(tagId, tagName) {
         buttons: [translate('cancel'), translate('delete')]
     }).then(canDelete => {
         if (canDelete) {
-            alert('Deleting tag.');
+            $.ajax({
+                type: 'DELETE',
+                url: '/tags/delete',
+                data: {
+                    projectId: projectId,
+                    teamId: teamId,
+                    tagId: tagId
+                },
+                success: function (data) {
+                    $(`#tag_${tagId}`).hide();
+                },
+                error: function (data) {
+                    handle401And404(data);
+                    
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }

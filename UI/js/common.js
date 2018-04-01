@@ -251,6 +251,7 @@ const translations = Object.freeze({
     adminConfigurationSuccess: 'Admins have been saved successfully',
     notInGroup: 'You are currently not in a group',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
+    closeReleaseWarning: 'Are you sure you want to close this release?',
     deleteReleaseWarning: 'Are you sure you want to delete this release?',
     deleteSprintWarning: 'Are you sure you would like to delete this sprint?',
     deleteTagWarning: 'Are you sure you would like to delete this tag?',
