@@ -124,6 +124,8 @@ $(function () {
     getListOfAssignee();
     getComponents();
 
+    $("[class^='sprintFutureActive']").hide();
+
     /*
     $.ajax({
         type: 'PUT',
@@ -399,7 +401,7 @@ function createSprint() {
                 $(sprintField).val('');
                 $(sprintStart).val('');
                 $(sprintEnd).val('');
-                $(`#sprintActive_${data._id}`).hide();
+                $(`.sprintActive_${data._id}`).hide();
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -647,10 +649,44 @@ function activateSprint(sprintId, sprintName) {
                     sprintId: sprintId
                 },
                 success: function (data) {
-                    $("[class^='sprintOpen']").show();
-                    $("[class^='sprintActive']").hide();
-                    $(`#sprintOpen_${sprintId}`).hide();
-                    $(`#sprintActive_${sprintId}`).show();
+                    $(`.sprintOpen_${sprintId}`).hide();
+                    $(`.sprintActive_${sprintId}`).removeAttr('hidden');
+                },
+                error: function (data) {
+                    handle401And404(data);
+                    
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Closes a sprint
+ * @param {*} sprintId sprint id
+ * @param {*} sprintName sprint name
+ */
+function closeSprint(sprintId, sprintName) {
+    swal({
+        text: translate('closeSprintWarning'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canClose => {
+        if (canClose) {
+            $.ajax({
+                type: 'PUT',
+                url: '/sprints/close',
+                data: {
+                    projectId: projectId,
+                    teamId: teamId,
+                    sprintId: sprintId
+                },
+                success: function (data) {
+                    $(`.sprintOpen_${sprintId}`).hide();
+                    $(`.sprintActive_${sprintId}`).hide();
                 },
                 error: function (data) {
                     handle401And404(data);

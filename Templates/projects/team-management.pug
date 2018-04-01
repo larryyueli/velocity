@@ -38,9 +38,8 @@
                             if sprint.status === commonSprintStatus.OPEN.value
                                 button(class=`sprintOpen_${sprint._id}`, onclick=`activateSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right check
-                            if sprint.status === commonSprintStatus.ACTIVE.value
-                                button(class=`sprintActive_${sprint._id}`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                    i.material-icons.right close
+                            button(class=`sprintActive_${sprint._id}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons.hidden
+                                i.material-icons.right close
                             span.title #{sprint.name}
                             p
                                 | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
