@@ -649,8 +649,10 @@ function activateSprint(sprintId, sprintName) {
                     sprintId: sprintId
                 },
                 success: function (data) {
+                    $("[class^='sprintActive']").hide();
                     $(`.sprintOpen_${sprintId}`).hide();
-                    $(`.sprintActive_${sprintId}`).removeAttr('hidden');
+                    $(`.sprintActive_${sprintId}`).removeClass('hidden');
+                    $(`.sprintActive_${sprintId}`).show();
                 },
                 error: function (data) {
                     handle401And404(data);
@@ -673,11 +675,11 @@ function closeSprint(sprintId, sprintName) {
         text: translate('closeSprintWarning'),
         icon: 'warning',
         dangerMode: true,
-        buttons: [translate('cancel'), translate('delete')]
+        buttons: [translate('cancel'), translate('close')]
     }).then(canClose => {
         if (canClose) {
             $.ajax({
-                type: 'PUT',
+                type: 'POST',
                 url: '/sprints/close',
                 data: {
                     projectId: projectId,
@@ -685,7 +687,6 @@ function closeSprint(sprintId, sprintName) {
                     sprintId: sprintId
                 },
                 success: function (data) {
-                    $(`.sprintOpen_${sprintId}`).hide();
                     $(`.sprintActive_${sprintId}`).hide();
                 },
                 error: function (data) {
