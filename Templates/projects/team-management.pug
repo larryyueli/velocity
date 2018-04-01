@@ -38,7 +38,7 @@
                             if sprint.status === commonSprintStatus.OPEN.value
                                 button(class=`sprintOpen_${sprint._id}`, onclick=`activateSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right check
-                            button(class=`sprintActive_${sprint._id}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons.hidden
+                            button(class=`sprintActive_${sprint._id} ${sprint.status === commonSprintStatus.ACTIVE.value ? '' : 'hidden'}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                 i.material-icons.right close
                             span.title #{sprint.name}
                             p
