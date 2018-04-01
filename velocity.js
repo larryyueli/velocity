@@ -290,6 +290,7 @@ app.post('/project/update/active', api.handleProjectActiveUpdatePath);
 app.post('/releases/close', api.handleReleasesClosePath);
 app.post('/settings/reset', api.handleSettingsResetPath);
 app.post('/settings/update', api.handleSettingsUpdatePath);
+app.post('/sprints/activate', api.handleSprintsActivatePath);
 app.post('/sprints/close', api.handleSprintsClosePath);
 app.post('/tickets/update', api.handleTicketsUpdatePath);
 app.post('/tickets/comment/edit', api.handleTicketsCommentEditPath);

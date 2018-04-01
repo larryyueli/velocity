@@ -202,6 +202,7 @@ exports.handleSettingsUpdatePath = settings_api.updateSettings;
 // </Settings Requests> -----------------------------------------------
 
 // <Sprints Requests> ------------------------------------------------
+exports.handleSprintsActivatePath = sprints_api.activateSprint;
 exports.handleSprintsDeletePath = sprints_api.deleteSprint;
 exports.handleSprintsClosePath = sprints_api.closeSprint;
 exports.handleSprintsCreatePath = sprints_api.createSprint;
