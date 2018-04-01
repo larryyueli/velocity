@@ -240,15 +240,15 @@ const getActiveSprint = function (projectId, teamId, callback) {
  * @param {function} callback callback function
  */
 const setActiveSprint = function (projectId, teamId, sprintId, callback) {
-    let deactivateSearchQuery = { $and: [{ $ne: { _id: sprintId, status: common.sprintStatus.DELETED.value, status: common.sprintStatus.CLOSED.value } }, { projectId: projectId }, { teamId: teamId }] };
+    let deactivateSearchQuery = { $and: [{ status: { $ne: common.sprintStatus.DELETED.value } }, { status: common.sprintStatus.ACTIVE.value }, { projectId: projectId }, { teamId: teamId }] };
     let deactivateUpdateQuery = { $set: { status: common.sprintStatus.CLOSED.value, mtime: common.getDate(), imtime: common.getISODate() } };
     updateSprints(deactivateSearchQuery, deactivateUpdateQuery, function (err, result) {
         if (err) {
             return callback(err, null);
         }
 
-        let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { $ne: { status: common.sprintStatus.DELETED.value } }] };
-        let activateUpdateQuery = { $set: { status: common.sprintStatus.ACTIVE.value } };
+        let activateSearchQuery = { $and: [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { status: { $ne: common.sprintStatus.DELETED.value } }, { status: common.sprintStatus.OPEN.value }] };
+        let activateUpdateQuery = { $set: { status: common.sprintStatus.ACTIVE.value, mtime: common.getDate(), imtime: common.getISODate() } };
         updateSprint(activateSearchQuery, activateUpdateQuery, callback);
     });
 }

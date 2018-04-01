@@ -313,7 +313,7 @@ const activateSprint = function (req, res) {
                     return res.status(400).send(common_backend.getError(2019));
                 }
 
-                projects.setActiveSprintByTeamId(sprintId, teamId, projectId, function (err, result) {
+                projects.setActiveSprintByTeamId(projectId, teamId, sprintId, function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
