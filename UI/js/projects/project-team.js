@@ -399,6 +399,7 @@ function createSprint() {
                 $(sprintField).val('');
                 $(sprintStart).val('');
                 $(sprintEnd).val('');
+                $(`#sprintActive_${data._id}`).hide();
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -612,6 +613,42 @@ function deleteTag(tagId, tagName) {
                 },
                 success: function (data) {
                     $(`#tag_${tagId}`).hide();
+                },
+                error: function (data) {
+                    handle401And404(data);
+                    
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Activates a sprint
+ * @param {*} sprintId sprint id 
+ * @param {*} sprintName sprint name
+ */
+function activateSprint(sprintId, sprintName) {
+    swal({
+        text: translate('activateSprintWarning'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('activate')]
+    }).then(canActivate => {
+        if (canActivate) {
+            $.ajax({
+                type: 'POST',
+                url: '/sprints/activate',
+                data: {
+                    projectId: projectId,
+                    teamId: teamId,
+                    sprintId: sprintId
+                },
+                success: function (data) {
+                    $(`#sprintOpen_${sprintId}`).hide();
+                    $(`#sprintActive_${sprintId}`).show();
                 },
                 error: function (data) {
                     handle401And404(data);

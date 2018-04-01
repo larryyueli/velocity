@@ -253,6 +253,7 @@ const translations = Object.freeze({
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
     closeReleaseWarning: 'Are you sure you want to close this release?',
     deleteReleaseWarning: 'Are you sure you want to delete this release?',
+    activateSprintWarning: 'Are you sure you would like to activate this sprint?',
     deleteSprintWarning: 'Are you sure you would like to delete this sprint?',
     deleteTagWarning: 'Are you sure you would like to delete this tag?',
     titleCanNotBeEmpty: 'Title can not be empty!',
