@@ -124,7 +124,7 @@ block content
                                                 .row.margin-bottom-0.margin-right-10
                                                     .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
                                                         img(src=`/picture/${relatedTicket.assigneePicture}`)
-                                                        p.truncateText #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                                        p.truncateTextCommon #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
                                                         i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
                                 .col.s12.l4
                                     .row

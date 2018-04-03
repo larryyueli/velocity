@@ -287,7 +287,7 @@ function getListOfAssignee() {
 
 /**
  * Deletes a comment
- * 
+ *
  * @param {String} commentId comment id
  */
 function deleteComment(commentId) {
@@ -314,7 +314,7 @@ function deleteComment(commentId) {
 
 /**
  * change a comment to a textfield
- * 
+ *
  * @param {String} commentId comment id
  */
 function changeToInput(commentId) {
@@ -359,7 +359,7 @@ function changeToInput(commentId) {
 
 /**
  * update a comment
- * 
+ *
  * @param {String} commentId comment id
  */
 function updateComment(commentId) {
@@ -437,7 +437,7 @@ function getListOfSprints() {
 
 /**
  * list of possible sprints
- * 
+ *
  * @param {string} id sprint id
 */
 function removeSprintId(sprintId) {
@@ -492,7 +492,7 @@ function getListOfReleases() {
 
 /**
  * list of possible releases
- * 
+ *
  * @param {string} id release id
 */
 function removeReleaseId(releaseId) {
@@ -547,7 +547,7 @@ function getListOfTags() {
 
 /**
  * list of possible tags
- * 
+ *
  * @param {string} id tag id
 */
 function removeTagId(tagId) {
@@ -585,7 +585,7 @@ function saveLinkFunction() {
                 <div class="row margin-bottom-0 margin-right-10">
                     <div class="chip full-width related-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
-                        <p class="truncateText">${relatedText}: ${relatedTicket}. ${data.title}</p>
+                        <p class="truncateTextCommon">${relatedText}: ${relatedTicket}. ${data.title}</p>
                         <i class="close material-icons" onClick="removeRelatedId('${data._id}')">delete_forever</i>
                     </div>
                 </div>`);
@@ -604,7 +604,7 @@ function saveLinkFunction() {
 
 /**
  * list of possible related id
- * 
+ *
  * @param {string} id related id
 */
 function removeRelatedId(relatedId) {

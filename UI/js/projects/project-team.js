@@ -281,7 +281,7 @@ $(function () {
  * Gets the release, tag, and sprint component
  */
 function getComponents() {
-    
+
     $.ajax({
         type: 'GET',
         url: '/components/team/management',
@@ -301,7 +301,7 @@ function getComponents() {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
-    
+
 }
 
 /**
@@ -525,7 +525,7 @@ function saveBoardType() {
 /**
  * Closes a release
  * @param {*} releaseId release id
- * @param {*} releaseName release name 
+ * @param {*} releaseName release name
  */
 function closeRelease(releaseId, releaseName) {
     swal({
@@ -548,7 +548,7 @@ function closeRelease(releaseId, releaseName) {
                 },
                 error: function (data) {
                     handle401And404(data);
-                    
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -583,7 +583,7 @@ function deleteRelease(releaseId, releaseName) {
                 },
                 error: function (data) {
                     handle401And404(data);
-                    
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -618,7 +618,7 @@ function deleteTag(tagId, tagName) {
                 },
                 error: function (data) {
                     handle401And404(data);
-                    
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -629,7 +629,7 @@ function deleteTag(tagId, tagName) {
 
 /**
  * Activates a sprint
- * @param {*} sprintId sprint id 
+ * @param {*} sprintId sprint id
  * @param {*} sprintName sprint name
  */
 function activateSprint(sprintId, sprintName) {
@@ -655,7 +655,7 @@ function activateSprint(sprintId, sprintName) {
                 },
                 error: function (data) {
                     handle401And404(data);
-                    
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -690,7 +690,7 @@ function closeSprint(sprintId, sprintName) {
                 },
                 error: function (data) {
                     handle401And404(data);
-                    
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }
@@ -725,7 +725,7 @@ function deleteSprint(sprintId, sprintName) {
                 },
                 error: function (data) {
                     handle401And404(data);
-                    
+
                     const jsonResponse = data.responseJSON;
                     failSnackbar(getErrorMessageFromResponse(jsonResponse));
                 }

@@ -14,15 +14,15 @@ li
                 th#inTestTitle
                 th#doneTitle
             tr.boardContents
-                td(valign="top")
+                td(valign="top" ondrop="ticketDropHandler(event, 'new');" ondragover="ticketDragoverHandler(event, 'new');" ondragleave="ticketLeaveHandler(event);")#todoTicketsOut
                     #todoTickets
-                td(valign="top")
+                td(valign="top" ondrop="ticketDropHandler(event, 'inDevelopment');" ondragover="ticketDragoverHandler(event, 'inDevelopment');" ondragleave="ticketLeaveHandler(event);")#inProgressTicketsOut
                     #inProgressTickets
-                td(valign="top")
+                td(valign="top" ondrop="ticketDropHandler(event, 'codeReview');" ondragover="ticketDragoverHandler(event, 'codeReview');" ondragleave="ticketLeaveHandler(event);")#codeReviewTicketsOut
                     #codeReviewTickets
-                td(valign="top")
+                td(valign="top" ondrop="ticketDropHandler(event, 'readyForTest');" ondragover="ticketDragoverHandler(event, 'readyForTest');" ondragleave="ticketLeaveHandler(event);")#readyForTestTicketsOut
                     #readyForTestTickets
-                td(valign="top")
+                td(valign="top" ondrop="ticketDropHandler(event, 'inTest');" ondragover="ticketDragoverHandler(event, 'inTest');" ondragleave="ticketLeaveHandler(event);")#inTestTicketsOut
                     #inTestTickets
-                td(valign="top")
+                td(valign="top" ondrop="ticketDropHandler(event, 'done');" ondragover="ticketDragoverHandler(event, 'done');" ondragleave="ticketLeaveHandler(event);")#doneTicketsOut
                     #doneTickets

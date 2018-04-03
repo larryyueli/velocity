@@ -17,21 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var board = null;
-var ticketHTML  = null;
+var ticketHTML  =null;
 var outlineHTML = null;
 
-var dataFrom = null;
-var dataUser = null;
+// const searchFilterIssueId = '#searchFilterIssue';
+// const typeSelectionIssueId = '#typeSelectionIssue';
 
 const boardsUserListId = '#boardsUserList';
 const boardsUserLoadId = '#boardsUserLoad';
-
-const todoTicketsOutId = '#todoTicketsOut';
-const inProgressTicketsOutId = '#inProgressTicketsOut';
-const codeReviewTicketsOutId = '#codeReviewTicketsOut';
-const readyForTestTicketsOutId = '#readyForTestTicketsOut';
-const inTestTicketsOutId = '#inTestTicketsOut';
-const doneTicketsOutId = '#doneTicketsOut';
 
 const todoTicketsId = '#todoTickets';
 const inProgressTicketsId = '#inProgressTickets';
@@ -52,10 +45,19 @@ const readyForTestTitleId = '#readyForTestTitle';
 const inTestTitleId = '#inTestTitle';
 const doneTitleId = '#doneTitle';
 
-const allStatuses = ['new', 'inDevelopment', 'codeReview', 'readyForTest', 'inTest', 'done'];
-
 $(function () {
+    // $('select').material_select();
     $('.collapsible').collapsible();
+
+    // $(typeSelectionIssueId).on('change', function () {
+    //     startLoad(issuesLoadId, issuesListId);
+    //     displayIssuesList();
+    // });
+
+    // $(searchFilterIssueId).on('keyup', function () {
+    //     startLoad(issuesLoadId, issuesListId);
+    //     displayIssuesList();
+    // });
 
     startLoad(boardsUserLoadId, boardsUserListId);
     getBoard();
@@ -119,13 +121,6 @@ function fillUserBoardRow(user, statuses) {
     bindedRow.find(inTestTicketsId).html('');
     bindedRow.find(doneTicketsId).html('');
 
-    bindedRow.find(todoTicketsOutId).attr('value', user);
-    bindedRow.find(inProgressTicketsOutId).attr('value', user);
-    bindedRow.find(codeReviewTicketsOutId).attr('value', user);
-    bindedRow.find(readyForTestTicketsOutId).attr('value', user);
-    bindedRow.find(inTestTicketsOutId).attr('value', user);
-    bindedRow.find(doneTicketsOutId).attr('value', user);
-
     bindedRow.find(todoTitleId).html(translate('todoTitle'));
     bindedRow.find(inProgressTitleId).html(translate('inProgressTitle'));
     bindedRow.find(codeReviewTitleId).html(translate('codeReviewTitle'));
@@ -172,7 +167,7 @@ function fillUserBoardRow(user, statuses) {
                                            statuses['readyForTest'].length +
                                            statuses['inTest'].length +
                                            statuses['done'].length} ${translate('tickets')})`);
-    // bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="25" width="25">`);
+    // bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${issue.assigneePicture}" alt="" height="25" width="25">`);
 
     return bindedRow[0].outerHTML;
 }
@@ -196,11 +191,11 @@ function fillBoardTicketRow(issue) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     }
 
-    bindedRow.attr('id', issue._id);
+    bindedRow.attr('id', issue._id)
     bindedRow.find(displayIdId).html(issue.displayId);
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
-    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="auto" width="95%" class="profilePic">`);
+    bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${issue.assigneePicture}" width="40" height="40" alt="">`);
 
     return bindedRow[0].outerHTML;
 }
@@ -236,88 +231,80 @@ function setActive(clicked) {
     }
 }
 
-function ticketDragStartHandler(ev) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function ticketDragStartHandler(ev, from) {
+    const statuses = ['new', 'inDevelopment', 'codeReview', 'readyForTest', 'inTest', 'done'];
+
     const ticketId = $(ev.srcElement).attr('id');
     var username = null;
-    var from = null;
 
     for (user in board) {
-        allStatuses.forEach(status => {
+        for (status in statuses) {
             if (board[user][status].find(ticket => ticket._id ===  ticketId)) {
         		    username = user;
-                from = status;
+                break;
             }
-        });
-    }
-
-    ev.dataTransfer.setData('text/ticketId', ticketId);
-    ev.dataTransfer.setData('text/username', username);
-    ev.dataTransfer.setData('text/from', from);
-    dataUser = username;
-    dataFrom = from;
-}
-
-function ticketDragoverHandler(ev, to) {
-    if (dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
-        ev.currentTarget.style.border = 'green dashed 2px';
-        ev.dataTransfer.dropEffect = 'move';
-        ev.preventDefault();
-    }
-}
-
-function ticketLeaveHandler(ev) {
-    ev.preventDefault();
-    ev.currentTarget.style.border = '';
-}
-
-function ticketDropHandler(ev, to) {
-    ev.preventDefault();
-
-    var data = ev.dataTransfer.getData('text/ticketId');
-    var username = ev.dataTransfer.getData('text/username');
-    var from = ev.dataTransfer.getData('text/from');
-
-    if (from !== to) {
-        const ticket = board[username][from].find(ticket => ticket._id === data);
-
-        board[username][to].push(ticket);
-        board[username][from].splice(board[username][from].indexOf(ticket), 1);
-        startLoad(boardsUserLoadId, boardsUserListId);
-        changeTicketStatus(ticket, to, username, from);
-        displayBoard();
-    }
-
-    dataFrom = null;
-    dataUser = null;
-}
-
-function changeTicketStatus(ticket, to, username, from) {
-    const ticketId = ticket._id;
-    const stateValue = allStatuses.indexOf(to);
-
-    $.ajax({
-        type: 'POST',
-        url: '/tickets/update',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            ticketId: ticketId,
-            state: stateValue,
-        },
-        success: function (data) {
-            successSnackbar(translate('updatedTicket'));
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            board[username][to].splice(board[username][from].indexOf(ticket), 1);
-            board[username][from].push(ticket);
-
-            startLoad(boardsUserLoadId, boardsUserListId);
-            displayBoard();
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
-    });
+    }
+
+    ev.dataTransfer.setData("text/ticketId", ticketId);
+    ev.dataTransfer.setData("text/from", user);
 }
+
+function dragover_handler(ev) {
+ ev.preventDefault();
+ // Set the dropEffect to move
+ ev.dataTransfer.dropEffect = "move"
+}
+function drop_handler(ev, to) {
+    ev.preventDefault();
+ // Get the id of the target and add the moved element to the target's DOM
+ var data = ev.dataTransfer.getData("text/ticketId");
+  var username = ev.dataTransfer.getData("text/from");
+ debugger;
+    const ticket = board[username][from].find(ticket => ticket._id === data);
+}
+
+function dragover_handler(ev) {
+ ev.preventDefault();
+ // Set the dropEffect to move
+ ev.dataTransfer.dropEffect = "move"
+}
+
+
+/* flow
+  save info I need
+  set the border on the others and make it an overlay ontop of the other tickets
+  drag over make it a different color
+  when dropped move the element and refresh
+  make sure to add the loader lol (looks broken)
+  */
