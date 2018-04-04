@@ -52,6 +52,7 @@ var selectedAssigneeIssue = null;
 var sprintComponent = null;
 var tagComponent = null;
 var usernamesArray = [];
+var isReadonly = true;
 
 $(function () {
     initSummernote(description);
@@ -293,6 +294,12 @@ function getComponents() {
             releaseComponent = data.releaseEntryComponent;
             sprintComponent = data.sprintEntryComponent;
             tagComponent = data.tagEntryComponent;
+
+            if (isReadonly) {
+                $(releaseVisibility).addClass('hidden');
+                $(sprintVisibility).addClass('hidden');
+                $(tagVisibility).addClass('hidden');
+            }
         },
         error: function (data) {
             handle401And404(data);

@@ -258,7 +258,7 @@ function ticketDragStartHandler(ev) {
 }
 
 function ticketDragoverHandler(ev, to) {
-    if (dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
+    if (!isReadonly && dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
         ev.currentTarget.style.border = 'green dashed 2px';
         ev.dataTransfer.dropEffect = 'move';
         ev.preventDefault();
