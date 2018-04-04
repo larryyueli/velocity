@@ -62,18 +62,18 @@ const getBacklogComponents = function (req, res) {
 
             const usersObj = common_backend.convertListToJason('_id', users.getActiveUsersList());
 
-            projects.getTicketsWithNoSprints(projectId, teamId, function (err, ticketsWithNoSprintList) {
+            projects.getTicketsInBacklog(projectId, teamId, function (err, ticketsInBacklog) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
                 }
 
-                let limitedTicketsWithNoSprintList = [];
-                for (let i = 0; i < ticketsWithNoSprintList.length; i++) {
-                    let ticket = ticketsWithNoSprintList[i];
+                let limitedTicketsInBacklog = [];
+                for (let i = 0; i < ticketsInBacklog.length; i++) {
+                    let ticket = ticketsInBacklog[i];
                     let ticketAssignee = usersObj[ticket.assignee];
                     let ticketReporter = usersObj[ticket.reporter];
-                    limitedTicketsWithNoSprintList.push({
+                    limitedTicketsInBacklog.push({
                         _id: ticket._id,
                         ctime: ticket.ctime,
                         mtime: ticket.mtime,
@@ -105,7 +105,7 @@ const getBacklogComponents = function (req, res) {
                             name: 'backlog',
                             startDate: null,
                             endDate: null,
-                            tickets: limitedTicketsWithNoSprintList
+                            tickets: limitedTicketsInBacklog
                         });
 
                         return res.status(200).send({
@@ -160,7 +160,7 @@ const getBacklogComponents = function (req, res) {
                                     name: 'backlog',
                                     startDate: null,
                                     endDate: null,
-                                    tickets: limitedTicketsWithNoSprintList
+                                    tickets: limitedTicketsInBacklog
                                 });
 
                                 return res.status(200).send({

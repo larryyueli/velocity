@@ -84,6 +84,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.points = typeof (ticket.points) === common.variableTypes.NUMBER ? ticket.points : common.defaultPoints;
     ticketToAdd.stateHistory = [];
     ticketToAdd.assigneeHistory = [];
+    ticketToAdd.inBacklog = typeof (ticket.inBacklog) === common.variableTypes.BOOLEAN ? ticket.inBacklog : true;
 
     db.addTicket(ticketToAdd, callback);
 }
@@ -188,6 +189,17 @@ const getTicketsWithNoSprints = function (projectId, teamId, callback) {
 }
 
 /**
+ * find the list of tickets in backlog
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getTicketsInBacklog = function (projectId, teamId, callback) {
+    getLimitedTicketsListSorted({ $and: [{ inBacklog: true }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+}
+
+/**
  * find tickets under a sprint
  *
  * @param {string} projectId project id
@@ -275,6 +287,50 @@ const searchTicketsByTeamId = function (projectId, teamId, term, callback) {
 }
 
 /**
+ * set the backlog flag true for the list of ticket Ids
+ *
+ * @param {array} ticketIdsList ticket ids list
+ * @param {function} callback callback function
+ */
+const putTicketsInBacklog = function (projectId, teamId, ticketIdsList, callback) {
+    let idsList = [];
+    for (let i = 0; i < ticketIdsList.length; i++) {
+        idsList.push({ _id: ticketIdsList[i] });
+    }
+
+    if (ticketIdsList.length === 0) {
+        return callback(null, 'ok');
+    }
+
+    updateTickets(
+        { $and: [{ $or: idsList }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }, { state: { $ne: common.ticketStates.DONE.value } }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate(), inBacklog: true } },
+        callback);
+}
+
+/**
+ * update ticket found by the search query
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateTicket = function (searchQuery, updateQuery, callback) {
+    db.updateTicket(searchQuery, updateQuery, callback);
+}
+
+/**
+ * update tickets found by the search query
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateTickets = function (searchQuery, updateQuery, callback) {
+    db.updateTickets(searchQuery, updateQuery, callback);
+}
+
+/**
  * update the ticket information
  *
  * @param {string} ticketId ticket id
@@ -328,6 +384,10 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
         updateQuery.$push.assigneeHistory = updateParams.assigneeHistoryEntry;
     }
 
+    if (typeof (updateParams.inBacklog) === common.variableTypes.BOOLEAN) {
+        updateQuery.$set.inBacklog = updateParams.inBacklog;
+    }
+
     if (Array.isArray(updateParams.sprints)) {
         updateQuery.$set.sprints = updateParams.sprints;
     }
@@ -375,7 +435,7 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
     updateQuery.$set.mtime = common.getDate();
     updateQuery.$set.imtime = common.getISODate();
 
-    db.updateTicket(searchQuery, updateQuery, callback);
+    updateTicket(searchQuery, updateQuery, callback);
 }
 
 // <exports> -----------------------------------
@@ -386,8 +446,10 @@ exports.getTicketsByIds = getTicketsByIds;
 exports.getTicketsBySprintId = getTicketsBySprintId;
 exports.getTicketsByProjectId = getTicketsByProjectId;
 exports.getTicketsByTeamId = getTicketsByTeamId;
+exports.getTicketsInBacklog = getTicketsInBacklog;
 exports.getTicketsWithNoSprints = getTicketsWithNoSprints;
 exports.initialize = initialize;
+exports.putTicketsInBacklog = putTicketsInBacklog;
 exports.searchTicketsByProjectId = searchTicketsByProjectId;
 exports.searchTicketsByTeamId = searchTicketsByTeamId;
 exports.updateTicketById = updateTicketById;

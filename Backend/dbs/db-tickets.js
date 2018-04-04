@@ -103,10 +103,29 @@ const updateTicket = function (searchQuery, updateQuery, callback) {
     });
 }
 
+/**
+ * find tickets by the search parameters,
+ * then update their values by the update parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateTickets = function (searchQuery, updateQuery, callback) {
+    ticketsCollection.update(searchQuery, updateQuery, { multi: true }, function (err, result) {
+        if (err) {
+            return callback(common.getError(7005), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
 // <exports> -----------------------------------
 exports.addTicket = addTicket;
 exports.getLimitedTicketsListSorted = getLimitedTicketsListSorted;
 exports.getTicket = getTicket;
 exports.initialize = initialize;
 exports.updateTicket = updateTicket;
+exports.updateTickets = updateTickets;
 // </exports> ----------------------------------

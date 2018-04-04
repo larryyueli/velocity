@@ -201,7 +201,14 @@ const closeSprint = function (req, res) {
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    projects.putTicketsInBacklog(projectId, teamId, sprintObj.tickets, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+
+                        return res.status(200).send('ok');
+                    });
                 });
             });
         });

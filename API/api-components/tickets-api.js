@@ -128,28 +128,34 @@ const createTicket = function (req, res) {
     let releases = req.body.releases;
     let tags = req.body.tags;
 
-    try {
-        sprints = JSON.parse(sprints);
-    }
-    catch (err) {
-        logger.error(common_backend.getError(1011));
-        sprints = [];
-    }
-
-    try {
-        releases = JSON.parse(releases);
-    }
-    catch (err) {
-        logger.error(common_backend.getError(1011));
-        releases = [];
+    if (!Array.isArray(sprints)) {
+        try {
+            sprints = JSON.parse(sprints);
+        }
+        catch (err) {
+            logger.error(common_backend.getError(1011));
+            sprints = [];
+        }
     }
 
-    try {
-        tags = JSON.parse(tags);
+    if (!Array.isArray(releases)) {
+        try {
+            releases = JSON.parse(releases);
+        }
+        catch (err) {
+            logger.error(common_backend.getError(1011));
+            releases = [];
+        }
     }
-    catch (err) {
-        logger.error(common_backend.getError(1011));
-        tags = [];
+
+    if (!Array.isArray(tags)) {
+        try {
+            tags = JSON.parse(tags);
+        }
+        catch (err) {
+            logger.error(common_backend.getError(1011));
+            tags = [];
+        }
     }
 
     projects.getProjectById(projectId, function (err, projectObj) {
@@ -190,7 +196,8 @@ const createTicket = function (req, res) {
                     state: parseInt(req.body.state),
                     points: parseInt(req.body.points),
                     priority: parseInt(req.body.priority),
-                    reporter: req.session.user._id
+                    reporter: req.session.user._id,
+                    inBacklog: true
                 };
 
                 if (assigneeObj) {
@@ -359,7 +366,9 @@ const createTicket = function (req, res) {
                                         sprints: sprintsIdsList,
                                         releases: releasesIdsList,
                                         tags: tagsIdsList,
-                                        links: linksList
+                                        links: linksList,
+                                        inBacklog: teamObj.boardType === common_backend.boardTypes.KANBAN.value
+                                            || (teamObj.boardType === common_backend.boardTypes.SCRUM.value && sprintsIdsList.length === 0)
                                     };
                                     projects.updateTicketById(ticketObj._id, teamId, projectId, updateObj, function (err, result) {
                                         if (err) {
@@ -1132,6 +1141,8 @@ const updateTicket = function (req, res) {
                         processReleases(function () {
                             processTags(function () {
                                 processLinks(function () {
+                                    updatedTicket.inBacklog = teamObj.boardType === common_backend.boardTypes.KANBAN.value
+                                        || (teamObj.boardType === common_backend.boardTypes.SCRUM.value && updatedTicket.sprints.length === 0);
                                     projects.updateTicketById(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
                                         if (err) {
                                             logger.error(JSON.stringify(err));

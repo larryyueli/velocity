@@ -129,6 +129,7 @@ exports.addTicket = db_tickets.addTicket;
 exports.getLimitedTicketsListSorted = db_tickets.getLimitedTicketsListSorted;
 exports.getTicket = db_tickets.getTicket;
 exports.updateTicket = db_tickets.updateTicket;
+exports.updateTickets = db_tickets.updateTickets;
 // </Tickets Collection> ---------------------------------------------
 
 // <Users Collection> -------------------------------------------------
