@@ -297,7 +297,7 @@ function changeTicketStatus(ticket, to, username, from) {
 
     $.ajax({
         type: 'POST',
-        url: '/tickets/update',
+        url: '/tickets/state/update',
         data: {
             projectId: projectId,
             teamId: teamId,

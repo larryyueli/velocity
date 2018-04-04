@@ -1344,8 +1344,8 @@ const updateTicketState = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    const projectId = req.query.projectId;
-    const teamId = req.query.teamId;
+    const projectId = req.body.projectId;
+    const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
     const state = req.body.state;
     projects.getProjectById(projectId, function (err, projectObj) {
@@ -1378,7 +1378,7 @@ const updateTicketState = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                projects.updateTicketById(ticketId, teamId, projectId, { state: state }, function (err, result) {
+                projects.updateTicketById(ticketId, teamId, projectId, { state: parseInt(state) }, function (err, result) {
                     if (err) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
