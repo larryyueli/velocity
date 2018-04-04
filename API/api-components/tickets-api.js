@@ -332,7 +332,7 @@ const createTicket = function (req, res) {
                                             relation: parsedValue % 2 === 0 ? parsedValue + 1 : parsedValue - 1
                                         });
 
-                                        projects.updateTicket(ticket._id, teamId, projectId, { links: ticket.links }, function (err, result) {
+                                        projects.updateTicketById(ticket._id, teamId, projectId, { links: ticket.links }, function (err, result) {
                                             if (err) {
                                                 logger.error(JSON.stringify(err));
                                                 return res.status(500).send(err);
@@ -361,7 +361,7 @@ const createTicket = function (req, res) {
                                         tags: tagsIdsList,
                                         links: linksList
                                     };
-                                    projects.updateTicket(ticketObj._id, teamId, projectId, updateObj, function (err, result) {
+                                    projects.updateTicketById(ticketObj._id, teamId, projectId, updateObj, function (err, result) {
                                         if (err) {
                                             logger.error(JSON.stringify(err));
                                             return res.status(500).send(err);
@@ -1069,7 +1069,7 @@ const updateTicket = function (req, res) {
                                             }
                                         }
 
-                                        projects.updateTicket(ticket._id, teamId, projectId, { links: ticket.links }, function (err, result) {
+                                        projects.updateTicketById(ticket._id, teamId, projectId, { links: ticket.links }, function (err, result) {
                                             if (err) {
                                                 logger.error(JSON.stringify(err));
                                                 return res.status(500).send(err);
@@ -1111,7 +1111,7 @@ const updateTicket = function (req, res) {
                                             ticket.links.splice(j, 1);
                                         }
 
-                                        projects.updateTicket(ticket._id, teamId, projectId, { links: ticket.links }, function (err, result) {
+                                        projects.updateTicketById(ticket._id, teamId, projectId, { links: ticket.links }, function (err, result) {
                                             if (err) {
                                                 logger.error(JSON.stringify(err));
                                                 return res.status(500).send(err);
@@ -1132,7 +1132,7 @@ const updateTicket = function (req, res) {
                         processReleases(function () {
                             processTags(function () {
                                 processLinks(function () {
-                                    projects.updateTicket(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
+                                    projects.updateTicketById(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
                                         if (err) {
                                             logger.error(JSON.stringify(err));
                                             return res.status(500).send(err);
@@ -1333,6 +1333,64 @@ const getTicketsListComponent = function (req, res) {
     });
 }
 
+/**
+ * path to update the tickets state
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const updateTicketState = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    const ticketId = req.body.ticketId;
+    const state = req.body.state;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getTicketById(projectId, teamId, ticketId, function (err, ticketObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                projects.updateTicketById(ticketId, teamId, projectId, { state: state }, function (err, result) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send('ok');
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createTicket = createTicket;
 exports.getEditPageComponents = getEditPageComponents;
@@ -1342,4 +1400,5 @@ exports.renderCreateTicketPage = renderCreateTicketPage;
 exports.renderTicketPage = renderTicketPage;
 exports.renderSearchPage = renderSearchPage;
 exports.updateTicket = updateTicket;
+exports.updateTicketState = updateTicketState;
 // </exports> -----------------------------------------------

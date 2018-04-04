@@ -283,7 +283,7 @@ const searchTicketsByTeamId = function (projectId, teamId, term, callback) {
  * @param {object} updateParams modify parameters
  * @param {function} callback callback function
  */
-const updateTicket = function (ticketId, teamId, projectId, updateParams, callback) {
+const updateTicketById = function (ticketId, teamId, projectId, updateParams, callback) {
     let searchQuery = {};
     searchQuery.$and = {};
     let updateQuery = {};
@@ -390,5 +390,5 @@ exports.getTicketsWithNoSprints = getTicketsWithNoSprints;
 exports.initialize = initialize;
 exports.searchTicketsByProjectId = searchTicketsByProjectId;
 exports.searchTicketsByTeamId = searchTicketsByTeamId;
-exports.updateTicket = updateTicket;
+exports.updateTicketById = updateTicketById;
 // </exports> ----------------------------------

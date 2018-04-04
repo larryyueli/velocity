@@ -293,6 +293,7 @@ app.post('/settings/update', api.handleSettingsUpdatePath);
 app.post('/sprints/activate', api.handleSprintsActivatePath);
 app.post('/sprints/close', api.handleSprintsClosePath);
 app.post('/tickets/update', api.handleTicketsUpdatePath);
+app.post('/tickets/state/update', api.handleTicketsUpdateStatePath);
 app.post('/tickets/comment/edit', api.handleTicketsCommentEditPath);
 app.post('/users/update', api.handleUsersUpdatePath);
 // </Post Requests> -----------------------------------------------

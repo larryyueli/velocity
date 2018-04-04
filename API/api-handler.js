@@ -234,6 +234,7 @@ exports.handleTicketEditPageComponentsPath = tickets_api.getEditPageComponents;
 exports.handleTicketsCreatePath = tickets_api.createTicket;
 exports.handleTicketsListComponentPath = tickets_api.getTicketsListComponent;
 exports.handleTicketsUpdatePath = tickets_api.updateTicket;
+exports.handleTicketsUpdateStatePath = tickets_api.updateTicketState;
 // </Tickets Requests> -----------------------------------------------
 
 // <Users Requests> ------------------------------------------------

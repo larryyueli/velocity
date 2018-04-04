@@ -300,5 +300,5 @@ exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 exports.getTicketsWithNoSprints = tickets.getTicketsWithNoSprints;
 exports.searchTicketsByProjectId = tickets.searchTicketsByProjectId;
 exports.searchTicketsByTeamId = tickets.searchTicketsByTeamId;
-exports.updateTicket = tickets.updateTicket;
+exports.updateTicketById = tickets.updateTicketById;
 // </tickets> ----------------------------------
