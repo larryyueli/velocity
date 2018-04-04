@@ -86,8 +86,8 @@ const getTeam = function (searchQuery, callback) {
 }
 
 /**
- * find teams by the search parameters,
- * then update their values by the update parameters
+ * find a single team by the search parameters,
+ * then update its values by the update parameters
  *
  * @param {object} searchQuery search parameters
  * @param {object} updateQuery update parameters
@@ -103,10 +103,29 @@ const updateTeam = function (searchQuery, updateQuery, callback) {
     });
 }
 
+/**
+ * find teams by the search parameters,
+ * then update their values by the update parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateTeams = function (searchQuery, updateQuery, callback) {
+    teamsCollection.update(searchQuery, updateQuery, { multi: true }, function (err, result) {
+        if (err) {
+            return callback(common.getError(6005), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
 // <exports> -----------------------------------
 exports.addTeam = addTeam;
 exports.getLimitedTeamsListSorted = getLimitedTeamsListSorted;
 exports.getTeam = getTeam;
 exports.initialize = initialize;
 exports.updateTeam = updateTeam;
+exports.updateTeams = updateTeams;
 // </exports> ----------------------------------

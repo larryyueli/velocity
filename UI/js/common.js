@@ -29,7 +29,7 @@ const snack = Object.freeze({
     success: '<i class="material-icons">check</i>&nbsp&nbsp&nbsp',
     warning: '<i class="material-icons">warning</i>&nbsp&nbsp&nbsp',
     fail: '<i class="material-icons">cancel</i>&nbsp&nbsp&nbsp',
-    close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons">close</i>'
+    close: '&nbsp&nbsp&nbsp<i id=closeSnack class="material-icons pointer">close</i>'
 });
 
 /* This function slides down a success snakbar */
@@ -62,6 +62,11 @@ UI Translations for user display
 2000 -> system errors
 3000 -> settings errors
 4000 -> custom file system errors
+8000 -> comments
+9000 -> notifications
+10000 -> sprints
+11000 -> releases
+12000 -> tags
 */
 const translations = Object.freeze({
     //1000 system errors
@@ -111,6 +116,8 @@ const translations = Object.freeze({
     2040: 'Permission denied',
     2041: 'Permission denied',
     2042: 'Cant update project, project is in terminal status',
+    2043: 'Project is not active',
+    2044: 'Project is not active or closed',
 
     //3000 settings errors
     3005: 'could not update the selected mode',
@@ -120,15 +127,89 @@ const translations = Object.freeze({
     //4000 custom file system errors
     4010: 'Permission denied',
 
+    //5000 projects
+    5001: 'Failed to add a project',
+    5002: 'Failed to get projects list',
+    5003: 'Failed to get a project',
+    5004: 'Project not found',
+    5005: 'Failed to update projects',
+    5006: 'Failed to update project',
+
+    //6000 teams
+    6001: 'Failed to add a team',
+    6002: 'Failed to get teams list',
+    6003: 'Failed to get a team',
+    6004: 'Team not found',
+    6005: 'Failed to update team',
+    6006: 'Failed to create a team',
+    6007: 'Failed to update a team',
+
+    //7000 tickets
+    7001: 'Failed to add a ticket',
+    7002: 'Failed to get tickets list',
+    7003: 'Failed to get a ticket',
+    7004: 'Ticket not found',
+    7005: 'Failed to update ticket',
+    7006: 'Failed to create a ticket',
+    7007: 'Failed to update a ticket',
+
+    //8000 comment
+    8001: 'Failed to add a comment',
+    8005: 'Failed to update comment',
+    8006: 'Failed to create a comment',
+    8007: 'Failed to update a comment',
+
+    //9000 notifications
+    9001: 'Failed to add a notification',
+    9002: 'Failed to get notifications list',
+    9003: 'Failed to get a notification',
+    9004: 'Notification not found',
+    9005: 'Failed to update notification',
+    9006: 'Failed to create a notification',
+    9007: 'Failed to update a notification',
+    9008: 'Failed to delete a notification',
+    9009: 'Failed to delete a notification',
+    9010: 'Failed to delete a notification',
+
+    //10,000 sprints
+    10001: 'Failed to add a sprint',
+    10002: 'Failed to get sprints list',
+    10003: 'Failed to get a sprint',
+    10004: 'Sprint not found',
+    10005: 'Failed to update sprint',
+    10006: 'Failed to create a sprint',
+    10007: 'Failed to update a sprint',
+
+    //11,000 releases
+    11001: 'Failed to add a release',
+    11002: 'Failed to get releases list',
+    11003: 'Failed to get a release',
+    11004: 'Release not found',
+    11005: 'Failed to update release',
+    11006: 'Failed to create a release',
+    11007: 'Failed to update a release',
+
+    //12,000 tags
+    12001: 'Failed to add a tag',
+    12002: 'Failed to get tags list',
+    12003: 'Failed to get a tag',
+    12004: 'Tag not found',
+    12005: 'Failed to update tag',
+    12006: 'Failed to create a tag',
+    12007: 'Failed to update a tag',
+
     activatedProject: 'Project has been activated',
+    closedProject: 'Project has been closed',
+    activateProjectPrompt: 'Are you sure you want to activate this project?',
     adminConfigurationSuccess: 'Admins have been saved successfully',
     alreadyInGroup: 'This user is already in this group',
-    cancel: 'Cancel',
+    closeProjectPrompt: 'Are you sure you want to close this project?',
     defaultError: 'Something went wrong, please try again!',
-    delete: 'Delete',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
     deletedProject: 'Project has been deleted',
+    deleteProjectPrompt: 'Are you sure you want to delete this project?',
     deletePremadeGroups: 'Would you like to delete the groups that are already made?',
+    doneTickets: 'Done Tickets',
     emptyProjectDescription: 'Please enter your description in the editor.',
     groupConfigurationSuccess: 'Groups have been saved successfully',
     groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
@@ -136,18 +217,60 @@ const translations = Object.freeze({
     groupNameCantBeEmpty: 'Group name can\'t be empty',
     groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
     groupSizeCantBeZero: 'Group size must be a positive integer',
+    issuesFound: 'issues found',
+    members: 'Members',
     mustBeCsv: 'File format must be csv!',
     mustImportOneFile: 'You can only import one file!',
+    newTickets: 'New Tickets',
+    noMembers: 'No Members',
     noResultsFoundBasedOnSearch: 'No results found based on your search',
     notInGroup: 'You are currently not in a group',
     passwordsDontMatch: 'Passwords do not match',
+    progressTickets: 'In Progress Tickets',
     randomize: 'Randomize',
     randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
     selectGroup: 'Select Group',
     size: 'Size',
     successfulFileUpload: 'File uploaded successfully',
+    tickets: 'Tickets',
+    total: 'total',
     uploadOnlyPicture: 'You can only upload one picture!',
     updatedProject: 'Project has been updated',
+    updateProjectPrompt: 'Are you sure you want to update the project with this new configuration?',
+    alreadyInGroup: 'This user is already in this group',
+    groupNameCantBeEmpty: 'Group name can\'t be empty',
+    groupNamealreadyExists: 'Group name already exists',
+    groupMembersDelete: 'This group has members, deleting it will make all members go to the unassigned list',
+    groupSizeCantBeZero: 'Group size must be a positive integer',
+    deletePremadeGroups: 'Would you like to delete the groups that are already made?',
+    randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
+    randomize: 'Randomize',
+    saveProjectPrompt: 'Are you sure you want to save the project with the current configurations?',
+    groupSelectionConfigurationSuccess: 'Group selection has been saved successfully',
+    groupConfigurationSuccess: 'Groups have been saved successfully',
+    adminConfigurationSuccess: 'Admins have been saved successfully',
+    notInGroup: 'You are currently not in a group',
+    deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
+    closeReleaseWarning: 'Are you sure you want to close this release?',
+    deleteReleaseWarning: 'Are you sure you want to delete this release?',
+    activateSprintWarning: 'Are you sure you would like to activate this sprint? It will close any currently active sprint',
+    closeSprintWarning: 'Are you sure you would like to close this sprint?',
+    deleteSprintWarning: 'Are you sure you would like to delete this sprint?',
+    deleteTagWarning: 'Are you sure you would like to delete this tag?',
+    titleCanNotBeEmpty: 'Title can not be empty!',
+    descriptionCanNotBeEmpty: 'Description can not be empty!',
+    commentCanNotBeEmpty: 'Comment can not be empty!',
+    saveBoardType: 'BE CAREFUL, this can NOT be changed!',
+    updatedTicket:'Ticket has been updated',
+    startDate: 'Start Date: ',
+    endDate: 'End Date: ',
+
+    todoTitle: 'TODO',
+    inProgressTitle: 'IN PROGRESS',
+    codeReviewTitle: 'CODE REVIEW',
+    readyForTestTitle: 'READY FOR TEST',
+    inTestTitle: 'IN TEST',
+    doneTitle: 'DONE',
 
     user0: 'Mode Selector',
     user1: 'Collaborator Admin',
@@ -156,9 +279,28 @@ const translations = Object.freeze({
     user4: 'Teaching Assistant',
     user5: 'Student',
 
+    state0: 'New',
+    state1: 'In Development',
+    state2: 'Code Review',
+    state3: 'Ready For Test',
+    state4: 'In Test',
+    state5: 'Done',
+
     projectStatus0: 'Closed',
     projectStatus1: 'Draft',
-    projectStatus2: 'Active'
+    projectStatus2: 'Active',
+
+    ok: 'Ok',
+    close: 'Close',
+    clear: 'Clear',
+    cancel: 'Cancel',
+    activate: 'Activate',
+    delete: 'Delete',
+    save: 'Save',
+    update: 'Update',
+
+    today: 'Today',
+    now: 'Now'
 });
 
 const userIcons = Object.freeze({
@@ -227,11 +369,11 @@ function getNotification(notification) {
                         ${notification.name}
                     </a>
                     <span class="right right-icons">
-                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), ${notification.id})">keyboard_arrow_down</i>
-                        <span class="pointer clear-notification padding-right-10" id="${notification.id}-clear" onclick="clearNotification($(this), ${notification.id})">X</span>
+                        <i class="pointer padding-right-5 material-icons md-22 visibility-icon" onclick="viewFullNotificationToggle($(this), '${notification._id}')">keyboard_arrow_down</i>
+                        <span class="pointer clear-notification padding-right-10" id="${notification._id}-clear" onclick="clearNotification($(this), '${notification._id}')">X</span>
                     </span>
                 </li>
-                <li class="full-description hidden" id="${notification.id}-desc">
+                <li class="full-description hidden" id="${notification._id}-desc">
                     ${notification.name}
                 </li>
             </span>`;
@@ -307,6 +449,12 @@ function handle401And404(data) {
     }
 }
 
+
+/**
+ * toggle visibility
+ *
+ * @param {Object} element element
+ */
 function toggleVisibility(element) {
     if (element.hasClass('hidden')) {
         element.removeClass('hidden');
@@ -314,4 +462,72 @@ function toggleVisibility(element) {
     } else {
         element.addClass('hidden');
     }
+}
+
+/**
+ * Initialize the summernote and all its sub modal
+ *
+ * @param {Object} element element
+ */
+const initSummernote = function (descriptionId) {
+    $(descriptionId).summernote({ height: 200 });
+    $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
+    $('div.note-btn-group.btn-group.note-insert button').unbind();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
+        $('#mediaModal0').modal('open');
+        $('#mediaModal0 > div > div > div.modal-footer > button')
+            .unbind()
+            .removeClass('disabled')
+            .removeAttr('href')
+            .prop('disabled', false)
+            .prop('type', 'button')
+            .click(function () {
+                var text = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(1) > input').val();
+                var url = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(2) > input').val();
+                $(descriptionId).summernote('createLink', {
+                    text: text,
+                    url: url,
+                    isNewWindow: true
+                });
+                $('#mediaModal0').modal('close');
+            });
+        $('#mediaModal0 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal0').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').click(function () {
+        $('#mediaModal1').modal('open');
+        $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-select-from-files').hide();
+        $('#mediaModal1 > div > div > div.modal-footer > button')
+            .unbind()
+            .removeClass('disabled')
+            .removeAttr('href')
+            .prop('disabled', false)
+            .prop('type', 'button')
+            .click(function () {
+                var url = $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-image-url > input').val();
+                $(descriptionId).summernote('insertImage', url);
+                $('#mediaModal1').modal('close');
+            });
+        $('#mediaModal1 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal1').modal('close');
+        });
+    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
+        $('#mediaModal3').modal('open');
+        $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
+            $('#mediaModal3').modal('close');
+        });
+    });
+    $('.modal').modal({
+        dismissible: false
+    });
+    $('div.note-editor.note-frame.panel.panel-default .modal').each(function (i) {
+        $(this).attr('id', 'mediaModal' + i);
+        $('#mediaModal' + i + '> div > div').removeClass('modal-content');
+    });
+
+    $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
 }

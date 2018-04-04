@@ -14,7 +14,7 @@ block content
             .col.s12.m10.l8.xl6.offset-m1.offset-l2.offset-xl3
                 .card
                     .card-content.padding-0
-                        img.full-width(src=`/profilePicture/${user.picture}`)
+                        img.full-width(src=`/picture/${user.picture}`)
                     .back.hide-on-med-and-up.small-back
                     .back.hide-on-small-only.hide-on-large-only.med-back
                     .back.hide-on-med-and-down.large-back
@@ -31,20 +31,20 @@ block content
             .col.s12.m4.l3
                 .card
                     .card-content.padding-0
-                        img.full-width(src=`/profilePicture/${user.picture}`)
+                        img.full-width(src=`/picture/${user.picture}`)
                 .card
                     .card-action
                         .row
                             .input-field.s12
                                 select#theme(name='theme')
                                     each theme in themes
-                                        option(value=theme, selected=theme===user.theme) #{theme}
+                                        option(value=theme, selected=theme===user.theme) #{__(`userInformation.themes.${theme}`)}
                                 label #{__('userInformation.theme')}
                         .row
                             .input-field.s12
                                 select#language(name='language')
                                     each language in languages
-                                        option(value=language.value, selected=language.value===user.language) #{language.text}
+                                        option(value=language.value, selected=language.value===user.language) #{__(`userInformation.languages.${language.text}`)}
                                 label #{__('userInformation.language')}
                         .row
                             .switch
@@ -108,8 +108,8 @@ block content
                             .hide-on-med-and-up
                                 br
                             button.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(type='submit')
-                                | #{__('actions.edit')}
-                                i.material-icons.right send
+                                | #{__('actions.save')}
+                                i.material-icons.right save
 
 block scripts
   script(src='/js/profile.js')

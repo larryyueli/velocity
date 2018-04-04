@@ -54,7 +54,7 @@ $(function () {
 function getProjectsList() {
     $.ajax({
         type: 'GET',
-        url: '/projectsListComponent',
+        url: '/components/projectsList',
         success: function (data) {
             projectRow = $(data.projectsEntryHTML);
             projectList = data.projectsList;

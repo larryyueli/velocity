@@ -3,6 +3,8 @@
 		"activate": "Activate",
 		"apply": "Apply",
 		"cancel": "Cancel",
+		"close": "Close",
+		"comment": "Comment",
 		"create": "Create",
 		"delete": "Delete",
 		"done": "Done",
@@ -16,6 +18,9 @@
 	},
 	"app": {
 		"name": "Velocity"
+	},
+	"filters": {
+		"all": "All"
 	},
 	"login": {
 		"signIn": "Sign In",
@@ -73,13 +78,42 @@
 				"title": "Title",
 				"description": "Description"
 			},
-			"title": "Create a new Project"
+			"title": "Create a new Project",
+			"deadline": {
+				"date": "Date",
+				"time": "Time",
+				"label": "Deadline",
+				"forcelabel": "Force Deadline"
+			}
 		},
 		"status": {
 			"active": "Active",
 			"closed": "Closed",
 			"draft": "Draft",
 			"label": "Status"
+		},
+		"tabs": {
+			"analytics": {
+				"title": "Analytics"
+			},
+			"backlog": {
+				"title": "Backlog"
+			},
+			"board": {
+				"title": "Board"
+			},
+			"issues": {
+				"title": "Issues"
+			},
+			"overview": {
+				"title": "Overview"
+			},
+			"settings": {
+				"title": "Settings"
+			},
+			"management": {
+				"title": "Management"
+			}
 		},
 		"title": "Velocity - Projects",
 		"type": {
@@ -90,15 +124,22 @@
 	},
 	"projectPage": {
 		"tabs": {
+			"boards": {
+				"title": "Boards"
+			},
 			"general": {
-				"title": "General"
+				"forceBoardType": "Force board type for teams",
+				"title": "General",
+				"boardTypeSelection": "Select your board type:",
+				"deadlines": "Deadlines",
+				"deadline": "Project Deadline"
 			},
 			"groups": {
 				"deleteGroups": "Delete Groups",
 				"groupPrefix": "Group Prefix",
 				"groupName": "Group Name",
 				"groups": "Groups",
-				"groupSelectionMode" : "Group Selection Mode",
+				"groupSelectionMode": "Group Selection Mode",
 				"groupSize": "Group Size",
 				"groupStatus": "Group Status",
 				"newGroup": "New Group",
@@ -116,6 +157,19 @@
 				"projectAdmins": "Project Admins",
 				"projectUsers": "Project Users",
 				"title": "Users"
+			},
+			"management": {
+				"releases": "Releases",
+				"sprints": "Sprints",
+				"sprintEnd": "End Date",
+				"sprintStart": "Start Date",
+				"tags": "Tags",
+				"noReleases": "No Releases",
+				"noTags": "No Tags",
+				"noSprints": "No Sprints",
+				"newRelease": "New Release",
+				"newTag": "New Tag",
+				"newSprint": "New Sprint"
 			}
 		},
 		"title": "Velocity - Project"
@@ -137,6 +191,65 @@
 	"switch": {
 		"on": "On",
 		"off": "Off"
+	},
+	"tickets": {
+		"assignee": "Assignee",
+		"create": "Create Ticket",
+		"description": "Description",
+		"milestoneIssues": "Milestone issues",
+		"points": "Points",
+		"priority": "Priority",
+		"priorities": {
+			"high": "High",
+			"low": "Low",
+			"medium": "Medium"
+		},
+		"relatedTickets": "Related Tickets",
+		"release": "Release",
+		"reporter": "Reporter",
+		"state": "State",
+		"states": {
+			"code_review": "Code Review",
+			"done": "Done",
+			"new": "New",
+			"in_development": "In Development",
+			"in_test": "In Test",
+			"ready_for_test": "Ready For Test"
+		},
+		"sprints": "Sprints",
+		"subtasks": "Subtasks",
+		"tabs": {
+			"comments": "Comments",
+			"state": "State History",
+			"assignee": "Assignee History",
+			"ticket": "Ticket",
+			"comment": "Comment",
+			"history": "History"
+		},
+		"tags": "Tags",
+		"ticketDescription": "Ticket Description",
+		"ticketTitle": "Title",
+		"title": "Velocity - Tickets",
+		"type": "Type",
+		"types": {
+			"bug": "Bug",
+			"milestone": "Milestone",
+			"story": "Story"
+		},
+		"writeComment": "Write Comment",
+		"noHistory": "No History",
+		"relation": {
+			"blocks": "Blocks",
+			"blocked_by": "Blocked By",
+			"duplicates": "Duplicates",
+			"duplicated_by": "Duplicated By",
+			"fixes": "Fixes",
+			"fixed_by": "Fixed By",
+			"label": "Related Tickets"
+		},
+		"label": "Ticket",
+		"id": "Ticket Id",
+		"displayId": "Display Id"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
@@ -163,7 +276,14 @@
 			"ta": "Teaching Assistant",
 			"student": "Student"
 		},
-		"username": "Username"
+		"username": "Username",
+		"themes": {
+			"theme-default": "Default",
+			"theme-blueSky": "Blue Sky"
+		},
+		"languages": {
+			"english": "English"
+		}
 	},
 	"users": {
 		"all": "All",

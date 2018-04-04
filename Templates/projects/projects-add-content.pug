@@ -4,6 +4,41 @@
         label(for='title') #{__('projects.form.fields.title')}
 .row
     #description #{description ? description : ""}
+.row
+    .col.s12.m4
+        span.left #{`${__('projectPage.tabs.general.forceBoardType')}:`}
+        br
+        .switch.left
+            label
+                | #{__('switch.off')}
+                input(type='checkbox', name='forceBoardType', checked=forceBoardType, disabled=isActive || isClosed)#canForceBoardType
+                span.lever
+                | #{__('switch.on')}
+    .col.s12.m8
+        .input-field#boardSelectionRow
+            select(disabled=isActive || isClosed).icons#boardSelection
+                option(value=1, selected=selectedBoardType!==2)
+                    | #{__('projects.type.kanban')}
+                option(value=2, selected=selectedBoardType===2)
+                    | #{__('projects.type.scrum')}
+            label
+                | #{__('projects.type.label')}
+.row
+    .col.s12.m4
+        span.left #{`${__('projects.form.deadline.forcelabel')}:`}
+        br
+        .switch.left
+            label
+                | #{__('switch.off')}
+                input(type='checkbox', name='forceDeadline', checked=forceDeadline, disabled=isActive || isClosed)#canForceDeadline
+                span.lever
+                | #{__('switch.on')}
+    .col.s12.m8
+        .row#deadlineSelectionRow
+            .input-field.col.s6
+                input.datepicker(type='text', placeholder=__('projects.form.deadline.date'), value=deadlineDate)#datepicker
+            .input-field.col.s6
+                input.timepicker(type='text', placeholder=__('projects.form.deadline.time'), value=deadlineTime)#timepicker
 
 block scripts
     script(src='/js/projects/projects-add-content.js')

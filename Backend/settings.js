@@ -72,11 +72,15 @@ const resetAllSettings = function (callback) {
             return callback(err, null);
         }
 
-        const currentDate = common.getDate();;
+        const currentDate = common.getDate();
+        const currentISODate = common.getISODate();
         let defaultSettings = {};
+
         defaultSettings._id = common.getUUID();
         defaultSettings.ctime = currentDate;
         defaultSettings.mtime = currentDate;
+        defaultSettings.ictime = currentISODate;
+        defaultSettings.imtime = currentISODate;
         defaultSettings.active = true;
         defaultSettings.mode = common.modeTypes.UNKNOWN;
         defaultSettings.users = {};
@@ -254,6 +258,7 @@ const updateAllSettings = function (newSettings, callback) {
     }
 
     updateQuery.$set.mtime = common.getDate();
+    updateQuery.$set.imtime = common.getISODate();
 
     db.updateAllSettings(updateQuery, function (err, result) {
         if (err) {

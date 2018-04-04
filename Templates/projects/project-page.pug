@@ -15,22 +15,28 @@ block content
             .row
                 .col.s12
                     .row
-                        ul.tabs
-                            li.tab.col.s4
+                        ul.tabs.overflow-x-hidden
+                            li.tab.col.s3
                                 a.noLineLink.active#option-general(href='#general')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
-                            li.tab.col.s4
+                            li.tab.col.s3
                                 a.noLineLink#option-users(href='#users')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
-                            li.tab.col.s4
+                            li.tab.col.s3
                                 a.noLineLink#option-groups(href='#groups')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
+                            if (isActive || isClosed)
+                                li.tab.col.s3
+                                    a.noLineLink#option-groups(href='#boards')
+                                        i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
+                                        |
+                                        .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
     .container
         .row
             .col.s12
@@ -43,18 +49,29 @@ block content
                                         include projects-add-content
                                     .row
                                         .container.center
-                                            button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
-                                                i.material-icons.right close
-                                            button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
-                                                i.material-icons.right save
-                                            button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
-                                                i.material-icons.right send
+                                            if !isClosed
+                                                button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                                    i.material-icons.right close
+                                                if isActive
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalCloseButton #{__('actions.close')}
+                                                        i.material-icons.right remove_circle
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActiveUpdateButton #{__('actions.update')}
+                                                        i.material-icons.right send
+                                                else
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
+                                                        i.material-icons.right save
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
+                                                        i.material-icons.right send
+                                            else
+                                                button.waves-effect.waves-light.btn.col.s12.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                                    i.material-icons.right close
                 if isProjectAdmin
                     #users
                         .card
-                            .card-image
-                                a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveAdminsConfiguration
-                                    i.material-icons save
+                            if !isClosed
+                                .card-image
+                                    a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveAdminsConfiguration
+                                        i.material-icons save
                             .card-content
                                 .row#projectAdminsRow
                                     .col.s12
@@ -88,7 +105,7 @@ block content
                                         ul.collection.scroll-auto.margin-0#projectUsersList
 
                 #groups
-                    if isProjectAdmin && isClassMode
+                    if isProjectAdmin && isClassMode && !isClosed
                         .card.center#groupSelectionCard
                             .card-content
                                 .row
@@ -111,7 +128,7 @@ block content
                                         button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
                                             i.material-icons.right send
                     .card
-                        if isProjectAdmin
+                        if isProjectAdmin && !isClosed
                             .card-image
                                 a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveGroupConfiguration
                                     i.material-icons save
@@ -141,7 +158,7 @@ block content
                                                             option(value='1') #{__('userInformation.types.collaboratorAdmin')}
                                                             option(value='2') #{__('userInformation.types.collaborator')}
                                                     label #{__('users.userType')}
-                                        if isClassMode
+                                        if isClassMode && !isClosed
                                             .row
                                                 button.center.waves-effect.waves-light.left.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
 
@@ -168,14 +185,30 @@ block content
                                     if !isProjectAdmin
                                         ul.collapsible(data-collapsible='expandable')#userGroup
                                         br
-                                    .row
-                                        button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
-                                        if isProjectAdmin
-                                            button.right.waves-effect.waves-light.left.btn.col.cancelButtonBackground-background-colour.cancelButtonText-colour(type='button')#deleteAllGroups #{__('projectPage.tabs.groups.deleteGroups')}
+                                    if !isClosed
+                                        .row
+                                            button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
+                                            if isProjectAdmin
+                                                button.right.waves-effect.waves-light.left.btn.col.cancelButtonBackground-background-colour.cancelButtonText-colour(type='button')#deleteAllGroups #{__('projectPage.tabs.groups.deleteGroups')}
 
 
                                     #groupLoad
                                     ul.collapsible(data-collapsible='expandable')#groupList
+                if isProjectAdmin && (isActive || isClosed)
+                    #boards
+                        .row
+                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#teamsSearch(onclick='toggleVisibility($("#teamsFilter"))')
+                                i.material-icons search
+                        .row.hidden#teamsFilter
+                            form.col.s10.offset-s1
+                                .row
+                                    .input-field.col.s12
+                                        input#teamsSearchFilter.validate(type='text')
+                                        label(for='searchFilter')  #{__('users.searchFilter')}
+                        .row
+                            .col.s12
+                                #teamsload
+                                ul.collection.scroll-auto.margin-0#teamslist
 
     #groupCreateModal.modal
         .modal-content

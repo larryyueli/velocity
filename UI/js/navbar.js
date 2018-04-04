@@ -21,6 +21,7 @@ var mobileNotifCount = $('#mobileNotifCount');
 var notificationList = $('#notifications_nav');
 var noNotifications = $('#noNotifications');
 var clearNotifications = $('#clearNotifications');
+var navSearchField = $('#navSearchField');
 
 const logoutButton = $('#nav-logout');
 
@@ -80,6 +81,22 @@ function clearNotification(item, id) {
             noNotifications.removeClass('hidden');
         }
     });
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/notification/delete',
+        data: {
+            notificationId: id
+        },
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
 }
 
 /**
@@ -101,6 +118,19 @@ function clearAllNotifications() {
             }
         }
     }
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/notifications/delete/all', // TODO: see if this still applies
+        success: function (data) {
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
 }
 
 /**
@@ -109,21 +139,22 @@ function clearAllNotifications() {
  * @param {Array} notifList list of notifications
  */
 function addNotification(notifList) {
-    if (parseInt(notifCount[0].innerText) === 0) {
-        notifCount.removeClass('hidden');
-        mobileNotifCount.removeClass('hidden');
-        clearNotifications.removeClass('hidden');
-        noNotifications.addClass('hidden');
+    if (notifList.length > 0) {
+        if (parseInt(notifCount[0].innerText) === 0) {
+            notifCount.removeClass('hidden');
+            mobileNotifCount.removeClass('hidden');
+            clearNotifications.removeClass('hidden');
+            noNotifications.addClass('hidden');
+        }
+
+        notifCount[0].innerText = parseInt(notifCount[0].innerText) + notifList.length;
+        mobileNotifCount[0].innerText = parseInt(mobileNotifCount[0].innerText) + notifList.length;
+
+        // Adding all new notifications
+        notifList.forEach(notification => {
+            notificationList.append(getNotification(notification));
+        });
     }
-
-    // Updating the count
-    notifCount[0].innerText = parseInt(notifCount[0].innerText) + notifList.length;
-    mobileNotifCount[0].innerText = parseInt(mobileNotifCount[0].innerText) + notifList.length;
-
-    // Adding all new notifications
-    notifList.forEach(notification => {
-        notificationList.append(getNotification(notification));
-    });
 }
 
 logoutButton.click(function () {
@@ -145,6 +176,17 @@ logoutButton.click(function () {
 $(function () {
     var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
     socket.onmessage = function (event) {
-        addNotification([{ link: '/', type: 'account_circle', name: 'Hi, new notification', id: '22222' }]);
+        addNotification(JSON.parse(event.data)['notifList']);
+    }
+
+    if (navSearchField) {
+        navSearchField.on('keyup', function (event) {
+            if (event.keyCode === 13) {
+                const splithref = window.location.href.split('/');
+                const projectId = splithref[4];
+                const teamId = splithref[6];
+                window.location = `/project/${projectId}/team/${teamId}/search?criteria=${navSearchField.val()}`;
+            }
+        });
     }
 });

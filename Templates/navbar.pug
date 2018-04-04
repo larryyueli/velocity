@@ -13,12 +13,22 @@
                 if user.canAccessSettings
                     li#nav-settings
                         a.navbarLink(href='/settings') #{__('pageNames.settings')}
-                if user.canAccessGrades
-                    li#nav-grades
-                        a.navbarLink(href='#!') #{__('pageNames.grades')}
-                li#nav-chatRoom
-                    a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
+                if false
+                    if user.canAccessGrades
+                        li#nav-grades
+                            a.navbarLink(href='#!') #{__('pageNames.grades')}
+                    li#nav-chatRoom
+                        a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
             ul.right
+                if canSearch
+                    li
+                        .hide-on-med-and-down
+                            .col.s12
+                                .row
+                                    .input-field.col.s12
+                                        i.material-icons.prefix search
+                                        input#navSearchField.autocomplete(type='text')
+                                        label(for='searchField') Search
                 li
                     a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
                         i.material-icons.md-28 notifications
@@ -45,22 +55,23 @@ ul#mobile.side-nav
             a.navbarLinkHidden(href='/settings')
                 i.material-icons settings
                 | #{__('pageNames.settings')}
-    if user.canAccessGrades
-        li#navm-grades
+    if false
+        if user.canAccessGrades
+            li#navm-grades
+                a.navbarLinkHidden(href='#!')
+                    i.material-icons edit
+                    | #{__('pageNames.grades')}
+        li#navm-chatRoom
             a.navbarLinkHidden(href='#!')
-                i.material-icons edit
-                | #{__('pageNames.grades')}
-    li#navm-chatRoom
-        a.navbarLinkHidden(href='#!')
-            i.material-icons chat
-            | #{__('pageNames.chatRoom')}
+                i.material-icons chat
+                | #{__('pageNames.chatRoom')}
 
 ul#account_nav.side-nav
     li#nav-info
         .user-view
             .background
                 img(src='/img/office.jpg')
-            img.circle(src=`/profilePicture/${user.picture}`)
+            img.circle(src=`/picture/${user.picture}`)
             span.white-text.name #{user.fname} #{user.lname}
             span.white-text.email #{user.username}
             span.white-text.email #{user.email}

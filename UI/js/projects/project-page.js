@@ -32,6 +32,8 @@ var groupUserRow = null;
 var unassignedList = null;
 var projectAdminsList = null;
 var projectUsersList = null;
+var teamsList = null;
+var teamRow = null;
 
 // Permissions
 var isProjectAdmin = null;
@@ -40,11 +42,20 @@ var isCollabMode = null;
 
 // Element Ids
 const assignedList = '#assignedList';
+const boardSelection = '#boardSelection';
+const boardSelectionRow = $('#boardSelectionRow');
+const deadlineSelectionRow = $('#deadlineSelectionRow');
+const canForceBoardType = '#canForceBoardType';
+const canForceDeadline = '#canForceDeadline';
+const datepickerId = '#datepicker';
+const timepickerId = '#timepicker';
 const createGroupButtonId = '#createGroupButton';
 const descriptionId = '#description';
 const deleteAllGroupsId = '#deleteAllGroups';
 const deleteGroupId = '#deleteGroup';
+const doneTicketsId = '#doneTickets';
 const emailId = '#email';
+const goLinkId = '#goLink';
 const groupCreateModalId = '#groupCreateModal';
 const groupBodyId = '#groupBody';
 const groupIconId = '#groupIcon';
@@ -70,6 +81,8 @@ const membersId = '#members';
 const nameId = '#name';
 const newGroupNameId = '#newGroupName';
 const newGroupId = '#newGroup';
+const newTicketsId = '#newTickets';
+const progressTicketsId = '#progressTickets';
 const projectAdminsListId = '#projectAdminsList';
 const projectAdminsLoadId = '#projectAdminsLoad';
 const projectAdminsRowId = '#projectAdminsRow';
@@ -80,6 +93,10 @@ const removeId = '#remove';
 const saveAdminsConfigurationId = '#saveAdminsConfiguration';
 const saveGroupConfigurationId = '#saveGroupConfiguration';
 const sizeId = '#size'
+const teamslistId = '#teamslist';
+const teamsloadId = '#teamsload';
+const teamsSearchId = '#teamsSearch';
+const teamsSearchFilterId = '#teamsSearchFilter';
 const titleId = '#title';
 const transferId = '#transfer';
 const typeId = '#type';
@@ -110,8 +127,12 @@ const modalTriggerId = '#modalTrigger';
 
 // General settings Ids
 const generalActivateButtonId = '#generalActivateButton';
+const generalActiveUpdateButtonId = '#generalActiveUpdateButton';
+const generalCloseButtonId = '#generalCloseButton';
 const generalDeleteButtonId = '#generalDeleteButton';
 const generalSaveButtonId = '#generalSaveButton';
+const generalCloseButton = '#generalCloseButton';
+const generalActiveUpdateButton = '#generalActiveUpdateButton';
 
 // Navbar Ids
 const navmProjectsId = '#navm-projects';
@@ -163,6 +184,11 @@ $(function () {
         startLoad(projectAdminsLoadId, projectAdminsListId);
         startLoad(projectUsersLoadId, projectUsersListId);
         displayAdminsList();
+    });
+
+    $(teamsSearchFilterId).on('keyup', function () {
+        startLoad(teamsloadId, teamslistId);
+        displayTeamList();
     });
 
     // Actions
@@ -267,10 +293,30 @@ $(function () {
         }
     });
 
+    $(canForceBoardType).change(() => {
+        if ($(canForceBoardType).is(':checked')) {
+            boardSelectionRow.show();
+        } else {
+            boardSelectionRow.hide();
+        }
+    });
+
+    $(canForceDeadline).change(() => {
+        if ($(canForceDeadline).is(':checked')) {
+            deadlineSelectionRow.show();
+        } else {
+            deadlineSelectionRow.hide();
+        }
+    });
+
     // General actions
     $(generalDeleteButtonId).click(() => { generalDeleteProject(); });
     $(generalSaveButtonId).click(() => { generalSaveProject(); });
     $(generalActivateButtonId).click(() => { generalActivateProject(); });
+    $(generalCloseButton).click(() => { generalCloseProject(); });
+    $(generalActiveUpdateButton).click(() => { generalActiveUpdateProject(); });
+    $(canForceBoardType).change();
+    $(canForceDeadline).change();
 
     // Loads the groups and unassigned users, and starts the loaders
     startLoad(groupLoadId, groupListId);
@@ -280,6 +326,9 @@ $(function () {
     startLoad(projectAdminsLoadId, projectAdminsListId);
     startLoad(projectUsersLoadId, projectUsersListId);
     getUsersList();
+
+    startLoad(teamsloadId, teamslistId);
+    getTeamsList();
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -479,20 +528,29 @@ function getGroupAssign() {
  * delete a project
  */
 function generalDeleteProject() {
-    $.ajax({
-        type: 'DELETE',
-        url: '/project/delete',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-            window.location.href = '/projects';
-        },
-        error: function (data) {
-            handle401And404(data);
+    swal({
+        text: translate('deleteProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('delete')]
+    }).then(canDelete => {
+        if (canDelete) {
+            $.ajax({
+                type: 'DELETE',
+                url: '/project/delete',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    window.location.href = '/projects';
+                },
+                error: function (data) {
+                    handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -553,23 +611,42 @@ function generalSaveProject() {
 
     const titleText = $(titleId).val();
     const descriptionText = $(descriptionId).summernote('code');
+    const boardType = $(boardSelection).val();
+    const canForceBoardTypeValue = $(canForceBoardType).is(':checked');
+    const canForceDeadlineValue = $(canForceDeadline).is(':checked');
+    const deadlineDate = $(datepickerId).val();
+    const deadlineTime = $(timepickerId).val();
 
-    $.ajax({
-        type: 'POST',
-        url: '/project/update',
-        data: {
-            projectId: projectId,
-            title: titleText,
-            description: descriptionText
-        },
-        success: function (data) {
-            successSnackbar(translate('updatedProject'));
-        },
-        error: function (data) {
-            handle401And404(data);
+    swal({
+        text: translate('saveProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('save')]
+    }).then(canSave => {
+        if (canSave) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/update',
+                data: {
+                    projectId: projectId,
+                    title: titleText,
+                    description: descriptionText,
+                    boardType: boardType,
+                    deadlineDate: deadlineDate,
+                    deadlineTime: deadlineTime,
+                    canForceBoardType: canForceBoardTypeValue,
+                    canForceDeadline: canForceDeadlineValue
+                },
+                success: function (data) {
+                    successSnackbar(translate('updatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -578,20 +655,100 @@ function generalSaveProject() {
  * activate a project
  */
 function generalActivateProject() {
-    $.ajax({
-        type: 'POST',
-        url: '/project/activate',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-            successSnackbar(translate('activatedProject'));
-        },
-        error: function (data) {
-            handle401And404(data);
+    swal({
+        text: translate('activateProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('activate')]
+    }).then(canActivate => {
+        if (canActivate) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/activate',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    handle401And404(data);
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Closes a project
+ */
+function generalCloseProject() {
+    swal({
+        text: translate('closeProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('close')]
+    }).then(canClose => {
+        if (canClose) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/close',
+                data: {
+                    projectId: projectId
+                },
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
+        }
+    });
+}
+
+/**
+ * Updates a project
+ */
+function generalActiveUpdateProject() {
+    if ($(descriptionId).summernote('isEmpty')) {
+        return warningSnackbar(translate('emptyProjectDescription'));
+    }
+
+    const titleText = $(titleId).val();
+    const descriptionText = $(descriptionId).summernote('code');
+
+    swal({
+        text: translate('updateProjectPrompt'),
+        icon: 'warning',
+        dangerMode: true,
+        buttons: [translate('cancel'), translate('update')]
+    }).then(canUpdate => {
+        if (canUpdate) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/update/active',
+                data: {
+                    projectId: projectId,
+                    title: titleText,
+                    description: descriptionText
+                },
+                success: function (data) {
+                    successSnackbar(translate('updatedProject'));
+                },
+                error: function (data) {
+                    handle401And404(data);
+
+                    const jsonResponse = data.responseJSON;
+                    failSnackbar(getErrorMessageFromResponse(jsonResponse));
+                }
+            });
         }
     });
 }
@@ -603,7 +760,7 @@ function generalActivateProject() {
 function getUsersList() {
     $.ajax({
         type: 'GET',
-        url: '/projectsAdminsListComponent',
+        url: '/components/projectsAdminsList',
         data: {
             projectId: projectId
         },
@@ -635,8 +792,8 @@ function nonAdminChangeGroup(action, groupName, callback) {
         url: '/project/teams/update/me',
         data: {
             projectId: projectId,
-            action:action,
-            teamName:groupName
+            action: action,
+            teamName: groupName
         },
         success: function (data) {
             callback();
@@ -646,6 +803,33 @@ function nonAdminChangeGroup(action, groupName, callback) {
 
             const jsonResponse = data.responseJSON;
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
+
+/**
+ * gets the list of both project admins and non project admins along with the
+ * HTML entry to bind
+ */
+function getTeamsList() {
+    $.ajax({
+        type: 'GET',
+        url: '/components/teamsList',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            teamRow = $(data.teamRowHTML);
+            teamsList = data.teamsList;
+            displayTeamList();
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+            $(teamsSearchId).addClass('hidden');
+
+            endLoad(teamsloadId, teamslistId);
         }
     });
 }
@@ -1149,7 +1333,7 @@ function leaveGroup(event) {
         });
     });
 
-    nonAdminChangeGroup('remove', oldGroup.name, function() {
+    nonAdminChangeGroup('remove', oldGroup.name, function () {
         const userObject = oldGroup.members.find(user => {
             return user.username === userName;
         });
@@ -1184,7 +1368,7 @@ function joinGroup(clicked, createdGroup, event) {
         return user.username === userName;
     });
 
-    nonAdminChangeGroup('add', groupName, function() {
+    nonAdminChangeGroup('add', groupName, function () {
         if (userObject) {
             moveFromUnassignedToGroup(groupName, userName);
         } else {
@@ -1308,9 +1492,9 @@ function fillAdminsRow(user) {
     bindedRow.find(emailId).html(user.email);
 
     if (user.username === meObject.username) {
-        $(transferId).addClass('hidden');
+        bindedRow.find(transferId).addClass('hidden');
     } else {
-        $(transferId).removeClass('hidden');
+        bindedRow.find(transferId).removeClass('hidden');
     }
     return bindedRow[0].outerHTML;
 }
@@ -1420,3 +1604,58 @@ function deselectAllUsers() {
 }
 
 // ------------------------ End multiselect section -----------------------
+
+// ------------------------ Begin teams section -----------------------
+
+function displayTeamList() {
+    $(teamslistId).html('');
+    var rowPopulate = '';
+
+    teamsList.forEach(team => {
+        if (passTeamFilter(team)) {
+            $(teamslistId).append(fillTeamRow(team));
+        }
+    });
+
+    if ($(teamslistId).find('li').length === 0) {
+        $(teamslistId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
+    }
+
+    endLoad(teamsloadId, teamslistId);
+}
+
+function fillTeamRow(team) {
+    var bindedRow = teamRow;
+
+    bindedRow.find(iconId).html('assignment');
+    bindedRow.find(nameId).html(team.name);
+    bindedRow.find(newTicketsId).html(`${translate('newTickets')}: ${team.newTickets}`);
+    bindedRow.find(progressTicketsId).html(`${translate('progressTickets')}: ${team.progressTickets}`);
+    bindedRow.find(doneTicketsId).html(`${translate('doneTickets')}: ${team.doneTickets}`);
+    bindedRow.find(goLinkId)[0].href = `/project/${team.projectId}/team/${team.teamId}`;
+
+    if (team.members.length) {
+        bindedRow.find(membersId).html(`${translate('members')}:<br>${team.members.join('<br>')}`);
+    } else {
+        bindedRow.find(membersId).html(translate('noMembers'));
+    }
+
+    return bindedRow[0].outerHTML;
+}
+
+function passTeamFilter(team) {
+    const filterText = $(teamsSearchFilterId)[0].value.trim().toLowerCase();
+
+    // Team search filter
+    if (filterText !== '' &&
+        team.name.toLowerCase().indexOf(filterText) === -1 &&
+        team.members.every(user => {
+            return user.toLowerCase().indexOf(filterText) === -1
+        })) {
+        return false;
+    }
+
+    return true;
+}
+
+// ------------------------ End teams section -----------------------

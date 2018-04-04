@@ -1,0 +1,11 @@
+li(id='comment_comment._id').collection-item.avatar
+    img.circle(src='/picture/user.picture', alt='')
+    button(onclick=`deleteComment('comment._id')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+        i.material-icons.right delete_forever
+    button(onclick=`changeToInput('comment._id')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+        i.material-icons.right mode_edit
+    span.title comment.username
+    br
+    | comment.mtime
+    br
+    | comment.content

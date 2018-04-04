@@ -17,69 +17,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 $(function () {
-    initSummernote();
+    initSummernote(descriptionId);
+    $('#datepicker').pickadate({
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
+    });
+
+    $('#timepicker').pickatime({
+        default: translate('now'),
+        fromnow: 0, 
+        twelvehour: true,
+        donetext: translate('ok'),
+        cleartext: translate('clear'),
+        canceltext: translate('cancel'),
+        container: undefined,
+        autoclose: false,
+        ampmclickable: true
+      });
 });
-
-/* Initialize the summernote and all its sub modal */
-const initSummernote = function () {
-    $(descriptionId).summernote({ height: 200 });
-    $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
-    $('div.note-btn-group.btn-group.note-insert button').unbind();
-    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
-        $('#mediaModal0').modal('open');
-        $('#mediaModal0 > div > div > div.modal-footer > button')
-            .unbind()
-            .removeClass('disabled')
-            .removeAttr('href')
-            .prop('disabled', false)
-            .prop('type', 'button')
-            .click(function () {
-                var text = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(1) > input').val();
-                var url = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(2) > input').val();
-                $(descriptionId).summernote('createLink', {
-                    text: text,
-                    url: url,
-                    isNewWindow: true
-                });
-                $('#mediaModal0').modal('close');
-            });
-        $('#mediaModal0 > div > div > div.modal-header > button').click(function () {
-            $('#mediaModal0').modal('close');
-        });
-    });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').click(function () {
-        $('#mediaModal1').modal('open');
-        $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-select-from-files').hide();
-        $('#mediaModal1 > div > div > div.modal-footer > button')
-            .unbind()
-            .removeClass('disabled')
-            .removeAttr('href')
-            .prop('disabled', false)
-            .prop('type', 'button')
-            .click(function () {
-                var url = $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-image-url > input').val();
-                $(descriptionId).summernote('insertImage', url);
-                $('#mediaModal1').modal('close');
-            });
-        $('#mediaModal1 > div > div > div.modal-header > button').click(function () {
-            $('#mediaModal1').modal('close');
-        });
-    });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
-    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
-        $('#mediaModal3').modal('open');
-        $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
-            $('#mediaModal3').modal('close');
-        });
-    });
-    $('.modal').modal({
-        dismissible: false
-    });
-    $('div.note-editor.note-frame.panel.panel-default .modal').each(function (i) {
-        $(this).attr('id', 'mediaModal' + i);
-        $('#mediaModal' + i + '> div > div').removeClass('modal-content');
-    });
-
-    $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
-}
