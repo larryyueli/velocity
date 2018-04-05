@@ -19,6 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $(function () {
     initSummernote(descriptionId);
     $('#datepicker').pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -29,6 +32,9 @@ $(function () {
     });
 
     $('#timepicker').pickatime({
+        onClose: () => {
+            $(":focus").blur();
+        },
         default: translate('now'),
         fromnow: 0, 
         twelvehour: true,
