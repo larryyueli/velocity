@@ -962,6 +962,8 @@ function fillUserRow(user, isUnassigned) {
     }
 
     if (!isProjectAdmin || isReadonly) {
+        bindedRow.removeClass('clickable-item');
+        bindedRow.removeClass('pointer');
         bindedRow.find(modalTriggerId).addClass('hidden');
         bindedRow.attr('draggable', null)
         bindedRow.attr('ondrag', null)
@@ -1632,6 +1634,10 @@ function displayTeamList() {
     teamsList.forEach(team => {
         if (passTeamFilter(team)) {
             $(teamslistId).append(fillTeamRow(team));
+
+            $(`#${team.teamId}`).on('click', function() {
+                 window.location.href = `/project/${team.projectId}/team/${team.teamId}`;
+            });
         }
     });
 
@@ -1645,6 +1651,7 @@ function displayTeamList() {
 function fillTeamRow(team) {
     var bindedRow = teamRow;
 
+    bindedRow.attr('id', team.teamId);
     bindedRow.find(iconId).html('assignment');
     bindedRow.find(nameId).html(team.name);
     bindedRow.find(newTicketsId).html(`${translate('newTickets')}: ${team.newTickets}`);

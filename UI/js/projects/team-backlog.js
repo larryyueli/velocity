@@ -89,6 +89,12 @@ function displaySprintsList() {
 
     sprintsList.forEach(sprint => {
         $(sprintsListId).append(fillSprintsRow(sprint));
+
+        sprint.tickets.forEach(ticket => {
+            $(`#${ticket._id}-backlog`).on('click', function() {
+                 window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
+            });
+        });
     });
 
     endLoad(sprintsLoadId, sprintsListId);
@@ -180,6 +186,7 @@ function fillTicketRow(ticket) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="auto">');
     }
 
+    bindedRow.attr('id', `${ticket._id}-backlog`);
     bindedRow.find(nameId).html(ticket.title);
     bindedRow.find(estimateId).html(ticket.points);
     bindedRow.find(statusId).html(translate(`state${ticket.state}`));

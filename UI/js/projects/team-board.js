@@ -196,6 +196,10 @@ function fillBoardTicketRow(issue) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     }
 
+    if (isReadonly) {
+        bindedRow.removeClass('pointer');
+    }
+
     bindedRow.attr('id', issue._id);
     bindedRow.find(displayIdId).html(`<a class="ticket-link" target="_blank" href="/project/${projectId}/team/${teamId}/ticket/${issue._id}">${issue.displayId}</a>`);
     bindedRow.find(nameId).html(issue.title);

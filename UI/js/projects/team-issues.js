@@ -69,6 +69,10 @@ function displayIssuesList() {
     issuesList.forEach(issue => {
         if (passIssuesFilter(issue)) {
             $(issuesListId).append(fillIssuesRow(issue));
+
+            $(`#${issue._id}-issue`).on('click', function() {
+                 window.location.href = `/project/${projectId}/team/${teamId}/ticket/${issue._id}`;
+            });
         }
     });
 
@@ -102,6 +106,7 @@ function fillIssuesRow(issue) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="auto">');
     }
 
+    bindedRow.attr('id', `${issue._id}-issue`)
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
     bindedRow.find(statusId).html(translate(`state${issue.state}`));
