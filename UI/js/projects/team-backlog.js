@@ -21,6 +21,7 @@ var ticketEntryHTML = null;
 var sprintsList = null;
 
 const backlogTicketListId = '#backlogTicketList';
+const datesId = '#dates';
 const issueCountId = '#issueCount';
 const sprintsListId = '#sprintsList';
 const titleId = '#title';
@@ -106,8 +107,6 @@ function fillSprintsRow(sprint) {
     var isActive = false;
     bindedRow.find(backlogTicketListId).html('');
 
-    bindedRow.find(titleId).html(sprint.name);
-
     tickets.forEach(ticket => {
         if (passTicketFilter(ticket)) {
             bindedRow.find(backlogTicketListId).append(fillTicketRow(ticket));
@@ -115,6 +114,14 @@ function fillSprintsRow(sprint) {
     });
 
     bindedRow.find(issueCountId).html(`${tickets.length} ${translate('issuesFound')} (${bindedRow.find(backlogTicketListId).find('li').length} ${translate('total')})`);
+
+    if (sprint.name === 'backlog') {
+        bindedRow.find(titleId).html(translate(sprint.name));
+        bindedRow.find(datesId).html('');
+    } else {
+        bindedRow.find(titleId).html(sprint.name);
+        bindedRow.find(datesId).html(`${sprint.startDate} - ${sprint.endDate}`);
+    }
 
     if (bindedRow.find(backlogTicketListId).find('li').length === 0) {
         bindedRow.find(backlogTicketListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)

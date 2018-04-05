@@ -165,7 +165,12 @@ function fillUserBoardRow(user, statuses) {
         bindedRow.find(boardBodyId)[0].style.display = 'none';
     }
 
-    bindedRow.find(titleId).html(user);
+    if (user === 'No Assignee') {
+        bindedRow.find(titleId).html(translate('noassignee'));
+    } else {
+        bindedRow.find(titleId).html(user);
+    }
+
     bindedRow.find(ticketCountId).html(`(${statuses['new'].length +
                                            statuses['inDevelopment'].length +
                                            statuses['codeReview'].length +
