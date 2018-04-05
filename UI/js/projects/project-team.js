@@ -103,6 +103,9 @@ $(function () {
     });
 
     $(sprintStart).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -113,6 +116,9 @@ $(function () {
     });
 
     $(sprintEnd).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
