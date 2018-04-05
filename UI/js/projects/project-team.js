@@ -131,8 +131,6 @@ $(function () {
     getListOfAssignee();
     getComponents();
 
-    $("[class^='sprintFutureActive']").hide();
-
     /*
     $.ajax({
         type: 'PUT',
@@ -305,6 +303,10 @@ function getComponents() {
                 $(releaseVisibility).addClass('hidden');
                 $(sprintVisibility).addClass('hidden');
                 $(tagVisibility).addClass('hidden');
+                $("[class^='sprintOpen_']").hide();
+                $("[class^='sprintActive_']").hide();
+                $("[class^='releaseButton_']").hide();
+                $("[class^='tag_']").hide();
             }
         },
         error: function (data) {
