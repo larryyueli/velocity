@@ -300,6 +300,7 @@ function getComponents() {
             tagComponent = data.tagEntryComponent;
 
             if (isReadonly) {
+                $(createTicketButton).addClass('hidden');
                 $(releaseVisibility).addClass('hidden');
                 $(sprintVisibility).addClass('hidden');
                 $(tagVisibility).addClass('hidden');
