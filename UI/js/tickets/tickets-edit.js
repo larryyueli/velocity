@@ -21,6 +21,7 @@ const subtaskRow = $('.subtasksRow')
 const milestoneIssuesRow = $('.milestoneIssuesRow')
 const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
+const editButton = '#editButton';
 const saveTicketButtonId = '#saveTicketButton';
 const descriptionId = '#description';
 const newCommentId = '#newComment';
@@ -116,6 +117,10 @@ $(function () {
     $(addNewCommentId).click(() => {
         addNewCommentFunction();
     });
+
+    $('.editBlock').find('*').prop('disabled', true);
+    $(descriptionId).summernote('disable');
+    
 });
 
 /**
@@ -140,6 +145,15 @@ function getEditPageComponents() {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         }
     });
+}
+
+/**
+ * Enabled the ticket for editing 
+ */
+function enableEdit() {
+    $(editButton).hide();
+    $('.editBlock').find('*').prop('disabled', false);
+    $(descriptionId).summernote('enable');
 }
 
 /**
