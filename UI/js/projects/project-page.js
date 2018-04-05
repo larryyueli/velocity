@@ -145,6 +145,8 @@ var selectedUsers = [];
 var selectedObjects = [];
 var userDragged = null;
 
+var readOnly = true;
+
 $(function () {
     // Navbar highlight
     $(navProjectsId).addClass('active');
@@ -330,6 +332,11 @@ $(function () {
 
     startLoad(teamsloadId, teamslistId);
     getTeamsList();
+
+    if (readOnly) {
+        $(datepickerId).prop('disabled', true);
+        $(timepickerId).prop('disabled', true);
+    }
 });
 
 // ----------------------- Begin general helpers section -----------------------
