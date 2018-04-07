@@ -40,6 +40,7 @@ const getTicketStates = function (team, sprints, tickets, callback) {
             fname: usersIdObj[team.members[i]].fname,
             lname: usersIdObj[team.members[i]].lname,
             username: usersIdObj[team.members[i]].username,
+            points: 0,
             states: {}
         });
     }
@@ -62,6 +63,7 @@ const getTicketStates = function (team, sprints, tickets, callback) {
                     for (let h = 0; h < result.sprints[i].members.length; h++) {
                         if (result.sprints[i].members[h]._id === tickets[j].assignee) {
                             result.sprints[i].members[h].states[tickets[j].state]++;
+                            result.sprints[i].members[h].points += tickets[j].points;
                         }
                     }
                 }
