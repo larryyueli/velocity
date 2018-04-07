@@ -672,6 +672,16 @@ const getTeamsListComponent = function (req, res) {
     });
 }
 
+/**
+ * path to get the teams analytics data
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getAnalyticsData = function (req, res) {
+    return res.status(200).send('ok');
+}
+
 // <exports> ------------------------------------------------
 exports.getBacklogComponents = getBacklogComponents;
 exports.getBoardComponents = getBoardComponents;
@@ -680,4 +690,5 @@ exports.getMembersList = getMembersList;
 exports.getTeamsListComponent = getTeamsListComponent;
 exports.renderTeamPage = renderTeamPage;
 exports.updateBoardType = updateBoardType;
+exports.getAnalyticsData = getAnalyticsData;
 // </exports> -----------------------------------------------

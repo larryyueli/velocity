@@ -218,6 +218,7 @@ exports.handleTagsListPath = tags_api.getTagsList;
 // <Teams Requests> ------------------------------------------------
 exports.handleActiveSprintTicketsListComponentPath = teams_api.getBoardComponents;
 exports.handleProjectBoardTypeMePath = teams_api.updateBoardType;
+exports.handleProjectTeamAnalytics = teams_api.getAnalyticsData;
 exports.handleProjectTeamBacklogPath = teams_api.getBacklogComponents;
 exports.handleProjectTeamMembersListPath = teams_api.getMembersList;
 exports.handleProjectTeamPath = teams_api.renderTeamPage;
