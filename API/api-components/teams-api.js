@@ -679,7 +679,41 @@ const getTeamsListComponent = function (req, res) {
  * @param {object} res res object
  */
 const getAnalyticsData = function (req, res) {
-    return res.status(200).send('ok');
+
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+                projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+                    
+                    return res.status(200).send('ok');
+                });
+            });
+        });
+    });
 }
 
 // <exports> ------------------------------------------------
