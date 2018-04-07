@@ -53,6 +53,7 @@ const getTicketStates = function (team, sprints, tickets, callback) {
         result.sprints.push({
             sprintName: sprints[i].name,
             sprintId: sprints[i]._id,
+            sprintStatus: sprints[i].status,
             members: membersList
         });
         for (let j = 0; j < tickets.length; j++) {
