@@ -1,0 +1,14 @@
+.gradient-45deg-light-blue-cyan {
+    box-shadow: 0 6px 20px 0 rgba(38, 198, 218, 0.5);
+    background: #0288d1;
+    background: -webkit-linear-gradient(45deg, #0288d1 0%, #26c6da 100%);
+    background: linear-gradient(45deg, #0288d1 0%, #26c6da 100%);
+}
+
+.min-height-100 {
+    min-height: 100px;
+}
+
+.float-right {
+    float: right;
+}
