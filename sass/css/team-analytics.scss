@@ -1,10 +1,58 @@
-.gradient-45deg-light-blue-cyan {
-    box-shadow: 0 6px 20px 0 rgba(38, 198, 218, 0.5);
-    background: #0288d1;
-    background: -webkit-linear-gradient(45deg, #0288d1 0%, #26c6da 100%);
-    background: linear-gradient(45deg, #0288d1 0%, #26c6da 100%);
+@import 'app.scss';
+
+.gradient-todo {
+    @include themify($themes) {
+        box-shadow: 0 6px 20px 0 themed('standardBlue');
+        background: themed('standardBlue');
+        background: -webkit-linear-gradient(45deg, themed('standardBlue') 0%, themed('lighterStandardBlue') 100%);
+        background: linear-gradient(45deg, themed('standardBlue') 0%, themed('lighterStandardBlue') 100%);
+    }
 }
 
+.gradient-in-progress {
+    @include themify($themes) {
+        box-shadow: 0 6px 20px 0 themed('standardYellow');
+        background: themed('standardYellow');
+        background: -webkit-linear-gradient(45deg, themed('standardYellow') 0%, themed('lighterStandardYellow') 100%);
+        background: linear-gradient(45deg, themed('standardYellow') 0%, themed('lighterStandardYellow') 100%);
+    }
+}
+
+.gradient-code-review {
+    @include themify($themes) {
+        box-shadow: 0 6px 20px 0 themed('standardRed');
+        background: themed('standardRed');
+        background: -webkit-linear-gradient(45deg, themed('standardRed') 0%, themed('lighterStandardRed') 100%);
+        background: linear-gradient(45deg, themed('standardRed') 0%, themed('lighterStandardRed') 100%);
+    }
+}
+
+.gradient-ready-for-test {
+    @include themify($themes) {
+        box-shadow: 0 6px 20px 0 themed('standardLightBlue');
+        background: themed('standardLightBlue');
+        background: -webkit-linear-gradient(45deg, themed('standardLightBlue') 0%, themed('lighterStandardLightBlue') 100%);
+        background: linear-gradient(45deg, themed('standardLightBlue') 0%, themed('lighterStandardLightBlue') 100%);
+    }
+}
+
+.gradient-in-test {
+    @include themify($themes) {
+        box-shadow: 0 6px 20px 0 themed('standardOrange');
+        background: themed('standardOrange');
+        background: -webkit-linear-gradient(45deg, themed('standardOrange') 0%, themed('lighterStandardOrange') 100%);
+        background: linear-gradient(45deg, themed('standardOrange') 0%, themed('lighterStandardOrange') 100%);
+    }
+}
+
+.gradient-done {
+    @include themify($themes) {
+        box-shadow: 0 6px 20px 0 themed('standardGreen');
+        background: themed('standardGreen');
+        background: -webkit-linear-gradient(45deg, themed('standardGreen') 0%, themed('lighterStandardGreen') 100%);
+        background: linear-gradient(45deg, themed('standardGreen') 0%, themed('lighterStandardGreen') 100%);
+    }
+}
 .min-height-100 {
     min-height: 100px;
 }
