@@ -65,12 +65,14 @@ const getAnalyticsData = function (req, res) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
-                    analytics.getTicketStates(sprintsObj, function (err, ticketsObj) {
+                    analytics.getTicketStates(teamObj, sprintsObj, ticketsObj, function (err, stateObj) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             return res.status(500).send(err);
                         }
-                        return res.status(200).send('ok');
+                        return res.status(200).send({
+                            sprints: stateObj.sprints
+                        });
                     });
                 });
             });

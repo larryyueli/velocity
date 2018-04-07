@@ -18,20 +18,58 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const common = require('./common.js');
+const users = require('./users.js');
+
 /**
  * Returns the ticket states for sprints and releases
- * @param {*} sprints sprints object
- * @param {*} callback callback
+ * @param {*} team team object
+ * @param {object} sprints sprints object
+ * @param {object} tickets tickets object
+ * @param {function} callback callback
  */
-const getTicketStates = function (sprints, callback) {
-    let states = {
+const getTicketStates = function (team, sprints, tickets, callback) {
+    let result = {
         sprints: []
     }
+    let membersList = [];
+    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
+    for (let i = 0; i < team.members.length; i++) {
+        membersList.push({
+            _id: team.members[i],
+            fname: usersIdObj[team.members[i]].fname,
+            lname: usersIdObj[team.members[i]].lname,
+            username: usersIdObj[team.members[i]].username,
+            states: {}
+        });
+    }
+    Object.keys(common.ticketStates).forEach(state => {
+        for (let i = 0; i < membersList.length; i++) {
+            membersList[i].states[common.ticketStates[state].value] = 0;
+        }
+    });
 
-    return callback(null, states);
+    for (let i = 0; i < sprints.length; i++) {
+        result.sprints.push({
+            sprintName: sprints[i].name,
+            sprintId: sprints[i]._id,
+            members: membersList
+        });
+        for (let j = 0; j < tickets.length; j++) {
+            for (let z = 0; z < sprints[i].tickets.length; z++) {
+                if (tickets[j]._id === sprints[i].tickets[z]) {
+                    for (let h = 0; h < result.sprints[i].members.length; h++) {
+                        if (result.sprints[i].members[h]._id === tickets[j].assignee) {
+                            result.sprints[i].members[h].states[tickets[j].state]++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return callback(null, result);
 }
-
-//return callback(null, obj);
 
 // <exports> -----------------------------------
 exports.getTicketStates = getTicketStates;

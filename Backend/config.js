@@ -26,7 +26,7 @@ const httpPort = 8000;
 const httpsPort = 8080;
 const notificationsWSPort = 8001;
 const urlencoded = true;
-var debugMode = false;
+var debugMode = true;
 const ssl_options = {
     key: fs.readFileSync(`${__dirname}/../Keys/private.key`),
     cert: fs.readFileSync(`${__dirname}/../Keys/cert.crt`)
