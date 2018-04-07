@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const path = require('path');
 
+const analytics_api = require('./api-components/analytics-api.js');
 const comment_api = require('./api-components/comments-api.js');
 const common_api = require('./api-components/common-api.js');
 const notifications_api = require('./api-components/notifications-api.js');
@@ -218,7 +219,6 @@ exports.handleTagsListPath = tags_api.getTagsList;
 // <Teams Requests> ------------------------------------------------
 exports.handleActiveSprintTicketsListComponentPath = teams_api.getBoardComponents;
 exports.handleProjectBoardTypeMePath = teams_api.updateBoardType;
-exports.handleProjectTeamAnalytics = teams_api.getAnalyticsData;
 exports.handleProjectTeamBacklogPath = teams_api.getBacklogComponents;
 exports.handleProjectTeamMembersListPath = teams_api.getMembersList;
 exports.handleProjectTeamPath = teams_api.renderTeamPage;
@@ -256,3 +256,7 @@ exports.handleUsersPath = users_api.renderAdminsUsersPage;
 exports.handleUsersRequestAccessPath = users_api.requestAccess;
 exports.handleUsersUpdatePath = users_api.editUser;
 // </Users Requests> -----------------------------------------------
+
+// </Analytics Requests> -----------------------------------------------
+exports.handleProjectTeamAnalytics = analytics_api.getAnalyticsData;
+// </Analytics Requests> -----------------------------------------------
