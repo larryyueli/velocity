@@ -21,6 +21,7 @@ const subtaskRow = $('.subtasksRow')
 const milestoneIssuesRow = $('.milestoneIssuesRow')
 const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
+const editBlock = '.editBlock';
 const editButton = '#editButton';
 const saveTicketButtonId = '#saveTicketButton';
 const descriptionId = '#description';
@@ -118,7 +119,7 @@ $(function () {
         addNewCommentFunction();
     });
 
-    $('.editBlock').find('*').prop('disabled', true);
+    $(editBlock).find('*').prop('disabled', true);
     $(descriptionId).summernote('disable');
     
 });
@@ -152,7 +153,7 @@ function getEditPageComponents() {
  */
 function enableEdit() {
     $(editButton).hide();
-    $('.editBlock').find('*').prop('disabled', false);
+    $(editBlock).find('*').prop('disabled', false);
     $(descriptionId).summernote('enable');
 }
 
