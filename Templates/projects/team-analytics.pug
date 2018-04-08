@@ -1,5 +1,7 @@
 #scrum-analytics
     .row
+        h3 YOUR DATA
+    .row
         .col.s12.m4.l2
             .card.gradient-todo.min-height-100
                 .row
@@ -68,4 +70,85 @@
                         p.float-right#doneUserPoints
     .row
         .col.s12.m4
-            canvas#myChart
+            canvas#userTicketDivision
+    .row
+        h3 TEAM DATA
+    .row
+        .col.s12.m6
+            .input-field.padding-10
+                input.autocomplete(type='text', name='sprintFilterUserAutocomplete')#sprintFilterUserAutocomplete
+                label(for='sprintFilterUserAutocomplete') #{__('analytics.user')}
+        .col.s12.m6
+            .input-field.padding-10
+                input.autocomplete(type='text')#sprintsAutocomplete
+                label(for='sprintsAutocomplete') #{__('tickets.sprints')}
+    .row
+        .col.s12.m4.l2
+            .card.gradient-todo.min-height-100
+                .row
+                    .padding-10
+                        .col.s7
+                            i.material-icons.background-round.mt-5 person
+                            p #{__('tickets.states.new')}
+                        .col.s5.right-align
+                            h5.margin-bottom-0#todoTeamTickets
+                            p #{__('analytics.tickets')}
+                        p.float-right#todoTeamPoints
+        .col.s12.m4.l2
+            .card.gradient-in-progress.min-height-100
+                .row
+                    .padding-10
+                        .col.s7
+                            i.material-icons.background-round.mt-5 person
+                            p #{__('tickets.states.in_development')}
+                        .col.s5.right-align
+                            h5.margin-bottom-0#inProgressTeamTickets
+                            p #{__('analytics.tickets')}
+                        p.float-right#inProgressTeamPoints
+        .col.s12.m4.l2
+            .card.gradient-code-review.min-height-100
+                .row
+                    .padding-10
+                        .col.s7
+                            i.material-icons.background-round.mt-5 person
+                            p #{__('tickets.states.code_review')}
+                        .col.s5.right-align
+                            h5.margin-bottom-0#codeReviewTeamTickets
+                            p #{__('analytics.tickets')}
+                        p.float-right#codeReviewTeamPoints
+        .col.s12.m4.l2
+            .card.gradient-ready-for-test.min-height-100
+                .row
+                    .padding-10
+                        .col.s7
+                            i.material-icons.background-round.mt-5 person
+                            p #{__('tickets.states.ready_for_test')}
+                        .col.s5.right-align
+                            h5.margin-bottom-0#readyForTestTeamTickets
+                            p #{__('analytics.tickets')}
+                        p.float-right#ReadyForTestTeamPoints
+        .col.s12.m4.l2
+            .card.gradient-in-test.min-height-100
+                .row
+                    .padding-10
+                        .col.s7
+                            i.material-icons.background-round.mt-5 person
+                            p #{__('tickets.states.in_test')}
+                        .col.s5.right-align
+                            h5.margin-bottom-0#inTestTeamTickets
+                            p #{__('analytics.tickets')}
+                        p.float-right#inTestTeamPoints
+        .col.s12.m4.l2
+            .card.gradient-done.min-height-100
+                .row
+                    .padding-10
+                        .col.s7
+                            i.material-icons.background-round.mt-5 person
+                            p #{__('tickets.states.done')}
+                        .col.s5.right-align
+                            h5.margin-bottom-0#doneTeamTickets
+                            p #{__('analytics.tickets')}
+                        p.float-right#doneTeamPoints
+    .row
+        .col.s12.m4
+            canvas#teamTicketDivision

@@ -17,7 +17,8 @@
 		"update": "Update"
 	},
 	"analytics": {
-		"tickets": "Tickets"
+		"tickets": "Tickets",
+		"user": "User"
 	},
 	"app": {
 		"name": "Velocity"

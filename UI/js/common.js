@@ -221,6 +221,7 @@ const translations = Object.freeze({
     members: 'Members',
     mustBeCsv: 'File format must be csv!',
     mustImportOneFile: 'You can only import one file!',
+    na: 'N/A',
     newTickets: 'New Tickets',
     noMembers: 'No Members',
     noResultsFoundBasedOnSearch: 'No results found based on your search',
