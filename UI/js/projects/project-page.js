@@ -39,6 +39,7 @@ var teamRow = null;
 var isProjectAdmin = null;
 var isClassMode = null;
 var isCollabMode = null;
+var isReadonly = true;
 
 // Element Ids
 const assignedList = '#assignedList';
@@ -143,6 +144,8 @@ var inDragMode = false;
 var selectedUsers = [];
 var selectedObjects = [];
 var userDragged = null;
+
+var readOnly = true;
 
 $(function () {
     // Navbar highlight
@@ -329,6 +332,11 @@ $(function () {
 
     startLoad(teamsloadId, teamslistId);
     getTeamsList();
+
+    if (readOnly) {
+        $(datepickerId).prop('disabled', true);
+        $(timepickerId).prop('disabled', true);
+    }
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -483,6 +491,18 @@ function getGroupAssign() {
                 $(groupSizeId).prop('disabled', false);
             } else if (groupSelectType === 3) {
                 $(groupSizeId).prop('disabled', false);
+            }
+
+            if (isReadonly) {
+                $(randomizeRemainingId).addClass('hidden');
+                $(deleteAllGroupsId).addClass('hidden');
+                $(newGroupId).addClass('hidden');
+                $(saveGroupConfigurationId).addClass('hidden');
+                $(groupSelect).addClass('disabled');
+                $(groupStatusId).parent().find('input').prop('disabled', true);
+                $(groupStatusId).parent().find('.caret')[0].style.color = 'grey';
+                $(groupSizeId).prop('disabled', true);
+                $(groupPrefixId).prop('disabled', true);
             }
 
             // Group modal setup
@@ -942,13 +962,13 @@ function fillUserRow(user, isUnassigned) {
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
 
-    if (isUnassigned || !isProjectAdmin) {
+    if (isUnassigned || !isProjectAdmin || isReadonly) {
         bindedRow.find(removeId).addClass('hidden');
     } else {
         bindedRow.find(removeId).removeClass('hidden');
     }
 
-    if (!isProjectAdmin) {
+    if (!isProjectAdmin || isReadonly) {
         bindedRow.find(modalTriggerId).addClass('hidden');
         bindedRow.attr('draggable', null)
         bindedRow.attr('ondrag', null)
@@ -1058,16 +1078,21 @@ function fillGroupRow(group, isInGroup) {
     } else {
         bindedRow.find(leaveGroupId).addClass('hidden');
 
-        if (!isProjectAdmin) {
+        if (isReadonly) {
             bindedRow.find(deleteGroupId).addClass('hidden');
-            bindedRow.find(joinGroupId).removeClass('hidden');
-        } else {
-            bindedRow.find(deleteGroupId).removeClass('hidden');
             bindedRow.find(joinGroupId).addClass('hidden');
+        } else {
+            if (!isProjectAdmin) {
+                bindedRow.find(deleteGroupId).addClass('hidden');
+                bindedRow.find(joinGroupId).removeClass('hidden');
+            } else {
+                bindedRow.find(deleteGroupId).removeClass('hidden');
+                bindedRow.find(joinGroupId).addClass('hidden');
+            }
         }
     }
 
-    if (!isProjectAdmin) {
+    if (!isProjectAdmin || isReadonly) {
         bindedRow.attr('ondragover', null)
         bindedRow.attr('ondrop', null)
     }
@@ -1491,7 +1516,7 @@ function fillAdminsRow(user) {
     bindedRow.find(typeId).html(`${translate(`user${user.type}`)}`);
     bindedRow.find(emailId).html(user.email);
 
-    if (user.username === meObject.username) {
+    if (user.username === meObject.username || isReadonly) {
         bindedRow.find(transferId).addClass('hidden');
     } else {
         bindedRow.find(transferId).removeClass('hidden');

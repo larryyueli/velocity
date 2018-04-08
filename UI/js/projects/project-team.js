@@ -52,6 +52,7 @@ var selectedAssigneeIssue = null;
 var sprintComponent = null;
 var tagComponent = null;
 var usernamesArray = [];
+var isReadonly = true;
 
 $(function () {
     initSummernote(description);
@@ -102,6 +103,9 @@ $(function () {
     });
 
     $(sprintStart).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -112,6 +116,9 @@ $(function () {
     });
 
     $(sprintEnd).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -123,8 +130,6 @@ $(function () {
 
     getListOfAssignee();
     getComponents();
-
-    $("[class^='sprintFutureActive']").hide();
 
     /*
     $.ajax({
@@ -293,6 +298,16 @@ function getComponents() {
             releaseComponent = data.releaseEntryComponent;
             sprintComponent = data.sprintEntryComponent;
             tagComponent = data.tagEntryComponent;
+
+            if (isReadonly) {
+                $(releaseVisibility).addClass('hidden');
+                $(sprintVisibility).addClass('hidden');
+                $(tagVisibility).addClass('hidden');
+                $("[class^='sprintOpen_']").hide();
+                $("[class^='sprintActive_']").hide();
+                $("[class^='releaseButton_']").hide();
+                $("[class^='tag_']").hide();
+            }
         },
         error: function (data) {
             handle401And404(data);

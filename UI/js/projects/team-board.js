@@ -197,7 +197,7 @@ function fillBoardTicketRow(issue) {
     }
 
     bindedRow.attr('id', issue._id);
-    bindedRow.find(displayIdId).html(issue.displayId);
+    bindedRow.find(displayIdId).html(`<a class="ticket-link" target="_blank" href="/project/${projectId}/team/${teamId}/ticket/${issue._id}">${issue.displayId}</a>`);
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
     bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="auto" width="95%" class="profilePic">`);
@@ -258,7 +258,7 @@ function ticketDragStartHandler(ev) {
 }
 
 function ticketDragoverHandler(ev, to) {
-    if (dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
+    if (!isReadonly && dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
         ev.currentTarget.style.border = 'green dashed 2px';
         ev.dataTransfer.dropEffect = 'move';
         ev.preventDefault();

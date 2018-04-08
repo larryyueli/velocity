@@ -37,15 +37,17 @@ block content
                         .card-image
                             a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href=`/project/${projectId}/team/${teamId}`)
                                 i.material-icons arrow_back
-                        .card-content
+                            a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right(onclick='enableEdit()')#editButton
+                                i.material-icons edit
+                        .card-content.editBlock
                             .row
                                 .input-field.padding-10
                                     label #{__('tickets.id')}: #{ticket.displayId}
                             .row
                                 .input-field.padding-10
-                                    input.validate(type='text', name='titleField', value=`${ticket.title}`)#titleField
+                                    input.editField.validate(type='text', name='titleField', value=`${ticket.title}`)#titleField
                                     label(for='titleField') #{__('tickets.ticketTitle')}
-                        .card-action
+                        .card-action.editBlock
                             .row
                                 .col.s12.l8.padding-10.margin-10.secondaryColour-border-colour
                                     .row
@@ -60,7 +62,7 @@ block content
                                             label
                                                 | #{__('tickets.type')}
                                         .input-field.padding-10.col.s12.m3
-                                            select#stateSelection
+                                            select.editField#stateSelection
                                                 option(value=0, selected=ticket.state===0)
                                                     | #{__('tickets.states.new')}
                                                 option(value=1, selected=ticket.state===1)
@@ -76,7 +78,7 @@ block content
                                             label
                                                 | #{__('tickets.state')}
                                         .input-field.padding-10.col.s12.m3
-                                            select.icons#prioritySelection
+                                            select.editField.icons#prioritySelection
                                                 option(value=0, data-icon='/img/icon-low-priority.png', selected=ticket.priority===0)
                                                     | #{__('tickets.priorities.low')}
                                                 option(value=1, data-icon='/img/icon-medium-priority.png', selected=ticket.priority===1)
@@ -86,7 +88,7 @@ block content
                                             label
                                                 | #{__('tickets.priority')}
                                         .input-field.padding-10.col.s12.m3
-                                            input(type='number', name='pointsSelection', min='1', max='10', value=ticket.points)#pointsSelection
+                                            input.editField(type='number', name='pointsSelection', min='1', max='10', value=ticket.points)#pointsSelection
                                             label(for='pointsSelection') #{__('tickets.points')}
                                     .row
                                         .input-field.padding-10
@@ -96,15 +98,15 @@ block content
                                     if false
                                         .row.subtasksRow
                                             .input-field.padding-10#subtasksSelection
-                                                input.validate(type='text', name='subtasks')
+                                                input.editField.validate(type='text', name='subtasks')
                                                 label(for='description') #{__('tickets.subtasks')}
                                     .row.milestoneIssuesRow
                                         .input-field.padding-10#milestoneIssuesSelection
-                                            input.validate(type='text', name='milestoneIssues')
+                                            input.editField.validate(type='text', name='milestoneIssues')
                                             label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
                                     .row
                                         .input-field.col.s4
-                                            select#relatedSelectedInput
+                                            select.editField#relatedSelectedInput
                                                 option(value='0') #{__('tickets.relation.blocks')}
                                                 option(value='1') #{__('tickets.relation.blocked_by')}
                                                 option(value='2') #{__('tickets.relation.duplicates')}
@@ -113,7 +115,7 @@ block content
                                                 option(value='5') #{__('tickets.relation.fixed_by')}
                                             label #{__('tickets.relation.label')}
                                         .input-field.col.s6
-                                            input#relatedInput.validate(type='text')
+                                            input.editField#relatedInput.validate(type='text')
                                             label(for='relatedInput') #{__('tickets.id')}
                                         .input-field.col.s2
                                             button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
@@ -129,16 +131,16 @@ block content
                                 .col.s12.l4
                                     .row
                                         .input-field.padding-10
-                                            input(type='text', value=`${reporter}`, disabled)
+                                            input.editField(type='text', value=`${reporter}`, disabled)
                                             label(for='autocomplete-input') #{__('tickets.reporter')}
                                     .row
                                         .input-field.padding-10
-                                            input.autocomplete(type='text', value=`${assignee}`, name='assigneeAutocomplete')#assigneeAutocomplete
+                                            input.editField.autocomplete(type='text', value=`${assignee}`, name='assigneeAutocomplete')#assigneeAutocomplete
                                             label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                     .row.hidden#current-ticket-assingee #{ticket.assignee}
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
-                                            input.autocomplete(type='text')#releasesAutocomplete
+                                            input.editField.autocomplete(type='text')#releasesAutocomplete
                                             label(for='releasesAutocomplete') #{__('tickets.release')}
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10#ticketReleasesDivId
@@ -150,7 +152,7 @@ block content
                                     if isScrumBoardType
                                         .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10
-                                                input.autocomplete(type='text')#sprintsAutocomplete
+                                                input.editField.autocomplete(type='text')#sprintsAutocomplete
                                                 label(for='sprintsAutocomplete') #{__('tickets.sprints')}
                                         .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10#ticketSprintsDivId
