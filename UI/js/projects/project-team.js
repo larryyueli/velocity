@@ -491,7 +491,7 @@ function getListOfAssignee() {
                 minLength: 0,
             });
             $(sprintFilterUserAutocompleteId).on('keyup', function () {
-                sprintFilterUser = usernameObj[$(sprintFilterUserAutocompleteId)[0].value];
+                sprintFilterUser = usernameObj[$(sprintFilterUserAutocompleteId)[0].value.trim()];
                 // startLoad(sprintsLoadId, sprintsListId);
                 displayFilteredTeamData();
             });

@@ -185,7 +185,7 @@ function displayFilteredTeamData() {
         const currentTeamObject = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['members'].find(user => user['username'] === sprintFilterUser);
         currentTeamStates = currentTeamObject ? currentTeamObject['states'] : null;
         currentTeamPoints = currentTeamObject ? currentTeamObject['points'] : null;
-    } else if (selectedSprint) {
+    } else if (selectedSprint && $(sprintFilterUserAutocompleteId).val().trim() === '') {
         const tempSprint = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['members'];
         var newPointsObject = Object.create( dummyObject );
         tempSprint.forEach(user => {
