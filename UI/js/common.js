@@ -226,6 +226,7 @@ const translations = Object.freeze({
     noResultsFoundBasedOnSearch: 'No results found based on your search',
     notInGroup: 'You are currently not in a group',
     passwordsDontMatch: 'Passwords do not match',
+    points: 'Points',
     progressTickets: 'In Progress Tickets',
     randomize: 'Randomize',
     randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',

@@ -16,6 +16,9 @@
 		"submit": "Submit",
 		"update": "Update"
 	},
+	"analytics": {
+		"tickets": "Tickets"
+	},
 	"app": {
 		"name": "Velocity"
 	},
