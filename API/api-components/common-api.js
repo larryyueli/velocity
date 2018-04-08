@@ -37,8 +37,10 @@ const pugPages = Object.freeze({
     users: 'users/users',
     usersAdd: 'users/users-add',
     usersEdit: 'users/users-edit',
-    usersImportComplete: 'users/users-import-complete',
+    usersExport: 'users/users-export',
+    usersExportComplete: 'users/users-export-complete',
     usersImport: 'users/users-import',
+    usersImportComplete: 'users/users-import-complete',
 });
 exports.pugPages = pugPages;
 

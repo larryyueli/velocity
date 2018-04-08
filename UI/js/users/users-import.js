@@ -23,6 +23,7 @@ const accountImportContainerId = '#account-import-container';
 const accountImportDivId = '#account-import-div';
 const navUsersId = '#nav-users';
 const navmUsersId = '#navm-users';
+const importDoneButtonId = '#account-import-form-done';
 
 $(function () {
     $(navUsersId).addClass('active');
@@ -53,6 +54,9 @@ $(function () {
             data: formData,
             success: function (data) {
                 $(accountImportContainerId).html(data);
+                $(importDoneButtonId).click(() => {
+                    window.location.href = '/users';
+                });
                 successSnackbar(translate('successfulFileUpload'));
             },
             error: function (data) {

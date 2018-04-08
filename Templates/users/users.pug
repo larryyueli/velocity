@@ -40,10 +40,12 @@ block content
                         label #{__('users.userStatus')}
         .row#usersRowButton
             .col.s6
-                a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/users/import') #{__('actions.import')}
+                a.waves-effect.waves-light.btn.left.primaryColour-background-colour.no-text-flat-buttons.margin-right-5(href='/users/import')
                     i.material-icons.right cloud_upload
+                a.waves-effect.waves-light.btn.left.primaryColour-background-colour.no-text-flat-buttons(href='/users/export')
+                    i.material-icons.right cloud_download
             .col.s6
-                a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/users/add') #{__('actions.create')}
+                a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/users/add') #{__('users.label')}
                     i.material-icons.right person_add
         .row
             .col.s12

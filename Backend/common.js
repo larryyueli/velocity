@@ -110,6 +110,8 @@ const errors = Object.freeze({
     2052: 'can not close a sprint, sprint is not active',
     2053: 'can not activate a sprint, sprint is not open',
     2054: 'can not delete a tag, tag is not active',
+    2055: 'cant access users export page, permission denied',
+    2056: 'cant access users export file, permission denied',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',

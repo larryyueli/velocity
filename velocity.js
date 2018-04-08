@@ -270,6 +270,9 @@ app.get('/users', api.handleUsersPath);
 app.get('/usersListComponent', api.handleUsersListComponentPath);
 app.get('/users/add', api.handleUsersAddPath);
 app.get('/users/edit/:username', api.handleUsersEditPath);
+app.get('/users/export', api.handleUsersExportPath);
+app.get('/users/export/file', api.handleUsersExportFilePath);
+app.get('/users/export/file/download', api.handleUsersExportFileDownloadPath);
 app.get('/users/import', api.handleUsersImportPath);
 // </Get Requests> -----------------------------------------------
 

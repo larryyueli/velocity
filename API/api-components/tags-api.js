@@ -38,7 +38,7 @@ const createTag = function (req, res) {
 
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -87,7 +87,7 @@ const createTag = function (req, res) {
 const getTagsList = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -149,7 +149,7 @@ const deleteTag = function (req, res) {
     const teamId = req.body.teamId;
     const tagId = req.body.tagId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);

@@ -38,7 +38,7 @@ const createRelease = function (req, res) {
 
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -87,7 +87,7 @@ const createRelease = function (req, res) {
 const getReleasesList = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -149,7 +149,7 @@ const deleteRelease = function (req, res) {
     const teamId = req.body.teamId;
     const releaseId = req.body.releaseId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -212,7 +212,7 @@ const closeRelease = function (req, res) {
     const teamId = req.body.teamId;
     const releaseId = req.body.releaseId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);

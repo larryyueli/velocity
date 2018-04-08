@@ -14,7 +14,9 @@
 		"reset": "Reset",
 		"save": "Save",
 		"submit": "Submit",
-		"update": "Update"
+		"update": "Update",
+		"export": "Export",
+		"download": "Download"
 	},
 	"app": {
 		"name": "Velocity"
@@ -120,7 +122,8 @@
 			"kanban": "Kanban",
 			"label": "Board Type",
 			"scrum": "Scrum"
-		}
+		},
+		"label": "Project"
 	},
 	"projectPage": {
 		"tabs": {
@@ -295,16 +298,37 @@
 		"usersAddFormTitle": "Account Creation Form",
 		"usersEditFormDescription": "Edit a user's account information",
 		"usersEditFormTitle": "Account Edit Form",
-		"usersImportCompleteFormAdded": "Total number of users added",
-		"usersImportCompleteFormDescription": "The list of user accounts has been imported",
-		"usersImportCompleteFormFailed": "Total number of failed attempts",
-		"usersImportCompleteFormExists": "Total number of users already exist",
-		"usersImportCompleteFormReport": "Report",
-		"usersImportCompleteFormTitle": "Import Job Completed",
-		"usersImportCompleteFormProcessed": "Total number of users processed",
-		"usersImportFormButton": "File",
-		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
-		"usersImportFormPlaceHolder": "Select your csv file",
-		"usersImportFormTitle": "Accounts Import Form"
+		"label": "User",
+		"import": {
+			"form": {
+				"title": "Accounts Import Form",
+				"description": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
+				"button": "File",
+				"placeHolder": "Select your csv file"
+			},
+			"complete": {
+				"form": {
+					"title": "Import Job Completed",
+					"description": "The list of user accounts has been imported",
+					"report": "Report",
+					"added": "Total number of users added",
+					"failed": "Total number of failed attempts",
+					"exists": "Total number of users already exist",
+					"processed": "Total number of users processed"
+				}
+			}
+		},
+		"export": {
+			"form": {
+				"title": "Accounts Export Form",
+				"description": "Export the full list of users"
+			},
+			"complete": {
+				"form": {
+					"title": "Export Job Completed",
+					"description": "The list of user accounts has been exported"
+				}
+			}
+		}
 	}
 }

@@ -19,6 +19,7 @@
     "i18n": "0.8.3",
     "jquery": "3.2.1",
     "jquery.caret": "0.3.1",
+    "json2csv": "4.0.2",
     "materialize-css": "0.100.2",
     "moment": "2.20.1",
     "mongodb": "3.0.1",

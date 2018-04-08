@@ -1,0 +1,20 @@
+.row
+    .col.s12
+        .card.center
+            .card-image
+                a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href='/projects')
+                    i.material-icons arrow_back
+            .card-content
+                .row
+                    include ../checkmark
+                h5.card-title #{__('projects.import.complete.form.title')}
+                h6 #{__('projects.import.complete.form.description')}
+            .card-action
+                .flow-left
+                    h5.alignTextLeft &nbsp;#{__('projects.import.complete.form.report')}:
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('projects.import.complete.form.added')}: #{added}
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('projects.import.complete.form.failed')}: #{failed}
+                    h6.alignTextLeft &nbsp;&nbsp;&nbsp;&nbsp;#{__('projects.import.complete.form.processed')}: #{total}
+                br
+                button.waves-effect.waves-light.btn.primaryColour-background-colour#account-import-form-done #{__('actions.done')}
+                    i.material-icons.right cloud_done

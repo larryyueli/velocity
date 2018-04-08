@@ -42,7 +42,7 @@ const addComment = function (req, res) {
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -174,7 +174,7 @@ const updateComment = function (req, res) {
     const ticketId = req.body.ticketId;
     const commentId = req.body.commentId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -246,7 +246,7 @@ const deleteComment = function (req, res) {
     const ticketId = req.body.ticketId;
     const commentId = req.body.commentId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);

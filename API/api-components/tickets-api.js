@@ -42,7 +42,7 @@ const getTicketByDisplayId = function (req, res) {
     const teamId = req.query.teamId;
     const ticketDisplayId = req.query.displayId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -158,7 +158,7 @@ const createTicket = function (req, res) {
         }
     }
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -401,7 +401,7 @@ const renderCreateTicketPage = function (req, res) {
 
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -462,7 +462,7 @@ const renderTicketPage = function (req, res) {
     const teamId = req.params.teamId;
     const ticketId = req.params.ticketId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -725,7 +725,7 @@ const updateTicket = function (req, res) {
         }
     }
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -1226,7 +1226,7 @@ const renderSearchPage = function (req, res) {
         }
     }
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -1283,7 +1283,7 @@ const getTicketsListComponent = function (req, res) {
 
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -1359,7 +1359,7 @@ const updateTicketState = function (req, res) {
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
     const state = req.body.state;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
