@@ -23,14 +23,16 @@ const users = require('./users.js');
 
 /**
  * Returns the ticket states for sprints and releases
- * @param {*} team team object
+ * @param {object} team team object
  * @param {object} sprints sprints object
+ * @param {object} releases releases object
  * @param {object} tickets tickets object
  * @param {function} callback callback
  */
-const getTicketStates = function (team, sprints, tickets, callback) {
+const getTicketStates = function (team, sprints, releases, tickets, callback) {
     let result = {
-        sprints: []
+        sprints: [],
+        releases: []
     }
     let membersList = [];
     let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
@@ -65,6 +67,26 @@ const getTicketStates = function (team, sprints, tickets, callback) {
                         if (result.sprints[i].members[h]._id === tickets[j].assignee) {
                             result.sprints[i].members[h].states[tickets[j].state]++;
                             result.sprints[i].members[h].points[tickets[j].state] += tickets[j].points;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (let i = 0; i < releases.length; i++) {
+        result.releases.push({
+            releaseName: releases[i].name,
+            releaseId: releases[i]._id,
+            sprintStatus: releases[i].status,
+            members: membersList
+        });
+        for (let j = 0; j < tickets.length; j++) {
+            for (let z = 0; z < releases[i].tickets.length; z++) {
+                if (tickets[j]._id === releases[i].tickets[z]) {
+                    for (let h = 0; h < result.releases[i].members.length; h++) {
+                        if (result.releases[i].members[h]._id === tickets[j].assignee) {
+                            result.releases[i].members[h].states[tickets[j].state]++;
+                            result.releases[i].members[h].points[tickets[j].state] += tickets[j].points;
                         }
                     }
                 }
