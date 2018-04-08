@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const common = require('./common.js');
 const config = require('./config.js');
+const projects = require('./projects.js');
 const users = require('./users.js');
 
 const analyticsTimeInterval = 86400000;
@@ -53,7 +54,15 @@ const initialize = function (callback) {
  * Save marker for sprints and releases
  */
 const saveHistory = function () {
-    
+    let projectsList = [];
+    projects.getActiveProjectsList(function (err, projectsObj) {
+        projectsList = common.convertJsonListToList('_id', projectsObj);
+        projects.getActiveClosedSprintsByProjectIds(projectsList, function (err, projectsObj) {
+            projects.getTicketsByProjectIds(projectsList, function (err, projectsObj) {
+                console.log('So far so good');
+            });
+        });
+    });
 }
 
 /**
@@ -128,7 +137,7 @@ const getTicketStates = function (team, sprints, releases, tickets, callback) {
             }
         }
     }
-    
+
     return callback(null, result);
 }
 

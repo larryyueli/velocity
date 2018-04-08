@@ -85,6 +85,15 @@ const getFullProjectsList = function (callback) {
 }
 
 /**
+ * get active projects list
+ *
+ * @param {function} callback callback function
+ */
+const getActiveProjectsList = function (callback) {
+    getLimitedProjectsListSorted({ status: common.projectStatus.ACTIVE.value }, { title: 1 }, 0, callback);
+}
+
+/**
  * get projects list with search, sort and limit params
  *
  * @param {object} searchQuery search parameters
@@ -237,6 +246,7 @@ exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionTyp
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
 exports.getActiveProjectById = getActiveProjectById;
+exports.getActiveProjectsList = getActiveProjectsList;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.initialize = initialize;
@@ -258,10 +268,12 @@ exports.updateReleaseById = releases.updateReleaseById;
 // <sprints> -----------------------------------
 exports.addSprintToTeam = sprints.addSprint;
 exports.addTicketToSprints = sprints.addTicketToSprints;
+exports.getActiveClosedSprintsByProjectIds = sprints.getActiveClosedSprintsByProjectIds;
 exports.getActiveSprintByTeamId = sprints.getActiveSprint;
 exports.getAvailableSprintsByTeamId = sprints.getAvailableSprintsByTeamId;
 exports.getSprintById = sprints.getSprintById;
 exports.getSprintsByIds = sprints.getSprintsByIds;
+exports.getSprintsByProjectIds = sprints.getSprintsByProjectIds;
 exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
 exports.getSprintsByTicketId = sprints.getSprintsByTicketId;
 exports.removeTicketFromSprints = sprints.removeTicketFromSprints;
@@ -296,6 +308,7 @@ exports.getTicketByDisplayId = tickets.getTicketByDisplayId;
 exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByIds = tickets.getTicketsByIds;
 exports.getTicketsByProjectId = tickets.getTicketsByProjectId;
+exports.getTicketsByProjectIds = tickets.getTicketsByProjectIds;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 exports.getTicketsInBacklog = tickets.getTicketsInBacklog;
 exports.getTicketsWithNoSprints = tickets.getTicketsWithNoSprints;

@@ -213,15 +213,15 @@ httpServer.listen(config.httpPort, function () {
                                 logger.error(JSON.stringify(err));
                                 process.exit(1);
                             }
-                            logger.info('Project instance has been built successfully.');
 
+                            logger.info('Project instance has been built successfully.');
                             analytics.initialize(function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
                                 }
+                                
                                 logger.info('Analytics instance has been built successfully.');
-
                                 api.initialize(pug, notificationsWS, function (err, result) {
                                     if (err) {
                                         logger.error(JSON.stringify(err));
