@@ -19,7 +19,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
 const common = require('./common.js');
+const config = require('./config.js');
 const users = require('./users.js');
+
+const analyticsTimeInterval = 86400000;
+
+/**
+ * Initialize the intervals
+ *
+ * @param {function} callback callback function
+ */
+const initialize = function (callback) {
+    var d = new Date();
+    var h = d.getHours();
+    var m = d.getMinutes();
+    var s = d.getSeconds();
+    var secondsTilMidNight = ((24 * 60 * 60) - (h * 60 * 60) - (m * 60) - s) * 1000;
+
+    if (config.debugMode) {
+        saveHistory();
+    }
+
+    setTimeout(function () {
+        saveHistory();
+        setInterval(function () {
+            saveHistory();
+        }, analyticsTimeInterval);
+    }, secondsTilMidNight);
+    return callback(null, '');
+}
+
+/**
+ * Save marker for sprints and releases
+ */
+const saveHistory = function () {
+    
+}
 
 /**
  * Returns the ticket states for sprints and releases
@@ -98,5 +133,6 @@ const getTicketStates = function (team, sprints, releases, tickets, callback) {
 }
 
 // <exports> -----------------------------------
+exports.initialize = initialize;
 exports.getTicketStates = getTicketStates;
 // </exports> ----------------------------------

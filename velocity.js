@@ -37,6 +37,7 @@ const ws = require('ws');
 const api = require('./API/api-handler.js');
 const common_api = require('./API/api-components/common-api.js');
 
+const analytics = require('./Backend/analytics.js');
 const cfs = require('./Backend/customFileSystem.js');
 const common_backend = require('./Backend/common.js');
 const config = require('./Backend/config.js');
@@ -212,17 +213,25 @@ httpServer.listen(config.httpPort, function () {
                                 logger.error(JSON.stringify(err));
                                 process.exit(1);
                             }
-
                             logger.info('Project instance has been built successfully.');
-                            api.initialize(pug, notificationsWS, function (err, result) {
+
+                            analytics.initialize(function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
                                 }
+                                logger.info('Analytics instance has been built successfully.');
 
-                                logger.info('API instance has been built successfully.');
-                                logger.info(`Debug mode status: ${localDebugMode}`);
-                                config.debugMode = localDebugMode;
+                                api.initialize(pug, notificationsWS, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        process.exit(1);
+                                    }
+    
+                                    logger.info('API instance has been built successfully.');
+                                    logger.info(`Debug mode status: ${localDebugMode}`);
+                                    config.debugMode = localDebugMode;
+                                });
                             });
                         });
                     });
