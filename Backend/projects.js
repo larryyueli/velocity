@@ -259,6 +259,7 @@ exports.addTicketToReleases = releases.addTicketToReleases;
 exports.getAvailableReleasesByTeamId = releases.getAvailableReleasesByTeamId;
 exports.getReleaseById = releases.getReleaseById;
 exports.getReleasesByIds = releases.getReleasesByIds;
+exports.getReleasesByProjectIds = releases.getReleasesByProjectIds;
 exports.getReleasesByTeamId = releases.getReleasesByTeamId;
 exports.getReleasesByTicketId = releases.getReleasesByTicketId;
 exports.removeTicketFromReleases = releases.removeTicketFromReleases;
@@ -295,6 +296,7 @@ exports.updateTagById = tags.updateTagById;
 // <teams> -----------------------------------
 exports.addTeamToProject = teams.addTeamToProject;
 exports.getProjectTeams = teams.getProjectTeams;
+exports.getProjectsTeams = teams.getProjectsTeams;
 exports.getTeamInProjectById = teams.getTeamInProjectById;
 exports.getTeamInProjectByName = teams.getTeamInProjectByName;
 exports.getTeamByUserId = teams.getTeamByUserId;

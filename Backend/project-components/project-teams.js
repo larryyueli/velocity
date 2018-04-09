@@ -73,6 +73,25 @@ const getProjectTeams = function (projectId, callback) {
 }
 
 /**
+ * find the list of teams under all given projects
+ *
+ * @param {array} projectIds project id array
+ * @param {function} callback callback function
+ */
+const getProjectsTeams = function (projectIds, callback) {
+    let projectIdsList = [];
+    for (let i = 0; i < projectIds.length; i++) {
+        projectIdsList.push({ projectId: projectIds[i] });
+    }
+
+    if (projectIds.length === 0) {
+        return callback(null, []);
+    }
+
+    getLimitedTeamsListSorted({ $and: [{ $or: projectIdsList }, { status: common.teamStatus.ACTIVE.value }] }, { name: 1 }, 0, callback);
+}
+
+/**
  * get teams list with search, sort and limit params
  *
  * @param {object} searchQuery search parameters
@@ -231,6 +250,7 @@ const updateTeamById = function (teamId, projectId, updateParams, callback) {
 // <exports> -----------------------------------
 exports.addTeamToProject = addTeam;
 exports.getProjectTeams = getProjectTeams;
+exports.getProjectsTeams = getProjectsTeams;
 exports.getTeamInProjectById = getTeamById;
 exports.getTeamInProjectByName = getTeamByName;
 exports.getTeamByUserId = getTeamByUserId;

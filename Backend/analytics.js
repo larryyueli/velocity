@@ -40,7 +40,7 @@ const initialize = function (callback) {
     if (config.debugMode) {
         saveHistory();
     }
-
+    
     setTimeout(function () {
         saveHistory();
         setInterval(function () {
@@ -57,12 +57,60 @@ const saveHistory = function () {
     let projectsList = [];
     projects.getActiveProjectsList(function (err, projectsObj) {
         projectsList = common.convertJsonListToList('_id', projectsObj);
-        projects.getActiveClosedSprintsByProjectIds(projectsList, function (err, projectsObj) {
-            projects.getTicketsByProjectIds(projectsList, function (err, projectsObj) {
-                console.log('So far so good');
+        projects.getProjectsTeams(projectsList, function (err, teams) {
+            projects.getActiveClosedSprintsByProjectIds(projectsList, function (err, sprints) {
+                projects.getReleasesByProjectIds(projectsList, function (err, releases) {
+                    projects.getTicketsByProjectIds(projectsList, function (err, tickets) {
+                        let historyList = [];
+                        for (let i = 0; i < sprints.length; i++) {
+                            let historyObj = {
+                                _id: common.getUUID(),
+                                date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+                                sprintId: sprints[i]._id,
+                                members: []
+                            }
+                            for (let j = 0; j < teams.length; j++) {
+                                if (teams[j]._id === sprints[i].teamId) {
+                                    for (let z = 0; z < teams[j].members.length; z++) {
+                                        historyObj.members.push(createSprintMemberObject(teams[j].members[z], sprints[i]._id, tickets));
+                                    }
+                                }
+                            }
+                            historyList.push(historyObj);
+                        }
+                    });
+                });
             });
         });
     });
+}
+
+const createSprintMemberObject = function (userId, sprintId, tickets) {
+    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList()); 
+    let memberObject = {
+        _id: userId,
+        fname: usersIdObj[userId].fname,
+        lname: usersIdObj[userId].lname,
+        username: usersIdObj[userId].username,
+        states: {},
+        points: {}
+    }
+
+    Object.keys(common.ticketStates).forEach(state => {
+        memberObject.states[common.ticketStates[state].value] = 0;
+        memberObject.points[common.ticketStates[state].value] = 0;
+    }); 
+
+    for (let i = 0; i < tickets.length; i++) {
+        if (tickets[i].assignee === userId &&
+            tickets[i].sprints.indexOf(sprintId) > -1) {
+            console.log(`Ticket state: ${tickets[i].state}`);
+            memberObject.states[tickets[i].state]++;
+            memberObject.points[tickets[i].state] += tickets[i].points;
+        }
+    }
+
+    return memberObject;
 }
 
 /**

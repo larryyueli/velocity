@@ -117,6 +117,25 @@ const getReleaseById = function (projectId, teamId, releaseId, callback) {
 }
 
 /**
+ * Find all releases that belong to any of the projectIds
+ * 
+ * @param {array} projectIds project id list
+ * @param {function} callback callback function
+ */
+const getReleasesByProjectIds = function (projectIds, callback) {
+    let projectIdsList = [];
+    for (let i = 0; i < projectIds.length; i++) {
+        projectIdsList.push({ projectId: projectIds[i] });
+    }
+
+    if (projectIds.length === 0) {
+        return callback(null, []);
+    }
+
+    getRelease({ $and: [{ $or: projectIdsList }, { status: { $ne: common.releaseStatus.DELETED.value } }] }, callback);
+}
+
+/**
  * find the list of releases by team id
  *
  * @param {string} projectId project id
@@ -277,6 +296,7 @@ exports.addTicketToReleases = addTicketToReleases;
 exports.getAvailableReleasesByTeamId = getAvailableReleasesByTeamId;
 exports.getReleaseById = getReleaseById;
 exports.getReleasesByIds = getReleasesByIds;
+exports.getReleasesByProjectIds = getReleasesByProjectIds;
 exports.getReleasesByTeamId = getReleasesByTeamId;
 exports.getReleasesByTicketId = getReleasesByTicketId;
 exports.initialize = initialize;
