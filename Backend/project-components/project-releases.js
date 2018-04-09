@@ -132,7 +132,7 @@ const getReleasesByProjectIds = function (projectIds, callback) {
         return callback(null, []);
     }
 
-    getRelease({ $and: [{ $or: projectIdsList }, { status: { $ne: common.releaseStatus.DELETED.value } }] }, callback);
+    getLimitedReleasesListSorted({ $and: [{ $or: projectIdsList }, { status: { $ne: common.releaseStatus.DELETED.value } }] }, { status: -1, name: 1 }, 0, callback);
 }
 
 /**

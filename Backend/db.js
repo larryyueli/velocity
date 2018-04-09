@@ -23,6 +23,8 @@ const mongoClient = require('mongodb').MongoClient;
 const common = require('./common.js');
 const config = require('./config.js');
 const db_comments = require('./dbs/db-comments.js');
+const db_history_sprints = require('./dbs/db-history-sprints.js');
+const db_history_releases = require('./dbs/db-history-releases.js');
 const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
 const db_releases = require('./dbs/db-releases.js');
@@ -45,8 +47,9 @@ const initialize = function (callback) {
         if (err) {
             return callback(common.getError(1001), null);
         }
-
         db_comments.initialize(client.db(config.db_name).collection('comments'));
+        db_history_releases.initialize(client.db(config.db_name).collection('history_releases'));
+        db_history_sprints.initialize(client.db(config.db_name).collection('history_sprints'));
         db_notifications.initialize(client.db(config.db_name).collection('notifications'));
         db_projects.initialize(client.db(config.db_name).collection('projects'));
         db_releases.initialize(client.db(config.db_name).collection('releases'));
@@ -93,6 +96,11 @@ exports.updateRelease = db_releases.updateRelease;
 exports.updateReleases = db_releases.updateReleases;
 // </Releases Collection> ---------------------------------------------
 
+// <Releases History Collection> ----------------------------------------------
+exports.addReleaseHistory = db_history_releases.addReleaseHistory;
+exports.getLimitedReleaseHistoryListSorted = db_history_releases.getLimitedReleaseHistoryListSorted;
+// <Releases History Collection> ----------------------------------------------
+
 // <Settings Collection> ----------------------------------------------
 exports.addAllSettings = db_settings.addAllSettings;
 exports.getAllSettings = db_settings.getAllSettings;
@@ -107,6 +115,11 @@ exports.getSprint = db_sprints.getSprint;
 exports.updateSprint = db_sprints.updateSprint;
 exports.updateSprints = db_sprints.updateSprints;
 // </Sprints Collection> ---------------------------------------------
+
+// <Sprints History Collection> ----------------------------------------------
+exports.addSprintHistory = db_history_sprints.addSprintHistory;
+exports.getLimitedSprintHistoryListSorted = db_history_sprints.getLimitedSprintHistoryListSorted;
+// <Sprints History Collection> ----------------------------------------------
 
 // <Tags Collection> ----------------------------------------------
 exports.addTag = db_tags.addTag;

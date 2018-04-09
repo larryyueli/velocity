@@ -215,7 +215,7 @@ httpServer.listen(config.httpPort, function () {
                             }
 
                             logger.info('Project instance has been built successfully.');
-                            analytics.initialize(function (err, result) {
+                            analytics.initialize(localDebugMode, function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
