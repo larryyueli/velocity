@@ -11,6 +11,7 @@ const inTestUserPointsId = '#inTestUserPoints';
 const doneUserTicketsId = '#doneUserTickets';
 const doneUserPointsId = '#doneUserPoints';
 const userTicketDivisionId = 'userTicketDivision';
+const userTicketDivisionChartId = 'userTicketDivisionChart';
 
 const todoTeamPointsId = '#todoTeamPoints';
 const todoTeamTicketsId = '#todoTeamTickets';
@@ -25,6 +26,7 @@ const inTestTeamPointsId = '#inTestTeamPoints';
 const doneTeamTicketsId = '#doneTeamTickets';
 const doneTeamPointsId = '#doneTeamPoints';
 const teamTicketDivisionId = 'teamTicketDivision';
+const teamTicketDivisionChartId = 'teamTicketDivisionChart';
 
 var globalData = null;
 var sprintIdsObj = {};
@@ -34,7 +36,6 @@ const sprintsAutocompleteId = '#sprintsAutocomplete';
 
 $(function () {
     queryScrumStatistics();
-    getListOfSprints();
 });
 
 
@@ -47,14 +48,115 @@ function queryScrumStatistics() {
         teamId: teamId
       },
       success: function (data) {
-          const currentSprint = data['sprints'].find(sprint => sprint['sprintStatus'] === 2);
-          if (currentSprint) {
-              $(sprintsAutocompleteId).val(currentSprint['sprintName']);
-              selectedSprint = currentSprint['sprintId'];
-              $(sprintsAutocompleteId).parent().find('label').addClass('active');
-          }
-          globalData = data;
-          displayScrumCharts(data);
+
+        data = {
+            sprints: [
+                {
+                    sprintId: "s1id",
+                    sprintName: "Sprint 1",
+                    sprintStatus:2,
+                    history: [
+                        {
+                            date: new Date('December 17, 2017'),
+                            members: [
+                                {
+                                    fname: 'student0',
+                                    lname: '0',
+                                    username: 'student0',
+                                    states: {0:1, 1:1, 2:0, 3:2, 4:0, 5:0},
+                                    points: {0:1, 1:4, 2:0, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                },
+                                {
+                                    fname: 'student1',
+                                    lname: '1',
+                                    username: 'student1',
+                                    states: {0:1, 1:2, 2:1, 3:2, 4:0, 5:4},
+                                    points: {0:1, 1:4, 2:1, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                },
+                                {
+                                    fname: 'student2',
+                                    lname: '2',
+                                    username: 'student2',
+                                    states: {0:1, 1:1, 2:0, 3:2, 4:2, 5:0},
+                                    points: {0:1, 1:45, 2:0, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                }
+                            ]
+                        },
+                        {
+                            date: new Date('December 18, 2017'),
+                            members: [
+                                {
+                                    fname: 'student0',
+                                    lname: '0',
+                                    username: 'student0',
+                                    states: {0:1, 1:1, 2:0, 3:2, 4:0, 5:0},
+                                    points: {0:1, 1:4, 2:0, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                },
+                                {
+                                    fname: 'student1',
+                                    lname: '1',
+                                    username: 'student1',
+                                    states: {0:1, 1:2, 2:1, 3:2, 4:0, 5:4},
+                                    points: {0:1, 1:4, 2:1, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                },
+                                {
+                                    fname: 'student2',
+                                    lname: '2',
+                                    username: 'student2',
+                                    states: {0:1, 1:1, 2:0, 3:2, 4:2, 5:0},
+                                    points: {0:1, 1:45, 2:0, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                }
+                            ]
+                        },
+                        {
+                            date: new Date('December 19, 2017'),
+                            members: [
+                                {
+                                    fname: 'student0',
+                                    lname: '0',
+                                    username: 'student0',
+                                    states: {0:2, 1:1, 2:0, 3:2, 4:0, 5:0},
+                                    points: {0:1, 1:4, 2:0, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                },
+                                {
+                                    fname: 'student1',
+                                    lname: '1',
+                                    username: 'student1',
+                                    states: {0:1, 1:2, 2:1, 3:2, 4:0, 5:4},
+                                    points: {0:1, 1:4, 2:1, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                },
+                                {
+                                    fname: 'student2',
+                                    lname: '2',
+                                    username: 'student2',
+                                    states: {0:1, 1:1, 2:0, 3:2, 4:2, 5:0},
+                                    points: {0:1, 1:45, 2:0, 3:5, 4:0, 5:0},
+                                    _id: 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };  
+
+        const currentSprint = data['sprints'].find(sprint => sprint['sprintStatus'] === 2);
+        if (currentSprint) {
+            $(sprintsAutocompleteId).val(currentSprint['sprintName']);
+            selectedSprint = currentSprint['sprintId'];
+            $(sprintsAutocompleteId).parent().find('label').addClass('active');
+        }
+        globalData = data;
+        getListOfSprints();
+        displayScrumCharts(data);
       },
       error: function (data) {
           alert('error');
@@ -63,12 +165,16 @@ function queryScrumStatistics() {
 }
 
 function displayScrumCharts(data) {
-    const currentUserObject = data['sprints'].find(sprint => sprint['sprintStatus'] === 2)['members'].find(user => user['username'] === meObject['username']);
+    const currentUserObject = data['sprints'].find(sprint => sprint['sprintStatus'] === 2)['history'].reduce((prev, current) => {
+        return (prev.date > current.date) ? prev : current;
+    })['members'].find(user => user['username'] === meObject['username']);
+
     const currentUserStates = currentUserObject ? currentUserObject['states'] : null;
     const currentUserPoints = currentUserObject ? currentUserObject['points'] : null;
 
     displayUserCards(currentUserStates, currentUserPoints);
     displayUserPieDivision(currentUserStates, currentUserPoints);
+    displayUserDateDivision();
 
     displayFilteredTeamData();
 }
@@ -175,18 +281,91 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
     });
 }
 
+function displayUserDateDivision() {
+    var ctx = document.getElementById(userTicketDivisionChartId).getContext('2d');
+    var dates = [];
+
+    backgroundColor = [
+        $('.gradient-todo-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-in-progress-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-code-review-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-ready-for-test-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-in-test-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-done-back').css('background').match(/rgba\(.*?\)/g)[0]
+    ];
+    borderColor = [
+        $('.gradient-todo').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-in-progress').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-code-review').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-ready-for-test').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-in-test').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[1]
+    ];
+
+    var allData = {};
+
+    globalData['sprints'].find(sprint => sprint['sprintStatus'] === 2)['history'].forEach(sprint => dates.push(sprint['date'].toDateString()));
+    globalData['sprints'].find(sprint => sprint['sprintStatus'] === 2)['history'].forEach(sprint => {
+        const states = sprint['members'].find(user => user['username'] === meObject['username'])['states'];
+        for (var item in states) {
+            allData[item] ? allData[item].push(states[item]) : allData[item] = [states[item]];
+        }
+    });
+
+    data = {
+        datasets: [],
+        labels: dates
+    };
+
+    for (var item in allData) {
+        data['datasets'].push({
+            label: translate(`state${item}`),
+            data: allData[item],
+            backgroundColor: backgroundColor[item],
+            borderColor: borderColor[item],
+            pointBorderColor: borderColor[item],
+            borderWidth: 4,
+            pointHoverBackgroundColor: 'white',
+            pointHoverBorderColor: borderColor[item],
+            pointRadius: 4,
+        });
+    }
+    options = {};
+    
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });   
+}
+
 function displayFilteredTeamData() {
     //TODO: explain why you need a sprint
     var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
     var currentTeamStates = null;
     var currentTeamPoints = null;
 
+    var dates = [];
+    var allData = {};
+
     if (selectedSprint && sprintFilterUser) {
-        const currentTeamObject = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['members'].find(user => user['username'] === sprintFilterUser);
+        const currentTeamObject = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].reduce((prev, current) => {
+            return (prev.date > current.date) ? prev : current;
+        })['members'].find(user => user['username'] === sprintFilterUser);
         currentTeamStates = currentTeamObject ? currentTeamObject['states'] : null;
         currentTeamPoints = currentTeamObject ? currentTeamObject['points'] : null;
+
+        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(sprint['date'].toDateString()));
+        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => {
+            const states = sprint['members'].find(user => user['username'] === sprintFilterUser)['states'];
+            for (var item in states) {
+                allData[item] ? allData[item].push(states[item]) : allData[item] = [states[item]];
+            }
+        });
     } else if (selectedSprint && $(sprintFilterUserAutocompleteId).val().trim() === '') {
-        const tempSprint = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['members'];
+        const tempSprint = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].reduce((prev, current) => {
+            return (prev.date > current.date) ? prev : current;
+        })['members'];
         var newPointsObject = Object.create( dummyObject );
         tempSprint.forEach(user => {
             for (var point in user['points']) {
@@ -201,10 +380,29 @@ function displayFilteredTeamData() {
         });
         currentTeamStates = newStatsObject;
         currentTeamPoints = newPointsObject;
+
+        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(sprint['date'].toDateString()));
+
+        var tempData = {};    
+        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => {
+            sprint['members'].forEach(user => {
+                for (var item in user['states']) {
+                    tempData[item] ? tempData[item] +=user['states'][item] : tempData[item] = user['states'][item];
+                }
+            })
+    
+            for (var item in tempData) {
+                allData[item] ? allData[item].push(tempData[item]) : allData[item] = [tempData[item]];	
+            }
+    
+            tempData = {}
+        });
     }
 
     displayteamCards(currentTeamStates, currentTeamPoints);
     displayteamPieDivision(currentTeamStates, currentTeamPoints);
+
+    displayTeamDateDivision(allData, dates);
 
 }
 
@@ -311,44 +509,75 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
     });
 }
 
+function displayTeamDateDivision(allData, dates) {
+    var ctx = document.getElementById(teamTicketDivisionChartId).getContext('2d');
+
+    backgroundColor = [
+        $('.gradient-todo-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-in-progress-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-code-review-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-ready-for-test-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-in-test-back').css('background').match(/rgba\(.*?\)/g)[0],
+        $('.gradient-done-back').css('background').match(/rgba\(.*?\)/g)[0]
+    ];
+    borderColor = [
+        $('.gradient-todo').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-in-progress').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-code-review').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-ready-for-test').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-in-test').css('background').match(/rgb\(.*?\)/g)[1],
+        $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[1]
+    ];
+
+    data = {
+        datasets: [],
+        labels: dates
+    };
+
+    for (var item in allData) {
+        data['datasets'].push({
+            label: translate(`state${item}`),
+            data: allData[item],
+            backgroundColor: backgroundColor[item],
+            borderColor: borderColor[item],
+            pointBorderColor: borderColor[item],
+            borderWidth: 4,
+            pointHoverBackgroundColor: 'white',
+            pointHoverBorderColor: borderColor[item],
+            pointRadius: 4,
+        });
+    }
+    options = {};
+    
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });   
+}
 
 function getListOfSprints() {
-    $.ajax({
-        type: 'GET',
-        url: '/project/team/sprints/list',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            let sprintsObj = {};
+    let sprintsObj = {};
 
-            for (let i = 0; i < data.sprintsList.length; i++) {
-                let sprint = data.sprintsList[i];
-                sprintsObj[`${sprint.name}`] = null;
-                sprintIdsObj[`${sprint.name}`] = sprint._id;
-            }
-            $(sprintsAutocompleteId).autocomplete({
-                data: sprintsObj,
-                limit: 20,
-                onAutocomplete: function (val) {
-                    selectedSprint = sprintIdsObj[val];
-                    // TODO loader
-                    displayFilteredTeamData();
-                },
-                minLength: 0,
-            });
-            $(sprintsAutocompleteId).on('keyup', function () {
-                selectedSprint = sprintIdsObj[$(sprintsAutocompleteId).val()];
-                // TODO loader
-                displayFilteredTeamData();
-            });
-        },
-        error: function (data) {
-            handle401And404(data);
+    globalData['sprints'].forEach(sprint => {
+        sprintsObj[`${sprint['sprintName']}`] = null;
+        sprintIdsObj[`${sprint['sprintName']}`] = sprint['sprintId'];
+    });
 
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
+    $(sprintsAutocompleteId).autocomplete({
+        data: sprintsObj,
+        limit: 20,
+        onAutocomplete: function (val) {
+            selectedSprint = sprintIdsObj[val];
+            // TODO loader
+            displayFilteredTeamData();
+        },
+        minLength: 0,
+    });
+
+    $(sprintsAutocompleteId).on('keyup', function () {
+        selectedSprint = sprintIdsObj[$(sprintsAutocompleteId).val()];
+        // TODO loader
+        displayFilteredTeamData();
     });
 }
