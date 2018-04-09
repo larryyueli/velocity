@@ -53,6 +53,43 @@
         background: linear-gradient(45deg, themed('standardGreen') 0%, themed('lighterStandardGreen') 100%);
     }
 }
+
+.gradient-todo-back {
+    @include themify($themes) {
+        background: themed('lighterStandardBlueBack');
+    }
+}
+
+.gradient-in-progress-back {
+    @include themify($themes) {
+        background: themed('lighterStandardYellowBack');
+    }
+}
+
+.gradient-code-review-back {
+    @include themify($themes) {
+        background: themed('lighterStandardRedBack');
+    }
+}
+
+.gradient-ready-for-test-back {
+    @include themify($themes) {
+        background: themed('lighterStandardLightBlueBack');
+    }
+}
+
+.gradient-in-test-back {
+    @include themify($themes) {
+        background: themed('lighterStandardOrangeBack');
+    }
+}
+
+.gradient-done-back {
+    @include themify($themes) {
+        background: themed('lighterStandardGreenBack');
+    }
+}
+
 .min-height-100 {
     min-height: 100px;
 }
