@@ -70,7 +70,7 @@ const getAnalyticsData = function (req, res) {
                             logger.error(JSON.stringify(err));
                             return res.status(500).send(err);
                         }
-                        analytics.getTicketStates(teamObj, sprintsObj, releaseObj, ticketsObj, function (err, stateObj) {
+                        analytics.getTeamAnalytics(teamObj, sprintsObj, releaseObj, ticketsObj, function (err, stateObj) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                                 return res.status(500).send(err);

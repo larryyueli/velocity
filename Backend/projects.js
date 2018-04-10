@@ -269,6 +269,7 @@ exports.updateReleaseById = releases.updateReleaseById;
 // <sprints> -----------------------------------
 exports.addSprintToTeam = sprints.addSprint;
 exports.addTicketToSprints = sprints.addTicketToSprints;
+exports.getActiveSprintsByProjectIds = sprints.getActiveSprintsByProjectIds;
 exports.getActiveClosedSprintsByProjectIds = sprints.getActiveClosedSprintsByProjectIds;
 exports.getActiveSprintByTeamId = sprints.getActiveSprint;
 exports.getAvailableSprintsByTeamId = sprints.getAvailableSprintsByTeamId;

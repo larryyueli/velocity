@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const common = require('./../common.js');
 
-var sprintsHistoryCollection;
+var sprintsAnalyticsCollection;
 
 /**
  * Instantiate the analytics database object
@@ -28,35 +28,35 @@ var sprintsHistoryCollection;
  * @param {object} collectionObject collection object
  */
 const initialize = function (collectionObject) {
-    sprintsHistoryCollection = collectionObject;
+    sprintsAnalyticsCollection = collectionObject;
 }
 
 /**
- * Add a history object
+ * Add a analytics object
  *
- * @param {object} historyObj the history object
+ * @param {object} analyticsObj the analytics object
  * @param {function} callback callback function
  */
-const addSprintHistory = function (historyObj, callback) {
-    sprintsHistoryCollection.insert(historyObj, function (err, obj) {
+const addSprintAnalytics = function (analyticsObj, callback) {
+    sprintsAnalyticsCollection.insert(analyticsObj, function (err, obj) {
         if (err) {
             return callback(common.getError(8001), null);
         }
 
-        return callback(null, historyObj);
+        return callback(null, analyticsObj);
     });
 }
 
 /**
- * Get the limited list of history from the database
+ * Get the limited list of analytics from the database
  *
  * @param {object} searchQuery search parameters
  * @param {object} sortQuery sort parameters
  * @param {number} lim limit
  * @param {function} callback callback function
  */
-const getLimitedSprintHistoryListSorted = function (searchQuery, sortQuery, lim, callback) {
-    sprintsHistoryCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
+const getLimitedSprintAnalyticsListSorted = function (searchQuery, sortQuery, lim, callback) {
+    sprintsAnalyticsCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
         if (err) {
             console.log(err);
             return callback(common.getError(8002), null);
@@ -68,7 +68,7 @@ const getLimitedSprintHistoryListSorted = function (searchQuery, sortQuery, lim,
 
 
 // <exports> -----------------------------------
-exports.addSprintHistory = addSprintHistory;
-exports.getLimitedSprintHistoryListSorted = getLimitedSprintHistoryListSorted;
+exports.addSprintAnalytics = addSprintAnalytics;
+exports.getLimitedSprintAnalyticsListSorted = getLimitedSprintAnalyticsListSorted;
 exports.initialize = initialize;
 // </exports> ----------------------------------

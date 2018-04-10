@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const common = require('./../common.js');
 
-var releasesHistoryCollection;
+var releasesAnalyticsCollection;
 
 /**
  * Instantiate the analytics database object
@@ -28,35 +28,35 @@ var releasesHistoryCollection;
  * @param {object} collectionObject collection object
  */
 const initialize = function (collectionObject) {
-    releasesHistoryCollection = collectionObject;
+    releasesAnalyticsCollection = collectionObject;
 }
 
 /**
- * Add a history object
+ * Add an analytics object
  *
- * @param {object} historyObj the history object
+ * @param {object} analyticsObj the analytics object
  * @param {function} callback callback function
  */
-const addReleaseHistory = function (historyObj, callback) {
-    releasesHistoryCollection.insert(historyObj, function (err, obj) {
+const addReleaseAnalytics = function (analyticsObj, callback) {
+    releasesAnalyticsCollection.insert(analyticsObj, function (err, obj) {
         if (err) {
             return callback(common.getError(8001), null);
         }
 
-        return callback(null, historyObj);
+        return callback(null, analyticsObj);
     });
 }
 
 /**
- * Get the limited list of history from the database
+ * Get the limited list of analytics from the database
  *
  * @param {object} searchQuery search parameters
  * @param {object} sortQuery sort parameters
  * @param {number} lim limit
  * @param {function} callback callback function
  */
-const getLimitedReleaseHistoryListSorted = function (searchQuery, sortQuery, lim, callback) {
-    releasesHistoryCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
+const getLimitedReleaseAnalyticsListSorted = function (searchQuery, sortQuery, lim, callback) {
+    releasesAnalyticsCollection.find(searchQuery).sort(sortQuery).limit(lim).toArray(function (err, list) {
         if (err) {
             console.log(err);
             return callback(common.getError(8002), null);
@@ -68,7 +68,7 @@ const getLimitedReleaseHistoryListSorted = function (searchQuery, sortQuery, lim
 
 
 // <exports> -----------------------------------
-exports.addReleaseHistory = addReleaseHistory;
-exports.getLimitedReleaseHistoryListSorted = getLimitedReleaseHistoryListSorted;
+exports.addReleaseAnalytics = addReleaseAnalytics;
+exports.getLimitedReleaseAnalyticsListSorted = getLimitedReleaseAnalyticsListSorted;
 exports.initialize = initialize;
 // </exports> ----------------------------------
