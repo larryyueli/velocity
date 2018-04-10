@@ -220,6 +220,7 @@ const translations = Object.freeze({
     issuesFound: 'issues found',
     members: 'Members',
     mustBeCsv: 'File format must be csv!',
+    mustBeVelocity: 'File format must be velocity!',
     mustImportOneFile: 'You can only import one file!',
     newTickets: 'New Tickets',
     noMembers: 'No Members',

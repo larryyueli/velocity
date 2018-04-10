@@ -593,39 +593,59 @@ const importUsersFile = function (req, res) {
             let total = 0;
             let processedDirs = 0;
 
-            for (let i = 0; i < importedList.length; i++) {
-                let inputUser = importedList[i];
-                let userToAdd = {
-                    fname: inputUser.fname,
-                    lname: inputUser.lname,
-                    username: inputUser.username,
-                    email: inputUser.email,
-                    password: inputUser.password,
-                    type: settings.getModeType() === common_backend.modeTypes.CLASS ?
-                        common_backend.userTypes.STUDENT.value : common_backend.userTypes.COLLABORATOR.value,
-                    status: common_backend.userStatus.ACTIVE.value
-                };
-                users.addUser(userToAdd, function (err, userObj) {
-                    total++;
+            if (importedList.length === 0) {
+                return res.status(200).render(common_api.pugPages.usersImportComplete, {
+                    added: added,
+                    failed: failed,
+                    exist: exist,
+                    total: total
+                });
+            } else {
+                for (let i = 0; i < importedList.length; i++) {
+                    let inputUser = importedList[i];
+                    let userToAdd = {
+                        fname: inputUser.fname,
+                        lname: inputUser.lname,
+                        username: inputUser.username,
+                        email: inputUser.email,
+                        password: inputUser.password,
+                        type: settings.getModeType() === common_backend.modeTypes.CLASS ?
+                            common_backend.userTypes.STUDENT.value : common_backend.userTypes.COLLABORATOR.value,
+                        status: common_backend.userStatus.ACTIVE.value
+                    };
+                    users.addUser(userToAdd, function (err, userObj) {
+                        total++;
 
-                    if (err) {
-                        if (err.code === 2001) {
-                            exist++;
-                        } else {
-                            failed++;
-                        }
-
-                        logger.error(JSON.stringify(err));
-                    } else {
-                        added++;
-                    }
-
-                    if (userObj) {
-                        cfs.mkdir(common_backend.cfsTree.USERS, userObj._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
+                        if (err) {
+                            if (err.code === 2001) {
+                                exist++;
+                            } else {
+                                failed++;
                             }
 
+                            logger.error(JSON.stringify(err));
+                        } else {
+                            added++;
+                        }
+
+                        if (userObj) {
+                            cfs.mkdir(common_backend.cfsTree.USERS, userObj._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                }
+
+                                processedDirs++;
+
+                                if (total === importedList.length && processedDirs === importedList.length) {
+                                    return res.status(200).render(common_api.pugPages.usersImportComplete, {
+                                        added: added,
+                                        failed: failed,
+                                        exist: exist,
+                                        total: total
+                                    });
+                                }
+                            });
+                        } else {
                             processedDirs++;
 
                             if (total === importedList.length && processedDirs === importedList.length) {
@@ -636,20 +656,9 @@ const importUsersFile = function (req, res) {
                                     total: total
                                 });
                             }
-                        });
-                    } else {
-                        processedDirs++;
-
-                        if (total === importedList.length && processedDirs === importedList.length) {
-                            return res.status(200).render(common_api.pugPages.usersImportComplete, {
-                                added: added,
-                                failed: failed,
-                                exist: exist,
-                                total: total
-                            });
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     });
@@ -697,6 +706,7 @@ const exportUsersFile = function (req, res) {
         filePermissions: common_backend.cfsPermission.OWNER,
         fileCreator: req.session.user._id
     };
+
     cfs.writeFile(fileObject, function (err, result) {
         if (err) {
             logger.error(JSON.stringify(err));
@@ -802,8 +812,8 @@ exports.createUser = createUser;
 exports.editUser = editUser;
 exports.exportUsersFile = exportUsersFile;
 exports.exportUsersFileDownload = exportUsersFileDownload;
-exports.importUsersFile = importUsersFile;
 exports.getProfilePicture = getProfilePicture;
+exports.importUsersFile = importUsersFile;
 exports.login = login;
 exports.logout = logout;
 exports.me = me;

@@ -27,8 +27,12 @@ const pugPages = Object.freeze({
     pageNotFound: 'pageNotFound',
     profile: 'profile',
     projects: 'projects/projects',
-    projectPage: 'projects/project-page',
     projectsAdd: 'projects/projects-add',
+    projectsExport: 'projects/projects-export',
+    projectsExportComplete: 'projects/projects-export-complete',
+    projectsImport: 'projects/projects-import',
+    projectsImportComplete: 'projects/projects-import-complete',
+    projectPage: 'projects/project-page',
     projectTeam: 'projects/project-team',
     settings: 'settings/settings',
     ticketCreation: 'tickets/tickets-entry',
@@ -40,7 +44,7 @@ const pugPages = Object.freeze({
     usersExport: 'users/users-export',
     usersExportComplete: 'users/users-export-complete',
     usersImport: 'users/users-import',
-    usersImportComplete: 'users/users-import-complete',
+    usersImportComplete: 'users/users-import-complete'
 });
 exports.pugPages = pugPages;
 

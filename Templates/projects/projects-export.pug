@@ -9,9 +9,9 @@ block title
 block content
     include ../navbar
     br
-    .container#account-export-container
+    .container#projects-export-container
         #loader
-        .row#account-export-div
+        .row#projects-export-div
             .col.s12
                 .card.center
                     .card-image
@@ -21,7 +21,7 @@ block content
                         h5.card-title #{__('projects.export.form.title')}
                         h6 #{__('projects.export.form.description')}
                     .card-action
-                        button.waves-effect.waves-light.btn.primaryColour-background-colour#account-export-form-submit #{__('actions.export')}
+                        button.waves-effect.waves-light.btn.primaryColour-background-colour#projects-export-form-submit #{__('actions.export')}
                             i.material-icons.right cloud_download
 block scripts
     script(src='/js/projects/projects-export.js')

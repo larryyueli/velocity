@@ -9,9 +9,9 @@ block title
 block content
     include ../navbar
     br
-    .container#account-import-container
+    .container#projects-import-container
         #loader
-        .row#account-import-div
+        .row#projects-import-div
             .col.s12
                 .card.center
                     .card-image
@@ -21,15 +21,15 @@ block content
                         h5.card-title #{__('projects.import.form.title')}
                         h6 #{__('projects.import.form.description')}
                     .card-action
-                        form(encType='multipart/form-data')#account-import-form
+                        form(encType='multipart/form-data')#projects-import-form
                             .file-field.input-field
                                 .btn.primaryColour-background-colour
                                     span #{__('projects.import.form.button')}
-                                    input(type='file', accept='.csv')#account-import-form-input
+                                    input(type='file', accept='.velocity')#projects-import-form-input
                                 .file-path-wrapper
                                     input.file-path.validate(type='text', placeholder=__('projects.import.form.placeHolder'))
                         br
-                        button.waves-effect.waves-light.btn.primaryColour-background-colour#account-import-form-submit #{__('actions.import')}
+                        button.waves-effect.waves-light.btn.primaryColour-background-colour#projects-import-form-submit #{__('actions.import')}
                             i.material-icons.right cloud_download
 block scripts
     script(src='/js/projects/projects-import.js')

@@ -123,7 +123,37 @@
 			"label": "Board Type",
 			"scrum": "Scrum"
 		},
-		"label": "Project"
+		"label": "Project",
+		"export": {
+			"form": {
+				"title": "Projects Export Form",
+				"description": "Export the full list of projects"
+			},
+			"complete": {
+				"form": {
+					"title": "Export Job Completed",
+					"description": "The list of projects has been exported"
+				}
+			}
+		},
+		"import": {
+			"form": {
+				"title": "Projects Import Form",
+				"description": "For optimal results please use a valid .velocity file",
+				"button": "File",
+				"placeHolder": "Select your velocity file"
+			},
+			"complete": {
+				"form": {
+					"title": "Import Job Completed",
+					"description": "The list of projects has been imported",
+					"report": "Report",
+					"added": "Total number of projects added",
+					"failed": "Total number of failed attempts",
+					"processed": "Total number of projects processed"
+				}
+			}
+		}
 	},
 	"projectPage": {
 		"tabs": {

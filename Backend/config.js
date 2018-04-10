@@ -26,6 +26,7 @@ const httpPort = 8000;
 const httpsPort = 8080;
 const notificationsWSPort = 8001;
 const urlencoded = true;
+const password = 'superSecretSecret';
 var debugMode = false;
 const ssl_options = {
     key: fs.readFileSync(`${__dirname}/../Keys/private.key`),
@@ -51,7 +52,6 @@ exports.db_name = db_name;
 
 // session related configuration
 const maxSessionAge = 60 * 60;
-const sessionSecret = 'superSecretSecret';
 const sessionResave = false;
 const saveUninitializedSession = false;
 const rollingSession = true;
@@ -60,7 +60,7 @@ const languageOptions = ['en'];
 const defaultLanguage = 'en';
 
 exports.maxSessionAge = maxSessionAge;
-exports.sessionSecret = sessionSecret;
+exports.sessionSecret = password;
 exports.sessionResave = sessionResave;
 exports.saveUninitializedSession = saveUninitializedSession;
 exports.rollingSession = rollingSession;
@@ -78,3 +78,9 @@ exports.filesSizeLimit = filesSizeLimit;
 exports.safeFileNames = safeFileNames;
 exports.preserveFileExtension = preserveFileExtension;
 exports.abortOnExceedLimit = abortOnExceedLimit;
+
+// encryption
+const encryptionAlgorithm = 'aes-256-ctr';
+
+exports.encryptionAlgorithm = encryptionAlgorithm;
+exports.encryptionPassword = password;

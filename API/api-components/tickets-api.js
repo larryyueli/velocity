@@ -133,7 +133,7 @@ const createTicket = function (req, res) {
             sprints = JSON.parse(sprints);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             sprints = [];
         }
     }
@@ -143,7 +143,7 @@ const createTicket = function (req, res) {
             releases = JSON.parse(releases);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             releases = [];
         }
     }
@@ -153,7 +153,7 @@ const createTicket = function (req, res) {
             tags = JSON.parse(tags);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             tags = [];
         }
     }
@@ -700,7 +700,7 @@ const updateTicket = function (req, res) {
             sprints = JSON.parse(sprints);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             sprints = [];
         }
     }
@@ -710,7 +710,7 @@ const updateTicket = function (req, res) {
             releases = JSON.parse(releases);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             releases = [];
         }
     }
@@ -720,7 +720,7 @@ const updateTicket = function (req, res) {
             tags = JSON.parse(tags);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             tags = [];
         }
     }
