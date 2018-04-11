@@ -96,10 +96,12 @@ exports.getTeamAnalytics = getTeamAnalytics;
 
 // <analytics-releases> -----------------------------------
 exports.saveReleaseAnalytics = analytics_releases.saveReleaseAnalytics;
+exports.saveSpecificReleaseAnalytics = analytics_releases.saveSpecificReleaseAnalytics;
 exports.getReleaseAnalytics = analytics_releases.getReleaseAnalytics;
 // </analytics-releases> ----------------------------------
 
 // <analytics-sprints> -----------------------------------
 exports.saveSprintAnalytics = analytics_sprints.saveSprintAnalytics;
+exports.saveSpecificSprintAnalytics = analytics_sprints.saveSpecificSprintAnalytics;
 exports.getSprintAnalytics = analytics_sprints.getSprintAnalytics;
 // <analytics-sprints> -----------------------------------

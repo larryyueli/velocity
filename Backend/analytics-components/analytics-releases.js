@@ -68,6 +68,30 @@ const saveReleaseAnalytics = function () {
 }
 
 /**
+ * Saves an analytics object for a specific release
+ * 
+ * @param {object} releaseObj release object
+ * @param {object} team team object
+ * @param {array} tickets tickets list
+ * @param {function} callback callback function
+ */
+const saveSpecificReleaseAnalytics = function (releaseObj, team, tickets, callback) {
+    let analyticsObj = {
+        _id: common.getUUID(),
+        date: common.getDate(),
+        idate: common.getISODate(),
+        releaseId: releaseObj._id,
+        releaseName: releaseObj.name,
+        releaseStatus: releaseObj.status,
+        members: []
+    }
+    for (let i = 0; i < team.members.length; i++) {
+        analyticsObj.members.push(createReleaseMemberObject(team.members[i], releaseObj._id, tickets));
+    }
+    db.addReleaseAnalytics(analyticsObj, callback);
+}
+
+/**
  * Creates the release member analytics object
  * 
  * @param {*} userId user id
@@ -136,6 +160,9 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
                     }]
                 });
             } else {
+                if (releaseAnalytics[i].releaseStatus === common.releaseStatus.CLOSED.value) {
+                    releases[index].releaseStatus = common.releaseStatus.CLOSED.value;
+                }
                 releases[index].history.push({
                     date: releaseAnalytics[i].date,
                     members: releaseAnalytics[i].members
@@ -161,5 +188,6 @@ const getLimitedReleaseAnalyticsListSorted = function (searchQuery, sortQuery, l
 
 // <exports> -----------------------------------
 exports.saveReleaseAnalytics = saveReleaseAnalytics;
+exports.saveSpecificReleaseAnalytics = saveSpecificReleaseAnalytics;
 exports.getReleaseAnalytics = getReleaseAnalytics;
 // </exports> ----------------------------------

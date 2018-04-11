@@ -68,6 +68,30 @@ const saveSprintAnalytics = function () {
 }
 
 /**
+ * Saves an analytics object for a specific sprint
+ * 
+ * @param {object} sprintObj sprint object
+ * @param {object} team team object
+ * @param {array} tickets tickets list
+ * @param {function} callback callback function
+ */
+const saveSpecificSprintAnalytics = function (sprintObj, team, tickets, callback) {
+    let analyticsObj = {
+        _id: common.getUUID(),
+        date: common.getDate(),
+        idate: common.getISODate(),
+        sprintId: sprintObj._id,
+        sprintName: sprintObj.name,
+        sprintStatus: sprintObj.status,
+        members: []
+    }
+    for (let i = 0; i < team.members.length; i++) {
+        analyticsObj.members.push(createSprintMemberObject(team.members[i], sprintObj._id, tickets));
+    }
+    db.addSprintAnalytics(analyticsObj, callback);
+}
+
+/**
  * Creates the sprint member analytics object
  * 
  * @param {*} userId user id
@@ -136,6 +160,9 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
                     }]
                 });
             } else {
+                if (sprintAnalytics[i].sprintStatus === common.sprintStatus.CLOSED.value) {
+                    sprints[index].sprintStatus = common.sprintStatus.CLOSED.value;
+                }
                 sprints[index].history.push({
                     date: sprintAnalytics[i].date,
                     members: sprintAnalytics[i].members
@@ -161,5 +188,6 @@ const getLimitedSprintAnalyticsListSorted = function (searchQuery, sortQuery, li
 
 // <exports> -----------------------------------
 exports.saveSprintAnalytics = saveSprintAnalytics;
+exports.saveSpecificSprintAnalytics = saveSpecificSprintAnalytics;
 exports.getSprintAnalytics = getSprintAnalytics;
 // </exports> ----------------------------------

@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const common_api = require('./common-api.js');
 
+const analytics = require('../../Backend/analytics.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
@@ -207,7 +208,22 @@ const closeSprint = function (req, res) {
                             return res.status(500).send(err);
                         }
 
-                        return res.status(200).send('ok');
+                        sprintObj.status = common_backend.sprintStatus.CLOSED.value;
+                        projects.getTicketsByTeamId(projectId, teamId, function (err, ticketObj) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+                            
+                            analytics.saveSpecificSprintAnalytics(sprintObj, teamObj, ticketObj, function (err, analyticsObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+            
+                                return res.status(200).send('ok');
+                            });
+                        });
                     });
                 });
             });
@@ -322,13 +338,47 @@ const activateSprint = function (req, res) {
                     return res.status(400).send(common_backend.getError(2053));
                 }
 
-                projects.setActiveSprintByTeamId(projectId, teamId, sprintId, function (err, result) {
-                    if (err) {
+                projects.getActiveSprintByTeamId(projectId, teamId, function (err, prevActiveSprint) {
+                    if (err && err.code !== 10004) {
                         logger.error(JSON.stringify(err));
                         return res.status(500).send(err);
                     }
+                    
+                    projects.setActiveSprintByTeamId(projectId, teamId, sprintId, function (err, result) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+                        
+                        sprintObj.status = common_backend.sprintStatus.ACTIVE.value;
+                        projects.getTicketsByTeamId(projectId, teamId, function (err, ticketObj) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
 
-                    return res.status(200).send('ok');
+                            analytics.saveSpecificSprintAnalytics(sprintObj, teamObj, ticketObj, function (err, analyticsObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                if (prevActiveSprint) {
+                                    prevActiveSprint.status = common_backend.sprintStatus.CLOSED.value;
+                                    analytics.saveSpecificSprintAnalytics(prevActiveSprint, teamObj, ticketObj, function (err, analyticsObj) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                            return res.status(500).send(err);
+                                        }
+                    
+                                        return res.status(200).send('ok');
+                                    });
+                                } else {
+                                    return res.status(200).send('ok');
+                                }
+                            });
+                        });
+                    });
                 });
             });
         });

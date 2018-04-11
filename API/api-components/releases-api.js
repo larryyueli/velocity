@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const common_api = require('./common-api.js');
 
+const analytics = require('../../Backend/analytics.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
@@ -72,7 +73,21 @@ const createRelease = function (req, res) {
                     return res.status(500).send(err);
                 }
 
-                return res.status(200).send(releaseObj);
+                projects.getTicketsByTeamId(projectId, teamId, function (err, ticketObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+                    
+                    analytics.saveSpecificReleaseAnalytics(releaseObj, teamObj, ticketObj, function (err, analyticsObj) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+    
+                        return res.status(200).send('ok');
+                    });
+                });
             });
         });
     });
@@ -253,7 +268,23 @@ const closeRelease = function (req, res) {
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    releaseObj.status = common_backend.releaseStatus.CLOSED.value;
+                    console.log(`EY FUCK, THE STATUS IS ${releaseObj.status}`);
+                    projects.getTicketsByTeamId(projectId, teamId, function (err, ticketObj) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+                        
+                        analytics.saveSpecificReleaseAnalytics(releaseObj, teamObj, ticketObj, function (err, analyticsObj) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+        
+                            return res.status(200).send('ok');
+                        });
+                    });
                 });
             });
         });
