@@ -43,7 +43,8 @@ const saveReleaseAnalytics = function () {
                             releaseId: releases[i]._id,
                             releaseName: releases[i].name,
                             releaseStatus: releases[i].status,
-                            members: []
+                            members: [],
+                            cumulativeflowdiagram: []
                         }
                         for (let j = 0; j < teams.length; j++) {
                             if (teams[j]._id === releases[i].teamId) {
@@ -52,6 +53,7 @@ const saveReleaseAnalytics = function () {
                                 }
                             }
                         }
+                        analyticsObj.cumulativeflowdiagram.push(createFlowDiagramEntry(analyticsObj.members));
                         releaseAnalyticsList.push(analyticsObj);
                     }
                     for (let i = 0; i < releaseAnalyticsList.length; i++) {
@@ -83,11 +85,13 @@ const saveSpecificReleaseAnalytics = function (releaseObj, team, tickets, callba
         releaseId: releaseObj._id,
         releaseName: releaseObj.name,
         releaseStatus: releaseObj.status,
-        members: []
+        members: [],
+        cumulativeflowdiagram: []
     }
     for (let i = 0; i < team.members.length; i++) {
         analyticsObj.members.push(createReleaseMemberObject(team.members[i], releaseObj._id, tickets));
     }
+    analyticsObj.cumulativeflowdiagram.push(createFlowDiagramEntry(analyticsObj.members));
     db.addReleaseAnalytics(analyticsObj, callback);
 }
 
@@ -126,6 +130,25 @@ const createReleaseMemberObject = function (userId, releaseId, tickets) {
 }
 
 /**
+ * Create an entry for the flow diagram
+ * @param {*} members members list
+ */
+const createFlowDiagramEntry = function (members) {
+    let entry = {
+        date: common.getDate()
+    };
+    Object.keys(common.ticketStates).forEach(state => {
+        entry[common.ticketStates[state].value] = 0;
+    });
+    for (let i = 0; i < members.length; i++) {
+        Object.keys(members[i].points).forEach(key => {
+            entry[key] += members[i].points[key];
+        });
+    }
+    return entry;
+}
+
+/**
  * Returns the ticket states for releases
  * @param {object} team team object
  * @param {object} releases releases object
@@ -157,7 +180,10 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
                     history: [{
                         date: releaseAnalytics[i].date,
                         members: releaseAnalytics[i].members
-                    }]
+                    }],
+                    cumulativeflowdiagram: [
+                        releaseAnalytics[i].cumulativeflowdiagram
+                    ]
                 });
             } else {
                 if (releaseAnalytics[i].releaseStatus === common.releaseStatus.CLOSED.value) {
@@ -167,6 +193,9 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
                     date: releaseAnalytics[i].date,
                     members: releaseAnalytics[i].members
                 });
+                releases[index].cumulativeflowdiagram.push(
+                    releaseAnalytics[i].cumulativeflowdiagram
+                );
             }
         }
         return callback(null, releases);

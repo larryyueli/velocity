@@ -43,6 +43,8 @@ const saveSprintAnalytics = function () {
                             sprintId: sprints[i]._id,
                             sprintName: sprints[i].name,
                             sprintStatus: sprints[i].status,
+                            sprintStart: sprints[i].startDate,
+                            sprintEnd: sprints[i].endDate,
                             members: []
                         }
                         for (let j = 0; j < teams.length; j++) {
@@ -83,6 +85,8 @@ const saveSpecificSprintAnalytics = function (sprintObj, team, tickets, callback
         sprintId: sprintObj._id,
         sprintName: sprintObj.name,
         sprintStatus: sprintObj.status,
+        sprintStart: sprintObj.startDate,
+        sprintEnd: sprintObj.endDate,
         members: []
     }
     for (let i = 0; i < team.members.length; i++) {
@@ -154,6 +158,8 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
                     sprintId: sprintAnalytics[i].sprintId,
                     sprintName: sprintAnalytics[i].sprintName,
                     sprintStatus: sprintAnalytics[i].sprintStatus,
+                    sprintStart: sprintAnalytics[i].sprintStart,
+                    sprintEnd: sprintAnalytics[i].sprintEnd,
                     history: [{
                         date: sprintAnalytics[i].date,
                         members: sprintAnalytics[i].members
