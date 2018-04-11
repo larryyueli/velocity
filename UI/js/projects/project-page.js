@@ -145,8 +145,6 @@ var selectedUsers = [];
 var selectedObjects = [];
 var userDragged = null;
 
-var readOnly = true;
-
 $(function () {
     // Navbar highlight
     $(navProjectsId).addClass('active');
@@ -332,11 +330,6 @@ $(function () {
 
     startLoad(teamsloadId, teamslistId);
     getTeamsList();
-
-    if (readOnly) {
-        $(datepickerId).prop('disabled', true);
-        $(timepickerId).prop('disabled', true);
-    }
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -504,6 +497,11 @@ function getGroupAssign() {
                 $(groupStatusId).parent().find('.caret')[0].style.color = 'grey';
                 $(groupSizeId).prop('disabled', true);
                 $(groupPrefixId).prop('disabled', true);
+                $(datepickerId).prop('disabled', true);
+                $(timepickerId).prop('disabled', true);
+            } else {
+                $(datepickerId).addClass('pointer');
+                $(timepickerId).addClass('pointer');
             }
 
             // Group modal setup
