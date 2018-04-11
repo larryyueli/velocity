@@ -16,13 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const goToLogin = $('#goToLogin');
+const goToSignUp = $('#goToSignUp');
 const loginForm = $('#loginForm');
 const loginErrorField = $('#loginForm_invalid');
 const loginPasswordField = $('#loginForm_password');
+const loginSection = $('#loginSection');
 const signupForm = $('#signupForm');
 const signupErrorField = $('#signupForm_invalid');
 const signupPasswordField = $('#signupForm_password');
 const signupPasswordConfirmField = $('#signupForm_confirmPassword');
+const signUpSection = $('#signUpSection');
+
+$(function () {
+    goToSignUp.on('click', function() {
+        loginSection.addClass('hidden');
+        signUpSection.removeClass('hidden');
+    });
+
+    goToLogin.on('click', function() {
+        signUpSection.addClass('hidden');
+        loginSection.removeClass('hidden');
+    });
+})
 
 loginForm.submit(function (evt) {
     evt.preventDefault();
