@@ -23,7 +23,7 @@
 		"all": "All"
 	},
 	"login": {
-		"signIn": "Sign In",
+		"signIn": "Log In",
 		"signUp": "Sign Up",
 		"forgotPassword": "Forgot Password",
 		"title": "Velocity - Login"
