@@ -189,6 +189,8 @@ exports.handleProjectUpdatePath = projects_api.updateDraftProject;
 // </Projects Requests> -----------------------------------------------
 
 // <Releases Requests> ------------------------------------------------
+exports.handleReleasePagePath = releases_api.renderReleasePage;
+exports.handleReleaseComponentsPath = releases_api.getReleaseComponents;
 exports.handleReleasesCreatePath = releases_api.createRelease;
 exports.handleReleasesClosePath = releases_api.closeRelease;
 exports.handleReleasesDeletePath = releases_api.deleteRelease;
@@ -202,14 +204,18 @@ exports.handleSettingsUpdatePath = settings_api.updateSettings;
 // </Settings Requests> -----------------------------------------------
 
 // <Sprints Requests> ------------------------------------------------
+exports.handleSprintPagePath = sprints_api.renderSprintPage;
+exports.handleSprintComponentsPath = sprints_api.getSprintComponents;
 exports.handleSprintsActivatePath = sprints_api.activateSprint;
-exports.handleSprintsDeletePath = sprints_api.deleteSprint;
 exports.handleSprintsClosePath = sprints_api.closeSprint;
 exports.handleSprintsCreatePath = sprints_api.createSprint;
+exports.handleSprintsDeletePath = sprints_api.deleteSprint;
 exports.handleSprintsListPath = sprints_api.getSprintsList;
 // </Sprints Requests> -----------------------------------------------
 
 // <Tags Requests> ------------------------------------------------
+exports.handleTagPagePath = tags_api.renderTagPage;
+exports.handleTagComponentsPath = tags_api.getTagComponents;
 exports.handleTagsCreatePath = tags_api.createTag;
 exports.handleTagsDeletePath = tags_api.deleteTag;
 exports.handleTagsListPath = tags_api.getTagsList;

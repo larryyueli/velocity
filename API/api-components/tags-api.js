@@ -197,8 +197,116 @@ const deleteTag = function (req, res) {
     });
 }
 
+/**
+ * root path to render the tag page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const renderTagPage = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    const tagId = req.params.tagId;
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
+            }
+
+            return res.status(200).render(common_api.pugPages.tagPage, {
+                user: req.session.user,
+                projectId: projectId,
+                teamId: teamId
+            });
+        });
+    });
+}
+
+/**
+ * root path to get the tag page components
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getTagComponents = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    const tagId = req.params.tagId;
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getTagById(projectId, teamId, tagId, function (err, tagObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                projects.getTicketsByIds(projectId, teamId, tagObj.tickets, function (err, ticketsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send({
+                        ticketEntryComponent: common_api.pugComponents.ticketEntryComponent(),
+                        ticketsList: ticketsList
+                    });
+                });
+            });
+        });
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.createTag = createTag;
 exports.deleteTag = deleteTag;
+exports.getTagComponents = getTagComponents;
 exports.getTagsList = getTagsList;
+exports.renderTagPage = renderTagPage;
 // </exports> -----------------------------------------------

@@ -260,9 +260,117 @@ const closeRelease = function (req, res) {
     });
 }
 
+/**
+ * root path to render the release page
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const renderReleasePage = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    const releaseId = req.params.releaseId;
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(404).render(common_api.pugPages.pageNotFound);
+        }
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(404).render(common_api.pugPages.pageNotFound);
+            }
+
+            return res.status(200).render(common_api.pugPages.releasePage, {
+                user: req.session.user,
+                projectId: projectId,
+                teamId: teamId
+            });
+        });
+    });
+}
+
+/**
+ * root path to get the release page components
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const getReleaseComponents = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.params.projectId;
+    const teamId = req.params.teamId;
+    const releaseId = req.params.releaseId;
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            projects.getReleaseById(projectId, teamId, releaseId, function (err, releaseObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+
+                projects.getTicketsByIds(projectId, teamId, releaseObj.tickets, function (err, ticketsList) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                        return res.status(500).send(err);
+                    }
+
+                    return res.status(200).send({
+                        ticketEntryComponent: common_api.pugComponents.ticketEntryComponent(),
+                        ticketsList: ticketsList
+                    });
+                });
+            });
+        });
+    });
+}
+
+
 // <exports> ------------------------------------------------
 exports.createRelease = createRelease;
 exports.closeRelease = closeRelease;
 exports.deleteRelease = deleteRelease;
+exports.getReleaseComponents = getReleaseComponents;
 exports.getReleasesList = getReleasesList;
+exports.renderReleasePage = renderReleasePage;
 // </exports> -----------------------------------------------

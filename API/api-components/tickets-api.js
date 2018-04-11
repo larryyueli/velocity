@@ -423,7 +423,8 @@ const renderCreateTicketPage = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            if (projectObj.admins.indexOf(req.session.user._id) === -1
+            if (settings.getModeType() === common_backend.modeTypes.CLASS
+                && projectObj.admins.indexOf(req.session.user._id) === -1
                 && teamObj.members.indexOf(req.session.user._id) === -1) {
                 logger.error(JSON.stringify(common_backend.getError(2019)));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
