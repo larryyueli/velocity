@@ -497,7 +497,9 @@ const renderTeamPage = function (req, res) {
                                 deadlineDate: projectObj.deadlineDate,
                                 deadlineTime: projectObj.deadlineTime,
                                 commonSprintStatus: common_backend.sprintStatus,
-                                commonReleaseStatus: common_backend.releaseStatus
+                                commonReleaseStatus: common_backend.releaseStatus,
+                                projectId: projectId,
+                                teamId: teamId
                             });
                         });
                     });

@@ -40,6 +40,8 @@
                                     i.material-icons.right check
                             button(class=`sprintActive_${sprint._id} ${sprint.status === commonSprintStatus.ACTIVE.value ? '' : 'hidden'}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                 i.material-icons.right remove_circle
+                            button(onclick=`loadPage('/project/${projectId}/team/${teamId}/sprint/${sprint._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                i.material-icons.right receipt
                             span.title #{sprint.name}
                             p
                                 | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
@@ -77,6 +79,8 @@
                             if release.status === commonReleaseStatus.ACTIVE.value
                                 button(class=`releaseButton_${release._id}`, onclick=`closeRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right remove_circle
+                            button(onclick=`loadPage('/project/${projectId}/team/${teamId}/release/${release._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                i.material-icons.right receipt
                             span.title #{release.name}
 .row
     .col.s12
@@ -106,4 +110,6 @@
                             i.material-icons.circle bookmark
                             button(onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                 i.material-icons.right delete_forever
+                            button(onclick=`loadPage('/project/${projectId}/team/${teamId}/tag/${tag._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                i.material-icons.right receipt
                             span.title #{tag.name}

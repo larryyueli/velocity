@@ -318,6 +318,8 @@ function createRelease() {
                 let release = releaseComponent;
                 release = release.replace(new RegExp('release._id', 'g'), data._id);
                 release = release.replace(new RegExp('release.name', 'g'), data.name);
+                release = release.replace(new RegExp('projectId', 'g'), projectId);
+                release = release.replace(new RegExp('teamId', 'g'), teamId);
                 $(addReleaseDiv).append(release);
                 $(releaseInputRow).hide();
                 $(releaseVisibility).show();
@@ -350,6 +352,8 @@ function createTag() {
                 let tag = tagComponent;
                 tag = tag.replace(new RegExp('tag._id', 'g'), data._id);
                 tag = tag.replace(new RegExp('tag.name', 'g'), data.name);
+                tag = tag.replace(new RegExp('projectId', 'g'), projectId);
+                tag = tag.replace(new RegExp('teamId', 'g'), teamId);
                 $(addTagDiv).append(tag);
                 $(tagInputRow).hide();
                 $(tagVisibility).show();
@@ -361,6 +365,13 @@ function createTag() {
             }
         });
     }
+}
+
+/**
+ * load page
+ */
+function loadPage(text) {
+    window.location.href = text;
 }
 
 /**
@@ -388,6 +399,8 @@ function createSprint() {
                 let sprint = sprintComponent;
                 sprint = sprint.replace(new RegExp('sprint._id', 'g'), data._id);
                 sprint = sprint.replace(new RegExp('sprint.name', 'g'), data.name);
+                sprint = sprint.replace(new RegExp('projectId', 'g'), projectId);
+                sprint = sprint.replace(new RegExp('teamId', 'g'), teamId);
                 sprint = sprint.replace('sprint.startDate', `${translate('startDate')}${data.startDate}`);
                 sprint = sprint.replace('sprint.endDate', `${translate('endDate')}${data.endDate}`);
                 $(addSprintDiv).append(sprint);
