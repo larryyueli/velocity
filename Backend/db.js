@@ -22,8 +22,8 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
-const db_analytics_releases = require('./dbs/db-history-releases.js');
-const db_analytics_sprints = require('./dbs/db-history-sprints.js');
+const db_analytics_releases = require('./dbs/db-analytics-releases.js');
+const db_analytics_sprints = require('./dbs/db-analytics-sprints.js');
 const db_comments = require('./dbs/db-comments.js');
 const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
