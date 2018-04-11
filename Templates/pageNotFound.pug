@@ -7,12 +7,12 @@ block title
     title #{__('pageNotFound.title')}
 
 block content
-    .col.s12.m6#card-container
-        .card#main-card
-            .card-image
-                img#icon(src='/img/pageNotFound.png')
-            .card-content
-                h6
-                    | #{__('pageNotFound.description')}
-            .card-action
-                a(href='/') #{__('pageNotFound.prompt')}
+    include unauthNavbar
+
+    .center
+        .row
+            img#icon(src='/img/pageNotFoundCoyote.jpg')
+        .row
+            h4 #{__('pageNotFound.description')}
+        .row
+            a(href='/') #{__('pageNotFound.prompt')}
