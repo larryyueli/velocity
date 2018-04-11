@@ -61,6 +61,8 @@ $(function () {
         shortcuts: false
     });
     $('div.note-btn-group.btn-group button').remove();
+    $('.note-toolbar-wrapper').remove();
+    $('.note-editable').css('background-color', '#ffffff');
 
     $(releaseInputRow).hide();
     $(tagInputRow).hide();

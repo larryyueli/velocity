@@ -1,11 +1,3 @@
-.note-toolbar-wrapper {
-    display: none !important;
-}
-
-.note-editable {
-    background-color: white !important;
-}
-
 .ticket-link:link{
     color: #337ab7;
 }
@@ -24,4 +16,57 @@
 
 .ticket-link:active{
     color: #337ab7;
+}
+
+.board {
+    table {
+        border-collapse: separate;
+        border-spacing: 5px;
+    }
+
+    td {
+        background-color: #ececec;
+        vertical-align: top;
+        width: 16.66666666%;
+    }
+
+    th {
+        text-align: center;
+        width: 16.66666666%;
+    }
+
+    .boardContents {
+        td {
+            padding: 0 3px !important;
+        }
+    }
+}
+
+.ticket {
+    margin-bottom: -15px;
+
+    .ticketTitle {
+        margin-bottom: -50px;
+    }
+
+    .ticketPoints {
+        bottom: 20px;
+        position: absolute;
+        right: 0.75rem;
+    }
+
+    .truncateText {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+    }
+}
+
+.width-90 {
+    width: 90%;
+}
+
+.big-screen-min-width {
+    min-width: 1100px;
 }
