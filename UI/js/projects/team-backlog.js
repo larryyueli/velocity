@@ -20,6 +20,8 @@ var sprintEntryHTML = null;
 var ticketEntryHTML = null;
 var sprintsList = null;
 
+var isReadonly = true;
+
 const backlogTicketListId = '#backlogTicketList';
 const datesId = '#dates';
 const issueCountId = '#issueCount';
@@ -71,6 +73,7 @@ function getBacklog() {
             sprintEntryHTML = $(data.sprintEntryHTML);
             ticketEntryHTML = $(data.ticketEntryHTML);
             sprintsList = data.sprintsList;
+            isReadonly = data.isReadOnly;
 
             sprintsList.forEach(sprint => {
                 sprint.isActive = true;
@@ -92,8 +95,8 @@ function displaySprintsList() {
         $(sprintsListId).append(fillSprintsRow(sprint));
 
         sprint.tickets.forEach(ticket => {
-            $(`#${ticket._id}-backlog`).on('click', function() {
-                 window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
+            $(`#${ticket._id}-backlog`).on('click', function () {
+                window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
             });
         });
     });
@@ -174,19 +177,19 @@ function fillTicketRow(ticket) {
     var bindedRow = ticketEntryHTML;
 
     bindedRow.find(statusId).removeClass((index, className) => {
-        return (className.match (/(^|\s)state\S+/g) || []).join(' ');
+        return (className.match(/(^|\s)state\S+/g) || []).join(' ');
     });
 
     if (ticket.type === 0) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (ticket.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="auto">');
-    }  else if (ticket.type === 2) {
+    } else if (ticket.type === 2) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="auto">');
     }
 
-    if (ticket.priority === 0 ) {
-       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
+    if (ticket.priority === 0) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
     } else if (ticket.priority === 1) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="auto">');
     } else if (ticket.priority === 2) {

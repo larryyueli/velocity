@@ -464,6 +464,7 @@ function getGroupAssign() {
             isProjectAdmin = data.isProjectAdmin;
             isClassMode = data.isClassMode;
             isCollabMode = data.isClassMode;
+            isReadonly = data.isReadOnly;
 
             // Variables
             groupUserRow = $(data.groupUserHTML);
@@ -788,6 +789,7 @@ function getUsersList() {
             adminUserRow = $(data.usersEntryHTML);
             projectAdminsList = data.projectAdmins;
             projectUsersList = data.projectUsers;
+            isReadonly = data.isReadOnly;
             displayAdminsList();
         },
         error: function (data) {
@@ -1642,8 +1644,8 @@ function displayTeamList() {
         if (passTeamFilter(team)) {
             $(teamslistId).append(fillTeamRow(team));
 
-            $(`#${team.teamId}`).on('click', function() {
-                 window.location.href = `/project/${team.projectId}/team/${team.teamId}`;
+            $(`#${team.teamId}`).on('click', function () {
+                window.location.href = `/project/${team.projectId}/team/${team.teamId}`;
             });
         }
     });

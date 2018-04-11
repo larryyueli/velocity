@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var board = null;
-var ticketHTML  =null;
+var ticketHTML = null;
 var outlineHTML = null;
 
 // const searchFilterIssueId = '#searchFilterIssue';
@@ -73,8 +73,9 @@ function getBoard() {
         },
         success: function (data) {
             board = data.board;
-            ticketHTML  = $(data.boardTicketEntryHTML);
+            ticketHTML = $(data.boardTicketEntryHTML);
             outlineHTML = $(data.userOutlineEntryHTML);
+            isReadonly = data.isReadOnly;
 
             for (var user in board) {
                 board[user].isActive = true;
@@ -162,11 +163,11 @@ function fillUserBoardRow(user, statuses) {
 
     bindedRow.find(titleId).html(user);
     bindedRow.find(ticketCountId).html(`(${statuses['new'].length +
-                                           statuses['inDevelopment'].length +
-                                           statuses['codeReview'].length +
-                                           statuses['readyForTest'].length +
-                                           statuses['inTest'].length +
-                                           statuses['done'].length} ${translate('tickets')})`);
+        statuses['inDevelopment'].length +
+        statuses['codeReview'].length +
+        statuses['readyForTest'].length +
+        statuses['inTest'].length +
+        statuses['done'].length} ${translate('tickets')})`);
     // bindedRow.find(imageId).html(`<img class="circle" src="/profilePicture/${issue.assigneePicture}" alt="" height="25" width="25">`);
 
     return bindedRow[0].outerHTML;
@@ -179,12 +180,12 @@ function fillBoardTicketRow(issue) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="25" class="margin-right-5">');
     } else if (issue.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="25" class="margin-right-5">');
-    }  else if (issue.type === 2) {
+    } else if (issue.type === 2) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="25" class="margin-right-5">');
     }
 
-    if (issue.priority === 0 ) {
-       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="25" class="margin-right-5">');
+    if (issue.priority === 0) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     } else if (issue.priority === 1) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     } else if (issue.priority === 2) {
@@ -269,8 +270,8 @@ function ticketDragStartHandler(ev, from) {
 
     for (user in board) {
         for (status in statuses) {
-            if (board[user][status].find(ticket => ticket._id ===  ticketId)) {
-        		    username = user;
+            if (board[user][status].find(ticket => ticket._id === ticketId)) {
+                username = user;
                 break;
             }
         }
@@ -281,23 +282,23 @@ function ticketDragStartHandler(ev, from) {
 }
 
 function dragover_handler(ev) {
- ev.preventDefault();
- // Set the dropEffect to move
- ev.dataTransfer.dropEffect = "move"
+    ev.preventDefault();
+    // Set the dropEffect to move
+    ev.dataTransfer.dropEffect = "move"
 }
 function drop_handler(ev, to) {
     ev.preventDefault();
- // Get the id of the target and add the moved element to the target's DOM
- var data = ev.dataTransfer.getData("text/ticketId");
-  var username = ev.dataTransfer.getData("text/from");
- debugger;
+    // Get the id of the target and add the moved element to the target's DOM
+    var data = ev.dataTransfer.getData("text/ticketId");
+    var username = ev.dataTransfer.getData("text/from");
+    debugger;
     const ticket = board[username][from].find(ticket => ticket._id === data);
 }
 
 function dragover_handler(ev) {
- ev.preventDefault();
- // Set the dropEffect to move
- ev.dataTransfer.dropEffect = "move"
+    ev.preventDefault();
+    // Set the dropEffect to move
+    ev.dataTransfer.dropEffect = "move"
 }
 
 

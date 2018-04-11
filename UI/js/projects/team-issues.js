@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var issueEntry = null;
 var issuesList = null;
 
+var isReadonly = true;
+
 const searchFilterIssueId = '#searchFilterIssue';
 const typeSelectionIssueId = '#typeSelectionIssue';
 
@@ -53,6 +55,7 @@ function getIssues() {
         success: function (data) {
             issueEntry = $(data.issueEntryHTML);
             issuesList = data.ticketsList;
+            isReadonly = data.isReadOnly;
 
             displayIssuesList();
         },
@@ -70,8 +73,8 @@ function displayIssuesList() {
         if (passIssuesFilter(issue)) {
             $(issuesListId).append(fillIssuesRow(issue));
 
-            $(`#${issue._id}-issue`).on('click', function() {
-                 window.location.href = `/project/${projectId}/team/${teamId}/ticket/${issue._id}`;
+            $(`#${issue._id}-issue`).on('click', function () {
+                window.location.href = `/project/${projectId}/team/${teamId}/ticket/${issue._id}`;
             });
         }
     });
@@ -87,19 +90,19 @@ function fillIssuesRow(issue) {
     var bindedRow = issueEntry;
 
     bindedRow.find(statusId).removeClass((index, className) => {
-        return (className.match (/(^|\s)state\S+/g) || []).join(' ');
+        return (className.match(/(^|\s)state\S+/g) || []).join(' ');
     });
 
     if (issue.type === 0) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (issue.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="auto">');
-    }  else if (issue.type === 2) {
+    } else if (issue.type === 2) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="auto">');
     }
 
-    if (issue.priority === 0 ) {
-       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
+    if (issue.priority === 0) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
     } else if (issue.priority === 1) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="auto">');
     } else if (issue.priority === 2) {
