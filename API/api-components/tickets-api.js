@@ -42,7 +42,7 @@ const getTicketByDisplayId = function (req, res) {
     const teamId = req.query.teamId;
     const ticketDisplayId = req.query.displayId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -53,7 +53,7 @@ const getTicketByDisplayId = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -133,7 +133,7 @@ const createTicket = function (req, res) {
             sprints = JSON.parse(sprints);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             sprints = [];
         }
     }
@@ -143,7 +143,7 @@ const createTicket = function (req, res) {
             releases = JSON.parse(releases);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             releases = [];
         }
     }
@@ -153,12 +153,12 @@ const createTicket = function (req, res) {
             tags = JSON.parse(tags);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             tags = [];
         }
     }
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -169,7 +169,7 @@ const createTicket = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -401,7 +401,7 @@ const renderCreateTicketPage = function (req, res) {
 
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -417,7 +417,7 @@ const renderCreateTicketPage = function (req, res) {
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -462,7 +462,7 @@ const renderTicketPage = function (req, res) {
     const teamId = req.params.teamId;
     const ticketId = req.params.ticketId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -479,7 +479,7 @@ const renderTicketPage = function (req, res) {
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -700,7 +700,7 @@ const updateTicket = function (req, res) {
             sprints = JSON.parse(sprints);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             sprints = [];
         }
     }
@@ -710,7 +710,7 @@ const updateTicket = function (req, res) {
             releases = JSON.parse(releases);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             releases = [];
         }
     }
@@ -720,12 +720,12 @@ const updateTicket = function (req, res) {
             tags = JSON.parse(tags);
         }
         catch (err) {
-            logger.error(common_backend.getError(1011));
+            logger.error(JSON.stringify(common_backend.getError(1011)));
             tags = [];
         }
     }
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -736,7 +736,7 @@ const updateTicket = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -1226,7 +1226,7 @@ const renderSearchPage = function (req, res) {
         }
     }
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -1252,7 +1252,7 @@ const renderSearchPage = function (req, res) {
                 searchForTickets(projectId, teamObj._id, terms);
             });
         } else {
-            projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -1283,7 +1283,7 @@ const getTicketsListComponent = function (req, res) {
 
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -1294,7 +1294,7 @@ const getTicketsListComponent = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -1361,7 +1361,7 @@ const updateTicketState = function (req, res) {
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
     const state = req.body.state;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -1372,7 +1372,7 @@ const updateTicketState = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);

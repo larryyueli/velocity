@@ -137,6 +137,16 @@ const getActiveProjectById = function (projectId, callback) {
 }
 
 /**
+ * find a single active or closed project by its Id
+ *
+ * @param {string} projectId project id
+ * @param {function} callback callback function
+ */
+const getActiveOrClosedProjectById = function (projectId, callback) {
+    getProject({ $and: [{ _id: projectId }, { $or: [{ status: common.projectStatus.ACTIVE.value }, { status: common.projectStatus.CLOSED.value }] }] }, callback);
+}
+
+/**
  * find projects in draft with user selections type
  *
  * @param {function} callback callback function
@@ -233,10 +243,11 @@ exports.updateComment = comments.updateComment;
 
 // <exports> -----------------------------------
 exports.addProject = addProject;
+exports.getActiveProjectById = getActiveProjectById;
+exports.getActiveOrClosedProjectById = getActiveOrClosedProjectById;
 exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
-exports.getActiveProjectById = getActiveProjectById;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.initialize = initialize;
@@ -282,9 +293,10 @@ exports.updateTagById = tags.updateTagById;
 
 // <teams> -----------------------------------
 exports.addTeamToProject = teams.addTeamToProject;
+exports.getConfiguredTeamById = teams.getConfiguredTeamById;
 exports.getProjectTeams = teams.getProjectTeams;
-exports.getTeamInProjectById = teams.getTeamInProjectById;
-exports.getTeamInProjectByName = teams.getTeamInProjectByName;
+exports.getTeamById = teams.getTeamById;
+exports.getTeamByName = teams.getTeamByName;
 exports.getTeamByUserId = teams.getTeamByUserId;
 exports.setTeamsBoardType = teams.setTeamsBoardType;
 exports.updateTeamInProject = teams.updateTeamInProject;

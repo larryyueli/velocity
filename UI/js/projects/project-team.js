@@ -95,6 +95,8 @@ $(function () {
         createSprint();
     });
 
+    $('.collapsible').collapsible();
+
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
@@ -173,7 +175,7 @@ function getComponents() {
  */
 function createRelease() {
     if ($(releaseField).val() === "") {
-        failSnackbar('Release field cannot be empty');
+        warningSnackbar(translate('emptyRelease'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -205,7 +207,7 @@ function createRelease() {
  */
 function createTag() {
     if ($(tagField).val() === "") {
-        failSnackbar('Tag field cannot be empty');
+        warningSnackbar(translate('emptyTag'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -237,11 +239,11 @@ function createTag() {
  */
 function createSprint() {
     if ($(sprintField).val() === "") {
-        failSnackbar('Tag field cannot be empty');
+        warningSnackbar(translate('emptySprint'));
     } else if ($(sprintStart).val() === "") {
-        failSnackbar('Start date cannot be empty');
+        warningSnackbar(translate('emptySprintStart'));
     } else if ($(sprintEnd).val() === "") {
-        failSnackbar('End date cannot be empty');
+        warningSnackbar(translate('emptySprintEnd'));
     } else {
         $.ajax({
             type: 'PUT',

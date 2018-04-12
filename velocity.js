@@ -242,6 +242,7 @@ app.use(function (req, res, next) {
 // <Get Requests> ------------------------------------------------
 app.get('/', api.handleRootPath);
 app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentPath);
+app.get('/components/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
 app.get('/components/team/backlog', api.handleProjectTeamBacklogPath);
 app.get('/components/team/board', api.handleActiveSprintTicketsListComponentPath);
@@ -263,13 +264,19 @@ app.get('/project/team/releases/list', api.handleReleasesListPath);
 app.get('/project/team/sprints/list', api.handleSprintsListPath);
 app.get('/project/team/tags/list', api.handleTagsListPath);
 app.get('/projects', api.handleProjectsPath);
-app.get('/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/projects/add', api.handleProjectsAddPath);
+app.get('/projects/export', api.handleProjectsExportPath);
+app.get('/projects/export/file', api.handleProjectsExportFilePath);
+app.get('/projects/export/file/download', api.handleProjectsExportFileDownloadPath);
+app.get('/projects/import', api.handleProjectsImportPath);
 app.get('/settings', api.handleSettingsPath);
 app.get('/users', api.handleUsersPath);
 app.get('/usersListComponent', api.handleUsersListComponentPath);
 app.get('/users/add', api.handleUsersAddPath);
 app.get('/users/edit/:username', api.handleUsersEditPath);
+app.get('/users/export', api.handleUsersExportPath);
+app.get('/users/export/file', api.handleUsersExportFilePath);
+app.get('/users/export/file/download', api.handleUsersExportFileDownloadPath);
 app.get('/users/import', api.handleUsersImportPath);
 // </Get Requests> -----------------------------------------------
 
@@ -302,6 +309,7 @@ app.post('/users/update', api.handleUsersUpdatePath);
 app.put('/comment/create', api.handleTicketsCommentPath);
 app.put('/releases/create', api.handleReleasesCreatePath);
 app.put('/projects/create', api.handleProjectCreatePath);
+app.put('/projects/import/file', api.handleProjectsImportFilePath);
 app.put('/sprints/create', api.handleSprintsCreatePath);
 app.put('/tags/create', api.handleTagsCreatePath);
 app.put('/tickets/create', api.handleTicketsCreatePath);

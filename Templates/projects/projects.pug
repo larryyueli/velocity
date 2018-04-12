@@ -30,10 +30,12 @@ block content
         .row
             if user.canCreateProjects
                 .col.s6
-                    a.waves-effect.waves-light.btn.left.primaryColour-background-colour(href='/projects/import', disabled) #{__('actions.import')}
+                    a.waves-effect.waves-light.btn.left.primaryColour-background-colour.no-text-flat-buttons.margin-right-5(href='/projects/import')
                         i.material-icons.right cloud_upload
+                    a.waves-effect.waves-light.btn.left.primaryColour-background-colour.no-text-flat-buttons(href='/projects/export')
+                        i.material-icons.right cloud_download
                 .col.s6
-                    a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('actions.create')}
+                    a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('projects.label')}
                         i.material-icons.right note_add
         .row
             #projectsLoad

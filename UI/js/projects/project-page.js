@@ -448,7 +448,7 @@ function changeGroupSelectionMode(deleteGroups) {
 function getGroupAssign() {
     $.ajax({
         type: 'GET',
-        url: '/projectsGroupAssign',
+        url: '/components/projectsGroupAssign',
         data: {
             projectId: projectId
         },
