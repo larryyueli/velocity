@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const analytics_kanban = require('./analytics-components/analytics-kanban.js');
 const analytics_releases = require('./analytics-components/analytics-releases.js');
 const analytics_sprints = require('./analytics-components/analytics-sprints.js');
 const common = require('./common.js');
@@ -54,19 +55,20 @@ const initialize = function (debug, callback) {
  * Save marker for sprints and releases
  */
 const processAnalytics = function () {
+    analytics_kanban.saveKanbanAnalytics();
     analytics_releases.saveReleaseAnalytics();
     analytics_sprints.saveSprintAnalytics();
 }
 
 /**
- * Returns the ticket states for sprints and releases
+ * Returns scrum analytics
  * @param {object} team team object
  * @param {object} sprints sprints object
  * @param {object} releases releases object
  * @param {object} tickets tickets object
  * @param {function} callback callback
  */
-const getTeamAnalytics = function (team, sprints, releases, tickets, callback) {
+const getScrumTeamAnalytics = function (team, sprints, releases, tickets, callback) {
     let result = {
         sprints: [],
         releases: []
@@ -86,12 +88,29 @@ const getTeamAnalytics = function (team, sprints, releases, tickets, callback) {
             return callback(null, result);
         });
     });
+}
 
+/**
+ * Returns kanban analytics
+ * @param {object} team team object
+ * @param {object} tickets tickets object
+ * @param {function} callback callback
+ */
+const getKanbanTeamAnalytics = function (team, tickets, callback) {
+    analytics_kanban.getKanbanAnalytics(team, tickets, function (err, kanbanAnalytics) {
+        if (err) {
+            logger.error(err);
+            return callback(common.getError(8002), null);
+        }
+
+        return callback(null, kanbanAnalytics);
+    });
 }
 
 // <exports> -----------------------------------
 exports.initialize = initialize;
-exports.getTeamAnalytics = getTeamAnalytics;
+exports.getKanbanTeamAnalytics = getKanbanTeamAnalytics;
+exports.getScrumTeamAnalytics = getScrumTeamAnalytics;
 // </exports> ----------------------------------
 
 // <analytics-releases> -----------------------------------

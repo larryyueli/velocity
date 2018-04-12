@@ -22,6 +22,7 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
+const db_analytics_kanban = require('./dbs/db-analytics-kanban.js');
 const db_analytics_releases = require('./dbs/db-analytics-releases.js');
 const db_analytics_sprints = require('./dbs/db-analytics-sprints.js');
 const db_comments = require('./dbs/db-comments.js');
@@ -48,8 +49,9 @@ const initialize = function (callback) {
             return callback(common.getError(1001), null);
         }
         db_comments.initialize(client.db(config.db_name).collection('comments'));
-        db_analytics_releases.initialize(client.db(config.db_name).collection('history_releases'));
-        db_analytics_sprints.initialize(client.db(config.db_name).collection('history_sprints'));
+        db_analytics_kanban.initialize(client.db(config.db_name).collection('analytics_kanban'));
+        db_analytics_releases.initialize(client.db(config.db_name).collection('analytics_releases'));
+        db_analytics_sprints.initialize(client.db(config.db_name).collection('analytics_sprints'));
         db_notifications.initialize(client.db(config.db_name).collection('notifications'));
         db_projects.initialize(client.db(config.db_name).collection('projects'));
         db_releases.initialize(client.db(config.db_name).collection('releases'));
@@ -72,6 +74,11 @@ exports.getLimitedCommentsListSorted = db_comments.getLimitedCommentsListSorted;
 exports.getComment = db_comments.getComment;
 exports.updateComment = db_comments.updateComment;
 // </Comments Collection> ---------------------------------------------
+
+// <Kanban Analytics Collection> ----------------------------------------------
+exports.addKanbanAnalytics = db_analytics_kanban.addKanbanAnalytics;
+exports.getLimitedKanbanAnalyticsListSorted = db_analytics_kanban.getLimitedKanbanAnalyticsListSorted;
+// </Kanban Analytics Collection> ----------------------------------------------
 
 // <Notifications Collection> ----------------------------------------------
 exports.addNotification = db_notifications.addNotification;

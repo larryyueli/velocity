@@ -55,33 +55,53 @@ const getAnalyticsData = function (req, res) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
             }
-            projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObj) {
+
+            projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObj) {
                 if (err) {
                     logger.error(JSON.stringify(err));
                     return res.status(500).send(err);
                 }
-                projects.getTicketsByTeamId(projectId, teamId, function (err, ticketsObj) {
-                    if (err) {
-                        logger.error(JSON.stringify(err));
-                        return res.status(500).send(err);
-                    }
+
+                if (teamObj.boardType === common_backend.boardTypes.SCRUM.value) {
                     projects.getReleasesByTeamId(projectId, teamId, function (err, releaseObj) {
                         if (err) {
                             logger.error(JSON.stringify(err));
                             return res.status(500).send(err);
                         }
-                        analytics.getTeamAnalytics(teamObj, sprintsObj, releaseObj, ticketsObj, function (err, stateObj) {
+    
+                        projects.getSprintsByTeamId(projectId, teamId, function (err, sprintsObj) {
                             if (err) {
                                 logger.error(JSON.stringify(err));
                                 return res.status(500).send(err);
                             }
-                            return res.status(200).send({
-                                sprints: stateObj.sprints,
-                                releases: stateObj.releases
+    
+                            analytics.getScrumTeamAnalytics(teamObj, sprintsObj, releaseObj, ticketsObj, function (err, stateObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+                                
+                                return res.status(200).send({
+                                    sprints: stateObj.sprints,
+                                    releases: stateObj.releases
+                                });
                             });
                         });
                     });
-                });
+                } else if (teamObj.boardType === common_backend.boardTypes.KANBAN.value) {
+                    analytics.getKanbanTeamAnalytics(teamObj, ticketsObj, function (err, stateObj) {
+                        if (err) {
+                            logger.error(JSON.stringify(err));
+                            return res.status(500).send(err);
+                        }
+                        
+                        return res.status(200).send({
+                            kanban: stateObj
+                        });
+                    });
+                } else {
+                    return res.status(500).send(common_backend.getError(6000));
+                }    
             });
         });
     });
