@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const addReleaseDiv = '#appendReleaseDiv';
 const addSprintDiv = '#appendSprintDiv';
 const addTagDiv = '#appendTagDiv';
-const backButtonId = '#backButton';
 const boardTypeSelectionId = '#boardTypeSelection';
 const createTicketButtonId = '#createTicketButton';
 const description = '#description';
@@ -94,10 +93,6 @@ $(function () {
     });
 
     $('.collapsible').collapsible();
-
-    $(backButtonId).click(() => {
-        window.location.href = '/projects';
-    });
 
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
