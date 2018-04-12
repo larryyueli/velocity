@@ -1337,7 +1337,9 @@ const getTicketsListComponent = function (req, res) {
 
                 return res.status(200).send({
                     issueEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                    ticketsList: limitedTicketList
+                    ticketsList: limitedTicketList,
+                    isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                        || projectObj.status === common_backend.projectStatus.DELETED.value
                 });
             });
         });

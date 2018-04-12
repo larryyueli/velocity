@@ -284,6 +284,12 @@
 		"id": "Ticket Id",
 		"displayId": "Display Id"
 	},
+	"uploadModal": {
+		"file": "File",
+		"selectFile": "Select a file to upload",
+		"title": "Upload File",
+		"upload": "Upload"
+	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
 		"currentPassword": "Current Password",

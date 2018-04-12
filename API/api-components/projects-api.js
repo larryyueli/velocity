@@ -1024,7 +1024,9 @@ const getTeamsAssignmentComponent = function (req, res) {
                 groupModalEntryHTML: common_api.pugComponents.projectsGroupModalEntryComponent(),
                 isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
                 isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
-                isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS
+                isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
+                isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                    || projectObj.status === common_backend.projectStatus.DELETED.value
             });
         });
     });
@@ -1092,7 +1094,9 @@ const getAdminsListComponent = function (req, res) {
         return res.status(200).send({
             projectAdmins: resolvedAdminsList,
             projectUsers: resolvedUsersList,
-            usersEntryHTML: common_api.pugComponents.projectsUserEntryComponent()
+            usersEntryHTML: common_api.pugComponents.projectsUserEntryComponent(),
+            isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                || projectObj.status === common_backend.projectStatus.DELETED.value
         });
     });
 }

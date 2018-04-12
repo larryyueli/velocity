@@ -17,11 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 var board = null;
-var ticketHTML  = null;
+var ticketHTML = null;
 var outlineHTML = null;
 
 var dataFrom = null;
 var dataUser = null;
+
+var isReadonly = true;
 
 const boardsUserListId = '#boardsUserList';
 const boardsUserLoadId = '#boardsUserLoad';
@@ -71,8 +73,9 @@ function getBoard() {
         },
         success: function (data) {
             board = data.board;
-            ticketHTML  = $(data.boardTicketEntryHTML);
+            ticketHTML = $(data.boardTicketEntryHTML);
             outlineHTML = $(data.userOutlineEntryHTML);
+            isReadonly = data.isReadOnly;
 
             for (var user in board) {
                 board[user].isActive = true;
@@ -165,13 +168,18 @@ function fillUserBoardRow(user, statuses) {
         bindedRow.find(boardBodyId)[0].style.display = 'none';
     }
 
-    bindedRow.find(titleId).html(user);
+    if (user === 'No Assignee') {
+        bindedRow.find(titleId).html(translate('noassignee'));
+    } else {
+        bindedRow.find(titleId).html(user);
+    }
+
     bindedRow.find(ticketCountId).html(`(${statuses['new'].length +
-                                           statuses['inDevelopment'].length +
-                                           statuses['codeReview'].length +
-                                           statuses['readyForTest'].length +
-                                           statuses['inTest'].length +
-                                           statuses['done'].length} ${translate('tickets')})`);
+        statuses['inDevelopment'].length +
+        statuses['codeReview'].length +
+        statuses['readyForTest'].length +
+        statuses['inTest'].length +
+        statuses['done'].length} ${translate('tickets')})`);
     // bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="25" width="25">`);
 
     return bindedRow[0].outerHTML;
@@ -184,20 +192,24 @@ function fillBoardTicketRow(issue) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="25" class="margin-right-5">');
     } else if (issue.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="25" class="margin-right-5">');
-    }  else if (issue.type === 2) {
+    } else if (issue.type === 2) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="25" class="margin-right-5">');
     }
 
-    if (issue.priority === 0 ) {
-       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="25" class="margin-right-5">');
+    if (issue.priority === 0) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     } else if (issue.priority === 1) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     } else if (issue.priority === 2) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="25" class="margin-right-5">');
     }
 
+    if (isReadonly) {
+        bindedRow.removeClass('pointer');
+    }
+
     bindedRow.attr('id', issue._id);
-    bindedRow.find(displayIdId).html(issue.displayId);
+    bindedRow.find(displayIdId).html(`<a class="ticket-link" target="_blank" href="/project/${projectId}/team/${teamId}/ticket/${issue._id}">${issue.displayId}</a>`);
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
     bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="auto" width="95%" class="profilePic">`);
@@ -243,8 +255,8 @@ function ticketDragStartHandler(ev) {
 
     for (user in board) {
         allStatuses.forEach(status => {
-            if (board[user][status].find(ticket => ticket._id ===  ticketId)) {
-        		    username = user;
+            if (board[user][status].find(ticket => ticket._id === ticketId)) {
+                username = user;
                 from = status;
             }
         });
@@ -258,7 +270,7 @@ function ticketDragStartHandler(ev) {
 }
 
 function ticketDragoverHandler(ev, to) {
-    if (dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
+    if (!isReadonly && dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
         ev.currentTarget.style.border = 'green dashed 2px';
         ev.dataTransfer.dropEffect = 'move';
         ev.preventDefault();

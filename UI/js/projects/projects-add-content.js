@@ -18,7 +18,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 $(function () {
     initSummernote(descriptionId);
+    if ($(descriptionId).attr('value') === '1') {
+        $(descriptionId).summernote('disable');
+        $(descriptionId).summernote({
+            disableDragAndDrop: true,
+            shortcuts: false
+        });
+        $('div.note-btn-group.btn-group button').remove();
+        $('.note-toolbar-wrapper').remove();
+        $('.note-editable').css('background-color', '#ffffff')
+    }
     $('#datepicker').pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -29,8 +42,11 @@ $(function () {
     });
 
     $('#timepicker').pickatime({
+        onClose: () => {
+            $(":focus").blur();
+        },
         default: translate('now'),
-        fromnow: 0, 
+        fromnow: 0,
         twelvehour: true,
         donetext: translate('ok'),
         cleartext: translate('clear'),
