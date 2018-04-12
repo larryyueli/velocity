@@ -174,8 +174,8 @@ block content
                         .col.s12
                             ul.collection#appendCommentDiv
                                 each comment in comments
-                                    li(id=`comment_${comment._id}`).collection-item.avatar
-                                        img.circle(src=`/picture/${user.picture}`, alt='')
+                                    li(id=`comment_${comment._id}`).collection-item.avatar.clickable-item
+                                        img.circle(src=`/picture/${comment.picture}`, alt='')
                                         if comment.userId === user._id
                                             button(onclick=`deleteComment('${comment._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons.primaryColour
                                                 i.material-icons.right delete_forever
@@ -206,7 +206,7 @@ block content
                                     else
                                         ul.collection
                                             each entry in ticket.stateHistory
-                                                li.collection-item.avatar
+                                                li.collection-item.avatar.clickable-item
                                                     i.material-icons.circle compare_arrows
                                                     span.title #{resolveUsername(entry.actor)}
                                                     br
@@ -225,7 +225,7 @@ block content
                                     else
                                         ul.collection
                                             each entry in ticket.assigneeHistory
-                                                li.collection-item.avatar
+                                                li.collection-item.avatar.clickable-item
                                                     i.material-icons.circle people
                                                     span.title #{resolveUsername(entry.actor)}
                                                     br

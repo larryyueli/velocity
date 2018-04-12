@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common_api = require('./common-api.js');
 const notifications_api = require('./notifications-api.js');
 
+const cfs = require('../../Backend/customFileSystem.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
@@ -337,7 +338,7 @@ const updateProjectAdminsList = function (req, res) {
                 inputAdminsList = JSON.parse(inputAdminsList);
             }
             catch (err) {
-                logger.error(common_backend.getError(1011));
+                logger.error(JSON.stringify(common_backend.getError(1011)));
                 inputAdminsList = [];
             }
         }
@@ -459,7 +460,7 @@ const updateProjectTeamsList = function (req, res) {
                 inputTeamsList = JSON.parse(inputTeamsList);
             }
             catch (err) {
-                logger.error(common_backend.getError(1011));
+                logger.error(JSON.stringify(common_backend.getError(1011)));
                 inputTeamsList = [];
             }
         }
@@ -504,7 +505,7 @@ const updateProjectTeamsList = function (req, res) {
                 }
                 for (let i = 0; i < resolvedTeamsList.length; i++) {
                     let team = resolvedTeamsList[i];
-                    projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
+                    projects.getTeamByName(projectId, team.name, function (err, teamObj) {
                         if (err) {
                             if (err.code === 6004) {
                                 projects.addTeamToProject(projectId, team, function (err, result) {
@@ -662,7 +663,7 @@ const updateProjectTeamsMe = function (req, res) {
                     return res.status(400).send(common_backend.getError(2016));
                 }
 
-                projects.getTeamInProjectByName(projectId, teamName, function (err, teamObjFound) {
+                projects.getTeamByName(projectId, teamName, function (err, teamObjFound) {
                     if (err) {
                         if (err.code === 6004) {
                             const newTeam = {
@@ -1144,16 +1145,243 @@ const getProjectsListComponent = function (req, res) {
     });
 }
 
+/**
+ * root path to get the projects export form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const renderProjectsExportPage = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2055)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
+    }
+
+    return res.status(200).render(common_api.pugPages.projectsExport, {
+        user: req.session.user,
+    });
+}
+
+/**
+ * root path to get the projects import form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const renderProjectsImportPage = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2057)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
+    }
+
+    return res.status(200).render(common_api.pugPages.projectsImport, {
+        user: req.session.user,
+    });
+}
+
+
+/**
+ * path to export projects from a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const exportProjectsFile = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2057)));
+        return res.status(400).send(common_backend.getError(2057));
+    }
+
+    projects.getFullProjectsList(function (err, projectsList) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        let filteredList = [];
+        for (let i = 0; i < projectsList.length; i++) {
+            let project = projectsList[i];
+            filteredList.push({
+                title: project.title,
+                description: project.description,
+                boardType: project.boardType,
+                deadlineDate: project.deadlineDate,
+                deadlineTime: project.deadlineTime
+            });
+        }
+
+        const fileData = JSON.stringify(filteredList);
+        const fileName = common_backend.getUUID();
+        const fileObject = {
+            fileName: fileName,
+            filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
+            fileExtension: 'velocity',
+            fileData: fileData,
+            filePermissions: common_backend.cfsPermission.OWNER,
+            fileCreator: req.session.user._id
+        };
+
+        cfs.writeFile(fileObject, function (err, result) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).render(common_api.pugPages.projectsExportComplete, {
+                fileName: fileName
+            });
+        });
+    });
+}
+
+/**
+ * path to download the export projects file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const exportProjectsFileDownload = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2057)));
+        return res.status(400).send(common_backend.getError(2057));
+    }
+
+    const fileId = req.query.fileId;
+    cfs.fileExists(fileId, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (fileObj.permission !== common_backend.cfsPermission.OWNER
+            || fileObj.creator !== req.session.user._id) {
+            logger.error(JSON.stringify(common_backend.getError(2058)));
+            return res.status(400).send(common_backend.getError(2058));
+        }
+
+        return res.download(fileObj.path, 'Exported Projects List.velocity', function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    });
+}
+
+/**
+ * path to import projects from a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const importProjectsFile = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2059)));
+        return res.status(400).send(common_backend.getError(2059));
+    }
+
+    const fileName = common_backend.getUUID();
+    const fileExtension = 'velocity';
+    const uploadedFile = req.files.projectsImpotFile;
+    const fileData = uploadedFile.data;
+    const fileObject = {
+        fileName: fileName,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: fileData,
+        filePermissions: common_backend.cfsPermission.OWNER,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        let projectsList = '';
+        try {
+            projectsList = JSON.parse(fileData);
+        } catch (error) {
+            logger.error(JSON.stringify(common_backend.getError(1011)));
+            return res.status(400).send(common_backend.getError(1011));
+        }
+
+        let added = 0;
+        let failed = 0;
+        let counter = 0;
+
+        if (projectsList.length === 0) {
+            return res.status(200).render(common_api.pugPages.projectsImportComplete, {
+                added: added,
+                failed: failed,
+                total: counter
+            });
+        } else {
+            for (let i = 0; i < projectsList.length; i++) {
+                let proj = projectsList[i];
+                proj.status = common_backend.projectStatus.DRAFT.value;
+                proj.admins = [req.session.user._id];
+                projects.addProject(proj, function (err, result) {
+                    counter++;
+                    if (err) {
+                        failed++;
+                    } else {
+                        added++;
+                    }
+
+                    if (counter === projectsList.length) {
+                        return res.status(200).render(common_api.pugPages.projectsImportComplete, {
+                            added: added,
+                            failed: failed,
+                            total: counter
+                        });
+                    }
+                });
+            }
+        }
+    });
+}
+
 // <exports> ------------------------------------------------
 exports.activateProject = activateProject;
 exports.closeProject = closeProject;
 exports.createProject = createProject;
 exports.deleteProject = deleteProject;
+exports.exportProjectsFile = exportProjectsFile;
+exports.exportProjectsFileDownload = exportProjectsFileDownload;
 exports.getAdminsListComponent = getAdminsListComponent;
 exports.getTeamsAssignmentComponent = getTeamsAssignmentComponent;
 exports.getProjectsListComponent = getProjectsListComponent;
+exports.importPorjectsFile = importProjectsFile;
 exports.renderProjectPage = renderProjectPage;
 exports.renderProjectsCreationPage = renderProjectsCreationPage;
+exports.renderProjectsExportPage = renderProjectsExportPage;
+exports.renderProjectsImportPage = renderProjectsImportPage;
 exports.renderProjectsPage = renderProjectsPage;
 exports.updateActiveProject = updateActiveProject;
 exports.updateDraftProject = updateDraftProject;
