@@ -505,7 +505,7 @@ const updateProjectTeamsList = function (req, res) {
                 }
                 for (let i = 0; i < resolvedTeamsList.length; i++) {
                     let team = resolvedTeamsList[i];
-                    projects.getTeamInProjectByName(projectId, team.name, function (err, teamObj) {
+                    projects.getTeamByName(projectId, team.name, function (err, teamObj) {
                         if (err) {
                             if (err.code === 6004) {
                                 projects.addTeamToProject(projectId, team, function (err, result) {
@@ -663,7 +663,7 @@ const updateProjectTeamsMe = function (req, res) {
                     return res.status(400).send(common_backend.getError(2016));
                 }
 
-                projects.getTeamInProjectByName(projectId, teamName, function (err, teamObjFound) {
+                projects.getTeamByName(projectId, teamName, function (err, teamObjFound) {
                     if (err) {
                         if (err.code === 6004) {
                             const newTeam = {

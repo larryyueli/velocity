@@ -125,33 +125,33 @@
 		},
 		"label": "Project",
 		"export": {
-			"form": {
-				"title": "Projects Export Form",
-				"description": "Export the full list of projects"
-			},
 			"complete": {
 				"form": {
-					"title": "Export Job Completed",
-					"description": "The list of projects has been exported"
+					"description": "The list of projects has been exported",
+					"title": "Export Job Completed"
 				}
+			},
+			"form": {
+				"description": "Export the full list of projects",
+				"title": "Projects Export Form"
 			}
 		},
 		"import": {
-			"form": {
-				"title": "Projects Import Form",
-				"description": "For optimal results please use a valid .velocity file",
-				"button": "File",
-				"placeHolder": "Select your velocity file"
-			},
 			"complete": {
 				"form": {
-					"title": "Import Job Completed",
-					"description": "The list of projects has been imported",
-					"report": "Report",
 					"added": "Total number of projects added",
+					"description": "The list of projects has been imported",
 					"failed": "Total number of failed attempts",
-					"processed": "Total number of projects processed"
+					"processed": "Total number of projects processed",
+					"report": "Report",
+					"title": "Import Job Completed"
 				}
+			},
+			"form": {
+				"button": "File",
+				"description": "For optimal results please use a valid .velocity file",
+				"placeHolder": "Select your velocity file",
+				"title": "Projects Import Form"
 			}
 		}
 	},
@@ -330,33 +330,33 @@
 		"usersEditFormTitle": "Account Edit Form",
 		"label": "User",
 		"import": {
-			"form": {
-				"title": "Accounts Import Form",
-				"description": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
-				"button": "File",
-				"placeHolder": "Select your csv file"
-			},
 			"complete": {
 				"form": {
-					"title": "Import Job Completed",
-					"description": "The list of user accounts has been imported",
-					"report": "Report",
 					"added": "Total number of users added",
-					"failed": "Total number of failed attempts",
+					"description": "The list of user accounts has been imported",
 					"exists": "Total number of users already exist",
-					"processed": "Total number of users processed"
+					"failed": "Total number of failed attempts",
+					"processed": "Total number of users processed",
+					"report": "Report",
+					"title": "Import Job Completed"
 				}
+			},
+			"form": {
+				"button": "File",
+				"description": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
+				"placeHolder": "Select your csv file",
+				"title": "Accounts Import Form"
 			}
 		},
 		"export": {
 			"form": {
-				"title": "Accounts Export Form",
-				"description": "Export the full list of users"
+				"description": "Export the full list of users",
+				"title": "Accounts Export Form"
 			},
 			"complete": {
 				"form": {
-					"title": "Export Job Completed",
-					"description": "The list of user accounts has been exported"
+					"description": "The list of user accounts has been exported",
+					"title": "Export Job Completed"
 				}
 			}
 		}
