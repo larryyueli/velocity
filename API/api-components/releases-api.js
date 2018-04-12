@@ -317,9 +317,9 @@ const getReleaseComponents = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    const projectId = req.params.projectId;
-    const teamId = req.params.teamId;
-    const releaseId = req.params.releaseId;
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    const releaseId = req.query.releaseId;
     projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));

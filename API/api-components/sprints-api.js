@@ -392,9 +392,9 @@ const getSprintComponents = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    const projectId = req.params.projectId;
-    const teamId = req.params.teamId;
-    const sprintId = req.params.sprintId;
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    const sprintId = req.query.sprintId;
     projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));

@@ -254,9 +254,9 @@ const getTagComponents = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    const projectId = req.params.projectId;
-    const teamId = req.params.teamId;
-    const tagId = req.params.tagId;
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    const tagId = req.query.tagId;
     projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
