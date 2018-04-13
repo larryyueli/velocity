@@ -82,6 +82,7 @@ const getAnalyticsData = function (req, res) {
                                 }
                                 
                                 return res.status(200).send({
+                                    boardType: teamObj.boardType,
                                     sprints: stateObj.sprints,
                                     releases: stateObj.releases
                                 });
@@ -96,6 +97,7 @@ const getAnalyticsData = function (req, res) {
                         }
                         
                         return res.status(200).send({
+                            boardType: teamObj.boardType,
                             kanban: stateObj
                         });
                     });
