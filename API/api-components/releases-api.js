@@ -24,6 +24,7 @@ const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
 const settings = require('../../Backend/settings.js');
+const users = require('../../Backend/users.js');
 
 /**
  * root path to create a releases
@@ -355,9 +356,40 @@ const getReleaseComponents = function (req, res) {
                         return res.status(500).send(err);
                     }
 
+                    const resolvedUsers = common_backend.convertListToJason('_id', users.getActiveUsersList());
+                    let resolvedList = [];
+                    for (let i = 0; i < ticketsList.length; i++) {
+                        const ticketObj = ticketsList[i];
+                        const resolvedReporter = resolvedUsers[ticketObj.reporter] ? `${resolvedUsers[ticketObj.reporter].fname} ${resolvedUsers[ticketObj.reporter].lname}` : common_backend.noReporter;
+                        const resolvedAssignee = resolvedUsers[ticketObj.assignee] ? `$${resolvedUsers[ticketObj.assignee].fname} ${resolvedUsers[ticketObj.assignee].lname}}` : common_backend.noReporter;
+                        const reporterPicture = resolvedUsers[ticketObj.reporter] ? resolvedUsers[ticketObj.reporter].picture : null;
+                        const assigneePicture = resolvedUsers[ticketObj.assignee] ? resolvedUsers[ticketObj.assignee].picture : null;
+                        resolvedList.push({
+                            _id: ticketObj._id,
+                            reporterId: ticketObj.reporter,
+                            assigneeId: ticketObj.assignee,
+                            reporter: resolvedReporter,
+                            assignee: resolvedAssignee,
+                            reporterPicture: reporterPicture,
+                            assigneePicture: assigneePicture,
+                            ctime: ticketObj.ctime,
+                            mtime: ticketObj.mtime,
+                            displayId: ticketObj.displayId,
+                            projectId: ticketObj.projectId,
+                            teamId: ticketObj.teamId,
+                            title: ticketObj.title,
+                            description: ticketObj.description,
+                            status: ticketObj.status,
+                            state: ticketObj.state,
+                            type: ticketObj.type,
+                            priority: ticketObj.priority,
+                            points: ticketObj.points
+                        });
+                    }
+
                     return res.status(200).send({
                         ticketEntryComponent: common_api.pugComponents.ticketEntryComponent(),
-                        ticketsList: ticketsList
+                        ticketsList: resolvedList
                     });
                 });
             });
