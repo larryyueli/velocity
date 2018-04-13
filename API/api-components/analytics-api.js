@@ -26,12 +26,55 @@ const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
 
 /**
+ * path to get the admin analytics data
+ * 
+ * @param {*} req req object
+ * @param {*} res res object
+ */
+const handleAdminAnalytics = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const projectId = req.query.projectId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTicketsByProjectId(projectId, function (err, tickets) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            analytics.getAdminAnalytics(projectObj, tickets, function (err, adminObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(500).send(err);
+                }
+    
+                return res.status(200).send({
+                    teams: adminObj
+                });
+            });
+        });
+    });
+}
+
+/**
  * path to get the teams analytics data
  *
  * @param {object} req req object
  * @param {object} res res object
  */
-const getAnalyticsData = function (req, res) {
+const handleProjectTeamAnalytics = function (req, res) {
 
     if (!common_api.isActiveSession(req)) {
         return res.status(401).render(common_api.pugPages.login);
@@ -80,7 +123,7 @@ const getAnalyticsData = function (req, res) {
                                     logger.error(JSON.stringify(err));
                                     return res.status(500).send(err);
                                 }
-                                
+
                                 return res.status(200).send({
                                     boardType: teamObj.boardType,
                                     sprints: stateObj.sprints,
@@ -110,5 +153,6 @@ const getAnalyticsData = function (req, res) {
 }
 
 // <exports>
-exports.getAnalyticsData = getAnalyticsData;
+exports.handleAdminAnalytics = handleAdminAnalytics;
+exports.handleProjectTeamAnalytics = handleProjectTeamAnalytics;
 // </exports>

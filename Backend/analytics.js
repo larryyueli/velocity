@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const analytics_admin = require('./analytics-components/analytics-admin.js');
 const analytics_kanban = require('./analytics-components/analytics-kanban.js');
 const analytics_releases = require('./analytics-components/analytics-releases.js');
 const analytics_sprints = require('./analytics-components/analytics-sprints.js');
@@ -55,9 +56,27 @@ const initialize = function (debug, callback) {
  * Save marker for sprints and releases
  */
 const processAnalytics = function () {
+    analytics_admin.saveAdminAnalytics();
     analytics_kanban.saveKanbanAnalytics();
     analytics_releases.saveReleaseAnalytics();
     analytics_sprints.saveSprintAnalytics();
+}
+
+/**
+ * Returns admin analytics
+ * @param {object} project project obj
+ * @param {array} tickets tickets list
+ * @param {function} callback callback function
+ */
+const getAdminAnalytics = function (projectObj, tickets, callback) {
+    analytics_admin.getAdminAnalytics(projectObj, tickets, function (err, adminAnalytics) {
+        if (err) {
+            logger.error(err);
+            return callback(common.getError(8002), null);
+        }
+
+        return callback(null, adminAnalytics);
+    });
 }
 
 /**
@@ -78,11 +97,13 @@ const getScrumTeamAnalytics = function (team, sprints, releases, tickets, callba
             logger.error(err);
             return callback(common.getError(8002), null);
         }
+
         analytics_sprints.getSprintAnalytics(team, sprints, tickets,function (err, sprintAnalytics) {
             if (err) {
                 logger.error(err);
                 return callback(common.getError(8002), null);
             }
+
             result.sprints = sprintAnalytics;
             result.releases = releaseAnalytics;
             return callback(null, result);
@@ -109,6 +130,7 @@ const getKanbanTeamAnalytics = function (team, tickets, callback) {
 
 // <exports> -----------------------------------
 exports.initialize = initialize;
+exports.getAdminAnalytics = getAdminAnalytics;
 exports.getKanbanTeamAnalytics = getKanbanTeamAnalytics;
 exports.getScrumTeamAnalytics = getScrumTeamAnalytics;
 // </exports> ----------------------------------

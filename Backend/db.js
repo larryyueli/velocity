@@ -22,6 +22,7 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
+const db_analytics_admin = require('./dbs/db-analytics-admin.js');
 const db_analytics_kanban = require('./dbs/db-analytics-kanban.js');
 const db_analytics_releases = require('./dbs/db-analytics-releases.js');
 const db_analytics_sprints = require('./dbs/db-analytics-sprints.js');
@@ -48,10 +49,11 @@ const initialize = function (callback) {
         if (err) {
             return callback(common.getError(1001), null);
         }
-        db_comments.initialize(client.db(config.db_name).collection('comments'));
+        db_analytics_admin.initialize(client.db(config.db_name).collection('analytics_admin'));
         db_analytics_kanban.initialize(client.db(config.db_name).collection('analytics_kanban'));
         db_analytics_releases.initialize(client.db(config.db_name).collection('analytics_releases'));
         db_analytics_sprints.initialize(client.db(config.db_name).collection('analytics_sprints'));
+        db_comments.initialize(client.db(config.db_name).collection('comments'));
         db_notifications.initialize(client.db(config.db_name).collection('notifications'));
         db_projects.initialize(client.db(config.db_name).collection('projects'));
         db_releases.initialize(client.db(config.db_name).collection('releases'));
@@ -67,6 +69,11 @@ const initialize = function (callback) {
     });
 }
 exports.initialize = initialize;
+
+// <Admin Analytics Collection> ----------------------------------------------
+exports.addAdminAnalytics = db_analytics_admin.addAdminAnalytics;
+exports.getLimitedAdminAnalyticsListSorted = db_analytics_admin.getLimitedAdminAnalyticsListSorted;
+// </Admin Analytics Collection> ----------------------------------------------
 
 // <Comments Collection> ----------------------------------------------
 exports.addComment = db_comments.addComment;

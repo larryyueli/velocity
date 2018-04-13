@@ -257,6 +257,7 @@ exports.handleUsersRequestAccessPath = users_api.requestAccess;
 exports.handleUsersUpdatePath = users_api.editUser;
 // </Users Requests> -----------------------------------------------
 
-// </Analytics Requests> -----------------------------------------------
-exports.handleProjectTeamAnalytics = analytics_api.getAnalyticsData;
+// <Analytics Requests> -----------------------------------------------
+exports.handleAdminAnalytics = analytics_api.handleAdminAnalytics;
+exports.handleProjectTeamAnalytics = analytics_api.handleProjectTeamAnalytics;
 // </Analytics Requests> -----------------------------------------------
