@@ -81,6 +81,7 @@ function queryScrumStatistics() {
       success: function (data) {
 
         data = {
+            boardType:2,
             releases:[  
                 { releaseId:"84d190e0-3ea6-11e8-8af8-5592838ee8cb", releaseName:"Release numero 0", releaseStatus:1, "history":[ { date:new Date("2018-04-12 07:09:14 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 07:09:41 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 07:57:28 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:30:06 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:31:11 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] } ], cumulativeflowdiagram:[ [ { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, date: new Date("2018-04-12 07:09:14 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 07:09:41 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 07:57:28 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 08:30:06 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 08:31:11 PM") } ] ] }, { releaseId:"84d2a250-3ea6-11e8-8af8-5592838ee8cb", releaseName:"Release numero 1", releaseStatus:2, "history":[ { date: new Date("2018-04-12 07:09:14 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 07:57:28 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:30:06 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:31:11 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] } ], cumulativeflowdiagram:[ [ { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, date: new Date("2018-04-12 07:09:14 PM") } ], [ { 0:2, 1:2, 2:0, 3:0, 4:2, 5:0, date: new Date("2018-04-12 07:57:28 PM") } ], [ { 0:2, 1:2, 2:0, 3:0, 4:2, 5:0, date: new Date("2018-04-12 08:30:06 PM") } ], [ { 0:2, 1:2, 2:0, 3:0, 4:2, 5:0, date: new Date("2018-04-12 08:31:11 PM") } ] ] }
              ],            sprints: [
@@ -183,47 +184,51 @@ function queryScrumStatistics() {
 
         globalData = data;
 
-        if (data['sprints'].length === 0) {
-            displayTeam = false;
-            displayYou = false;
-        } else {
-            $(teamDataId).removeClass('hidden');
-            var currentSprint = data['sprints'].find(sprint => sprint['sprintStatus'] === 2);
-            if (!currentSprint) {
-                if (data['sprints'].length) {
-                    currentSprint = data['sprints'][data['sprints'].length - 1];
-                }
+        if (data.boardType === 2) {
+            if (data['sprints'].length === 0) {
+                displayTeam = false;
                 displayYou = false;
             } else {
-                $(yourDataId).removeClass('hidden');
-            }
-            if (currentSprint) {
-                $(sprintsAutocompleteId).val(currentSprint['sprintName']);
-                selectedSprint = currentSprint['sprintId'];
-                $(sprintsAutocompleteId).parent().find('label').addClass('active');
+                $(teamDataId).removeClass('hidden');
+                var currentSprint = data['sprints'].find(sprint => sprint['sprintStatus'] === 2);
+                if (!currentSprint) {
+                    if (data['sprints'].length) {
+                        currentSprint = data['sprints'][data['sprints'].length - 1];
+                    }
+                    displayYou = false;
+                } else {
+                    $(yourDataId).removeClass('hidden');
+                }
+                if (currentSprint) {
+                    $(sprintsAutocompleteId).val(currentSprint['sprintName']);
+                    selectedSprint = currentSprint['sprintId'];
+                    $(sprintsAutocompleteId).parent().find('label').addClass('active');
+                }
+
+                getListOfSprints();
             }
 
-            getListOfSprints();
-        }
+            if (data['releases'].length === 0) {
+                displayReleases = false;
+            } else {
+                $(releaseDataId).removeClass('hidden');
+                var currentRelease = null;
+                if (data['releases'].length) {
+                    currentRelease = data['releases'][data['releases'].length - 1];
+                }
+                if (currentRelease) {
+                    $(releasesAutocompleteId).val(currentRelease['releaseName']);
+                    selectedRelease = currentRelease['releaseId'];
+                    $(releasesAutocompleteId).parent().find('label').addClass('active');
+                }
 
-        if (data['releases'].length === 0) {
-            displayReleases = false;
+                getListOfReleases();
+            }
+
+            displayScrumCharts(data);
         } else {
-            $(releaseDataId).removeClass('hidden');
-            var currentRelease = null;
-            if (data['releases'].length) {
-                currentRelease = data['releases'][data['releases'].length - 1];
-            }
-            if (currentRelease) {
-                $(releasesAutocompleteId).val(currentRelease['releaseName']);
-                selectedRelease = currentRelease['releaseId'];
-                $(releasesAutocompleteId).parent().find('label').addClass('active');
-            }
-
-            getListOfReleases();
+            //TODO display kanban charts
         }
-
-        displayScrumCharts(data);
       },
       error: function (data) {
           alert('error');
