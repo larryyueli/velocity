@@ -45,12 +45,14 @@ const assigneeAutocompleteBoardId = '#assigneeAutocompleteBoard';
 const assigneeAutocompleteIssueId = '#assigneeAutocompleteIssue';
 const assigneeAutocompleteId = '#assigneeAutocomplete';
 const sprintFilterUserAutocompleteId = '#sprintFilterUserAutocomplete';
+const releaseFilterUserAutocompleteId = '#releaseFilterUserAutocomplete';
 
 var releaseComponent = null;
 var selectedAssignee = null;
 var selectedAssigneeBoard = null;
 var selectedAssigneeIssue = null;
 var sprintFilterUser = null;
+var releaseFilterUser = null;
 var sprintComponent = null;
 var tagComponent = null;
 var usernamesArray = [];
@@ -494,6 +496,21 @@ function getListOfAssignee() {
                 sprintFilterUser = usernameObj[$(sprintFilterUserAutocompleteId)[0].value.trim()];
                 // startLoad(sprintsLoadId, sprintsListId);
                 displayFilteredTeamData();
+            });
+            $(releaseFilterUserAutocompleteId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    releaseFilterUser = usernameObj[val];
+                    // startLoad(sprintsLoadId, sprintsListId);
+                    displayFilteredReleaseData();
+                },
+                minLength: 0,
+            });
+            $(releaseFilterUserAutocompleteId).on('keyup', function () {
+                releaseFilterUser = usernameObj[$(releaseFilterUserAutocompleteId)[0].value.trim()];
+                // startLoad(sprintsLoadId, sprintsListId);
+                displayFilteredReleaseData();
             });
         },
         error: function (data) {

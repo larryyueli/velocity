@@ -18,7 +18,9 @@
 	},
 	"analytics": {
 		"tickets": "Tickets",
-		"user": "User"
+		"user": "User",
+		"selectSprint": "analytics.selectSprint",
+		"selectRelease": "analytics.selectRelease"
 	},
 	"app": {
 		"name": "Velocity"
@@ -253,7 +255,8 @@
 		},
 		"label": "Ticket",
 		"id": "Ticket Id",
-		"displayId": "Display Id"
+		"displayId": "Display Id",
+		"releases": "tickets.releases"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
