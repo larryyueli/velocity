@@ -320,7 +320,7 @@ const getReleaseComponents = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
     const releaseId = req.query.releaseId;
-    projects.getActiveProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -330,7 +330,7 @@ const getReleaseComponents = function (req, res) {
             logger.error(JSON.stringify(common_backend.getError(2018)));
             return res.status(400).send(common_backend.getError(2018));
         }
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);

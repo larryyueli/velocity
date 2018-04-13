@@ -157,7 +157,7 @@ function getComponents() {
                 $("[class^='sprintOpen_']").hide();
                 $("[class^='sprintActive_']").hide();
                 $("[class^='releaseButton_']").hide();
-                $("[class^='tag_']").hide();
+                $("[class^='tagButton_']").hide();
             }
         },
         error: function (data) {

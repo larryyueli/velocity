@@ -395,7 +395,7 @@ const getSprintComponents = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
     const sprintId = req.query.sprintId;
-    projects.getActiveProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -406,7 +406,7 @@ const getSprintComponents = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);

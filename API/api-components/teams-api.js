@@ -36,7 +36,7 @@ const users = require('../../Backend/users.js');
 const getBacklogComponents = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -47,7 +47,7 @@ const getBacklogComponents = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -194,7 +194,7 @@ const getManagementComponents = function (req, res) {
 
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -205,7 +205,7 @@ const getManagementComponents = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -241,7 +241,7 @@ const getBoardComponents = function (req, res) {
 
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -252,7 +252,7 @@ const getBoardComponents = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -382,7 +382,7 @@ const updateBoardType = function (req, res) {
 
     const projectId = req.body.projectId;
     const boardType = parseInt(req.body.boardType);
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -440,7 +440,7 @@ const renderTeamPage = function (req, res) {
 
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -457,7 +457,7 @@ const renderTeamPage = function (req, res) {
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        projects.getTeamById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -557,7 +557,7 @@ const getMembersList = function (req, res) {
 
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);

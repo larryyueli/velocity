@@ -211,7 +211,7 @@ const renderTagPage = function (req, res) {
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
     const tagId = req.params.tagId;
-    projects.getActiveProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -221,7 +221,7 @@ const renderTagPage = function (req, res) {
             logger.error(JSON.stringify(common_backend.getError(2018)));
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
