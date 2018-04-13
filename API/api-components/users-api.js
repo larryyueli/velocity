@@ -120,7 +120,7 @@ const renderProfilePage = function (req, res) {
         canEditEmail: settings.isUsersAbleEditEmail(),
         canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
         canEditPassword: settings.isUsersAbleEditPassword(),
-        notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
+        notifications: []
     });
 }
 

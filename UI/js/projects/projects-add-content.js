@@ -16,6 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const uploadButton = '#uploadButton';
+const uploadModal = '#uploadModal';
+const uploadInput = '#file-input';
+
 $(function () {
     initSummernote(descriptionId);
     if ($(descriptionId).attr('value') === '1') {
@@ -54,5 +58,42 @@ $(function () {
         container: undefined,
         autoclose: false,
         ampmclickable: true
-      });
+    });
 });
+
+/**
+ * upload a file
+*/
+function uploadFile() {
+    const files = $(uploadInput).get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        return warningSnackbar(translate('mustImportOneFile'));
+    }
+
+    formData.append('ticketImpotFile', files[0]);
+
+    $(uploadButton).attr('disabled', true);
+    return;
+    $.ajax({
+        type: 'PUT',
+        url: '/users/import/file',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            $(uploadModal).modal('close');
+            successSnackbar(translate('successfulFileUpload'));
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function () {
+            $(uploadButton).attr('disabled', false);
+        }
+    });
+}

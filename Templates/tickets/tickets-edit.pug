@@ -169,9 +169,6 @@ block content
                             .row
                                 button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                     i.material-icons.right save
-                            .row
-                                button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#uploadModal') upload modal trigger
-
                 #comments
                     .row
                         .col.s12
@@ -249,13 +246,12 @@ block content
                                 .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
                                     span
                                         | #{__('uploadModal.file')}
-                                        i.material-icons.right file_upload
                                     input(type='file')#file-input
                                 .file-path-wrapper
                                     input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))
                         .row.right
-                            button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour#uploadButton #{__('uploadModal.upload')}
-                                i.material-icons.right send
+                            .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFile()')#uploadButton #{__('uploadModal.upload')}
+                                i.material-icons.right cloud_upload
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')

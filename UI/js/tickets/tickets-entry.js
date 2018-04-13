@@ -42,6 +42,9 @@ const saveLinkButton = '#saveLinkButton';
 const relatedInput = '#relatedInput';
 const relatedTicketDivId = '#relatedTicketDivId';
 const relatedSelectedInput = '#relatedSelectedInput';
+const uploadButton = '#uploadButton';
+const uploadModal = '#uploadModal';
+const uploadInput = '#file-input';
 
 var selectedAssignee = null;
 var selectedSprints = [];
@@ -377,4 +380,41 @@ function saveLinkFunction() {
 */
 function removeRelatedId(relatedId) {
     delete selectedRelatedObj[relatedId];
+}
+
+/**
+ * upload a file
+*/
+function uploadFile() {
+    const files = $(uploadInput).get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        return warningSnackbar(translate('mustImportOneFile'));
+    }
+
+    formData.append('ticketImpotFile', files[0]);
+
+    $(uploadButton).attr('disabled', true);
+    return;
+    $.ajax({
+        type: 'PUT',
+        url: '/users/import/file',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            $(uploadModal).modal('close');
+            successSnackbar(translate('successfulFileUpload'));
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function () {
+            $(uploadButton).attr('disabled', false);
+        }
+    });
 }
