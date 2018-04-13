@@ -47,7 +47,7 @@ const getBacklogComponents = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -111,7 +111,9 @@ const getBacklogComponents = function (req, res) {
                         return res.status(200).send({
                             sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
                             ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                            sprintsList: finalList
+                            sprintsList: finalList,
+                            isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                                || projectObj.status === common_backend.projectStatus.DELETED.value
                         });
                     }
 
@@ -166,7 +168,9 @@ const getBacklogComponents = function (req, res) {
                                 return res.status(200).send({
                                     sprintEntryHTML: common_api.pugComponents.sprintEntryComponent(),
                                     ticketEntryHTML: common_api.pugComponents.ticketEntryComponent(),
-                                    sprintsList: finalList
+                                    sprintsList: finalList,
+                                    isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                                        || projectObj.status === common_backend.projectStatus.DELETED.value
                                 });
                             }
                         });
@@ -188,10 +192,39 @@ const getManagementComponents = function (req, res) {
         return res.status(401).render(common_api.pugPages.login);
     }
 
-    return res.status(200).send({
-        releaseEntryComponent: common_api.pugComponents.teamManagementReleaseEntryComponent(),
-        sprintEntryComponent: common_api.pugComponents.teamManagementSprintEntryComponent(),
-        tagEntryComponent: common_api.pugComponents.teamManagementTagEntryComponent()
+    const projectId = req.query.projectId;
+    const teamId = req.query.teamId;
+    projects.getProjectById(projectId, function (err, projectObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (projectObj.members.indexOf(req.session.user._id) === -1) {
+            logger.error(JSON.stringify(common_backend.getError(2018)));
+            return res.status(400).send(common_backend.getError(2018));
+        }
+
+        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+                return res.status(500).send(err);
+            }
+
+            if (projectObj.admins.indexOf(req.session.user._id) === -1
+                && teamObj.members.indexOf(req.session.user._id) === -1) {
+                logger.error(JSON.stringify(common_backend.getError(2019)));
+                return res.status(400).send(common_backend.getError(2019));
+            }
+
+            return res.status(200).send({
+                releaseEntryComponent: common_api.pugComponents.teamManagementReleaseEntryComponent(),
+                sprintEntryComponent: common_api.pugComponents.teamManagementSprintEntryComponent(),
+                tagEntryComponent: common_api.pugComponents.teamManagementTagEntryComponent(),
+                isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                    || projectObj.status === common_backend.projectStatus.DELETED.value
+            });
+        });
     });
 }
 
@@ -219,7 +252,7 @@ const getBoardComponents = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -297,7 +330,9 @@ const getBoardComponents = function (req, res) {
                 return res.status(200).send({
                     boardTicketEntryHTML: common_api.pugComponents.boardTicketEntryComponent(),
                     userOutlineEntryHTML: common_api.pugComponents.boardUserOutlineComponent(),
-                    board: board
+                    board: board,
+                    isReadOnly: projectObj.status === common_backend.projectStatus.CLOSED.value
+                        || projectObj.status === common_backend.projectStatus.DELETED.value
                 });
             }
 
@@ -422,7 +457,7 @@ const renderTeamPage = function (req, res) {
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -533,7 +568,7 @@ const getMembersList = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);

@@ -1,0 +1,15 @@
+.row
+    .col.s12
+        .card.center
+            .card-image
+                a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href='/users')
+                    i.material-icons arrow_back
+            .card-content
+                .row
+                    include ../checkmark
+                h5.card-title #{__('users.export.complete.form.title')}
+                h6 #{__('users.export.complete.form.description')}
+            .card-action
+                .hidden.completedFileName #{fileName}
+                button.waves-effect.waves-light.btn.primaryColour-background-colour#account-export-form-done #{__('actions.download')}
+                    i.material-icons.right cloud_download

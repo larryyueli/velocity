@@ -20,7 +20,10 @@ var sprintEntryHTML = null;
 var ticketEntryHTML = null;
 var sprintsList = null;
 
+var isReadonly = true;
+
 const backlogTicketListId = '#backlogTicketList';
+const datesId = '#dates';
 const issueCountId = '#issueCount';
 const sprintsListId = '#sprintsList';
 const titleId = '#title';
@@ -70,6 +73,7 @@ function getBacklog() {
             sprintEntryHTML = $(data.sprintEntryHTML);
             ticketEntryHTML = $(data.ticketEntryHTML);
             sprintsList = data.sprintsList;
+            isReadonly = data.isReadOnly;
 
             sprintsList.forEach(sprint => {
                 sprint.isActive = true;
@@ -89,6 +93,12 @@ function displaySprintsList() {
 
     sprintsList.forEach(sprint => {
         $(sprintsListId).append(fillSprintsRow(sprint));
+
+        sprint.tickets.forEach(ticket => {
+            $(`#${ticket._id}-backlog`).on('click', function () {
+                window.location.href = `/project/${projectId}/team/${teamId}/ticket/${ticket._id}`;
+            });
+        });
     });
 
     endLoad(sprintsLoadId, sprintsListId);
@@ -100,8 +110,6 @@ function fillSprintsRow(sprint) {
     var isActive = false;
     bindedRow.find(backlogTicketListId).html('');
 
-    bindedRow.find(titleId).html(sprint.name);
-
     tickets.forEach(ticket => {
         if (passTicketFilter(ticket)) {
             bindedRow.find(backlogTicketListId).append(fillTicketRow(ticket));
@@ -109,6 +117,14 @@ function fillSprintsRow(sprint) {
     });
 
     bindedRow.find(issueCountId).html(`${tickets.length} ${translate('issuesFound')} (${bindedRow.find(backlogTicketListId).find('li').length} ${translate('total')})`);
+
+    if (sprint.name === 'backlog') {
+        bindedRow.find(titleId).html(translate(sprint.name));
+        bindedRow.find(datesId).html('');
+    } else {
+        bindedRow.find(titleId).html(sprint.name);
+        bindedRow.find(datesId).html(`${sprint.startDate} - ${sprint.endDate}`);
+    }
 
     if (bindedRow.find(backlogTicketListId).find('li').length === 0) {
         bindedRow.find(backlogTicketListId).append(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`)
@@ -161,25 +177,26 @@ function fillTicketRow(ticket) {
     var bindedRow = ticketEntryHTML;
 
     bindedRow.find(statusId).removeClass((index, className) => {
-        return (className.match (/(^|\s)state\S+/g) || []).join(' ');
+        return (className.match(/(^|\s)state\S+/g) || []).join(' ');
     });
 
     if (ticket.type === 0) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (ticket.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="auto">');
-    }  else if (ticket.type === 2) {
+    } else if (ticket.type === 2) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="auto">');
     }
 
-    if (ticket.priority === 0 ) {
-       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
+    if (ticket.priority === 0) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
     } else if (ticket.priority === 1) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="auto">');
     } else if (ticket.priority === 2) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-high-priority.png" alt="" height="25" width="auto">');
     }
 
+    bindedRow.attr('id', `${ticket._id}-backlog`);
     bindedRow.find(nameId).html(ticket.title);
     bindedRow.find(estimateId).html(ticket.points);
     bindedRow.find(statusId).html(translate(`state${ticket.state}`));

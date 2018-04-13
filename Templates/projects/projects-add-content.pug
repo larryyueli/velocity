@@ -1,9 +1,12 @@
 .row
-    .input-field.col.s12
-        input#title.validate(type='text', name='title', value=title ? title : "",required, autofocus)
-        label(for='title') #{__('projects.form.fields.title')}
+    if !isClosed
+        .input-field.col.s12
+            input#title.validate(type='text', name='title', value=title ? title : "",required, autofocus)
+            label(for='title') #{__('projects.form.fields.title')}
+    else
+        p #{__('projects.form.fields.title')}: #{title ? title : ""}
 .row
-    #description #{description ? description : ""}
+    #description(value = isClosed ? 1 : 0) #{description ? description : ""}
 .row
     .col.s12.m4
         span.left #{`${__('projectPage.tabs.general.forceBoardType')}:`}

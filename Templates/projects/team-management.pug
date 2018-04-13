@@ -1,115 +1,116 @@
-.row
-    .col.s12
-        .row
-            .col.s8
-                h5#sprints #{__('projectPage.tabs.management.sprints')}
-            .col.s4
-                a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintVisibility
+ul.collapsible(data-collapsible='expandable')
+    li
+        .collapsible-header
+            i.material-icons.circle date_range
+            | #{__('projectPage.tabs.management.sprints')}
+        .collapsible-body
+            .col.s12
+                a.btn.btn-flat.waves-effect.waves-light.right#sprintVisibility
                     i.material-icons add
-        hr
-        .row.sprintInputRow
-            .col.s4
-                .input-field
-                    input.validate(type='text', name='tags')#sprintField
-                    label(for='tags') #{__('projectPage.tabs.management.newSprint')}
-            .col.s3
-                .input-field
-                    input.datepicker(type='text', name='startDate')#startDatePicker
-                    label(for='startDate') #{__('projectPage.tabs.management.sprintStart')}
-            .col.s3
-                .input-field
-                    input.datepicker(type='text', name='endDate')#endDatePicker
-                    label(for='endDate') #{__('projectPage.tabs.management.sprintEnd')}
-            .col.s2
-                button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintCreation #{__('actions.create')}
-                    i.material-icons.right add
-        hr.sprintInputRow
-        .row
-            if sprintsList.length === 0
-                h6.center #{__('projectPage.tabs.management.noSprints')}
-            else
-                ul.collection#appendSprintDiv
-                    each sprint in sprintsList
-                        li(id=`sprint_${sprint._id}`).collection-item.avatar
-                            i.material-icons.circle date_range
-                            if sprint.status === commonSprintStatus.OPEN.value
-                                button(class=`sprintOpen_${sprint._id}`, onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                    i.material-icons.right delete_forever
-                            if sprint.status === commonSprintStatus.OPEN.value
-                                button(class=`sprintOpen_${sprint._id}`, onclick=`activateSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                    i.material-icons.right check
-                            button(class=`sprintActive_${sprint._id} ${sprint.status === commonSprintStatus.ACTIVE.value ? '' : 'hidden'}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right remove_circle
-                            button(onclick=`loadPage('/project/${projectId}/team/${teamId}/sprint/${sprint._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right receipt
-                            span.title #{sprint.name}
-                            p
-                                | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
-                                br
-                                | #{`${__('projectPage.tabs.management.sprintEnd')}: ${sprint.endDate}`}
-.row
-    .col.s12
-        .row
-            .col.s8
-                h5#releases #{__('projectPage.tabs.management.releases')}
-            .col.s4
-                a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#releaseVisibility
-                    i.material-icons add
-        hr
-        .row.releaseInputRow
-            .col.s8
-                .input-field
-                    input.validate(type='text', name='release')#releaseField
-                    label(for='release') #{__('projectPage.tabs.management.newRelease')}
-            .col.s4
-                button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#releaseCreation #{__('actions.create')}
-                    i.material-icons.right add
-        hr.releaseInputRow
-        .row
-            if releasesList.length === 0
-                h6.center #{__('projectPage.tabs.management.noReleases')}
-            else
-                ul.collection#appendReleaseDiv
-                    each release in releasesList
-                        li(id=`release_${release._id}`).collection-item.avatar
-                            i.material-icons.circle dns
-                            if release.status === commonReleaseStatus.ACTIVE.value
-                                button(class=`releaseButton_${release._id}`, onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                    i.material-icons.right delete_forever
-                            if release.status === commonReleaseStatus.ACTIVE.value
-                                button(class=`releaseButton_${release._id}`, onclick=`closeRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+            hr
+            .row.sprintInputRow
+                .col.s4
+                    .input-field
+                        input.validate(type='text', name='tags')#sprintField
+                        label(for='tags') #{__('projectPage.tabs.management.newSprint')}
+                .col.s3
+                    .input-field
+                        input.datepicker(type='text', name='startDate')#startDatePicker
+                        label(for='startDate') #{__('projectPage.tabs.management.sprintStart')}
+                .col.s3
+                    .input-field
+                        input.datepicker(type='text', name='endDate')#endDatePicker
+                        label(for='endDate') #{__('projectPage.tabs.management.sprintEnd')}
+                .col.s2
+                    button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintCreation #{__('actions.create')}
+                        i.material-icons.right add
+            hr.sprintInputRow
+            .row
+                if sprintsList.length === 0
+                    h6.center #{__('projectPage.tabs.management.noSprints')}
+                else
+                    ul.collection#appendSprintDiv
+                        each sprint in sprintsList
+                            li(id=`sprint_${sprint._id}`).collection-item.avatar
+                                i.material-icons.circle date_range
+                                if sprint.status === commonSprintStatus.OPEN.value
+                                    button(class=`sprintOpen_${sprint._id}`, onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                        i.material-icons.right delete_forever
+                                if sprint.status === commonSprintStatus.OPEN.value
+                                    button(class=`sprintOpen_${sprint._id}`, onclick=`activateSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                        i.material-icons.right check
+                                button(class=`sprintActive_${sprint._id} ${sprint.status === commonSprintStatus.ACTIVE.value ? '' : 'hidden'}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right remove_circle
-                            button(onclick=`loadPage('/project/${projectId}/team/${teamId}/release/${release._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right receipt
-                            span.title #{release.name}
-.row
-    .col.s12
-        .row
-            .col.s8
-                h5#tags #{__('projectPage.tabs.management.tags')}
-            .col.s4
-                a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#tagVisibility
+                                button(onclick=`loadPage('/project/${projectId}/team/${teamId}/sprint/${sprint._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right receipt
+                                span.title #{sprint.name}
+                                p
+                                    | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
+                                    br
+                                    | #{`${__('projectPage.tabs.management.sprintEnd')}: ${sprint.endDate}`}
+    li
+        .collapsible-header
+            i.material-icons.circle dns
+            | #{__('projectPage.tabs.management.releases')}
+        .collapsible-body
+            .col.s12
+                a.btn.btn-flat.waves-effect.waves-light.right#releaseVisibility
                     i.material-icons add
-        hr
-        .row.tagInputRow
-            .col.s8
-                .input-field
-                    input.validate(type='text', name='tags')#tagField
-                    label(for='tags') #{__('projectPage.tabs.management.newTag')}
-            .col.s4
-                button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#tagCreation #{__('actions.create')}
-                    i.material-icons.right add
-        hr.tagInputRow
-        .row
-            if tagsList.length === 0
-                h6.center #{__('projectPage.tabs.management.noTags')}
-            else
-                ul.collection#appendTagDiv
-                    each tag in tagsList
-                        li(id=`tag_${tag._id}`).collection-item.avatar
-                            i.material-icons.circle bookmark
-                            button(onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right delete_forever
-                            button(onclick=`loadPage('/project/${projectId}/team/${teamId}/tag/${tag._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
-                                i.material-icons.right receipt
-                            span.title #{tag.name}
+            hr
+            .row.releaseInputRow
+                .col.s8
+                    .input-field
+                        input.validate(type='text', name='release')#releaseField
+                        label(for='release') #{__('projectPage.tabs.management.newRelease')}
+                .col.s4
+                    button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#releaseCreation #{__('actions.create')}
+                        i.material-icons.right add
+            hr.releaseInputRow
+            .row
+                if releasesList.length === 0
+                    h6.center #{__('projectPage.tabs.management.noReleases')}
+                else
+                    ul.collection#appendReleaseDiv
+                        each release in releasesList
+                            li(id=`release_${release._id}`).collection-item.avatar
+                                i.material-icons.circle dns
+                                if release.status === commonReleaseStatus.ACTIVE.value
+                                    button(class=`releaseButton_${release._id}`, onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                        i.material-icons.right delete_forever
+                                if release.status === commonReleaseStatus.ACTIVE.value
+                                    button(class=`releaseButton_${release._id}`, onclick=`closeRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                        i.material-icons.right remove_circle
+                                button(onclick=`loadPage('/project/${projectId}/team/${teamId}/release/${release._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right receipt
+                                span.title #{release.name}
+    li
+        .collapsible-header
+            i.material-icons.circle bookmark
+            | #{__('projectPage.tabs.management.tags')}
+        .collapsible-body
+            .col.s12
+                a.btn.btn-flat.waves-effect.waves-light.right#tagVisibility
+                    i.material-icons add
+            hr
+            .row.tagInputRow
+                .col.s8
+                    .input-field
+                        input.validate(type='text', name='tags')#tagField
+                        label(for='tags') #{__('projectPage.tabs.management.newTag')}
+                .col.s4
+                    button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#tagCreation #{__('actions.create')}
+                        i.material-icons.right add
+            hr.tagInputRow
+            .row
+                if tagsList.length === 0
+                    h6.center #{__('projectPage.tabs.management.noTags')}
+                else
+                    ul.collection#appendTagDiv
+                        each tag in tagsList
+                            li(id=`tag_${tag._id}`).collection-item.avatar
+                                i.material-icons.circle bookmark
+                                button(onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right delete_forever
+                                button(onclick=`loadPage('/project/${projectId}/team/${teamId}/tag/${tag._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right receipt
+                                span.title #{tag.name}

@@ -51,6 +51,7 @@ var selectedAssigneeIssue = null;
 var sprintComponent = null;
 var tagComponent = null;
 var usernamesArray = [];
+var isReadonly = true;
 
 $(function () {
     initSummernote(description);
@@ -60,6 +61,8 @@ $(function () {
         shortcuts: false
     });
     $('div.note-btn-group.btn-group button').remove();
+    $('.note-toolbar-wrapper').remove();
+    $('.note-editable').css('background-color', '#ffffff');
 
     $(releaseInputRow).hide();
     $(tagInputRow).hide();
@@ -92,11 +95,16 @@ $(function () {
         createSprint();
     });
 
+    $('.collapsible').collapsible();
+
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
 
     $(sprintStart).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -107,6 +115,9 @@ $(function () {
     });
 
     $(sprintEnd).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -118,158 +129,6 @@ $(function () {
 
     getListOfAssignee();
     getComponents();
-
-    $("[class^='sprintFutureActive']").hide();
-
-    /*
-    $.ajax({
-        type: 'PUT',
-        url: '/tags/create',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            name: 'Tag 2'
-        },
-        success: function (data) {
-            alert(data);
-        },
-        error: function (data) {
-            handle401And404(data);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'PUT',
-        url: '/releases/create',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            name: 'Release 1'
-        },
-        success: function (data) {
-            alert(data);
-        },
-        error: function (data) {
-            handle401And404(data);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'PUT',
-        url: '/sprints/create',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            name: 'Sprint 5',
-            startDate: '1/2/2018',
-            endDate: '1/20/2018'
-        },
-        success: function (data) {
-            alert(data);
-        },
-        error: function (data) {
-            handle401And404(data);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/team/backlog',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/teamsList',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/team/board',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/project/team/releases/list',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            alert(JSON.stringify(data));
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/project/team/tags/list',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            alert(JSON.stringify(data));
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
 });
 
 /**
@@ -288,6 +147,18 @@ function getComponents() {
             releaseComponent = data.releaseEntryComponent;
             sprintComponent = data.sprintEntryComponent;
             tagComponent = data.tagEntryComponent;
+            isReadonly = data.isReadOnly;
+
+            if (isReadonly) {
+                $(createTicketButton).addClass('hidden');
+                $(releaseVisibility).addClass('hidden');
+                $(sprintVisibility).addClass('hidden');
+                $(tagVisibility).addClass('hidden');
+                $("[class^='sprintOpen_']").hide();
+                $("[class^='sprintActive_']").hide();
+                $("[class^='releaseButton_']").hide();
+                $("[class^='tag_']").hide();
+            }
         },
         error: function (data) {
             handle401And404(data);
@@ -304,7 +175,7 @@ function getComponents() {
  */
 function createRelease() {
     if ($(releaseField).val() === "") {
-        failSnackbar('Release field cannot be empty');
+        warningSnackbar(translate('emptyRelease'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -338,7 +209,7 @@ function createRelease() {
  */
 function createTag() {
     if ($(tagField).val() === "") {
-        failSnackbar('Tag field cannot be empty');
+        warningSnackbar(translate('emptyTag'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -379,11 +250,11 @@ function loadPage(text) {
  */
 function createSprint() {
     if ($(sprintField).val() === "") {
-        failSnackbar('Tag field cannot be empty');
+        warningSnackbar(translate('emptySprint'));
     } else if ($(sprintStart).val() === "") {
-        failSnackbar('Start date cannot be empty');
+        warningSnackbar(translate('emptySprintStart'));
     } else if ($(sprintEnd).val() === "") {
-        failSnackbar('End date cannot be empty');
+        warningSnackbar(translate('emptySprintEnd'));
     } else {
         $.ajax({
             type: 'PUT',

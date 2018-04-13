@@ -16,53 +16,53 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const accountImportFormInput = $('#account-import-form-input');
-const accountImportFormSubmit = $('#account-import-form-submit');
+const projectsImportFormInput = $('#projects-import-form-input');
+const projectsImportFormSubmit = $('#projects-import-form-submit');
 const loaderId = '#loader';
-const accountImportContainerId = '#account-import-container';
-const accountImportDivId = '#account-import-div';
-const navUsersId = '#nav-users';
-const navmUsersId = '#navm-users';
-const importDoneButtonId = '#account-import-form-done';
+const projectsImportContainerId = '#projects-import-container';
+const projectsImportDivId = '#projects-import-div';
+const navProjectsId = '#nav-projects';
+const navmProjectsId = '#navm-projects';
+const importDoneButtonId = '#projects-import-form-done';
 
 $(function () {
-    $(navUsersId).addClass('active');
-    $(navmUsersId).addClass('active');
+    $(navProjectsId).addClass('active');
+    $(navmProjectsId).addClass('active');
 
-    accountImportFormSubmit.click(() => {
-        const files = accountImportFormInput.get(0).files;
+    projectsImportFormSubmit.click(() => {
+        const files = projectsImportFormInput.get(0).files;
         var formData = new FormData();
 
         if (files.length !== 1) {
             return warningSnackbar(translate('mustImportOneFile'));
         }
 
-        var fileNameSplit = accountImportFormInput.val().split('.');
-        if (fileNameSplit[fileNameSplit.length - 1] !== 'csv') {
-            return warningSnackbar(translate('mustBeCsv'));
+        var fileNameSplit = projectsImportFormInput.val().split('.');
+        if (fileNameSplit[fileNameSplit.length - 1] !== 'velocity') {
+            return warningSnackbar(translate('mustBeVelocity'));
         }
 
-        formData.append('usersImpotFile', files[0]);
+        formData.append('projectsImpotFile', files[0]);
 
-        startLoad(loaderId, accountImportDivId);
+        startLoad(loaderId, projectsImportDivId);
 
         $.ajax({
             type: 'PUT',
-            url: '/users/import/file',
+            url: '/projects/import/file',
             processData: false,
             contentType: false,
             data: formData,
             success: function (data) {
-                $(accountImportContainerId).html(data);
+                $(projectsImportContainerId).html(data);
                 $(importDoneButtonId).click(() => {
-                    window.location.href = '/users';
+                    window.location.href = '/projects';
                 });
                 successSnackbar(translate('successfulFileUpload'));
             },
             error: function (data) {
                 handle401And404(data);
 
-                endLoad(loaderId, accountImportDivId);
+                endLoad(loaderId, projectsImportDivId);
 
                 const jsonResponse = data.responseJSON;
                 failSnackbar(getErrorMessageFromResponse(jsonResponse));

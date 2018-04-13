@@ -38,7 +38,7 @@ const createSprint = function (req, res) {
 
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -49,7 +49,7 @@ const createSprint = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -97,7 +97,7 @@ const deleteSprint = function (req, res) {
     const teamId = req.body.teamId;
     const sprintId = req.body.sprintId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -108,7 +108,7 @@ const deleteSprint = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -160,7 +160,7 @@ const closeSprint = function (req, res) {
     const teamId = req.body.teamId;
     const sprintId = req.body.sprintId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -171,7 +171,7 @@ const closeSprint = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -224,7 +224,7 @@ const closeSprint = function (req, res) {
 const getSprintsList = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -235,7 +235,7 @@ const getSprintsList = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -288,7 +288,7 @@ const activateSprint = function (req, res) {
     const teamId = req.body.teamId;
     const sprintId = req.body.sprintId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -299,7 +299,7 @@ const activateSprint = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -349,7 +349,7 @@ const renderSprintPage = function (req, res) {
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
     const sprintId = req.params.sprintId;
-    projects.getActiveProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -359,7 +359,7 @@ const renderSprintPage = function (req, res) {
             logger.error(JSON.stringify(common_backend.getError(2018)));
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);

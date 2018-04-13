@@ -38,7 +38,7 @@ const createRelease = function (req, res) {
 
     const projectId = req.body.projectId;
     const teamId = req.body.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -49,7 +49,7 @@ const createRelease = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -87,7 +87,7 @@ const createRelease = function (req, res) {
 const getReleasesList = function (req, res) {
     const projectId = req.query.projectId;
     const teamId = req.query.teamId;
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -98,7 +98,7 @@ const getReleasesList = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -149,7 +149,7 @@ const deleteRelease = function (req, res) {
     const teamId = req.body.teamId;
     const releaseId = req.body.releaseId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -160,7 +160,7 @@ const deleteRelease = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -212,7 +212,7 @@ const closeRelease = function (req, res) {
     const teamId = req.body.teamId;
     const releaseId = req.body.releaseId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -223,7 +223,7 @@ const closeRelease = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -274,7 +274,7 @@ const renderReleasePage = function (req, res) {
     const projectId = req.params.projectId;
     const teamId = req.params.teamId;
     const releaseId = req.params.releaseId;
-    projects.getActiveProjectById(projectId, function (err, projectObj) {
+    projects.getActiveOrClosedProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -284,7 +284,7 @@ const renderReleasePage = function (req, res) {
             logger.error(JSON.stringify(common_backend.getError(2018)));
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);

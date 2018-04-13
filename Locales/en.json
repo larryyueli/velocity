@@ -14,7 +14,9 @@
 		"reset": "Reset",
 		"save": "Save",
 		"submit": "Submit",
-		"update": "Update"
+		"update": "Update",
+		"export": "Export",
+		"download": "Download"
 	},
 	"app": {
 		"name": "Velocity"
@@ -120,6 +122,37 @@
 			"kanban": "Kanban",
 			"label": "Board Type",
 			"scrum": "Scrum"
+		},
+		"label": "Project",
+		"export": {
+			"complete": {
+				"form": {
+					"description": "The list of projects has been exported",
+					"title": "Export Job Completed"
+				}
+			},
+			"form": {
+				"description": "Export the full list of projects",
+				"title": "Projects Export Form"
+			}
+		},
+		"import": {
+			"complete": {
+				"form": {
+					"added": "Total number of projects added",
+					"description": "The list of projects has been imported",
+					"failed": "Total number of failed attempts",
+					"processed": "Total number of projects processed",
+					"report": "Report",
+					"title": "Import Job Completed"
+				}
+			},
+			"form": {
+				"button": "File",
+				"description": "For optimal results please use a valid .velocity file",
+				"placeHolder": "Select your velocity file",
+				"title": "Projects Import Form"
+			}
 		}
 	},
 	"projectPage": {
@@ -251,6 +284,12 @@
 		"id": "Ticket Id",
 		"displayId": "Display Id"
 	},
+	"uploadModal": {
+		"file": "File",
+		"selectFile": "Select a file to upload",
+		"title": "Upload File",
+		"upload": "Upload"
+	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",
 		"currentPassword": "Current Password",
@@ -295,16 +334,37 @@
 		"usersAddFormTitle": "Account Creation Form",
 		"usersEditFormDescription": "Edit a user's account information",
 		"usersEditFormTitle": "Account Edit Form",
-		"usersImportCompleteFormAdded": "Total number of users added",
-		"usersImportCompleteFormDescription": "The list of user accounts has been imported",
-		"usersImportCompleteFormFailed": "Total number of failed attempts",
-		"usersImportCompleteFormExists": "Total number of users already exist",
-		"usersImportCompleteFormReport": "Report",
-		"usersImportCompleteFormTitle": "Import Job Completed",
-		"usersImportCompleteFormProcessed": "Total number of users processed",
-		"usersImportFormButton": "File",
-		"usersImportFormDescription": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
-		"usersImportFormPlaceHolder": "Select your csv file",
-		"usersImportFormTitle": "Accounts Import Form"
+		"label": "User",
+		"import": {
+			"complete": {
+				"form": {
+					"added": "Total number of users added",
+					"description": "The list of user accounts has been imported",
+					"exists": "Total number of users already exist",
+					"failed": "Total number of failed attempts",
+					"processed": "Total number of users processed",
+					"report": "Report",
+					"title": "Import Job Completed"
+				}
+			},
+			"form": {
+				"button": "File",
+				"description": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
+				"placeHolder": "Select your csv file",
+				"title": "Accounts Import Form"
+			}
+		},
+		"export": {
+			"form": {
+				"description": "Export the full list of users",
+				"title": "Accounts Export Form"
+			},
+			"complete": {
+				"form": {
+					"description": "The list of user accounts has been exported",
+					"title": "Export Job Completed"
+				}
+			}
+		}
 	}
 }

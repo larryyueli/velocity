@@ -42,7 +42,7 @@ const addComment = function (req, res) {
     const teamId = req.body.teamId;
     const ticketId = req.body.ticketId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -53,7 +53,7 @@ const addComment = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -174,7 +174,7 @@ const updateComment = function (req, res) {
     const ticketId = req.body.ticketId;
     const commentId = req.body.commentId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -185,7 +185,7 @@ const updateComment = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);
@@ -246,7 +246,7 @@ const deleteComment = function (req, res) {
     const ticketId = req.body.ticketId;
     const commentId = req.body.commentId;
 
-    projects.getProjectById(projectId, function (err, projectObj) {
+    projects.getActiveProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).send(err);
@@ -257,7 +257,7 @@ const deleteComment = function (req, res) {
             return res.status(400).send(common_backend.getError(2018));
         }
 
-        projects.getTeamInProjectById(projectId, teamId, function (err, teamObj) {
+        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(500).send(err);

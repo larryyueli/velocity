@@ -169,13 +169,16 @@ block content
                             .row
                                 button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                     i.material-icons.right save
+                            .row
+                                button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#uploadModal') upload modal trigger
+
                 #comments
                     .row
                         .col.s12
                             ul.collection#appendCommentDiv
                                 each comment in comments
-                                    li(id=`comment_${comment._id}`).collection-item.avatar
-                                        img.circle(src=`/picture/${user.picture}`, alt='')
+                                    li(id=`comment_${comment._id}`).collection-item.avatar.clickable-item
+                                        img.circle(src=`/picture/${comment.picture}`, alt='')
                                         if comment.userId === user._id
                                             button(onclick=`deleteComment('${comment._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons.primaryColour
                                                 i.material-icons.right delete_forever
@@ -206,7 +209,7 @@ block content
                                     else
                                         ul.collection
                                             each entry in ticket.stateHistory
-                                                li.collection-item.avatar
+                                                li.collection-item.avatar.clickable-item
                                                     i.material-icons.circle compare_arrows
                                                     span.title #{resolveUsername(entry.actor)}
                                                     br
@@ -225,7 +228,7 @@ block content
                                     else
                                         ul.collection
                                             each entry in ticket.assigneeHistory
-                                                li.collection-item.avatar
+                                                li.collection-item.avatar.clickable-item
                                                     i.material-icons.circle people
                                                     span.title #{resolveUsername(entry.actor)}
                                                     br
@@ -234,6 +237,25 @@ block content
                                                     | Before: #{resolveUsername(entry.from)}
                                                     br
                                                     | After: #{resolveUsername(entry.to)}
+
+    #uploadModal.modal
+        .modal-content
+            i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+            h3 #{__('uploadModal.title')}
+                .row
+                    .col.s12
+                        .row
+                            .file-field.input-field
+                                .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
+                                    span
+                                        | #{__('uploadModal.file')}
+                                        i.material-icons.right file_upload
+                                    input(type='file')#file-input
+                                .file-path-wrapper
+                                    input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))
+                        .row.right
+                            button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour#uploadButton #{__('uploadModal.upload')}
+                                i.material-icons.right send
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')
