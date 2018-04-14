@@ -41,7 +41,7 @@ const saveKanbanAnalytics = function () {
                             cumulativeflowdiagram: []
                         }
                         for (let j = 0; j < teams[i].members.length; j++) {
-                            analyticsObj.members.push(createKanbanMemberObject(teams[i].members[j], tickets));
+                            analyticsObj.members.push(createKanbanMemberObject(teams[i].members[j], tickets, teams[i]._id));
                         }
                         analyticsObj.cumulativeflowdiagram.push(createFlowDiagramEntry(analyticsObj.members));
                         kanbanAnalyticsList.push(analyticsObj);
@@ -62,10 +62,11 @@ const saveKanbanAnalytics = function () {
 /**
  * Creates the kanban member analytics object
  * 
- * @param {*} userId user id
- * @param {*} tickets tickets list
+ * @param {string} userId user id
+ * @param {array} tickets tickets list
+ * @param {string} teamId team id
  */
-const createKanbanMemberObject = function (userId, tickets) {
+const createKanbanMemberObject = function (userId, tickets, teamId) {
     let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList()); 
     let memberObject = {
         _id: userId,
@@ -82,7 +83,8 @@ const createKanbanMemberObject = function (userId, tickets) {
     }); 
 
     for (let i = 0; i < tickets.length; i++) {
-        if (tickets[i].assignee === userId) {
+        if (tickets[i].assignee === userId
+            && tickets[i].teamId === teamId) {
             memberObject.states[tickets[i].state]++;
             memberObject.points[tickets[i].state] += tickets[i].points;
         }
