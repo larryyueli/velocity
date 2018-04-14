@@ -32,6 +32,7 @@ const teamTicketDivisionChartId = 'teamTicketDivisionChart';
 const teamBurndownChartId = 'teamBurndownChart';
 const teamContentId = '#teamContent';
 const teamContentMessageId = '#teamContentMessage';
+const sprintFilterWrapperId = '#sprintFilterWrapper';
 
 const releaseDataId = '#releaseData';
 const todoReleasePointsId = '#todoReleasePoints';
@@ -52,6 +53,9 @@ const releaseCumulativeChartId = 'releaseCumulativeChart';
 const releaseContentId = '#releaseContent';
 const releaseContentMessageId = '#releaseContentMessage';
 
+const kanbanCumulativeId = '#kanbanCumulative';
+const kanbanCumulativeChartId = 'kanbanCumulativeChart';
+
 var globalData = null;
 var sprintIdsObj = {};
 var selectedSprint = null;
@@ -69,7 +73,6 @@ $(function () {
     queryScrumStatistics();
 });
 
-
 function queryScrumStatistics() {
     $.ajax({
       type: 'GET',
@@ -81,8 +84,72 @@ function queryScrumStatistics() {
       success: function (data) {
 
         data = {
-            boardType:2,
-            releases:[  
+            boardType:1,
+            kanban: {
+                cumulativeflowdiagram:
+                [
+                    {
+                        points:
+                            {
+                                0:1, 1:0, 2:0, 3:0, 4:0, 5:0
+                            },
+                        states:
+                            {
+                                0:0, 1:2, 2:0, 3:0, 4:0, 5:0
+                            },
+                        date: new Date("2018-04-12 07:09:14 PM")
+                    },
+                    {
+                        points:
+                            {
+                                0:0, 1:2, 2:0, 3:0, 4:0, 5:0
+                            },
+                        states:
+                            {
+                                0:0, 1:0, 2:0, 3:3, 4:0, 5:2
+                            },
+                        date: new Date("2018-04-13 07:09:14 PM")
+                    },
+                    {
+                        points:
+                            {
+                                0:0, 1:2, 2:0, 3:0, 4:0, 5:4
+                            },
+                        states:
+                            {
+                                0:0, 1:0, 2:0, 3:1, 4:0, 5:0
+                            },
+                        date: new Date("2018-04-14 07:09:14 PM")
+                    }
+                ],
+                members: [
+                    {
+                        fname: 'student0',
+                        lname: '0',
+                        username: 'student0',
+                        states: {0:1, 1:1, 2:0, 3:2, 4:0, 5:0},
+                        points: {0:1, 1:4, 2:0, 3:5, 4:0, 5:0},
+                        _id: 1
+                    },
+                    {
+                        fname: 'student1',
+                        lname: '1',
+                        username: 'student1',
+                        states: {0:1, 1:2, 2:1, 3:2, 4:0, 5:4},
+                        points: {0:1, 1:4, 2:1, 3:5, 4:0, 5:0},
+                        _id: 1
+                    },
+                    {
+                        fname: 'student2',
+                        lname: '2',
+                        username: 'student2',
+                        states: {0:1, 1:1, 2:0, 3:2, 4:2, 5:0},
+                        points: {0:1, 1:45, 2:0, 3:5, 4:0, 5:0},
+                        _id: 1
+                    }
+                ]
+            },
+            releases:[
                 { releaseId:"84d190e0-3ea6-11e8-8af8-5592838ee8cb", releaseName:"Release numero 0", releaseStatus:1, "history":[ { date:new Date("2018-04-12 07:09:14 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 07:09:41 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 07:57:28 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:30:06 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:31:11 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 }, points:{ 0:0, 1:0, 2:1, 3:2, 4:1, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:1, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:1, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] } ], cumulativeflowdiagram:[ [ { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, date: new Date("2018-04-12 07:09:14 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 07:09:41 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 07:57:28 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 08:30:06 PM") } ], [ { 0:0, 1:1, 2:1, 3:3, 4:1, 5:0, date: new Date("2018-04-12 08:31:11 PM") } ] ] }, { releaseId:"84d2a250-3ea6-11e8-8af8-5592838ee8cb", releaseName:"Release numero 1", releaseStatus:2, "history":[ { date: new Date("2018-04-12 07:09:14 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 07:57:28 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:30:06 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] }, { date: new Date("2018-04-12 08:31:11 PM"), members:[ { _id:"7f4f8051-3ea6-11e8-8af8-5592838ee8cb", fname:"student0", lname:0, username:"student0", states:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372130-3ea6-11e8-8af8-5592838ee8cb", fname:"student1", lname:1, username:"student1", states:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:1, 1:2, 2:0, 3:0, 4:0, 5:0 } }, { _id:"80372131-3ea6-11e8-8af8-5592838ee8cb", fname:"student2", lname:2, username:"student2", states:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:2, 5:0 } }, { _id:"80374840-3ea6-11e8-8af8-5592838ee8cb", fname:"student3", lname:3, username:"student3", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } }, { _id:"8036fa20-3ea6-11e8-8af8-5592838ee8cb", fname:"student4", lname:4, username:"student4", states:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 }, points:{ 0:0, 1:0, 2:0, 3:0, 4:0, 5:0 } } ] } ], cumulativeflowdiagram:[ [ { 0:0, 1:0, 2:0, 3:0, 4:0, 5:0, date: new Date("2018-04-12 07:09:14 PM") } ], [ { 0:2, 1:2, 2:0, 3:0, 4:2, 5:0, date: new Date("2018-04-12 07:57:28 PM") } ], [ { 0:2, 1:2, 2:0, 3:0, 4:2, 5:0, date: new Date("2018-04-12 08:30:06 PM") } ], [ { 0:2, 1:2, 2:0, 3:0, 4:2, 5:0, date: new Date("2018-04-12 08:31:11 PM") } ] ] }
              ],            sprints: [
                 {
@@ -180,7 +247,7 @@ function queryScrumStatistics() {
                     ]
                 }
             ]
-        };  
+        };
 
         globalData = data;
 
@@ -197,7 +264,15 @@ function queryScrumStatistics() {
                     }
                     displayYou = false;
                 } else {
-                    $(yourDataId).removeClass('hidden');
+                    const currentUserObject = data['sprints'].find(sprint => sprint['sprintId'] === currentSprint['sprintId'])['history'].reduce((prev, current) => {
+                        return (prev.date > current.date) ? prev : current;
+                    })['members'].find(user => user['username'] === meObject['username']);
+
+                    if (currentUserObject) {
+                        $(yourDataId).removeClass('hidden');
+                    } else {
+                        displayYou = false;
+                    }
                 }
                 if (currentSprint) {
                     $(sprintsAutocompleteId).val(currentSprint['sprintName']);
@@ -227,7 +302,28 @@ function queryScrumStatistics() {
 
             displayScrumCharts(data);
         } else {
-            //TODO display kanban charts
+            const currentUserObject = data['kanban']['members'].find(user => user['username'] === meObject['username']);
+
+            if (currentUserObject) {
+                $(yourDataId).removeClass('hidden');
+                $(`#${userTicketDivisionId}`).addClass('hidden');
+                $(`#${userTicketDivisionChartId}`).addClass('hidden');
+            } else {
+                displayYou = false;
+            }
+
+            if (data['kanban']['members'].length) {
+                $(teamDataId).removeClass('hidden');
+                $(`#${teamTicketDivisionId}`).addClass('hidden');
+                $(`#${teamTicketDivisionChartId}`).addClass('hidden');
+                $(sprintFilterWrapperId).addClass('hidden');
+            } else {
+                displayTeam = false;
+            }
+
+            displayReleases = false;
+
+            displayKanbanCharts(data);
         }
       },
       error: function (data) {
@@ -411,12 +507,12 @@ function displayUserDateDivision() {
         });
     }
     options = {};
-    
+
     var chart = new Chart(ctx, {
         type: 'line',
         data: data,
         options: options
-    });   
+    });
 }
 
 function displayFilteredTeamData() {
@@ -464,18 +560,18 @@ function displayFilteredTeamData() {
 
         globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(sprint['date'].toDateString()));
 
-        var tempData = {};    
+        var tempData = {};
         globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => {
             sprint['members'].forEach(user => {
                 for (var item in user['states']) {
                     tempData[item] ? tempData[item] +=user['states'][item] : tempData[item] = user['states'][item];
                 }
             })
-    
+
             for (var item in tempData) {
-                allData[item] ? allData[item].push(tempData[item]) : allData[item] = [tempData[item]];	
+                allData[item] ? allData[item].push(tempData[item]) : allData[item] = [tempData[item]];
             }
-    
+
             tempData = {}
         });
     } else {
@@ -650,12 +746,12 @@ function displayTeamDateDivision(allData, dates) {
         });
     }
     options = {};
-    
+
     var chart = new Chart(ctx, {
         type: 'line',
         data: data,
         options: options
-    });   
+    });
 }
 
 function displayTeamBurndown(burndownData, dates) {
@@ -698,7 +794,7 @@ function displayTeamBurndown(burndownData, dates) {
         type: 'line',
         data: data,
         options: options
-    });   
+    });
 }
 
 function displayFilteredReleaseData(didReleaseChange = false) {
@@ -751,18 +847,18 @@ function displayFilteredReleaseData(didReleaseChange = false) {
 
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => dates.push(release['date'].toDateString()));
 
-        var tempData = {};    
+        var tempData = {};
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => {
             release['members'].forEach(user => {
                 for (var item in user['states']) {
                     tempData[item] ? tempData[item] +=user['states'][item] : tempData[item] = user['states'][item];
                 }
             })
-    
+
             for (var item in tempData) {
-                allData[item] ? allData[item].push(tempData[item]) : allData[item] = [tempData[item]];	
+                allData[item] ? allData[item].push(tempData[item]) : allData[item] = [tempData[item]];
             }
-    
+
             tempData = {};
         });
     } else {
@@ -788,18 +884,18 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         currentReleaseStatesC = newStatsObjectC;
         currentReleasePointsC = newPointsObjectC;
 
-        var tempDataC = {};    
+        var tempDataC = {};
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => {
             release['members'].forEach(user => {
                 for (var item in user['states']) {
                     tempDataC[item] ? tempDataC[item] +=user['states'][item] : tempDataC[item] = user['states'][item];
                 }
             })
-    
+
             for (var item in tempDataC) {
-                allDataC[item] ? allDataC[item].push(tempDataC[item]) : allDataC[item] = [tempDataC[item]];	
+                allDataC[item] ? allDataC[item].push(tempDataC[item]) : allDataC[item] = [tempDataC[item]];
             }
-    
+
             tempDataC = {};
         });
     } else if (!didntJustCalculate) {
@@ -812,18 +908,18 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         var burndownData = [];
         for (var i = 0; i < dates.length; i++) {
             let tempStorage = 0;
-    
+
             for (var item in allData) {
                 tempStorage += allData[item][i];
             }
-    
+
             burndownData.push(tempStorage);
         }
         displayReleaseCards(currentReleaseStates, currentReleasePoints);
         displayReleasePieDivision(currentReleaseStates, currentReleasePoints);
-    
+
         displayReleaseDateDivision(allData, dates);
-    
+
         if (didReleaseChange) {
             displayReleaseCumulative(allDataC, dates);
         }
@@ -831,7 +927,7 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         $(releaseContentId).addClass('hidden');
         $(releaseContentMessageId).removeClass('hidden');
     }
-    
+
 }
 
 function displayReleaseCards(currentReleaseStates, currentReleasePoints) {
@@ -977,12 +1073,12 @@ function displayReleaseDateDivision(allData, dates) {
         });
     }
     options = {};
-    
+
     var chart = new Chart(ctx, {
         type: 'line',
         data: data,
         options: options
-    });   
+    });
 }
 
 function displayReleaseCumulative(allData, dates) {
@@ -1034,12 +1130,12 @@ function displayReleaseCumulative(allData, dates) {
             }]
         },
     };
-    
+
     var chart = new Chart(ctx, {
         type: 'line',
         data: data,
         options: options
-    });   
+    });
 }
 
 function getListOfSprints() {
@@ -1092,4 +1188,132 @@ function getListOfReleases() {
         // TODO loader
         displayFilteredReleaseData(true);
     });
+}
+
+function displayKanbanCharts(data) {
+    if (displayYou) {
+        const currentUserObject = data['kanban']['members'].find(user => user['username'] === meObject['username']);
+
+        const currentUserStates = currentUserObject ? currentUserObject['states'] : null;
+        const currentUserPoints = currentUserObject ? currentUserObject['points'] : null;
+
+        displayUserCards(currentUserStates, currentUserPoints);
+    }
+
+    if (displayTeam) {
+        displayFilteredTeamDataKanban();
+    }
+
+    if (displayReleases) {
+        displayFilteredReleaseData(true);
+    }
+}
+
+function displayFilteredTeamDataKanban() {
+    //TODO: explain why you need a sprint
+    var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
+    var currentTeamStates = null;
+    var currentTeamPoints = null;
+
+    if (sprintFilterUser) {
+        const currentTeamObject = globalData['kanban']['members'].find(user => user['username'] === sprintFilterUser);
+        currentTeamStates = currentTeamObject ? currentTeamObject['states'] : null;
+        currentTeamPoints = currentTeamObject ? currentTeamObject['points'] : null;
+    } else {
+        //TODO this section change sprints to kanban
+        const tempMembersObject = globalData['kanban']['members'];
+        var newPointsObject = Object.create( dummyObject );
+        tempMembersObject.forEach(user => {
+            for (var point in user['points']) {
+                newPointsObject[point] += user['points'][point];
+            }
+        });
+        var newStatsObject = Object.create( dummyObject );
+        tempMembersObject.forEach(user => {
+            for (var state in user['states']) {
+                newStatsObject[state] += user['states'][state];
+            }
+        });
+        currentTeamStates = newStatsObject;
+        currentTeamPoints = newPointsObject;
+    }
+
+    $(`#${teamTicketDivisionId}`).addClass('hidden');
+    $(`#${teamTicketDivisionChartId}`).addClass('hidden');
+    $(`#${teamBurndownChartId}`).addClass('hidden');
+    $(kanbanCumulativeId).removeClass('hidden');
+    $(teamContentMessageId).addClass('hidden');
+
+    displayteamCards(currentTeamStates, currentTeamPoints);
+    displayKanbanCumulative();
+}
+
+function displayKanbanCumulative() {
+      var dates = [];
+      var allData = {};
+      const stateList = [0, 1, 2, 3, 4, 5];
+      const flow = globalData['kanban']['cumulativeflowdiagram'];
+
+      flow.forEach(entry => {
+          dates.push(entry['date'].toDateString());
+
+          for (var item in stateList) {
+              allData[item] ? allData[item].push(entry['states'][item]) : allData[item] = [entry['states'][item]];
+          }
+      });
+
+      var ctx = document.getElementById(kanbanCumulativeChartId).getContext('2d');
+
+      backgroundColor = [
+          $('.gradient-todo-back').css('background').match(/rgba\(.*?\)/g)[0],
+          $('.gradient-in-progress-back').css('background').match(/rgba\(.*?\)/g)[0],
+          $('.gradient-code-review-back').css('background').match(/rgba\(.*?\)/g)[0],
+          $('.gradient-ready-for-test-back').css('background').match(/rgba\(.*?\)/g)[0],
+          $('.gradient-in-test-back').css('background').match(/rgba\(.*?\)/g)[0],
+          $('.gradient-done-back').css('background').match(/rgba\(.*?\)/g)[0]
+      ];
+      borderColor = [
+          $('.gradient-todo').css('background').match(/rgb\(.*?\)/g)[1],
+          $('.gradient-in-progress').css('background').match(/rgb\(.*?\)/g)[1],
+          $('.gradient-code-review').css('background').match(/rgb\(.*?\)/g)[1],
+          $('.gradient-ready-for-test').css('background').match(/rgb\(.*?\)/g)[1],
+          $('.gradient-in-test').css('background').match(/rgb\(.*?\)/g)[1],
+          $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[1]
+      ];
+
+      data = {
+          datasets: [],
+          labels: dates
+      };
+
+      for (var item in allData) {
+          data['datasets'].push({
+              label: translate(`state${item}`),
+              data: allData[item],
+              backgroundColor: backgroundColor[item],
+              borderColor: borderColor[item],
+              pointBackgroundColor: borderColor[item],
+              pointBorderColor: borderColor[item],
+              borderWidth: 4,
+              pointHoverBackgroundColor: 'white',
+              pointHoverBorderColor: borderColor[item],
+              pointRadius: 4,
+          });
+      }
+      options = {
+          scales: {
+              yAxes: [{
+                  stacked: true,
+              }],
+              xAxes: [{
+                  display: false
+              }]
+          },
+      };
+
+      var chart = new Chart(ctx, {
+          type: 'line',
+          data: data,
+          options: options
+      });
 }

@@ -488,14 +488,22 @@ function getListOfAssignee() {
                 onAutocomplete: function (val) {
                     sprintFilterUser = usernameObj[val];
                     // startLoad(sprintsLoadId, sprintsListId);
-                    displayFilteredTeamData();
+                    if (globalData.boardType === 2) {
+                        displayFilteredTeamData();
+                    } else {
+                        displayFilteredTeamDataKanban();
+                    }
                 },
                 minLength: 0,
             });
             $(sprintFilterUserAutocompleteId).on('keyup', function () {
                 sprintFilterUser = usernameObj[$(sprintFilterUserAutocompleteId)[0].value.trim()];
                 // startLoad(sprintsLoadId, sprintsListId);
-                displayFilteredTeamData();
+                if (globalData.boardType === 2) {
+                    displayFilteredTeamData();
+                } else {
+                    displayFilteredTeamDataKanban();
+                }
             });
             $(releaseFilterUserAutocompleteId).autocomplete({
                 data: usersObj,

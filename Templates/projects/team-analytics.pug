@@ -83,7 +83,7 @@
                     input.autocomplete(type='text', name='sprintFilterUserAutocomplete')#sprintFilterUserAutocomplete
                     label(for='sprintFilterUserAutocomplete') #{__('analytics.user')}
             .col.s12.m6
-                .input-field.padding-10
+                .input-field.padding-10#sprintFilterWrapper
                     input.autocomplete(type='text')#sprintsAutocomplete
                     label(for='sprintsAutocomplete') #{__('tickets.sprints')}
         #teamContentMessage
@@ -257,7 +257,12 @@
             .row
                 .col.s12
                     canvas#releaseCumulativeChart
-
+    .hidden#kanbanCumulative
+        .row
+            h3 KANBAN DATA
+        .row
+            .col.s12
+                canvas#kanbanCumulativeChart
 
 .gradient-todo-back
 
