@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common_api = require('./common-api.js');
 const notifications_api = require('./notifications-api.js');
 
+const analytics = require('../../Backend/analytics.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
@@ -173,7 +174,21 @@ const activateProject = function (req, res) {
                         return res.status(500).send(err);
                     }
 
-                    return res.status(200).send('ok');
+                    if (projectObj.boardType === common_backend.boardTypes.KANBAN.value) {
+                        for (let i = 0; i < teamsList.length; i++) {
+                            teamsList[i].boardType = common_backend.boardTypes.KANBAN.value;
+                        }
+                        analytics.saveSpecificKanbanAnalytics(teamsList, [], function (err, kanbanObj) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            return res.status(200).send('ok');
+                        });
+                    } else {
+                        return res.status(200).send('ok');
+                    }
                 });
             });
         });

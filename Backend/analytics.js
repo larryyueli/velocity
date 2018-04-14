@@ -136,6 +136,12 @@ exports.getScrumTeamAnalytics = getScrumTeamAnalytics;
 // </exports> ----------------------------------
 
 // <analytics-releases> -----------------------------------
+exports.saveKanbanAnalytics = analytics_kanban.saveKanbanAnalytics;
+exports.saveSpecificKanbanAnalytics = analytics_kanban.saveSpecificKanbanAnalytics;
+exports.getReleaseAnalytics = analytics_kanban.getKanbanAnalytics;
+// </analytics-releases> -----------------------------------
+
+// <analytics-releases> -----------------------------------
 exports.saveReleaseAnalytics = analytics_releases.saveReleaseAnalytics;
 exports.saveSpecificReleaseAnalytics = analytics_releases.saveSpecificReleaseAnalytics;
 exports.getReleaseAnalytics = analytics_releases.getReleaseAnalytics;

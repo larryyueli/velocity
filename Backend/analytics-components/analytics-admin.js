@@ -37,6 +37,7 @@ const saveAdminAnalytics = function () {
                         date: common.getDate(),
                         idate: common.getISODate(),
                         teamId: teams[i]._id,
+                        teamName: teams[i].name,
                         projectId: teams[i].projectId,
                         doneCount: 0
                     };
@@ -81,6 +82,7 @@ const getAdminAnalytics = function (projectObj, tickets, callback) {
             if (index === -1) {
                 admin.push({
                     teamId: adminAnalytics[i].teamId,
+                    teamName: adminAnalytics[i].teamName,
                     history: [{
                         date: adminAnalytics[i].date,
                         doneCount: adminAnalytics[i].doneCount

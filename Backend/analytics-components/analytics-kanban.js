@@ -24,39 +24,64 @@ const logger = require('../logger.js');
 const projects = require('../projects.js');
 const users = require('../users.js');
 
+/**
+ * Global kanban analytics
+ */
 const saveKanbanAnalytics = function () {
     let projectsList = [];
     projects.getActiveProjectsList(function (err, projectsObj) {
         projectsList = common.convertJsonListToList('_id', projectsObj);
         projects.getProjectsTeams(projectsList, function (err, teams) {
             projects.getTicketsByProjectIds(projectsList, function (err, tickets) {
-                let kanbanAnalyticsList = [];
-                for (let i = 0; i < teams.length; i++) {
-                    if (teams[i].boardType === common.boardTypes.KANBAN.value) {
-                        let analyticsObj = {
-                            _id: common.getUUID(),
-                            idate: common.getDate(),
-                            teamId: teams[i]._id,
-                            members: [],
-                            cumulativeflowdiagram: []
-                        }
-                        for (let j = 0; j < teams[i].members.length; j++) {
-                            analyticsObj.members.push(createKanbanMemberObject(teams[i].members[j], tickets, teams[i]._id));
-                        }
-                        analyticsObj.cumulativeflowdiagram.push(createFlowDiagramEntry(analyticsObj.members));
-                        kanbanAnalyticsList.push(analyticsObj);
-                    }
-                }
-                for (let i = 0; i < kanbanAnalyticsList.length; i++) {
-                    db.addKanbanAnalytics(kanbanAnalyticsList[i], function (err, kanbanObj) {
-                        if (err) {
-                            logger.error(JSON.stringify(err));
-                        }
-                    });
-                }
+                saveSpecificKanbanAnalytics(teams, tickets, function (err, kanbanObj) {
+                    
+                });
             });
         });
     });
+}
+
+/**
+ * Runs analytics for a specific team list
+ * 
+ * @param {object} team team obj
+ * @param {array} tickets tickets belonging to the team
+ * @param {function} callback callback function
+ */
+const saveSpecificKanbanAnalytics = function (teams, tickets, callback) {
+    let kanbanAnalyticsList = [];
+    for (let i = 0; i < teams.length; i++) {
+        if (teams[i].boardType === common.boardTypes.KANBAN.value) {
+            let analyticsObj = {
+                _id: common.getUUID(),
+                idate: common.getDate(),
+                teamId: teams[i]._id,
+                members: [],
+                cumulativeflowdiagram: []
+            }
+            for (let j = 0; j < teams[i].members.length; j++) {
+                analyticsObj.members.push(createKanbanMemberObject(teams[i].members[j], tickets, teams[i]._id));
+            }
+            analyticsObj.cumulativeflowdiagram.push(createFlowDiagramEntry(analyticsObj.members));
+            kanbanAnalyticsList.push(analyticsObj);
+        }
+    }
+
+    let processedKanbanList = 0;
+    if (kanbanAnalyticsList.length === 0) {
+        return callback(null, teams);
+    }
+    for (let i = 0; i < kanbanAnalyticsList.length; i++) {
+        db.addKanbanAnalytics(kanbanAnalyticsList[i], function (err, kanbanObj) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+            processedKanbanList++;
+            if (processedKanbanList === kanbanAnalyticsList.length) {
+                return callback(null, teams);
+            }
+        });
+    }
 }
 
 /**
@@ -67,7 +92,7 @@ const saveKanbanAnalytics = function () {
  * @param {string} teamId team id
  */
 const createKanbanMemberObject = function (userId, tickets, teamId) {
-    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList()); 
+    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
     let memberObject = {
         _id: userId,
         fname: usersIdObj[userId].fname,
@@ -80,7 +105,7 @@ const createKanbanMemberObject = function (userId, tickets, teamId) {
     Object.keys(common.ticketStates).forEach(state => {
         memberObject.states[common.ticketStates[state].value] = 0;
         memberObject.points[common.ticketStates[state].value] = 0;
-    }); 
+    });
 
     for (let i = 0; i < tickets.length; i++) {
         if (tickets[i].assignee === userId
@@ -125,8 +150,8 @@ const createFlowDiagramEntry = function (members) {
  * @param {function} callback callback
  */
 const getKanbanAnalytics = function (team, tickets, callback) {
-    
-    getLimitedKanbanAnalyticsListSorted({ $and: [{ teamId: team._id }] }, { idate: 1 }, 0, function(err, kanbanAnalytics) {
+
+    getLimitedKanbanAnalyticsListSorted({ $and: [{ teamId: team._id }] }, { idate: 1 }, 0, function (err, kanbanAnalytics) {
         if (err) {
             logger.error(err);
             return callback(common.getError(8002), null);
@@ -157,6 +182,7 @@ const getLimitedKanbanAnalyticsListSorted = function (searchQuery, sortQuery, li
 }
 
 // <exports> -----------------------------------
-exports.saveKanbanAnalytics = saveKanbanAnalytics;
 exports.getKanbanAnalytics = getKanbanAnalytics;
+exports.saveKanbanAnalytics = saveKanbanAnalytics;
+exports.saveSpecificKanbanAnalytics = saveSpecificKanbanAnalytics;
 // </exports> ----------------------------------
