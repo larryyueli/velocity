@@ -97,14 +97,20 @@ const createKanbanMemberObject = function (userId, tickets) {
  */
 const createFlowDiagramEntry = function (members) {
     let entry = {
-        date: common.getDate()
+        date: common.getDate(),
+        states: {},
+        points: {}
     };
     Object.keys(common.ticketStates).forEach(state => {
-        entry[common.ticketStates[state].value] = 0;
+        entry.states[common.ticketStates[state].value] = 0;
+        entry.points[common.ticketStates[state].value] = 0;
     });
     for (let i = 0; i < members.length; i++) {
         Object.keys(members[i].points).forEach(key => {
-            entry[key] += members[i].points[key];
+            entry.points[key] += members[i].points[key];
+        });
+        Object.keys(members[i].states).forEach(key => {
+            entry.states[key] += members[i].states[key];
         });
     }
     return entry;
@@ -129,7 +135,7 @@ const getKanbanAnalytics = function (team, tickets, callback) {
         };
         for (let i = 0; i < kanbanAnalytics.length; i++) {
             kanban.members = kanbanAnalytics[i].members;
-            kanban.cumulativeflowdiagram.push(kanbanAnalytics[i].cumulativeflowdiagram);
+            kanban.cumulativeflowdiagram.push(kanbanAnalytics[i].cumulativeflowdiagram[0]);
         }
         return callback(null, kanban);
     });
