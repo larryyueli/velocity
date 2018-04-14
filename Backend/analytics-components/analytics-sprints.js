@@ -36,25 +36,7 @@ const saveSprintAnalytics = function () {
                 projects.getTicketsByProjectIds(projectsList, function (err, tickets) {
                     let sprintAnalyticsList = [];
                     for (let i = 0; i < sprints.length; i++) {
-                        let analyticsObj = {
-                            _id: common.getUUID(),
-                            date: common.getDate(),
-                            idate: common.getISODate(),
-                            sprintId: sprints[i]._id,
-                            sprintName: sprints[i].name,
-                            sprintStatus: sprints[i].status,
-                            sprintStart: sprints[i].startDate,
-                            sprintEnd: sprints[i].endDate,
-                            members: []
-                        }
-                        for (let j = 0; j < teams.length; j++) {
-                            if (teams[j]._id === sprints[i].teamId) {
-                                for (let z = 0; z < teams[j].members.length; z++) {
-                                    analyticsObj.members.push(createSprintMemberObject(teams[j].members[z], sprints[i]._id, tickets));
-                                }
-                            }
-                        }
-                        sprintAnalyticsList.push(analyticsObj);
+                        sprintAnalyticsList.push(getCurrentAnalyticsForSprint(sprints[i], teams, tickets));
                     }
                     for (let i = 0; i < sprintAnalyticsList.length; i++) {
                         db.addSprintAnalytics(sprintAnalyticsList[i], function (err, analyticsObj) {
@@ -78,21 +60,37 @@ const saveSprintAnalytics = function () {
  * @param {function} callback callback function
  */
 const saveSpecificSprintAnalytics = function (sprintObj, team, tickets, callback) {
+    let analyticsObj = getCurrentAnalyticsForSprint(sprintObj, [team], tickets);
+    db.addSprintAnalytics(analyticsObj, callback);
+}
+
+/**
+ * Gets the current analytics for a sprint
+ * @param {object} sprint 
+ * @param {array} teams 
+ * @param {array} tickets 
+ */
+const getCurrentAnalyticsForSprint = function (sprint, teams, tickets) {
     let analyticsObj = {
         _id: common.getUUID(),
         date: common.getDate(),
         idate: common.getISODate(),
-        sprintId: sprintObj._id,
-        sprintName: sprintObj.name,
-        sprintStatus: sprintObj.status,
-        sprintStart: sprintObj.startDate,
-        sprintEnd: sprintObj.endDate,
+        sprintId: sprint._id,
+        sprintName: sprint.name,
+        sprintStatus: sprint.status,
+        sprintStart: sprint.startDate,
+        sprintEnd: sprint.endDate,
         members: []
     }
-    for (let i = 0; i < team.members.length; i++) {
-        analyticsObj.members.push(createSprintMemberObject(team.members[i], sprintObj._id, tickets));
+    for (let j = 0; j < teams.length; j++) {
+        if (teams[j]._id === sprint.teamId) {
+            for (let z = 0; z < teams[j].members.length; z++) {
+                analyticsObj.members.push(createSprintMemberObject(teams[j].members[z], sprint._id, tickets));
+            }
+        }
     }
-    db.addSprintAnalytics(analyticsObj, callback);
+
+    return analyticsObj;
 }
 
 /**
@@ -103,7 +101,7 @@ const saveSpecificSprintAnalytics = function (sprintObj, team, tickets, callback
  * @param {*} tickets tickets list
  */
 const createSprintMemberObject = function (userId, sprintId, tickets) {
-    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList()); 
+    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
     let memberObject = {
         _id: userId,
         fname: usersIdObj[userId].fname,
@@ -116,7 +114,7 @@ const createSprintMemberObject = function (userId, sprintId, tickets) {
     Object.keys(common.ticketStates).forEach(state => {
         memberObject.states[common.ticketStates[state].value] = 0;
         memberObject.points[common.ticketStates[state].value] = 0;
-    }); 
+    });
 
     for (let i = 0; i < tickets.length; i++) {
         if (tickets[i].assignee === userId &&
@@ -137,24 +135,25 @@ const createSprintMemberObject = function (userId, sprintId, tickets) {
  * @param {function} callback callback
  */
 const getSprintAnalytics = function (team, sprints, tickets, callback) {
-    
+
     const sprintIds = common.convertJsonListToList('_id', sprints);
     let sprintIdList = [];
 
     for (let i = 0; i < sprintIds.length; i++) {
         sprintIdList.push({ sprintId: sprintIds[i] });
     }
-    getLimitedSprintAnalyticsListSorted({ $and: [{ $or: sprintIdList }] }, { idate: 1 }, 0, function(err, sprintAnalytics) {
+
+    getLimitedSprintAnalyticsListSorted({ $and: [{ $or: sprintIdList }] }, { idate: 1 }, 0, function (err, sprintAnalytics) {
         if (err) {
             logger.error(err);
             return callback(common.getError(8002), null);
         }
-        let sprints = [];
+        let sprintsList = [];
         for (let i = 0; i < sprintAnalytics.length; i++) {
-            let currentSprints = common.convertJsonListToList('sprintId', sprints);
+            let currentSprints = common.convertJsonListToList('sprintId', sprintsList);
             let index = currentSprints.indexOf(sprintAnalytics[i].sprintId);
             if (index === -1) {
-                sprints.push({
+                sprintsList.push({
                     sprintId: sprintAnalytics[i].sprintId,
                     sprintName: sprintAnalytics[i].sprintName,
                     sprintStatus: sprintAnalytics[i].sprintStatus,
@@ -167,15 +166,26 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
                 });
             } else {
                 if (sprintAnalytics[i].sprintStatus === common.sprintStatus.CLOSED.value) {
-                    sprints[index].sprintStatus = common.sprintStatus.CLOSED.value;
+                    sprintsList[index].sprintStatus = common.sprintStatus.CLOSED.value;
                 }
-                sprints[index].history.push({
+                sprintsList[index].history.push({
                     date: sprintAnalytics[i].date,
                     members: sprintAnalytics[i].members
                 });
             }
         }
-        return callback(null, sprints);
+        for (let i = 0; i < sprintsList.length; i++) {
+            if (sprintsList[i].sprintStatus === common.sprintStatus.ACTIVE.value) {
+                let currentSprints = common.convertJsonListToList('_id', sprints);
+                let index = currentSprints.indexOf(sprintAnalytics[i].sprintId);
+                let today = getCurrentAnalyticsForSprint(sprints[index], [team], tickets);
+                sprintsList[i].history.push({
+                    date: today.date,
+                    members: today.members
+                });
+            }
+        }
+        return callback(null, sprintsList);
     });
 
 }

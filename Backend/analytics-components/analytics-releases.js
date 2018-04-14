@@ -36,23 +36,7 @@ const saveReleaseAnalytics = function () {
                 projects.getTicketsByProjectIds(projectsList, function (err, tickets) {
                     let releaseAnalyticsList = [];
                     for (let i = 0; i < releases.length; i++) {
-                        let analyticsObj = {
-                            _id: common.getUUID(),
-                            date: common.getDate(),
-                            idate: common.getISODate(),
-                            releaseId: releases[i]._id,
-                            releaseName: releases[i].name,
-                            releaseStatus: releases[i].status,
-                            members: []
-                        }
-                        for (let j = 0; j < teams.length; j++) {
-                            if (teams[j]._id === releases[i].teamId) {
-                                for (let z = 0; z < teams[j].members.length; z++) {
-                                    analyticsObj.members.push(createReleaseMemberObject(teams[j].members[z], releases[i]._id, tickets));
-                                }
-                            }
-                        }
-                        releaseAnalyticsList.push(analyticsObj);
+                        releaseAnalyticsList.push(getCurrentAnalyticsForRelease(releases[i], teams, tickets));
                     }
                     for (let i = 0; i < releaseAnalyticsList.length; i++) {
                         db.addReleaseAnalytics(releaseAnalyticsList[i], function (err, analyticsObj) {
@@ -76,19 +60,35 @@ const saveReleaseAnalytics = function () {
  * @param {function} callback callback function
  */
 const saveSpecificReleaseAnalytics = function (releaseObj, team, tickets, callback) {
+    let analyticsObj = getCurrentAnalyticsForRelease(releaseObj, [team], tickets);
+    db.addReleaseAnalytics(analyticsObj, callback);
+}
+
+/**
+ * Gets the current analytics for a release
+ * @param {object} release 
+ * @param {array} teams 
+ * @param {array} tickets 
+ */
+const getCurrentAnalyticsForRelease = function (release, teams, tickets) {
     let analyticsObj = {
         _id: common.getUUID(),
         date: common.getDate(),
         idate: common.getISODate(),
-        releaseId: releaseObj._id,
-        releaseName: releaseObj.name,
-        releaseStatus: releaseObj.status,
+        releaseId: release._id,
+        releaseName: release.name,
+        releaseStatus: release.status,
         members: []
     }
-    for (let i = 0; i < team.members.length; i++) {
-        analyticsObj.members.push(createReleaseMemberObject(team.members[i], releaseObj._id, tickets));
+    for (let j = 0; j < teams.length; j++) {
+        if (teams[j]._id === release.teamId) {
+            for (let z = 0; z < teams[j].members.length; z++) {
+                analyticsObj.members.push(createReleaseMemberObject(teams[j].members[z], release._id, tickets));
+            }
+        }
     }
-    db.addReleaseAnalytics(analyticsObj, callback);
+
+    return analyticsObj;
 }
 
 /**
@@ -99,7 +99,7 @@ const saveSpecificReleaseAnalytics = function (releaseObj, team, tickets, callba
  * @param {*} tickets tickets list
  */
 const createReleaseMemberObject = function (userId, releaseId, tickets) {
-    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList()); 
+    let usersIdObj = common.convertListToJason('_id', users.getActiveUsersList());
     let memberObject = {
         _id: userId,
         fname: usersIdObj[userId].fname,
@@ -112,7 +112,7 @@ const createReleaseMemberObject = function (userId, releaseId, tickets) {
     Object.keys(common.ticketStates).forEach(state => {
         memberObject.states[common.ticketStates[state].value] = 0;
         memberObject.points[common.ticketStates[state].value] = 0;
-    }); 
+    });
 
     for (let i = 0; i < tickets.length; i++) {
         if (tickets[i].assignee === userId &&
@@ -133,24 +133,25 @@ const createReleaseMemberObject = function (userId, releaseId, tickets) {
  * @param {function} callback callback
  */
 const getReleaseAnalytics = function (team, releases, tickets, callback) {
-    
+
     const releaseIds = common.convertJsonListToList('_id', releases);
     let releaseIdList = [];
 
     for (let i = 0; i < releaseIds.length; i++) {
         releaseIdList.push({ releaseId: releaseIds[i] });
     }
-    getLimitedReleaseAnalyticsListSorted({ $and: [{ $or: releaseIdList }] }, { idate: 1 }, 0, function(err, releaseAnalytics) {
+
+    getLimitedReleaseAnalyticsListSorted({ $and: [{ $or: releaseIdList }] }, { idate: 1 }, 0, function (err, releaseAnalytics) {
         if (err) {
             logger.error(err);
             return callback(common.getError(8002), null);
         }
-        let releases = [];
+        let releasesList = [];
         for (let i = 0; i < releaseAnalytics.length; i++) {
-            let currentReleases = common.convertJsonListToList('releaseId', releases);
+            let currentReleases = common.convertJsonListToList('releaseId', releasesList);
             let index = currentReleases.indexOf(releaseAnalytics[i].releaseId);
             if (index === -1) {
-                releases.push({
+                releasesList.push({
                     releaseId: releaseAnalytics[i].releaseId,
                     releaseName: releaseAnalytics[i].releaseName,
                     releaseStatus: releaseAnalytics[i].releaseStatus,
@@ -161,15 +162,26 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
                 });
             } else {
                 if (releaseAnalytics[i].releaseStatus === common.releaseStatus.CLOSED.value) {
-                    releases[index].releaseStatus = common.releaseStatus.CLOSED.value;
+                    releasesList[index].releaseStatus = common.releaseStatus.CLOSED.value;
                 }
-                releases[index].history.push({
+                releasesList[index].history.push({
                     date: releaseAnalytics[i].date,
                     members: releaseAnalytics[i].members
                 });
             }
         }
-        return callback(null, releases);
+        for (let i = 0; i < releasesList.length; i++) {
+            if (releasesList[i].releaseStatus === common.releaseStatus.ACTIVE.value) {
+                let currentReleases = common.convertJsonListToList('_id', releases);
+                let index = currentReleases.indexOf(releaseAnalytics[i].releaseId);
+                let today = getCurrentAnalyticsForRelease(releases[index], [team], tickets);
+                releasesList[i].history.push({
+                    date: today.date,
+                    members: today.members
+                });
+            }
+        }
+        return callback(null, releasesList);
     });
 
 }
