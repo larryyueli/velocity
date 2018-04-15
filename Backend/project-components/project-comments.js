@@ -41,7 +41,8 @@ const addComment = function (comment, callback) {
         || typeof (comment.userId) !== common.variableTypes.STRING
         || typeof (comment.projectId) !== common.variableTypes.STRING
         || typeof (comment.teamId) !== common.variableTypes.STRING
-        || typeof (comment.ticketId) !== common.variableTypes.STRING) {
+        || typeof (comment.ticketId) !== common.variableTypes.STRING
+        || common.isEmptyString(comment.content)) {
         return callback(common.getError(8006), null);
     }
 
@@ -145,7 +146,8 @@ const updateComment = function (commentId, ticketId, teamId, projectId, updatePa
 
     searchQuery.$and = [{ _id: commentId }, { projectId: projectId }, { teamId: teamId }, { ticketId: ticketId }, { status: common.commentStatus.ACTIVE.value }];
 
-    if (typeof (updateParams.content) === common.variableTypes.STRING) {
+    if (typeof (updateParams.content) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.content)) {
         updateQuery.$set.content = updateParams.content;
     }
 

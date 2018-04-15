@@ -39,7 +39,8 @@ const initialize = function (callback) {
 const addRelease = function (release, callback) {
     if (typeof (release.name) !== common.variableTypes.STRING
         || typeof (release.projectId) !== common.variableTypes.STRING
-        || typeof (release.teamId) !== common.variableTypes.STRING) {
+        || typeof (release.teamId) !== common.variableTypes.STRING
+        || common.isEmptyString(release.name)) {
         return callback(common.getError(12006), null);
     }
 
@@ -264,7 +265,8 @@ const updateReleaseById = function (releaseId, teamId, projectId, updateParams, 
 
     searchQuery.$and = [{ _id: releaseId }, { projectId: projectId }, { teamId: teamId }, { status: common.releaseStatus.ACTIVE.value }];
 
-    if (typeof (updateParams.name) === common.variableTypes.STRING) {
+    if (typeof (updateParams.name) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.name)) {
         updateQuery.$set.name = updateParams.name;
     }
 

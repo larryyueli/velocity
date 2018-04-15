@@ -134,6 +134,7 @@ const translations = Object.freeze({
     5004: 'Project not found',
     5005: 'Failed to update projects',
     5006: 'Failed to update project',
+    5007: 'Project already exists',
 
     //6000 teams
     6001: 'Failed to add a team',
@@ -275,6 +276,8 @@ const translations = Object.freeze({
     emptySprint: 'Sprint field cannot be empty',
     emptySprintStart: 'Start date cannot be empty',
     emptySprintEnd: 'End date cannot be empty',
+    emptyDeadlineDate: 'Deadline Date can not be empty',
+    emptyDeadlineTime: 'Deadline Time can not be empty',
 
     todoTitle: 'TODO',
     inProgressTitle: 'IN DEVELOPMENT',

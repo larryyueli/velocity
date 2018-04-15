@@ -38,13 +38,22 @@ const initialize = function (collectionObject) {
  * @param {function} callback callback function
  */
 const addProject = function (projectObj, callback) {
-    projectsCollection.insert(projectObj, function (err, obj) {
-        if (err) {
-            return callback(common.getError(5001), null);
-        }
+    projectsCollection.update(
+        { title: projectObj.title, status: { $ne: common.projectStatus.DELETED.value } },
+        { $setOnInsert: projectObj },
+        { upsert: true },
+        function (err, obj) {
+            if (err) {
+                return callback(common.getError(5001), null);
+            }
 
-        return callback(null, projectObj);
-    });
+            if (!obj.result.upserted) {
+                return callback(common.getError(5007), null);
+            }
+
+            return callback(null, projectObj);
+        }
+    );
 }
 
 /**

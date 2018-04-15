@@ -40,7 +40,8 @@ const initialize = function (callback) {
 const addTeam = function (projectId, team, callback) {
     if (typeof (projectId) !== common.variableTypes.STRING
         || typeof (team.name) !== common.variableTypes.STRING
-        || !Array.isArray(team.members)) {
+        || !Array.isArray(team.members)
+        || common.isEmptyString(team.name)) {
         return callback(common.getError(6006), null);
     }
 
@@ -228,7 +229,8 @@ const updateTeamById = function (teamId, projectId, updateParams, callback) {
 
     searchQuery.$and = [{ _id: teamId }, { projectId: projectId }, { status: common.teamStatus.ACTIVE.value }];
 
-    if (typeof (updateParams.name) === common.variableTypes.STRING) {
+    if (typeof (updateParams.name) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.name)) {
         updateQuery.$set.name = updateParams.name;
     }
 

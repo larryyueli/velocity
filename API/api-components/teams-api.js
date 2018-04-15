@@ -571,7 +571,10 @@ const renderTeamPage = function (req, res) {
                                     isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
                                     isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
                                     isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
-                                    forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+                                    forceDeadline: typeof (projectObj.deadlineDate) === common_backend.variableTypes.STRING
+                                        && typeof (projectObj.deadlineTime) === common_backend.variableTypes.STRING
+                                        && !common_backend.isEmptyString(projectObj.deadlineDate)
+                                        && !common_backend.isEmptyString(projectObj.deadlineTime),
                                     deadlineDate: projectObj.deadlineDate,
                                     deadlineTime: projectObj.deadlineTime,
                                     commonSprintStatus: common_backend.sprintStatus,
