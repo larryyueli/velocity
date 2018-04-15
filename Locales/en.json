@@ -24,6 +24,12 @@
 	"filters": {
 		"all": "All"
 	},
+	"history": {
+		"history": "History",
+		"release": "Release",
+		"sprint": "Sprint",
+		"tag": "Tag"
+	},
 	"login": {
 		"signIn": "Log In",
 		"signUp": "Sign Up",
