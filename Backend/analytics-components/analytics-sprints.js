@@ -242,7 +242,7 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
             for (let i = 0; i < sprintsList.length; i++) {
                 if (sprintsList[i].sprintStatus === common.sprintStatus.ACTIVE.value) {
                     let currentSprints = common.convertJsonListToList('_id', sprints);
-                    let indexInSprints = currentSprints.indexOf(sprintAnalytics[i].sprintId);
+                    let indexInSprints = currentSprints.indexOf(sprintsList[i].sprintId);
                     let indexToSaveIn = i;
                     getCurrentAnalyticsForSprint(sprints[indexInSprints], [team], tickets, function(err, todayObj) {
                         sprintsList[indexToSaveIn].history.push({
