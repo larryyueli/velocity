@@ -73,6 +73,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.releases = Array.isArray(ticket.releases) ? ticket.releases : [];
     ticketToAdd.tags = Array.isArray(ticket.tags) ? ticket.tags : [];
     ticketToAdd.links = Array.isArray(ticket.links) ? ticket.links : [];
+    ticketToAdd.attachments = Array.isArray(ticket.attachments) ? ticket.attachments : [];
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
@@ -421,6 +422,10 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
 
     if (Array.isArray(updateParams.links)) {
         updateQuery.$set.links = updateParams.links;
+    }
+
+    if (Array.isArray(updateParams.attachments)) {
+        updateQuery.$set.attachments = updateParams.attachments;
     }
 
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {

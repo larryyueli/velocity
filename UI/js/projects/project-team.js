@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const addReleaseDiv = '#appendReleaseDiv';
 const addSprintDiv = '#appendSprintDiv';
 const addTagDiv = '#appendTagDiv';
-const backButtonId = '#backButton';
 const boardTypeSelectionId = '#boardTypeSelection';
 const createTicketButtonId = '#createTicketButton';
 const description = '#description';
@@ -56,6 +55,7 @@ var releaseFilterUser = null;
 var sprintComponent = null;
 var tagComponent = null;
 var usernamesArray = [];
+var isReadonly = true;
 
 $(function () {
     initSummernote(description);
@@ -65,6 +65,8 @@ $(function () {
         shortcuts: false
     });
     $('div.note-btn-group.btn-group button').remove();
+    $('.note-toolbar-wrapper').remove();
+    $('.note-editable').css('background-color', '#ffffff');
 
     $(releaseInputRow).hide();
     $(tagInputRow).hide();
@@ -97,15 +99,16 @@ $(function () {
         createSprint();
     });
 
-    $(backButtonId).click(() => {
-        window.location.href = '/projects';
-    });
+    $('.collapsible').collapsible();
 
     $(createTicketButtonId).click(() => {
         window.location.href = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
 
     $(sprintStart).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -116,6 +119,9 @@ $(function () {
     });
 
     $(sprintEnd).pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
         selectMonths: true,
         selectYears: 15,
         today: translate('today'),
@@ -127,158 +133,6 @@ $(function () {
 
     getListOfAssignee();
     getComponents();
-
-    $("[class^='sprintFutureActive']").hide();
-
-    /*
-    $.ajax({
-        type: 'PUT',
-        url: '/tags/create',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            name: 'Tag 2'
-        },
-        success: function (data) {
-            alert(data);
-        },
-        error: function (data) {
-            handle401And404(data);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'PUT',
-        url: '/releases/create',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            name: 'Release 1'
-        },
-        success: function (data) {
-            alert(data);
-        },
-        error: function (data) {
-            handle401And404(data);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'PUT',
-        url: '/sprints/create',
-        data: {
-            projectId: projectId,
-            teamId: teamId,
-            name: 'Sprint 5',
-            startDate: '1/2/2018',
-            endDate: '1/20/2018'
-        },
-        success: function (data) {
-            alert(data);
-        },
-        error: function (data) {
-            handle401And404(data);
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/team/backlog',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/teamsList',
-        data: {
-            projectId: projectId
-        },
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/components/team/board',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/project/team/releases/list',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            alert(JSON.stringify(data));
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
-
-    /*
-    $.ajax({
-        type: 'GET',
-        url: '/project/team/tags/list',
-        data: {
-            projectId: projectId,
-            teamId: teamId
-        },
-        success: function (data) {
-            alert(JSON.stringify(data));
-        },
-        error: function (data) {
-            handle401And404(data);
-
-            const jsonResponse = data.responseJSON;
-            failSnackbar(getErrorMessageFromResponse(jsonResponse));
-        }
-    });*/
 });
 
 /**
@@ -297,6 +151,18 @@ function getComponents() {
             releaseComponent = data.releaseEntryComponent;
             sprintComponent = data.sprintEntryComponent;
             tagComponent = data.tagEntryComponent;
+            isReadonly = data.isReadOnly;
+
+            if (isReadonly) {
+                $(createTicketButton).addClass('hidden');
+                $(releaseVisibility).addClass('hidden');
+                $(sprintVisibility).addClass('hidden');
+                $(tagVisibility).addClass('hidden');
+                $("[class^='sprintOpen_']").hide();
+                $("[class^='sprintActive_']").hide();
+                $("[class^='releaseButton_']").hide();
+                $("[class^='tagButton_']").hide();
+            }
         },
         error: function (data) {
             handle401And404(data);
@@ -313,7 +179,7 @@ function getComponents() {
  */
 function createRelease() {
     if ($(releaseField).val() === "") {
-        failSnackbar('Release field cannot be empty');
+        warningSnackbar(translate('emptyRelease'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -327,6 +193,8 @@ function createRelease() {
                 let release = releaseComponent;
                 release = release.replace(new RegExp('release._id', 'g'), data._id);
                 release = release.replace(new RegExp('release.name', 'g'), data.name);
+                release = release.replace(new RegExp('projectId', 'g'), projectId);
+                release = release.replace(new RegExp('teamId', 'g'), teamId);
                 $(addReleaseDiv).append(release);
                 $(releaseInputRow).hide();
                 $(releaseVisibility).show();
@@ -345,7 +213,7 @@ function createRelease() {
  */
 function createTag() {
     if ($(tagField).val() === "") {
-        failSnackbar('Tag field cannot be empty');
+        warningSnackbar(translate('emptyTag'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -359,6 +227,8 @@ function createTag() {
                 let tag = tagComponent;
                 tag = tag.replace(new RegExp('tag._id', 'g'), data._id);
                 tag = tag.replace(new RegExp('tag.name', 'g'), data.name);
+                tag = tag.replace(new RegExp('projectId', 'g'), projectId);
+                tag = tag.replace(new RegExp('teamId', 'g'), teamId);
                 $(addTagDiv).append(tag);
                 $(tagInputRow).hide();
                 $(tagVisibility).show();
@@ -373,15 +243,22 @@ function createTag() {
 }
 
 /**
+ * load page
+ */
+function loadPage(text) {
+    window.location.href = text;
+}
+
+/**
  * Creates a sprint
  */
 function createSprint() {
     if ($(sprintField).val() === "") {
-        failSnackbar('Tag field cannot be empty');
+        warningSnackbar(translate('emptySprint'));
     } else if ($(sprintStart).val() === "") {
-        failSnackbar('Start date cannot be empty');
+        warningSnackbar(translate('emptySprintStart'));
     } else if ($(sprintEnd).val() === "") {
-        failSnackbar('End date cannot be empty');
+        warningSnackbar(translate('emptySprintEnd'));
     } else {
         $.ajax({
             type: 'PUT',
@@ -397,6 +274,8 @@ function createSprint() {
                 let sprint = sprintComponent;
                 sprint = sprint.replace(new RegExp('sprint._id', 'g'), data._id);
                 sprint = sprint.replace(new RegExp('sprint.name', 'g'), data.name);
+                sprint = sprint.replace(new RegExp('projectId', 'g'), projectId);
+                sprint = sprint.replace(new RegExp('teamId', 'g'), teamId);
                 sprint = sprint.replace('sprint.startDate', `${translate('startDate')}${data.startDate}`);
                 sprint = sprint.replace('sprint.endDate', `${translate('endDate')}${data.endDate}`);
                 $(addSprintDiv).append(sprint);
@@ -774,4 +653,19 @@ function deleteSprint(sprintId, sprintName) {
             });
         }
     });
+}
+
+/**
+ * download attachment
+*/
+function downloadAttachment(id) {
+    window.location = `/download/file?fileId=${id}`;
+}
+
+/**
+ * view image
+*/
+function viewImage(id) {
+    $('#imageViewer').modal('open');
+    $('#imageViewerImage').attr('src', `/picture/${id}`);
 }

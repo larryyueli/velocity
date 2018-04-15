@@ -203,6 +203,7 @@ const translations = Object.freeze({
     activateProjectPrompt: 'Are you sure you want to activate this project?',
     adminConfigurationSuccess: 'Admins have been saved successfully',
     alreadyInGroup: 'This user is already in this group',
+    backlog: 'Backlog',
     closeProjectPrompt: 'Are you sure you want to close this project?',
     defaultError: 'Something went wrong, please try again!',
     deleteAllGroupsWarning: 'Are you sure you would like to delete all created groups?',
@@ -220,9 +221,11 @@ const translations = Object.freeze({
     issuesFound: 'issues found',
     members: 'Members',
     mustBeCsv: 'File format must be csv!',
+    mustBeVelocity: 'File format must be velocity!',
     mustImportOneFile: 'You can only import one file!',
     na: 'N/A',
     newTickets: 'New Tickets',
+    noassignee: 'No Assignee',
     noMembers: 'No Members',
     noResultsFoundBasedOnSearch: 'No results found based on your search',
     notInGroup: 'You are currently not in a group',
@@ -234,6 +237,7 @@ const translations = Object.freeze({
     selectGroup: 'Select Group',
     size: 'Size',
     successfulFileUpload: 'File uploaded successfully',
+    successfulFileDownload: 'File downloaded successfully',
     tickets: 'Tickets',
     total: 'total',
     uploadOnlyPicture: 'You can only upload one picture!',
@@ -263,9 +267,14 @@ const translations = Object.freeze({
     descriptionCanNotBeEmpty: 'Description can not be empty!',
     commentCanNotBeEmpty: 'Comment can not be empty!',
     saveBoardType: 'BE CAREFUL, this can NOT be changed!',
-    updatedTicket:'Ticket has been updated',
+    updatedTicket: 'Ticket has been updated',
     startDate: 'Start Date: ',
     endDate: 'End Date: ',
+    emptyRelease: 'Release field cannot be empty',
+    emptyTag: 'Tag field cannot be empty',
+    emptySprint: 'Sprint field cannot be empty',
+    emptySprintStart: 'Start date cannot be empty',
+    emptySprintEnd: 'End date cannot be empty',
 
     todoTitle: 'TODO',
     inProgressTitle: 'IN DEVELOPMENT',
@@ -476,60 +485,17 @@ const initSummernote = function (descriptionId) {
     $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
     $('div.note-btn-group.btn-group.note-insert button').unbind();
     $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').removeClass('note-icon-link');
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').addClass('material-icons');
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').html('cloud_upload');
     $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
-        $('#mediaModal0').modal('open');
-        $('#mediaModal0 > div > div > div.modal-footer > button')
-            .unbind()
-            .removeClass('disabled')
-            .removeAttr('href')
-            .prop('disabled', false)
-            .prop('type', 'button')
-            .click(function () {
-                var text = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(1) > input').val();
-                var url = $('#mediaModal0 > div > div > div.modal-body > div:nth-child(2) > input').val();
-                $(descriptionId).summernote('createLink', {
-                    text: text,
-                    url: url,
-                    isNewWindow: true
-                });
-                $('#mediaModal0').modal('close');
-            });
-        $('#mediaModal0 > div > div > div.modal-header > button').click(function () {
-            $('#mediaModal0').modal('close');
-        });
-    });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').click(function () {
-        $('#mediaModal1').modal('open');
-        $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-select-from-files').hide();
-        $('#mediaModal1 > div > div > div.modal-footer > button')
-            .unbind()
-            .removeClass('disabled')
-            .removeAttr('href')
-            .prop('disabled', false)
-            .prop('type', 'button')
-            .click(function () {
-                var url = $('#mediaModal1 > div > div > div.modal-body > div.form-group.note-group-image-url > input').val();
-                $(descriptionId).summernote('insertImage', url);
-                $('#mediaModal1').modal('close');
-            });
-        $('#mediaModal1 > div > div > div.modal-header > button').click(function () {
-            $('#mediaModal1').modal('close');
-        });
+        $('#uploadModal').modal('open');
     });
     $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
-    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').click(function () {
-        $('#mediaModal3').modal('open');
-        $('#mediaModal3 > div > div > div.modal-header > button').click(function () {
-            $('#mediaModal3').modal('close');
-        });
-    });
+    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').remove();
+    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').remove();
     $('.modal').modal({
         dismissible: false
     });
-    $('div.note-editor.note-frame.panel.panel-default .modal').each(function (i) {
-        $(this).attr('id', 'mediaModal' + i);
-        $('#mediaModal' + i + '> div > div').removeClass('modal-content');
-    });
-
     $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
 }

@@ -71,6 +71,7 @@ const addProject = function (project, callback) {
     projectToAdd.boardType = common.isValueInObjectWithKeys(project.boardType, 'value', common.boardTypes) ? project.boardType : common.boardTypes.UNKNOWN.value;
     projectToAdd.deadlineDate = typeof (project.deadlineDate) === common.variableTypes.STRING ? project.deadlineDate : '';
     projectToAdd.deadlineTime = typeof (project.deadlineTime) === common.variableTypes.STRING ? project.deadlineTime : '';
+    projectToAdd.attachments = Array.isArray(project.attachments) ? project.attachments : [];
 
     db.addProject(projectToAdd, callback);
 }
@@ -146,6 +147,16 @@ const getActiveProjectById = function (projectId, callback) {
 }
 
 /**
+ * find a single active or closed project by its Id
+ *
+ * @param {string} projectId project id
+ * @param {function} callback callback function
+ */
+const getActiveOrClosedProjectById = function (projectId, callback) {
+    getProject({ $and: [{ _id: projectId }, { $or: [{ status: common.projectStatus.ACTIVE.value }, { status: common.projectStatus.CLOSED.value }] }] }, callback);
+}
+
+/**
  * find projects in draft with user selections type
  *
  * @param {function} callback callback function
@@ -188,6 +199,10 @@ const updateProject = function (projectId, updateParams, callback) {
 
     if (Array.isArray(updateParams.members)) {
         updateQuery.$set.members = updateParams.members;
+    }
+
+    if (Array.isArray(updateParams.attachments)) {
+        updateQuery.$set.attachments = updateParams.attachments;
     }
 
     if (typeof (updateParams.teamSize) === common.variableTypes.NUMBER
@@ -242,11 +257,12 @@ exports.updateComment = comments.updateComment;
 
 // <exports> -----------------------------------
 exports.addProject = addProject;
+exports.getActiveProjectById = getActiveProjectById;
+exports.getActiveProjectsList = getActiveProjectsList;
+exports.getActiveOrClosedProjectById = getActiveOrClosedProjectById;
 exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
 exports.getProject = getProject;
 exports.getFullProjectsList = getFullProjectsList;
-exports.getActiveProjectById = getActiveProjectById;
-exports.getActiveProjectsList = getActiveProjectsList;
 exports.getProjectById = getProjectById;
 exports.getProjectsListByUserId = getProjectsListByUserId;
 exports.initialize = initialize;
@@ -296,10 +312,13 @@ exports.updateTagById = tags.updateTagById;
 
 // <teams> -----------------------------------
 exports.addTeamToProject = teams.addTeamToProject;
+exports.getConfiguredTeamById = teams.getConfiguredTeamById;
 exports.getProjectTeams = teams.getProjectTeams;
 exports.getProjectsTeams = teams.getProjectsTeams;
 exports.getTeamInProjectById = teams.getTeamInProjectById;
 exports.getTeamInProjectByName = teams.getTeamInProjectByName;
+exports.getTeamById = teams.getTeamById;
+exports.getTeamByName = teams.getTeamByName;
 exports.getTeamByUserId = teams.getTeamByUserId;
 exports.setTeamsBoardType = teams.setTeamsBoardType;
 exports.updateTeamInProject = teams.updateTeamInProject;

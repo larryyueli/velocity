@@ -1,7 +1,9 @@
-li(id=`release_release._id`).collection-item.avatar
+li(id=`release_release._id`).collection-item.avatar.clickable-item
     i.material-icons.circle dns
     button(class=`releaseButton_release._id`, onclick=`deleteRelease('release._id', 'release._name')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
         i.material-icons.right delete_forever
     button(class=`releaseButton_release._id`, onclick=`closeRelease('release._id', 'release._name')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
         i.material-icons.right remove_circle
+    button(onclick=`loadPage('/project/projectId/team/teamId/release/release._id')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+        i.material-icons.right receipt
     span.title release.name

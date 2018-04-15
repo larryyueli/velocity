@@ -62,7 +62,7 @@ $(function () {
 function getUsersList() {
     $.ajax({
         type: 'GET',
-        url: '/usersListComponent',
+        url: '/components/usersList',
         success: function (data) {
             userRow = $(data.usersEntryHTML);
             userList = data.usersList;
@@ -87,6 +87,10 @@ function displayList() {
     userList.forEach(user => {
         if (passFilter(user)) {
             $(usersListId).append(fillRow(user));
+
+            $(`#${user.username}`).on('click', function() {
+                 window.location.href = `/users/edit/${user.username}`;
+            });
         }
     });
 
@@ -108,6 +112,7 @@ function fillRow(user) {
         color = colours.yellow;
     }
 
+    bindedRow.attr('id', user.username);
     bindedRow.find(iconId)[0].style.backgroundColor = color;
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);

@@ -18,8 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 "use strict";
 
+const crypto = require('crypto');
 const date = require('moment');
 const uuidv1 = require('uuid/v1');
+
+const config = require('./config.js');
 
 // <Global Errors> ------------------------------------------
 /**
@@ -27,7 +30,7 @@ const uuidv1 = require('uuid/v1');
  * Error codes and their corresponding message. Error codes are under different
  * categories:
  * 1000 -> system
- * 2000 -> user
+ * 2000 -> users
  * 3000 -> settings
  * 4000 -> custom file system
  * 5000 -> projects
@@ -36,8 +39,8 @@ const uuidv1 = require('uuid/v1');
  * 8000 -> comments
  * 9000 -> tickets
  * 10,000 -> sprints
- * 11,000 -> release
- * 12,000 -> tag
+ * 11,000 -> releases
+ * 12,000 -> tags
  */
 const errors = Object.freeze({
     //1000 system
@@ -110,6 +113,11 @@ const errors = Object.freeze({
     2052: 'can not close a sprint, sprint is not active',
     2053: 'can not activate a sprint, sprint is not open',
     2054: 'can not delete a tag, tag is not active',
+    2055: 'cant access users export page, permission denied',
+    2056: 'cant access users export file, permission denied',
+    2057: 'cant access projects export page, permission denied',
+    2058: 'cant access projects export file, permission denied',
+    2059: 'cant access projects import page, permission denied',
 
     //3000 settings
     3000: 'failed to get settings object, database issue',
@@ -268,7 +276,10 @@ exports.variableTypes = variableTypes;
 // all color themes
 const colorThemes = Object.freeze({
     DEFAULT: 'theme-default',
-    BLUESKY: 'theme-blueSky'
+    BLUESKY: 'theme-blueSky',
+    GREENISLANDS: 'theme-greenIslands',
+    REDROSES: 'theme-redRoses',
+    GREYCLOUDS: "theme-greyClouds"
 });
 exports.colorThemes = colorThemes;
 
@@ -384,11 +395,11 @@ const ticketTypes = Object.freeze({
 exports.ticketTypes = ticketTypes;
 
 // common ticket default assignee
-const noAssignee = 'No Assignee'; // TODO: find another unique text
+const noAssignee = 'No Assignee';
 exports.noAssignee = noAssignee;
 
 // common ticket default reporter
-const noReporter = 'No Reporter'; // TODO: find another unique text
+const noReporter = 'No Reporter';
 exports.noReporter = noReporter;
 
 // common ticket default points
@@ -444,6 +455,12 @@ const releaseStatus = Object.freeze({
     ACTIVE: { value: 2, text: 'active' }
 });
 exports.releaseStatus = releaseStatus;
+
+// common file extensions
+const fileExtensions = Object.freeze({
+    IMAGES: ['jpeg', 'png']
+});
+exports.fileExtensions = fileExtensions;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------
@@ -691,4 +708,33 @@ const joinLists = function (list1, list2) {
     return result;
 }
 exports.joinLists = joinLists;
+
+
+/**
+ * return encrypted text
+ *
+ * @param {string} text plain text
+ * @return {string} encrypted text
+ */
+const encryptText = function (text) {
+    const cipher = crypto.createCipher(config.encryptionAlgorithm, config.encryptionPassword);
+    let crypted = cipher.update(text, 'utf8', 'hex');
+    crypted += cipher.final('hex');
+    return crypted;
+}
+exports.encryptText = encryptText;
+
+/**
+ * return decrypted text
+ *
+ * @param {string} text encrypt text
+ * @return {string} decrypted text
+ */
+const decryptText = function (text) {
+    const decipher = crypto.createDecipher(config.encryptionAlgorithm, config.encryptionPassword);
+    let decrypted = decipher.update(text, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+exports.decryptText = decryptText;
 // </Global Function> -----------------------------------------------

@@ -149,6 +149,70 @@ const handleModeSelectPath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to upload a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUploadFilePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const uploadedFile = req.files.uploadedFile;
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileId: common_backend.getUUID(),
+        fileName: uploadedFile.name,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common_backend.cfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send(fileObj._id);
+    });
+}
+
+/**
+ * root path to upload a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleDownloadFilePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const fileId = req.query.fileId;
+    cfs.fileExists(fileId, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (fileObj.permission !== common_backend.cfsPermission.PUBLIC) {
+            logger.error(JSON.stringify(common_backend.getError(2058)));
+            return res.status(400).send(common_backend.getError(2058));
+        }
+
+        return res.download(fileObj.path, fileObj.name, function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Comments Requests> ------------------------------------------------
@@ -158,8 +222,10 @@ exports.handleCommentDeletePath = comment_api.deleteComment;
 // </Comments Requests> -----------------------------------------------
 
 // <Common Requests> ------------------------------------------------
+exports.handleDownloadFilePath = handleDownloadFilePath;
 exports.handleModeSelectPath = handleModeSelectPath;
 exports.handleRootPath = handleRootPath;
+exports.handleUploadFilePath = handleUploadFilePath;
 exports.initialize = initialize;
 exports.isActiveSession = common_api.isActiveSession;
 // </Common Requests> -----------------------------------------------
@@ -180,7 +246,12 @@ exports.handleProjectCreatePath = projects_api.createProject;
 exports.handleProjectDeletePath = projects_api.deleteProject;
 exports.handleProjectsAddPath = projects_api.renderProjectsCreationPage;
 exports.handleProjectsAdminsListComponentPath = projects_api.getAdminsListComponent;
+exports.handleProjectsExportPath = projects_api.renderProjectsExportPage;
+exports.handleProjectsExportFilePath = projects_api.exportProjectsFile;
+exports.handleProjectsExportFileDownloadPath = projects_api.exportProjectsFileDownload;
 exports.handleProjectsGroupAssignPath = projects_api.getTeamsAssignmentComponent;
+exports.handleProjectsImportPath = projects_api.renderProjectsImportPage;
+exports.handleProjectsImportFilePath = projects_api.importPorjectsFile;
 exports.handleProjectsListComponentPath = projects_api.getProjectsListComponent;
 exports.handleProjectsPath = projects_api.renderProjectsPage;
 exports.handleProjectTeamsUpdatePath = projects_api.updateProjectTeamsList;
@@ -190,6 +261,8 @@ exports.handleProjectUpdatePath = projects_api.updateDraftProject;
 // </Projects Requests> -----------------------------------------------
 
 // <Releases Requests> ------------------------------------------------
+exports.handleReleasePagePath = releases_api.renderReleasePage;
+exports.handleReleaseComponentsPath = releases_api.getReleaseComponents;
 exports.handleReleasesCreatePath = releases_api.createRelease;
 exports.handleReleasesClosePath = releases_api.closeRelease;
 exports.handleReleasesDeletePath = releases_api.deleteRelease;
@@ -203,14 +276,18 @@ exports.handleSettingsUpdatePath = settings_api.updateSettings;
 // </Settings Requests> -----------------------------------------------
 
 // <Sprints Requests> ------------------------------------------------
+exports.handleSprintPagePath = sprints_api.renderSprintPage;
+exports.handleSprintComponentsPath = sprints_api.getSprintComponents;
 exports.handleSprintsActivatePath = sprints_api.activateSprint;
-exports.handleSprintsDeletePath = sprints_api.deleteSprint;
 exports.handleSprintsClosePath = sprints_api.closeSprint;
 exports.handleSprintsCreatePath = sprints_api.createSprint;
+exports.handleSprintsDeletePath = sprints_api.deleteSprint;
 exports.handleSprintsListPath = sprints_api.getSprintsList;
 // </Sprints Requests> -----------------------------------------------
 
 // <Tags Requests> ------------------------------------------------
+exports.handleTagPagePath = tags_api.renderTagPage;
+exports.handleTagComponentsPath = tags_api.getTagComponents;
 exports.handleTagsCreatePath = tags_api.createTag;
 exports.handleTagsDeletePath = tags_api.deleteTag;
 exports.handleTagsListPath = tags_api.getTagsList;
@@ -249,6 +326,9 @@ exports.handleUpdateProfilePicturePath = users_api.updateProfilePicture;
 exports.handleUsersAddPath = users_api.renderUsersAddPage;
 exports.handleUsersCreatePath = users_api.createUser;
 exports.handleUsersEditPath = users_api.renderUsersEditPage;
+exports.handleUsersExportPath = users_api.renderUsersExportPage;
+exports.handleUsersExportFilePath = users_api.exportUsersFile;
+exports.handleUsersExportFileDownloadPath = users_api.exportUsersFileDownload;
 exports.handleUsersImportFilePath = users_api.importUsersFile;
 exports.handleUsersImportPath = users_api.renderUsersImportPage;
 exports.handleUsersListComponentPath = users_api.adminUsersListComponent;

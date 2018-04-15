@@ -40,6 +40,7 @@ var teamRow = null;
 var isProjectAdmin = null;
 var isClassMode = null;
 var isCollabMode = null;
+var isReadonly = true;
 
 // Element Ids
 const analyticsListId = '#analyticsList';
@@ -150,13 +151,64 @@ var selectedUsers = [];
 var selectedObjects = [];
 var userDragged = null;
 
+const uploadButton = '#uploadButton';
+const uploadModal = '#uploadModal';
+const uploadInput = '#file-input';
+const attachmentsDivId = '#attachmentsDivId';
+const uploadName = '#file-name';
+
+var attachmentsList = [];
+
 $(function () {
     // Navbar highlight
     $(navProjectsId).addClass('active');
     $(navmProjectsId).addClass('active');
 
+    initSummernote(descriptionId);
+    if ($(descriptionId).attr('value') === '1') {
+        $(descriptionId).summernote('disable');
+        $(descriptionId).summernote({
+            disableDragAndDrop: true,
+            shortcuts: false
+        });
+        $('div.note-btn-group.btn-group button').remove();
+        $('.note-toolbar-wrapper').remove();
+        $('.note-editable').css('background-color', '#ffffff')
+    }
+    $('#datepicker').pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
+    });
+
+    $('#timepicker').pickatime({
+        onClose: () => {
+            $(":focus").blur();
+        },
+        default: translate('now'),
+        fromnow: 0,
+        twelvehour: true,
+        donetext: translate('ok'),
+        cleartext: translate('clear'),
+        canceltext: translate('cancel'),
+        container: undefined,
+        autoclose: false,
+        ampmclickable: true
+    });
+
     // Dropdown setup
     $('select').material_select();
+
+    $('.attachmentsClass').each(function (index) {
+        attachmentsList.push($(this).attr('id'));
+    });
 
     // Event listeners
     // Filters
@@ -461,7 +513,7 @@ function changeGroupSelectionMode(deleteGroups) {
 function getGroupAssign() {
     $.ajax({
         type: 'GET',
-        url: '/projectsGroupAssign',
+        url: '/components/projectsGroupAssign',
         data: {
             projectId: projectId
         },
@@ -470,6 +522,7 @@ function getGroupAssign() {
             isProjectAdmin = data.isProjectAdmin;
             isClassMode = data.isClassMode;
             isCollabMode = data.isClassMode;
+            isReadonly = data.isReadOnly;
 
             // Variables
             groupUserRow = $(data.groupUserHTML);
@@ -497,6 +550,23 @@ function getGroupAssign() {
                 $(groupSizeId).prop('disabled', false);
             } else if (groupSelectType === 3) {
                 $(groupSizeId).prop('disabled', false);
+            }
+
+            if (isReadonly) {
+                $(randomizeRemainingId).addClass('hidden');
+                $(deleteAllGroupsId).addClass('hidden');
+                $(newGroupId).addClass('hidden');
+                $(saveGroupConfigurationId).addClass('hidden');
+                $(groupSelect).addClass('disabled');
+                $(groupStatusId).parent().find('input').prop('disabled', true);
+                $(groupStatusId).parent().find('.caret')[0].style.color = 'grey';
+                $(groupSizeId).prop('disabled', true);
+                $(groupPrefixId).prop('disabled', true);
+                $(datepickerId).prop('disabled', true);
+                $(timepickerId).prop('disabled', true);
+            } else {
+                $(datepickerId).addClass('pointer');
+                $(timepickerId).addClass('pointer');
             }
 
             // Group modal setup
@@ -649,7 +719,8 @@ function generalSaveProject() {
                     deadlineDate: deadlineDate,
                     deadlineTime: deadlineTime,
                     canForceBoardType: canForceBoardTypeValue,
-                    canForceDeadline: canForceDeadlineValue
+                    canForceDeadline: canForceDeadlineValue,
+                    attachments: attachmentsList
                 },
                 success: function (data) {
                     successSnackbar(translate('updatedProject'));
@@ -751,7 +822,8 @@ function generalActiveUpdateProject() {
                 data: {
                     projectId: projectId,
                     title: titleText,
-                    description: descriptionText
+                    description: descriptionText,
+                    attachments: attachmentsList
                 },
                 success: function (data) {
                     successSnackbar(translate('updatedProject'));
@@ -782,6 +854,7 @@ function getUsersList() {
             adminUserRow = $(data.usersEntryHTML);
             projectAdminsList = data.projectAdmins;
             projectUsersList = data.projectUsers;
+            isReadonly = data.isReadOnly;
             displayAdminsList();
         },
         error: function (data) {
@@ -977,13 +1050,15 @@ function fillUserRow(user, isUnassigned) {
     bindedRow.find(iconId).html(userIcons[user.type]);
     bindedRow.find(nameId).html(`${user.fname} ${user.lname} - ${user.username}`);
 
-    if (isUnassigned || !isProjectAdmin) {
+    if (isUnassigned || !isProjectAdmin || isReadonly) {
         bindedRow.find(removeId).addClass('hidden');
     } else {
         bindedRow.find(removeId).removeClass('hidden');
     }
 
-    if (!isProjectAdmin) {
+    if (!isProjectAdmin || isReadonly) {
+        bindedRow.removeClass('clickable-item');
+        bindedRow.removeClass('pointer');
         bindedRow.find(modalTriggerId).addClass('hidden');
         bindedRow.attr('draggable', null)
         bindedRow.attr('ondrag', null)
@@ -1093,16 +1168,21 @@ function fillGroupRow(group, isInGroup) {
     } else {
         bindedRow.find(leaveGroupId).addClass('hidden');
 
-        if (!isProjectAdmin) {
+        if (isReadonly) {
             bindedRow.find(deleteGroupId).addClass('hidden');
-            bindedRow.find(joinGroupId).removeClass('hidden');
-        } else {
-            bindedRow.find(deleteGroupId).removeClass('hidden');
             bindedRow.find(joinGroupId).addClass('hidden');
+        } else {
+            if (!isProjectAdmin) {
+                bindedRow.find(deleteGroupId).addClass('hidden');
+                bindedRow.find(joinGroupId).removeClass('hidden');
+            } else {
+                bindedRow.find(deleteGroupId).removeClass('hidden');
+                bindedRow.find(joinGroupId).addClass('hidden');
+            }
         }
     }
 
-    if (!isProjectAdmin) {
+    if (!isProjectAdmin || isReadonly) {
         bindedRow.attr('ondragover', null)
         bindedRow.attr('ondrop', null)
     }
@@ -1526,7 +1606,7 @@ function fillAdminsRow(user) {
     bindedRow.find(typeId).html(`${translate(`user${user.type}`)}`);
     bindedRow.find(emailId).html(user.email);
 
-    if (user.username === meObject.username) {
+    if (user.username === meObject.username || isReadonly) {
         bindedRow.find(transferId).addClass('hidden');
     } else {
         bindedRow.find(transferId).removeClass('hidden');
@@ -1649,6 +1729,10 @@ function displayTeamList() {
     teamsList.forEach(team => {
         if (passTeamFilter(team)) {
             $(teamslistId).append(fillTeamRow(team));
+
+            $(`#${team.teamId}`).on('click', function () {
+                window.location.href = `/project/${team.projectId}/team/${team.teamId}`;
+            });
         }
     });
 
@@ -1662,6 +1746,7 @@ function displayTeamList() {
 function fillTeamRow(team) {
     var bindedRow = teamRow;
 
+    bindedRow.attr('id', team.teamId);
     bindedRow.find(iconId).html('assignment');
     bindedRow.find(nameId).html(team.name);
     bindedRow.find(newTicketsId).html(`${translate('newTickets')}: ${team.newTickets}`);
@@ -1747,3 +1832,79 @@ function displayAdminAnalytics() {
 }
 
 // ------------------------ End analytics section -----------------------
+
+// ------------------------ Begin upload section -----------------------
+
+/**
+ * upload a file
+*/
+function uploadFile() {
+    const files = $(uploadInput).get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        return warningSnackbar(translate('mustImportOneFile'));
+    }
+
+    formData.append('uploadedFile', files[0]);
+
+    $(uploadButton).attr('disabled', true);
+
+    $.ajax({
+        type: 'PUT',
+        url: '/upload/file',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            $(uploadModal).modal('close');
+            successSnackbar(translate('successfulFileUpload'));
+
+            attachmentsList.push(data);
+            $(attachmentsDivId).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div id="${data}" class="chip full-width related-chips text-left ticketStatusColors attachmentsClass">
+                        <p class="truncateTextCommon">${$(uploadName).val()}</p>
+                        <i onclick="removeAttachment('${data}')" class="close material-icons">delete_forever</i>
+                        <i onclick="downloadAttachment('${data}')" class="chipIcon material-icons">file_download</i>
+                    </div>
+                </div>
+            `);
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function () {
+            $(uploadButton).attr('disabled', false);
+        }
+    });
+}
+
+/**
+ * remove attachment
+*/
+function removeAttachment(id) {
+    if (attachmentsList.indexOf(id) !== -1) {
+        attachmentsList.splice(attachmentsList.indexOf(id), 1);
+    }
+}
+
+/**
+ * download attachment
+*/
+function downloadAttachment(id) {
+    window.location = `/download/file?fileId=${id}`;
+}
+
+/**
+ * view image
+*/
+function viewImage(id) {
+    $('#imageViewer').modal('open');
+    $('#imageViewerImage').attr('src', `/picture/${id}`);
+}
+
+// ------------------------ End upload section -----------------------

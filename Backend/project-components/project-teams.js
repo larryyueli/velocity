@@ -136,6 +136,17 @@ const getTeamById = function (projectId, teamId, callback) {
 }
 
 /**
+ * find a team under project by its id if its configured properly
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {function} callback callback function
+ */
+const getConfiguredTeamById = function (projectId, teamId, callback) {
+    getTeam({ $and: [{ projectId: projectId }, { _id: teamId }, { status: common.teamStatus.ACTIVE.value }, { boardType: { $ne: common.boardTypes.UNKNOWN.value } }] }, callback);
+}
+
+/**
  * find the team of a user
  *
  * @param {string} projectId project id
@@ -249,10 +260,13 @@ const updateTeamById = function (teamId, projectId, updateParams, callback) {
 
 // <exports> -----------------------------------
 exports.addTeamToProject = addTeam;
+exports.getConfiguredTeamById = getConfiguredTeamById;
 exports.getProjectTeams = getProjectTeams;
 exports.getProjectsTeams = getProjectsTeams;
 exports.getTeamInProjectById = getTeamById;
 exports.getTeamInProjectByName = getTeamByName;
+exports.getTeamById = getTeamById;
+exports.getTeamByName = getTeamByName;
 exports.getTeamByUserId = getTeamByUserId;
 exports.initialize = initialize;
 exports.setTeamsBoardType = setTeamsBoardType;

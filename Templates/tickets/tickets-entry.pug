@@ -70,6 +70,8 @@ block content
                                         label(for='description') #{__('tickets.description')}
                                     .input-field.padding-10
                                         #description
+                                    .input-field.padding-10
+                                        #attachmentsDivId
                                 if false
                                     .row.subtasksRow
                                         .input-field.padding-10#subtasksSelection
@@ -129,6 +131,23 @@ block content
                             button.waves-effect.waves-light.btn.primaryColour-background-colour#createTicketButton #{__('actions.create')}
                                 i.material-icons.right add
 
+    #uploadModal.modal
+        .modal-content
+            i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+            h3 #{__('uploadModal.title')}
+                .row
+                    .col.s12
+                        .row
+                            .file-field.input-field
+                                .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
+                                    span
+                                        | #{__('uploadModal.file')}
+                                    input(type='file')#file-input
+                                .file-path-wrapper
+                                    input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))#file-name
+                        .row.right
+                            .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFile()')#uploadButton #{__('uploadModal.upload')}
+                                i.material-icons.right cloud_upload
 block scripts
     script(src='/js/tickets/tickets-entry.js')
     script(src='/summernote/summernote.js')

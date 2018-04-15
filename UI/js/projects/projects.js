@@ -76,6 +76,10 @@ function displayList() {
     projectList.forEach(project => {
         if (passFilter(project)) {
             $(projectsListId).append(fillRow(project));
+
+            $(`#${project._id}`).on('click', function() {
+                 window.location.href = `/project/${project._id}`;
+            });
         }
     });
 
@@ -97,6 +101,7 @@ function fillRow(project) {
         color = colours.yellow;
     }
 
+    bindedRow.attr('id', project._id);
     bindedRow.find(iconId)[0].style.backgroundColor = color;
     bindedRow.find(iconId).html('assignment');
     bindedRow.find(editLinkId)[0].href = `/project/${project._id}`;

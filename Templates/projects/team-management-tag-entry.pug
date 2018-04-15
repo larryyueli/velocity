@@ -1,5 +1,7 @@
-li(id=`tag_tag._id`).collection-item.avatar
+li(id=`tag_tag._id`).collection-item.avatar.clickable-item
     i.material-icons.circle bookmark
-    button(onclick=`deleteTag('tag._id', 'tag.name')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+    button(class=`tagButton_tag`, onclick=`deleteTag('tag._id', 'tag.name')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
         i.material-icons.right delete_forever
+    button(onclick=`loadPage('/project/projectId/team/teamId/tag/tag._id')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+        i.material-icons.right receipt
     span.title tag.name

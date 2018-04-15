@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
 const csv2json = require('csvtojson');
+const json2csv = require('json2csv').Parser;
 const path = require('path');
 
 const common_api = require('./common-api.js');
@@ -52,14 +53,14 @@ const login = function (req, res) {
     users.login(username, password, function (err, userObject) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return res.status(403).send(err);
+            return res.status(400).send(err);
         }
 
         if (!settings.isWebsiteActive()
             && userObject.type !== common_backend.userTypes.PROFESSOR.value
             && userObject.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value) {
             logger.error(JSON.stringify(common_backend.getError(3007)));
-            return res.status(403).send(common_backend.getError(3007));
+            return res.status(400).send(common_backend.getError(3007));
         }
 
         let meObject = JSON.parse(JSON.stringify(userObject));
@@ -119,7 +120,7 @@ const renderProfilePage = function (req, res) {
         canEditEmail: settings.isUsersAbleEditEmail(),
         canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
         canEditPassword: settings.isUsersAbleEditPassword(),
-        notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
+        notifications: []
     });
 }
 
@@ -156,7 +157,7 @@ const getProfilePicture = function (req, res) {
             imagePath = defaultImagePath;
         }
 
-        const validImageExtensions = ['jpeg', 'png'];
+        const validImageExtensions = common_backend.fileExtensions.IMAGES;
         if (validImageExtensions.indexOf(fileObj.extension) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2008)));
             imagePath = defaultImagePath;
@@ -247,6 +248,7 @@ const updateProfilePicture = function (req, res) {
     const fileName = common_backend.getUUID();
     const fileExtension = uploadedFile.mimetype.split('/')[1];
     const fileObject = {
+        fileId: fileName,
         fileName: fileName,
         filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
@@ -311,7 +313,7 @@ const createUser = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2025)));
-        return res.status(403).send(common_backend.getError(2025));
+        return res.status(400).send(common_backend.getError(2025));
     }
 
     const newUser = {
@@ -449,7 +451,7 @@ const editUser = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2027)));
-        return res.status(403).send(common_backend.getError(2027));
+        return res.status(400).send(common_backend.getError(2027));
     }
 
     const oldUsername = req.body.oldUsername;
@@ -508,6 +510,28 @@ const renderUsersImportPage = function (req, res) {
 }
 
 /**
+ * root path to get the users export form
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const renderUsersExportPage = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2055)));
+        return res.status(404).render(common_api.pugPages.pageNotFound);
+    }
+
+    return res.status(200).render(common_api.pugPages.usersExport, {
+        user: req.session.user,
+    });
+}
+
+/**
  * path to import users from a file
  *
  * @param {object} req req object
@@ -521,7 +545,7 @@ const importUsersFile = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2029)));
-        return res.status(403).send(common_backend.getError(2029));
+        return res.status(400).send(common_backend.getError(2029));
     }
 
     const validFileExtensions = ['text/csv', 'application/vnd.ms-excel'];
@@ -534,6 +558,7 @@ const importUsersFile = function (req, res) {
     const fileName = common_backend.getUUID();
     const fileExtension = uploadedFile.mimetype.split('/')[1];
     const fileObject = {
+        fileId: fileName,
         fileName: fileName,
         filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
@@ -570,39 +595,59 @@ const importUsersFile = function (req, res) {
             let total = 0;
             let processedDirs = 0;
 
-            for (let i = 0; i < importedList.length; i++) {
-                let inputUser = importedList[i];
-                let userToAdd = {
-                    fname: inputUser.fname,
-                    lname: inputUser.lname,
-                    username: inputUser.username,
-                    email: inputUser.email,
-                    password: inputUser.password,
-                    type: settings.getModeType() === common_backend.modeTypes.CLASS ?
-                        common_backend.userTypes.STUDENT.value : common_backend.userTypes.COLLABORATOR.value,
-                    status: common_backend.userStatus.ACTIVE.value
-                };
-                users.addUser(userToAdd, function (err, userObj) {
-                    total++;
+            if (importedList.length === 0) {
+                return res.status(200).render(common_api.pugPages.usersImportComplete, {
+                    added: added,
+                    failed: failed,
+                    exist: exist,
+                    total: total
+                });
+            } else {
+                for (let i = 0; i < importedList.length; i++) {
+                    let inputUser = importedList[i];
+                    let userToAdd = {
+                        fname: inputUser.fname,
+                        lname: inputUser.lname,
+                        username: inputUser.username,
+                        email: inputUser.email,
+                        password: inputUser.password,
+                        type: settings.getModeType() === common_backend.modeTypes.CLASS ?
+                            common_backend.userTypes.STUDENT.value : common_backend.userTypes.COLLABORATOR.value,
+                        status: common_backend.userStatus.ACTIVE.value
+                    };
+                    users.addUser(userToAdd, function (err, userObj) {
+                        total++;
 
-                    if (err) {
-                        if (err.code === 2001) {
-                            exist++;
-                        } else {
-                            failed++;
-                        }
-
-                        logger.error(JSON.stringify(err));
-                    } else {
-                        added++;
-                    }
-
-                    if (userObj) {
-                        cfs.mkdir(common_backend.cfsTree.USERS, userObj._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
+                        if (err) {
+                            if (err.code === 2001) {
+                                exist++;
+                            } else {
+                                failed++;
                             }
 
+                            logger.error(JSON.stringify(err));
+                        } else {
+                            added++;
+                        }
+
+                        if (userObj) {
+                            cfs.mkdir(common_backend.cfsTree.USERS, userObj._id, common_backend.cfsPermission.OWNER, function (err, userObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                }
+
+                                processedDirs++;
+
+                                if (total === importedList.length && processedDirs === importedList.length) {
+                                    return res.status(200).render(common_api.pugPages.usersImportComplete, {
+                                        added: added,
+                                        failed: failed,
+                                        exist: exist,
+                                        total: total
+                                    });
+                                }
+                            });
+                        } else {
                             processedDirs++;
 
                             if (total === importedList.length && processedDirs === importedList.length) {
@@ -613,20 +658,103 @@ const importUsersFile = function (req, res) {
                                     total: total
                                 });
                             }
-                        });
-                    } else {
-                        processedDirs++;
-
-                        if (total === importedList.length && processedDirs === importedList.length) {
-                            return res.status(200).render(common_api.pugPages.usersImportComplete, {
-                                added: added,
-                                failed: failed,
-                                exist: exist,
-                                total: total
-                            });
                         }
-                    }
-                });
+                    });
+                }
+            }
+        });
+    });
+}
+
+/**
+ * path to export users from a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const exportUsersFile = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2055)));
+        return res.status(400).send(common_backend.getError(2055));
+    }
+
+    const fields = [{
+        label: 'Username',
+        value: 'username'
+    }, {
+        label: 'First Name',
+        value: 'fname'
+    }, {
+        label: 'Last Name',
+        value: 'lname'
+    }, {
+        label: 'Email',
+        value: 'email'
+    }];
+    const usersList = users.getFullUsersList();
+    const json2csvParser = new json2csv({ fields });
+    const csvData = json2csvParser.parse(usersList);
+    const fileName = common_backend.getUUID();
+    const fileObject = {
+        fileId: fileName,
+        fileName: fileName,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: 'csv',
+        fileData: csvData,
+        filePermissions: common_backend.cfsPermission.OWNER,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, result) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).render(common_api.pugPages.usersExportComplete, {
+            fileName: fileName
+        });
+    });
+}
+
+/**
+ * path to download the export users file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const exportUsersFileDownload = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
+        && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
+        logger.error(JSON.stringify(common_backend.getError(2055)));
+        return res.status(400).send(common_backend.getError(2055));
+    }
+
+    const fileId = req.query.fileId;
+    cfs.fileExists(fileId, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (fileObj.permission !== common_backend.cfsPermission.OWNER
+            || fileObj.creator !== req.session.user._id) {
+            logger.error(JSON.stringify(common_backend.getError(2056)));
+            return res.status(400).send(common_backend.getError(2056));
+        }
+
+        return res.download(fileObj.path, 'Exported Users List.csv', function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
             }
         });
     });
@@ -670,7 +798,7 @@ const adminUsersListComponent = function (req, res) {
     if (req.session.user.type !== common_backend.userTypes.COLLABORATOR_ADMIN.value
         && req.session.user.type !== common_backend.userTypes.PROFESSOR.value) {
         logger.error(JSON.stringify(common_backend.getError(2023)));
-        return res.status(403).send(common_backend.getError(2023));
+        return res.status(400).send(common_backend.getError(2023));
     }
 
     const fullUsersList = users.getFullUsersList();
@@ -685,8 +813,10 @@ const adminUsersListComponent = function (req, res) {
 exports.adminUsersListComponent = adminUsersListComponent;
 exports.createUser = createUser;
 exports.editUser = editUser;
-exports.importUsersFile = importUsersFile;
+exports.exportUsersFile = exportUsersFile;
+exports.exportUsersFileDownload = exportUsersFileDownload;
 exports.getProfilePicture = getProfilePicture;
+exports.importUsersFile = importUsersFile;
 exports.login = login;
 exports.logout = logout;
 exports.me = me;
@@ -694,6 +824,7 @@ exports.renderAdminsUsersPage = renderAdminsUsersPage;
 exports.renderProfilePage = renderProfilePage;
 exports.renderUsersAddPage = renderUsersAddPage;
 exports.renderUsersEditPage = renderUsersEditPage;
+exports.renderUsersExportPage = renderUsersExportPage;
 exports.renderUsersImportPage = renderUsersImportPage;
 exports.requestAccess = requestAccess;
 exports.updateProfile = updateProfile;
