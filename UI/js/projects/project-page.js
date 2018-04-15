@@ -41,6 +41,8 @@ var isClassMode = null;
 var isCollabMode = null;
 
 // Element Ids
+const analyticsListId = '#analyticsList';
+const analyticsLoadId = '#analyticsLoad';
 const analyticsTableBodyId = '#analyticsTableBody';
 const assignedList = '#assignedList';
 const boardSelection = '#boardSelection';
@@ -331,6 +333,7 @@ $(function () {
     startLoad(teamsloadId, teamslistId);
     getTeamsList();
 
+    startLoad(analyticsLoadId, analyticsListId);
     getAnalytics();
 });
 
@@ -838,54 +841,59 @@ function getTeamsList() {
 }
 
 function getAnalytics() {
-  $.ajax({
-      type: 'GET',
-      url: '/project/admin/analytics',
-      data: {
-          projectId: projectId
-      },
-      success: function (data) {
-          const teams = data['teams'];
-          let accumString = ''
+    $.ajax({
+        type: 'GET',
+        url: '/project/admin/analytics',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            const teams = data['teams'];
+            let accumString = ''
 
-          teams.forEach(team => {
-              accumString += '<tr>';
-              accumString += `<td>${team['teamName']}</td>`;
+            teams.forEach(team => {
+                accumString += '<tr>';
+                accumString += `<td>${team['teamName']}</td>`;
 
-              for (let i = 0; i < 6; i++) {
-                  accumString += `<td>${team['states'][i]} (${team['points'][i]} ${translate('points')})</td>`;
-              }
+                for (let i = 0; i < 6; i++) {
+                    accumString += `<td>${team['states'][i]} (${team['points'][i]} ${translate('points')})</td>`;
+                }
 
-              accumString += `<td><span class="${team['teamId']}-done"></span></td>`;
-              accumString += '</tr>';
-          });
+                accumString += `<td><span class="${team['teamId']}-done"></span></td>`;
+                accumString += '</tr>';
+            });
 
-          $(analyticsTableBodyId).html(accumString);
+            $(analyticsTableBodyId).html(accumString);
 
-          teams.forEach(team => {
-              $(`.${team['teamId']}-done`).sparkline(team['history'], {
-                  lineColor: 'green',
-                  fillColor: 'lightGreen',
-                  highlightLineColor:'#c8fd00',
-                  minSpotColor: false,
-                  maxSpotColor: false,
-                  spotRadius: 1,
-                  spotColor: false,
-                  type: 'line',
-                  height: '30',
-                  width:'150'
-              });
-          });
-      },
-      error: function (data) {
-          handle401And404(data);
+            teams.forEach(team => {
+                if (team['history'].length > 1) {
+                    $(`.${team['teamId']}-done`).sparkline(team['history'], {
+                        lineColor: 'green',
+                        fillColor: 'lightGreen',
+                        highlightLineColor:'#c8fd00',
+                        minSpotColor: false,
+                        maxSpotColor: false,
+                        spotRadius: 1,
+                        spotColor: false,
+                        type: 'line',
+                        height: '30',
+                        width:'150'
+                    });
+                } else {
+                    $(`.${team['teamId']}-done`).html(translate('na'));
+                }
+            });
 
-          $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
-          $(teamsSearchId).addClass('hidden');
+            endLoad(analyticsLoadId, analyticsListId);
+        },
+        error: function (data) {
+            handle401And404(data);
 
-          endLoad(teamsloadId, teamslistId);
-      }
-  });
+            $(analyticsListId).html(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+
+            endLoad(analyticsLoadId, analyticsListId);
+        }
+    });
 }
 
 // ------------------------ End Requests section -----------------------
