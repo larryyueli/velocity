@@ -1,82 +1,91 @@
+#analyticsLoader
 #scrum-analytics
     .hidden#yourData
         .row
-            h3 YOUR DATA
-        .row
-            .col.s12.m4.l2
-                .card.gradient-todo.min-height-100
+            h4 #{__('analytics.yourData')}
+        #yourLoader
+        #yourInfo
+            .row
+                .col.s12.m4.l2
+                    .card.gradient-todo.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.new')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#todoUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#todoUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-in-progress.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_development')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inProgressUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inProgressUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-code-review.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.code_review')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#codeReviewUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#codeReviewUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-ready-for-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.ready_for_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#readyForTestUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#ReadyForTestUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-in-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inTestUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inTestUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-done.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.done')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#doneUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#doneUserPoints
+            .row
+                .col.s12.m4
                     .row
-                        .padding-10
-                            .col.s7
-                                i.material-icons.background-round.mt-5 person
-                                p #{__('tickets.states.new')}
-                            .col.s5.right-align
-                                h5.margin-bottom-0#todoUserTickets
-                                p #{__('analytics.tickets')}
-                            p.float-right#todoUserPoints
-            .col.s12.m4.l2
-                .card.gradient-in-progress.min-height-100
+                        h5#userTicketDivisionTitle #{__('analytics.stateDivision')}
                     .row
-                        .padding-10
-                            .col.s7
-                                i.material-icons.background-round.mt-5 person
-                                p #{__('tickets.states.in_development')}
-                            .col.s5.right-align
-                                h5.margin-bottom-0#inProgressUserTickets
-                                p #{__('analytics.tickets')}
-                            p.float-right#inProgressUserPoints
-            .col.s12.m4.l2
-                .card.gradient-code-review.min-height-100
+                        canvas#userTicketDivision
+                .col.s12.m8
                     .row
-                        .padding-10
-                            .col.s7
-                                i.material-icons.background-round.mt-5 person
-                                p #{__('tickets.states.code_review')}
-                            .col.s5.right-align
-                                h5.margin-bottom-0#codeReviewUserTickets
-                                p #{__('analytics.tickets')}
-                            p.float-right#codeReviewUserPoints
-            .col.s12.m4.l2
-                .card.gradient-ready-for-test.min-height-100
+                        h5#userTicketDivisionChartTitle #{__('analytics.statesOverTime')}
                     .row
-                        .padding-10
-                            .col.s7
-                                i.material-icons.background-round.mt-5 person
-                                p #{__('tickets.states.ready_for_test')}
-                            .col.s5.right-align
-                                h5.margin-bottom-0#readyForTestUserTickets
-                                p #{__('analytics.tickets')}
-                            p.float-right#ReadyForTestUserPoints
-            .col.s12.m4.l2
-                .card.gradient-in-test.min-height-100
-                    .row
-                        .padding-10
-                            .col.s7
-                                i.material-icons.background-round.mt-5 person
-                                p #{__('tickets.states.in_test')}
-                            .col.s5.right-align
-                                h5.margin-bottom-0#inTestUserTickets
-                                p #{__('analytics.tickets')}
-                            p.float-right#inTestUserPoints
-            .col.s12.m4.l2
-                .card.gradient-done.min-height-100
-                    .row
-                        .padding-10
-                            .col.s7
-                                i.material-icons.background-round.mt-5 person
-                                p #{__('tickets.states.done')}
-                            .col.s5.right-align
-                                h5.margin-bottom-0#doneUserTickets
-                                p #{__('analytics.tickets')}
-                            p.float-right#doneUserPoints
-        .row
-            .col.s12.m4
-                canvas#userTicketDivision
-            .col.s12.m8
-                canvas#userTicketDivisionChart
+                        canvas#userTicketDivisionChart
     .hidden#teamData
         .row
-            h3 TEAM DATA
+            h4 #{__('analytics.teamData')}
         .row
             .col.s12.m6
                 .input-field.padding-10
@@ -89,6 +98,7 @@
         #teamContentMessage
             .center
                 h5 #{__('analytics.selectSprint')}
+        #teamLoader
         #teamContent
             .row
                 .col.s12.m4.l2
@@ -159,16 +169,24 @@
                                 p.float-right#doneTeamPoints
             .row
                 .col.s12.m4
-                    canvas#teamTicketDivision
+                    .row
+                        h5#teamTicketDivisionTitle #{__('analytics.teamStateDivision')}
+                    .row
+                        canvas#teamTicketDivision
                 .col.s12.m8
-                    canvas#teamTicketDivisionChart
+                    .row
+                        h5#teamTicketDivisionChartTitle #{__('analytics.teamStatesOverTime')}
+                    .row
+                        canvas#teamTicketDivisionChart
             .row
                 .col.s12
-                    canvas#teamBurndownChart
+                    .row
+                        h5#teamBurndownChartTitle #{__('analytics.teamBurndown')}
+                    .row
+                        canvas#teamBurndownChart
     .hidden#releaseData
         .row
-            h3 RELEASE DATA
-
+            h4 #{__('analytics.releaseData')}
         .row
             .col.s12.m6
                 .input-field.padding-10
@@ -181,6 +199,7 @@
         #releaseContentMessage
             .center
                 h5 #{__('analytics.selectRelease')}
+        #releaseLoader
         #releaseContent
             .row
                 .col.s12.m4.l2
@@ -251,18 +270,30 @@
                                 p.float-right#doneReleasePoints
             .row
                 .col.s12.m4
-                    canvas#releaseTicketDivision
+                    .row
+                        h5 #{__('analytics.releaseStateDivision')}
+                    .row
+                        canvas#releaseTicketDivision
                 .col.s12.m8
-                    canvas#releaseTicketDivisionChart
+                    .row
+                        h5 #{__('analytics.releaseStatesOverTime')}
+                    .row
+                        canvas#releaseTicketDivisionChart
             .row
                 .col.s12
-                    canvas#releaseCumulativeChart
+                    .row
+                        h5 #{__('analytics.releaseCumulativeChart')}
+                    .row
+                        canvas#releaseCumulativeChart
     .hidden#kanbanCumulative
         .row
-            h3 KANBAN DATA
-        .row
             .col.s12
-                canvas#kanbanCumulativeChart
+                .row
+                    h4 #{__('analytics.kanbanCumulativeChart')}
+                #kanbanLoader
+                #kanbanContent
+                    .row
+                        canvas#kanbanCumulativeChart
 
 .gradient-todo-back
 

@@ -22,7 +22,19 @@
 		"selectRelease": "You must select a release to view its analytics",
 		"teamName": "Team Name",
 		"tickets": "Tickets",
-		"user": "User"
+		"user": "User",
+		"yourData": "Your Data",
+		"stateDivision": "State Division",
+		"statesOverTime": "States Over Time",
+		"teamData": "Team Data",
+		"teamStateDivision": "State Division",
+		"teamStatesOverTime": "States Over Time",
+		"teamBurndown": "Burndown Chart",
+		"releaseData": "Release Data",
+		"releaseStateDivision": "State Division",
+		"releaseStatesOverTime": "States Over Time",
+		"releaseCumulativeChart": "Cumulative Chart",
+		"kanbanCumulativeChart": "Cumulative Chart"
 	},
 	"app": {
 		"name": "Velocity"
