@@ -41,6 +41,7 @@ var isClassMode = null;
 var isCollabMode = null;
 
 // Element Ids
+const analyticsTableBodyId = '#analyticsTableBody';
 const assignedList = '#assignedList';
 const boardSelection = '#boardSelection';
 const boardSelectionRow = $('#boardSelectionRow');
@@ -329,6 +330,8 @@ $(function () {
 
     startLoad(teamsloadId, teamslistId);
     getTeamsList();
+
+    getAnalytics();
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -832,6 +835,57 @@ function getTeamsList() {
             endLoad(teamsloadId, teamslistId);
         }
     });
+}
+
+function getAnalytics() {
+  $.ajax({
+      type: 'GET',
+      url: '/project/admin/analytics',
+      data: {
+          projectId: projectId
+      },
+      success: function (data) {
+          const teams = data['teams'];
+          let accumString = ''
+
+          teams.forEach(team => {
+              accumString += '<tr>';
+              accumString += `<td>${team['teamName']}</td>`;
+
+              for (let i = 0; i < 6; i++) {
+                  accumString += `<td>${team['states'][i]} (${team['points'][i]} ${translate('points')})</td>`;
+              }
+
+              accumString += `<td><span class="${team['teamId']}-done"></span></td>`;
+              accumString += '</tr>';
+          });
+
+          $(analyticsTableBodyId).html(accumString);
+
+          teams.forEach(team => {
+              $(`.${team['teamId']}-done`).sparkline(team['history'], {
+                  lineColor: 'green',
+                  fillColor: 'lightGreen',
+                  highlightLineColor:'#c8fd00',
+                  minSpotColor: false,
+                  maxSpotColor: false,
+                  spotRadius: 1,
+                  spotColor: false,
+                  type: 'line',
+                  height: '30',
+                  width:'150'
+              });
+          });
+      },
+      error: function (data) {
+          handle401And404(data);
+
+          $(teamslistId).append(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+          $(teamsSearchId).addClass('hidden');
+
+          endLoad(teamsloadId, teamslistId);
+      }
+  });
 }
 
 // ------------------------ End Requests section -----------------------

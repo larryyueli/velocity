@@ -136,6 +136,7 @@ app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
 app.use('/caretJs', express.static(`${__dirname}/node_modules/jquery.caret/dist`));
 app.use('/chart.js', express.static(`${__dirname}/node_modules/chart.js/dist`));
 app.use('/atJs', express.static(`${__dirname}/node_modules/at.js/dist`));
+app.use('/sparkline', express.static(`${__dirname}/node_modules/jquery-sparkline`));
 app.use(
     sassMiddleware({
         src: `${__dirname}/sass`,
@@ -220,14 +221,14 @@ httpServer.listen(config.httpPort, function () {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
                                 }
-                                
+
                                 logger.info('Analytics instance has been built successfully.');
                                 api.initialize(pug, notificationsWS, function (err, result) {
                                     if (err) {
                                         logger.error(JSON.stringify(err));
                                         process.exit(1);
                                     }
-    
+
                                     logger.info('API instance has been built successfully.');
                                     logger.info(`Debug mode status: ${localDebugMode}`);
                                     config.debugMode = localDebugMode;

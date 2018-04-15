@@ -17,10 +17,12 @@
 		"update": "Update"
 	},
 	"analytics": {
+		"doneProgress": "Done Progress",
+		"selectSprint": "You must select a sprint to view its analytics",
+		"selectRelease": "You must select a release to view its analytics",
+		"teamName": "Team Name",
 		"tickets": "Tickets",
-		"user": "User",
-		"selectSprint": "analytics.selectSprint",
-		"selectRelease": "analytics.selectRelease"
+		"user": "User"
 	},
 	"app": {
 		"name": "Velocity"
@@ -176,6 +178,9 @@
 				"newRelease": "New Release",
 				"newTag": "New Tag",
 				"newSprint": "New Sprint"
+			},
+			"analytics": {
+				"title": "Analytics"
 			}
 		},
 		"title": "Velocity - Project"
@@ -256,7 +261,7 @@
 		"label": "Ticket",
 		"id": "Ticket Id",
 		"displayId": "Display Id",
-		"releases": "tickets.releases"
+		"releases": "Releases"
 	},
 	"userInformation": {
 		"confirmPassword": "Confirm Password",

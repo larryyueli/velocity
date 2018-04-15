@@ -228,7 +228,7 @@ const translations = Object.freeze({
     notInGroup: 'You are currently not in a group',
     passwordsDontMatch: 'Passwords do not match',
     points: 'Points',
-    progressTickets: 'In Progress Tickets',
+    progressTickets: 'In Development Tickets',
     randomize: 'Randomize',
     randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
     selectGroup: 'Select Group',
@@ -268,7 +268,7 @@ const translations = Object.freeze({
     endDate: 'End Date: ',
 
     todoTitle: 'TODO',
-    inProgressTitle: 'IN PROGRESS',
+    inProgressTitle: 'IN DEVELOPMENT',
     codeReviewTitle: 'CODE REVIEW',
     readyForTestTitle: 'READY FOR TEST',
     inTestTitle: 'IN TEST',
