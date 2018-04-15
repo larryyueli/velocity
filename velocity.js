@@ -37,6 +37,7 @@ const ws = require('ws');
 const api = require('./API/api-handler.js');
 const common_api = require('./API/api-components/common-api.js');
 
+const analytics = require('./Backend/analytics.js');
 const cfs = require('./Backend/customFileSystem.js');
 const common_backend = require('./Backend/common.js');
 const config = require('./Backend/config.js');
@@ -133,7 +134,9 @@ app.use('/bootstrap', express.static(`${__dirname}/node_modules/bootstrap/dist`)
 app.use('/materializecss', express.static(`${__dirname}/node_modules/materialize-css/dist`));
 app.use('/animate', express.static(`${__dirname}/node_modules/animate.css/`));
 app.use('/caretJs', express.static(`${__dirname}/node_modules/jquery.caret/dist`));
+app.use('/chart.js', express.static(`${__dirname}/node_modules/chart.js/dist`));
 app.use('/atJs', express.static(`${__dirname}/node_modules/at.js/dist`));
+app.use('/sparkline', express.static(`${__dirname}/node_modules/jquery-sparkline`));
 app.use(
     sassMiddleware({
         src: `${__dirname}/sass`,
@@ -213,15 +216,23 @@ httpServer.listen(config.httpPort, function () {
                             }
 
                             logger.info('Project instance has been built successfully.');
-                            api.initialize(pug, notificationsWS, function (err, result) {
+                            analytics.initialize(localDebugMode, function (err, result) {
                                 if (err) {
                                     logger.error(JSON.stringify(err));
                                     process.exit(1);
                                 }
 
-                                logger.info('API instance has been built successfully.');
-                                logger.info(`Debug mode status: ${localDebugMode}`);
-                                config.debugMode = localDebugMode;
+                                logger.info('Analytics instance has been built successfully.');
+                                api.initialize(pug, notificationsWS, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        process.exit(1);
+                                    }
+
+                                    logger.info('API instance has been built successfully.');
+                                    logger.info(`Debug mode status: ${localDebugMode}`);
+                                    config.debugMode = localDebugMode;
+                                });
                             });
                         });
                     });
@@ -267,6 +278,8 @@ app.get('/project/:projectId/team/:teamId/sprint/:sprintId', api.handleSprintPag
 app.get('/project/:projectId/team/:teamId/tag/:tagId', api.handleTagPagePath);
 app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTicketsAddPath);
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
+app.get('/project/admin/analytics', api.handleAdminAnalytics);
+app.get('/project/team/analytics', api.handleProjectTeamAnalytics);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
 app.get('/project/team/releases/list', api.handleReleasesListPath);
 app.get('/project/team/sprints/list', api.handleSprintsListPath);

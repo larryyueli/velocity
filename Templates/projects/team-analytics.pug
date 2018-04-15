@@ -1,0 +1,308 @@
+#analyticsLoader
+#scrum-analytics
+    .hidden#yourData
+        .row
+            h4 #{__('analytics.yourData')}
+        #yourLoader
+        #yourInfo
+            .row
+                .col.s12.m4.l2
+                    .card.gradient-todo.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.new')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#todoUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#todoUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-in-progress.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_development')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inProgressUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inProgressUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-code-review.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.code_review')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#codeReviewUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#codeReviewUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-ready-for-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.ready_for_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#readyForTestUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#ReadyForTestUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-in-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inTestUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inTestUserPoints
+                .col.s12.m4.l2
+                    .card.gradient-done.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.done')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#doneUserTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#doneUserPoints
+            .row
+                .col.s12.m4
+                    .row
+                        h5#userTicketDivisionTitle #{__('analytics.stateDivision')}
+                    .row
+                        canvas#userTicketDivision
+                .col.s12.m8
+                    .row
+                        h5#userTicketDivisionChartTitle #{__('analytics.statesOverTime')}
+                    .row
+                        canvas#userTicketDivisionChart
+    .hidden#teamData
+        .row
+            h4 #{__('analytics.teamData')}
+        .row
+            .col.s12.m6
+                .input-field.padding-10
+                    input.autocomplete(type='text', name='sprintFilterUserAutocomplete')#sprintFilterUserAutocomplete
+                    label(for='sprintFilterUserAutocomplete') #{__('analytics.user')}
+            .col.s12.m6
+                .input-field.padding-10#sprintFilterWrapper
+                    input.autocomplete(type='text')#sprintsAutocomplete
+                    label(for='sprintsAutocomplete') #{__('tickets.sprints')}
+        #teamContentMessage
+            .center
+                h5 #{__('analytics.selectSprint')}
+        #teamLoader
+        #teamContent
+            .row
+                .col.s12.m4.l2
+                    .card.gradient-todo.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.new')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#todoTeamTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#todoTeamPoints
+                .col.s12.m4.l2
+                    .card.gradient-in-progress.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_development')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inProgressTeamTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inProgressTeamPoints
+                .col.s12.m4.l2
+                    .card.gradient-code-review.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.code_review')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#codeReviewTeamTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#codeReviewTeamPoints
+                .col.s12.m4.l2
+                    .card.gradient-ready-for-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.ready_for_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#readyForTestTeamTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#ReadyForTestTeamPoints
+                .col.s12.m4.l2
+                    .card.gradient-in-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inTestTeamTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inTestTeamPoints
+                .col.s12.m4.l2
+                    .card.gradient-done.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.done')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#doneTeamTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#doneTeamPoints
+            .row
+                .col.s12.m4
+                    .row
+                        h5#teamTicketDivisionTitle #{__('analytics.teamStateDivision')}
+                    .row
+                        canvas#teamTicketDivision
+                .col.s12.m8
+                    .row
+                        h5#teamTicketDivisionChartTitle #{__('analytics.teamStatesOverTime')}
+                    .row
+                        canvas#teamTicketDivisionChart
+            .row
+                .col.s12
+                    .row
+                        h5#teamBurndownChartTitle #{__('analytics.teamBurndown')}
+                    .row
+                        canvas#teamBurndownChart
+    .hidden#releaseData
+        .row
+            h4 #{__('analytics.releaseData')}
+        .row
+            .col.s12.m6
+                .input-field.padding-10
+                    input.autocomplete(type='text', name='releaseFilterUserAutocomplete')#releaseFilterUserAutocomplete
+                    label(for='releaseFilterUserAutocomplete') #{__('analytics.user')}
+            .col.s12.m6
+                .input-field.padding-10
+                    input.autocomplete(type='text')#releasesAutocomplete
+                    label(for='releasesAutocomplete') #{__('tickets.releases')}
+        #releaseContentMessage
+            .center
+                h5 #{__('analytics.selectRelease')}
+        #releaseLoader
+        #releaseContent
+            .row
+                .col.s12.m4.l2
+                    .card.gradient-todo.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.new')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#todoReleaseTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#todoReleasePoints
+                .col.s12.m4.l2
+                    .card.gradient-in-progress.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_development')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inProgressReleaseTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inProgressReleasePoints
+                .col.s12.m4.l2
+                    .card.gradient-code-review.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.code_review')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#codeReviewReleaseTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#codeReviewReleasePoints
+                .col.s12.m4.l2
+                    .card.gradient-ready-for-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.ready_for_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#readyForTestReleaseTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#ReadyForTestReleasePoints
+                .col.s12.m4.l2
+                    .card.gradient-in-test.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.in_test')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#inTestReleaseTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#inTestReleasePoints
+                .col.s12.m4.l2
+                    .card.gradient-done.min-height-100
+                        .row
+                            .padding-10
+                                .col.s7
+                                    i.material-icons.background-round.mt-5 person
+                                    p #{__('tickets.states.done')}
+                                .col.s5.right-align
+                                    h5.margin-bottom-0#doneReleaseTickets
+                                    p #{__('analytics.tickets')}
+                                p.float-right#doneReleasePoints
+            .row
+                .col.s12.m4
+                    .row
+                        h5 #{__('analytics.releaseStateDivision')}
+                    .row
+                        canvas#releaseTicketDivision
+                .col.s12.m8
+                    .row
+                        h5 #{__('analytics.releaseStatesOverTime')}
+                    .row
+                        canvas#releaseTicketDivisionChart
+            .row
+                .col.s12
+                    .row
+                        h5 #{__('analytics.releaseCumulativeChart')}
+                    .row
+                        canvas#releaseCumulativeChart
+    .hidden#kanbanCumulative
+        .row
+            .col.s12
+                .row
+                    h4 #{__('analytics.kanbanCumulativeChart')}
+                #kanbanLoader
+                #kanbanContent
+                    .row
+                        canvas#kanbanCumulativeChart
+
+.gradient-todo-back
+
+.gradient-in-progress-back
+
+.gradient-code-review-back
+
+.gradient-ready-for-test-back
+
+.gradient-in-test-back
+
+.gradient-done-back

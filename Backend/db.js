@@ -22,6 +22,10 @@ const mongoClient = require('mongodb').MongoClient;
 
 const common = require('./common.js');
 const config = require('./config.js');
+const db_analytics_admin = require('./dbs/db-analytics-admin.js');
+const db_analytics_kanban = require('./dbs/db-analytics-kanban.js');
+const db_analytics_releases = require('./dbs/db-analytics-releases.js');
+const db_analytics_sprints = require('./dbs/db-analytics-sprints.js');
 const db_comments = require('./dbs/db-comments.js');
 const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
@@ -45,7 +49,10 @@ const initialize = function (callback) {
         if (err) {
             return callback(common.getError(1001), null);
         }
-
+        db_analytics_admin.initialize(client.db(config.db_name).collection('analytics_admin'));
+        db_analytics_kanban.initialize(client.db(config.db_name).collection('analytics_kanban'));
+        db_analytics_releases.initialize(client.db(config.db_name).collection('analytics_releases'));
+        db_analytics_sprints.initialize(client.db(config.db_name).collection('analytics_sprints'));
         db_comments.initialize(client.db(config.db_name).collection('comments'));
         db_notifications.initialize(client.db(config.db_name).collection('notifications'));
         db_projects.initialize(client.db(config.db_name).collection('projects'));
@@ -63,12 +70,22 @@ const initialize = function (callback) {
 }
 exports.initialize = initialize;
 
+// <Admin Analytics Collection> ----------------------------------------------
+exports.addAdminAnalytics = db_analytics_admin.addAdminAnalytics;
+exports.getLimitedAdminAnalyticsListSorted = db_analytics_admin.getLimitedAdminAnalyticsListSorted;
+// </Admin Analytics Collection> ----------------------------------------------
+
 // <Comments Collection> ----------------------------------------------
 exports.addComment = db_comments.addComment;
 exports.getLimitedCommentsListSorted = db_comments.getLimitedCommentsListSorted;
 exports.getComment = db_comments.getComment;
 exports.updateComment = db_comments.updateComment;
 // </Comments Collection> ---------------------------------------------
+
+// <Kanban Analytics Collection> ----------------------------------------------
+exports.addKanbanAnalytics = db_analytics_kanban.addKanbanAnalytics;
+exports.getLimitedKanbanAnalyticsListSorted = db_analytics_kanban.getLimitedKanbanAnalyticsListSorted;
+// </Kanban Analytics Collection> ----------------------------------------------
 
 // <Notifications Collection> ----------------------------------------------
 exports.addNotification = db_notifications.addNotification;
@@ -93,6 +110,12 @@ exports.updateRelease = db_releases.updateRelease;
 exports.updateReleases = db_releases.updateReleases;
 // </Releases Collection> ---------------------------------------------
 
+// <Releases Analytics Collection> ----------------------------------------------
+exports.addReleaseAnalytics = db_analytics_releases.addReleaseAnalytics;
+exports.getLimitedReleaseAnalyticsListSorted = db_analytics_releases.getLimitedReleaseAnalyticsListSorted;
+exports.updateReleaseAnalytics = db_analytics_releases.updateReleaseAnalytics;
+// <Releases Analytics Collection> ----------------------------------------------
+
 // <Settings Collection> ----------------------------------------------
 exports.addAllSettings = db_settings.addAllSettings;
 exports.getAllSettings = db_settings.getAllSettings;
@@ -107,6 +130,12 @@ exports.getSprint = db_sprints.getSprint;
 exports.updateSprint = db_sprints.updateSprint;
 exports.updateSprints = db_sprints.updateSprints;
 // </Sprints Collection> ---------------------------------------------
+
+// <Sprints Analytics Collection> ----------------------------------------------
+exports.addSprintAnalytics = db_analytics_sprints.addSprintAnalytics;
+exports.getLimitedSprintAnalyticsListSorted = db_analytics_sprints.getLimitedSprintAnalyticsListSorted;
+exports.updateSprintAnalytics = db_analytics_sprints.updateSprintAnalytics;
+// <Sprints Analytics Collection> ----------------------------------------------
 
 // <Tags Collection> ----------------------------------------------
 exports.addTag = db_tags.addTag;

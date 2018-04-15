@@ -18,6 +18,26 @@
 		"export": "Export",
 		"download": "Download"
 	},
+	"analytics": {
+		"doneProgress": "Done Progress",
+		"selectSprint": "You must select a sprint to view its analytics",
+		"selectRelease": "You must select a release to view its analytics",
+		"teamName": "Team Name",
+		"tickets": "Tickets",
+		"user": "User",
+		"yourData": "Your Data",
+		"stateDivision": "State Division",
+		"statesOverTime": "States Over Time",
+		"teamData": "Team Data",
+		"teamStateDivision": "State Division",
+		"teamStatesOverTime": "States Over Time",
+		"teamBurndown": "Burndown Chart",
+		"releaseData": "Release Data",
+		"releaseStateDivision": "State Division",
+		"releaseStatesOverTime": "States Over Time",
+		"releaseCumulativeChart": "Cumulative Chart",
+		"kanbanCumulativeChart": "Cumulative Chart"
+	},
 	"app": {
 		"name": "Velocity"
 	},
@@ -209,6 +229,9 @@
 				"newRelease": "New Release",
 				"newTag": "New Tag",
 				"newSprint": "New Sprint"
+			},
+			"analytics": {
+				"title": "Analytics"
 			}
 		},
 		"title": "Velocity - Project"
@@ -288,7 +311,8 @@
 		},
 		"label": "Ticket",
 		"id": "Ticket Id",
-		"displayId": "Display Id"
+		"displayId": "Display Id",
+		"releases": "Releases"
 	},
 	"uploadModal": {
 		"file": "File",

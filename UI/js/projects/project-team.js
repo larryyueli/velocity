@@ -43,11 +43,15 @@ const teamId = splithref[6];
 const assigneeAutocompleteBoardId = '#assigneeAutocompleteBoard';
 const assigneeAutocompleteIssueId = '#assigneeAutocompleteIssue';
 const assigneeAutocompleteId = '#assigneeAutocomplete';
+const sprintFilterUserAutocompleteId = '#sprintFilterUserAutocomplete';
+const releaseFilterUserAutocompleteId = '#releaseFilterUserAutocomplete';
 
 var releaseComponent = null;
 var selectedAssignee = null;
 var selectedAssigneeBoard = null;
 var selectedAssigneeIssue = null;
+var sprintFilterUser = null;
+var releaseFilterUser = null;
 var sprintComponent = null;
 var tagComponent = null;
 var usernamesArray = [];
@@ -356,6 +360,44 @@ function getListOfAssignee() {
                 selectedAssigneeBoard = $(assigneeAutocompleteBoardId)[0].value;
                 startLoad(boardsUserLoadId, boardsUserListId);
                 displayBoard();
+            });
+            $(sprintFilterUserAutocompleteId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    sprintFilterUser = usernameObj[val];
+                    // startLoad(sprintsLoadId, sprintsListId);
+                    if (globalData.boardType === 2) {
+                        displayFilteredTeamData();
+                    } else {
+                        displayFilteredTeamDataKanban();
+                    }
+                },
+                minLength: 0,
+            });
+            $(sprintFilterUserAutocompleteId).on('keyup', function () {
+                sprintFilterUser = usernameObj[$(sprintFilterUserAutocompleteId)[0].value.trim()];
+                // startLoad(sprintsLoadId, sprintsListId);
+                if (globalData.boardType === 2) {
+                    displayFilteredTeamData();
+                } else {
+                    displayFilteredTeamDataKanban();
+                }
+            });
+            $(releaseFilterUserAutocompleteId).autocomplete({
+                data: usersObj,
+                limit: 20,
+                onAutocomplete: function (val) {
+                    releaseFilterUser = usernameObj[val];
+                    // startLoad(sprintsLoadId, sprintsListId);
+                    displayFilteredReleaseData();
+                },
+                minLength: 0,
+            });
+            $(releaseFilterUserAutocompleteId).on('keyup', function () {
+                releaseFilterUser = usernameObj[$(releaseFilterUserAutocompleteId)[0].value.trim()];
+                // startLoad(sprintsLoadId, sprintsListId);
+                displayFilteredReleaseData();
             });
         },
         error: function (data) {

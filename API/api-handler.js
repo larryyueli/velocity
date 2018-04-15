@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const path = require('path');
 
+const analytics_api = require('./api-components/analytics-api.js');
 const comment_api = require('./api-components/comments-api.js');
 const common_api = require('./api-components/common-api.js');
 const notifications_api = require('./api-components/notifications-api.js');
@@ -335,3 +336,8 @@ exports.handleUsersPath = users_api.renderAdminsUsersPage;
 exports.handleUsersRequestAccessPath = users_api.requestAccess;
 exports.handleUsersUpdatePath = users_api.editUser;
 // </Users Requests> -----------------------------------------------
+
+// <Analytics Requests> -----------------------------------------------
+exports.handleAdminAnalytics = analytics_api.handleAdminAnalytics;
+exports.handleProjectTeamAnalytics = analytics_api.handleProjectTeamAnalytics;
+// </Analytics Requests> -----------------------------------------------

@@ -21,6 +21,7 @@ const projectId = window.location.href.split('/project/')[1];
 
 // Global variables from the request
 var adminUserRow = null;
+var analyticsData = null;
 var groupList = [];
 var groupModalEntryHTML = null;
 var groupModalHTML = null;
@@ -42,6 +43,11 @@ var isCollabMode = null;
 var isReadonly = true;
 
 // Element Ids
+const analyticsListId = '#analyticsList';
+const analyticsLoadId = '#analyticsLoad';
+const analysisSearchFilterId = '#analysisSearchFilter';
+const analyticsTableBodyId = '#analyticsTableBody';
+const analyticsTableBodyErrorId = '#analyticsTableBodyError';
 const assignedList = '#assignedList';
 const boardSelection = '#boardSelection';
 const boardSelectionRow = $('#boardSelectionRow');
@@ -243,6 +249,11 @@ $(function () {
         displayTeamList();
     });
 
+    $(analysisSearchFilterId).on('keyup', function () {
+        startLoad(analyticsLoadId, analyticsListId);
+        displayAdminAnalytics();
+    });
+
     // Actions
     $(randomizeRemainingId).click(() => {
         if (!groupSize || groupSize < 1) {
@@ -381,6 +392,9 @@ $(function () {
 
     startLoad(teamsloadId, teamslistId);
     getTeamsList();
+
+    startLoad(analyticsLoadId, analyticsListId);
+    getAnalytics();
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -903,6 +917,27 @@ function getTeamsList() {
             $(teamsSearchId).addClass('hidden');
 
             endLoad(teamsloadId, teamslistId);
+        }
+    });
+}
+
+function getAnalytics() {
+    $.ajax({
+        type: 'GET',
+        url: '/project/admin/analytics',
+        data: {
+            projectId: projectId
+        },
+        success: function (data) {
+            analyticsData = data;
+            displayAdminAnalytics();
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            $(analyticsListId).html(`<p class="center"><i>${translate('defaultError')}</i></p>`);
+
+            endLoad(analyticsLoadId, analyticsListId);
         }
     });
 }
@@ -1745,6 +1780,61 @@ function passTeamFilter(team) {
 
 // ------------------------ End teams section -----------------------
 
+// ------------------------ Begin analytics section -----------------------
+
+function displayAdminAnalytics() {
+    const teams = analyticsData['teams'];
+    const textFilter = $(analysisSearchFilterId)[0].value.trim().toLowerCase();
+    let accumString = ''
+
+    teams.forEach(team => {
+        if (team['teamName'].indexOf(textFilter) > -1) {
+            accumString += '<tr>';
+            accumString += `<td>${team['teamName']}</td>`;
+
+            for (let i = 0; i < 6; i++) {
+                accumString += `<td>${team['states'][i]} (${team['points'][i]} ${translate('points')})</td>`;
+            }
+
+            accumString += `<td><span class="${team['teamId']}-done"></span></td>`;
+            accumString += '</tr>';
+        }
+    });
+
+    $(analyticsTableBodyId).html(accumString);
+
+    teams.forEach(team => {
+        if (team['teamName'].indexOf(textFilter) > -1 && team['history'].length > 1) {
+            $(`.${team['teamId']}-done`).sparkline(team['history'], {
+                lineColor: 'green',
+                fillColor: 'lightGreen',
+                highlightLineColor:'#c8fd00',
+                minSpotColor: false,
+                maxSpotColor: false,
+                spotRadius: 1,
+                spotColor: false,
+                type: 'line',
+                height: '30',
+                width:'150'
+            });
+        } else {
+            $(`.${team['teamId']}-done`).html(translate('na'));
+        }
+    });
+
+    if ($(analyticsTableBodyId).html().length === 0) {
+        $(analyticsTableBodyErrorId).html(`<p class="center"><i>${translate('noResultsFoundBasedOnSearch')}</i></p>`);
+    } else {
+        $(analyticsTableBodyErrorId).html('');
+    }
+
+    endLoad(analyticsLoadId, analyticsListId);
+}
+
+// ------------------------ End analytics section -----------------------
+
+// ------------------------ Begin upload section -----------------------
+
 /**
  * upload a file
 */
@@ -1816,3 +1906,5 @@ function viewImage(id) {
     $('#imageViewer').modal('open');
     $('#imageViewerImage').attr('src', `/picture/${id}`);
 }
+
+// ------------------------ End upload section -----------------------

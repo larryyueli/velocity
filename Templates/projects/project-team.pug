@@ -3,6 +3,7 @@ extends ../layout
 block styles
     if !isUnKnownBoardType
         link(rel='stylesheet' href='/stylesheets/css/project-team.css')
+        link(rel='stylesheet' href='/stylesheets/css/team-analytics.css')
     link(rel='stylesheet' href='/summernote/summernote.css')
 
 block title
@@ -68,8 +69,7 @@ block content
                     #issues
                         include team-issues
                 #analytics
-                    .card
-                        h5 analytics test
+                    include team-analytics
                 .container
                     #management
                         include team-management
@@ -79,4 +79,6 @@ block scripts
     script(src='/js/projects/team-backlog.js')
     script(src='/js/projects/team-issues.js')
     script(src='/js/projects/team-board.js')
+    script(src='/js/projects/team-analytics.js')
     script(src='/summernote/summernote.js')
+    script(src='/chart.js/Chart.js')

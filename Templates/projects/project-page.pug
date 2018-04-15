@@ -13,30 +13,35 @@ block content
     .container
         if isProjectAdmin
             .row
-                .col.s12
+                .col.s10.offset-s1
                     .row
                         ul.tabs.overflow-x-hidden
-                            li.tab.col.s3
+                            li.tab.col.s2
                                 a.noLineLink.active#option-general(href='#general')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
-                            li.tab.col.s3
+                            li.tab.col.s2
                                 a.noLineLink#option-users(href='#users')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
-                            li.tab.col.s3
+                            li.tab.col.s2
                                 a.noLineLink#option-groups(href='#groups')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
                             if (isActive || isClosed)
-                                li.tab.col.s3
+                                li.tab.col.s2
                                     a.noLineLink#option-groups(href='#boards')
                                         i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
                                         |
                                         .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
+                                li.tab.col.s2
+                                    a.noLineLink#option-groups(href='#analytics')
+                                        i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour timeline
+                                        |
+                                        .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.analytics.title')}
     .container
         .row
             .col.s12
@@ -278,11 +283,39 @@ block content
                                 .row
                                     .input-field.col.s12
                                         input#teamsSearchFilter.validate(type='text')
-                                        label(for='searchFilter')  #{__('users.searchFilter')}
+                                        label(for='teamsSearchFilter')  #{__('users.searchFilter')}
                         .row
                             .col.s12
                                 #teamsload
                                 ul.collection.scroll-auto.margin-0#teamslist
+
+                    #analytics
+                        .row
+                            .col.s12
+                                .row
+                                    a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#teamAnalysisSearch(onclick='toggleVisibility($("#teamAnalysisFilter"))')
+                                        i.material-icons search
+                                .row.hidden#teamAnalysisFilter
+                                    form.col.s10.offset-s1
+                                        .row
+                                            .input-field.col.s12.xl8
+                                                input#analysisSearchFilter.validate(type='text')
+                                                label(for='analysisSearchFilter')  #{__('users.searchFilter')}
+                                .row
+                                    #analyticsLoad
+                                    table.highlight.centered.responsive-table#analyticsList
+                                        thead
+                                            tr
+                                                th #{__('analytics.teamName')}
+                                                th #{__('tickets.states.new')}
+                                                th #{__('tickets.states.in_development')}
+                                                th #{__('tickets.states.code_review')}
+                                                th #{__('tickets.states.ready_for_test')}
+                                                th #{__('tickets.states.in_test')}
+                                                th #{__('tickets.states.done')}
+                                                th #{__('analytics.doneProgress')}
+                                        tbody#analyticsTableBody
+                                    #analyticsTableBodyError
 
     #groupCreateModal.modal
         .modal-content
@@ -301,5 +334,6 @@ block content
 
     #modals
 block scripts
+    script(src='/sparkline/jquery.sparkline.js')
     script(src='/js/projects/project-page.js')
     script(src='/summernote/summernote.js')

@@ -86,6 +86,15 @@ const getFullProjectsList = function (callback) {
 }
 
 /**
+ * get active projects list
+ *
+ * @param {function} callback callback function
+ */
+const getActiveProjectsList = function (callback) {
+    getLimitedProjectsListSorted({ status: common.projectStatus.ACTIVE.value }, { title: 1 }, 0, callback);
+}
+
+/**
  * get projects list with search, sort and limit params
  *
  * @param {object} searchQuery search parameters
@@ -249,6 +258,7 @@ exports.updateComment = comments.updateComment;
 // <exports> -----------------------------------
 exports.addProject = addProject;
 exports.getActiveProjectById = getActiveProjectById;
+exports.getActiveProjectsList = getActiveProjectsList;
 exports.getActiveOrClosedProjectById = getActiveOrClosedProjectById;
 exports.getDraftProjectsInUserSelectionType = getDraftProjectsInUserSelectionType;
 exports.getProject = getProject;
@@ -265,6 +275,7 @@ exports.addTicketToReleases = releases.addTicketToReleases;
 exports.getAvailableReleasesByTeamId = releases.getAvailableReleasesByTeamId;
 exports.getReleaseById = releases.getReleaseById;
 exports.getReleasesByIds = releases.getReleasesByIds;
+exports.getReleasesByProjectIds = releases.getReleasesByProjectIds;
 exports.getReleasesByTeamId = releases.getReleasesByTeamId;
 exports.getReleasesByTicketId = releases.getReleasesByTicketId;
 exports.removeTicketFromReleases = releases.removeTicketFromReleases;
@@ -274,10 +285,13 @@ exports.updateReleaseById = releases.updateReleaseById;
 // <sprints> -----------------------------------
 exports.addSprintToTeam = sprints.addSprint;
 exports.addTicketToSprints = sprints.addTicketToSprints;
+exports.getActiveSprintsByProjectIds = sprints.getActiveSprintsByProjectIds;
+exports.getActiveClosedSprintsByProjectIds = sprints.getActiveClosedSprintsByProjectIds;
 exports.getActiveSprintByTeamId = sprints.getActiveSprint;
 exports.getAvailableSprintsByTeamId = sprints.getAvailableSprintsByTeamId;
 exports.getSprintById = sprints.getSprintById;
 exports.getSprintsByIds = sprints.getSprintsByIds;
+exports.getSprintsByProjectIds = sprints.getSprintsByProjectIds;
 exports.getSprintsByTeamId = sprints.getSprintsByTeamId;
 exports.getSprintsByTicketId = sprints.getSprintsByTicketId;
 exports.removeTicketFromSprints = sprints.removeTicketFromSprints;
@@ -300,6 +314,9 @@ exports.updateTagById = tags.updateTagById;
 exports.addTeamToProject = teams.addTeamToProject;
 exports.getConfiguredTeamById = teams.getConfiguredTeamById;
 exports.getProjectTeams = teams.getProjectTeams;
+exports.getProjectsTeams = teams.getProjectsTeams;
+exports.getTeamInProjectById = teams.getTeamInProjectById;
+exports.getTeamInProjectByName = teams.getTeamInProjectByName;
 exports.getTeamById = teams.getTeamById;
 exports.getTeamByName = teams.getTeamByName;
 exports.getTeamByUserId = teams.getTeamByUserId;
@@ -313,6 +330,7 @@ exports.getTicketByDisplayId = tickets.getTicketByDisplayId;
 exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByIds = tickets.getTicketsByIds;
 exports.getTicketsByProjectId = tickets.getTicketsByProjectId;
+exports.getTicketsByProjectIds = tickets.getTicketsByProjectIds;
 exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 exports.getTicketsInBacklog = tickets.getTicketsInBacklog;
 exports.getTicketsWithNoSprints = tickets.getTicketsWithNoSprints;

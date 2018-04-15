@@ -290,8 +290,8 @@ div.note-editor.note-frame.panel.panel-default{
 
     &.state1 {
         @include themify($themes) {
-            background: themed('StandardYellow') !important;
-            border: 2px solid themed('StandardYellow') !important;
+            background: themed('standardYellow') !important;
+            border: 2px solid themed('standardYellow') !important;
             color: #000;
         }
     }
@@ -339,7 +339,7 @@ div.note-editor.note-frame.panel.panel-default{
 
     &.state1 {
         @include themify($themes) {
-            background: themed('StandardYellow') !important;
+            background: themed('standardYellow') !important;
             color: #000;
         }
     }
