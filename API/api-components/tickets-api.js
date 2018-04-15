@@ -75,7 +75,7 @@ const getTicketByDisplayId = function (req, res) {
 
                 const resolvedUsers = common_backend.convertListToJason('_id', users.getActiveUsersList());
                 const resolvedReporter = resolvedUsers[ticketObj.reporter] ? `${resolvedUsers[ticketObj.reporter].fname} ${resolvedUsers[ticketObj.reporter].lname}` : common_backend.noReporter;
-                const resolvedAssignee = resolvedUsers[ticketObj.assignee] ? `$${resolvedUsers[ticketObj.assignee].fname} ${resolvedUsers[ticketObj.assignee].lname}}` : common_backend.noReporter;
+                const resolvedAssignee = resolvedUsers[ticketObj.assignee] ? `${resolvedUsers[ticketObj.assignee].fname} ${resolvedUsers[ticketObj.assignee].lname}` : common_backend.noReporter;
                 const reporterPicture = resolvedUsers[ticketObj.reporter] ? resolvedUsers[ticketObj.reporter].picture : null;
                 const assigneePicture = resolvedUsers[ticketObj.assignee] ? resolvedUsers[ticketObj.assignee].picture : null;
                 let resolvedTicket = {

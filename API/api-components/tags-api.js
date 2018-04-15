@@ -307,7 +307,7 @@ const getTagComponents = function (req, res) {
                     for (let i = 0; i < ticketsList.length; i++) {
                         const ticketObj = ticketsList[i];
                         const resolvedReporter = resolvedUsers[ticketObj.reporter] ? `${resolvedUsers[ticketObj.reporter].fname} ${resolvedUsers[ticketObj.reporter].lname}` : common_backend.noReporter;
-                        const resolvedAssignee = resolvedUsers[ticketObj.assignee] ? `$${resolvedUsers[ticketObj.assignee].fname} ${resolvedUsers[ticketObj.assignee].lname}}` : common_backend.noReporter;
+                        const resolvedAssignee = resolvedUsers[ticketObj.assignee] ? `${resolvedUsers[ticketObj.assignee].fname} ${resolvedUsers[ticketObj.assignee].lname}` : common_backend.noReporter;
                         const reporterPicture = resolvedUsers[ticketObj.reporter] ? resolvedUsers[ticketObj.reporter].picture : null;
                         const assigneePicture = resolvedUsers[ticketObj.assignee] ? resolvedUsers[ticketObj.assignee].picture : null;
                         resolvedList.push({
