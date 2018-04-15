@@ -93,7 +93,7 @@ const getCurrentAnalyticsForRelease = function (release, teams, tickets, callbac
     getLimitedReleaseAnalyticsListSorted({ $and: [{ releaseId: release._id }] }, { idate: 1 }, 0, function (err, releaseAnalytics) {
         if (err) {
             logger.error(JSON.stringify(err));
-            return callback(common.getError(8002), null);
+            return callback(common.getError(11004), null);
         }
 
         let membersDeleted = [];
@@ -228,14 +228,14 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
 
     getCurrentAnalyticsForRelease(releases, [team], tickets, function (err, updateObj) {
         if (err) {
-            logger.error(err);
-            return callback(common.getError(8002), null);
+            logger.error(JSON.stringify(err));
+            return callback(common.getError(11004), null);
         }
 
         getLimitedReleaseAnalyticsListSorted({ $and: [{ $or: releaseIdList }] }, { idate: 1 }, 0, function (err, releaseAnalytics) {
             if (err) {
-                logger.error(err);
-                return callback(common.getError(8002), null);
+                logger.error(JSON.stringify(err));
+                return callback(common.getError(11004), null);
             }
             let releasesList = [];
             for (let i = 0; i < releaseAnalytics.length; i++) {

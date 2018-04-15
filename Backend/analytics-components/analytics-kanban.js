@@ -154,8 +154,8 @@ const getKanbanAnalytics = function (team, tickets, callback) {
 
     getLimitedKanbanAnalyticsListSorted({ $and: [{ teamId: team._id }] }, { idate: 1 }, 0, function (err, kanbanAnalytics) {
         if (err) {
-            logger.error(err);
-            return callback(common.getError(8002), null);
+            logger.error(JSON.stringify(err));
+            return callback(common.getError(6004), null);
         }
         let kanban = {
             members: [],

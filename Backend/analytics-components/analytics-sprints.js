@@ -232,14 +232,14 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
 
     getCurrentAnalyticsForSprint(sprints, [team], tickets, function (err, updateObj) {
         if (err) {
-            logger.error(err);
-            return callback(common.getError(8002), null);
+            logger.error(JSON.stringify(err));
+            return callback(common.getError(10004), null);
         }
 
         getLimitedSprintAnalyticsListSorted({ $and: [{ $or: sprintIdList }] }, { idate: 1 }, 0, function (err, sprintAnalytics) {
             if (err) {
-                logger.error(err);
-                return callback(common.getError(8002), null);
+                logger.error(JSON.stringify(err));
+                return callback(common.getError(10004), null);
             }
             
             let sprintsList = [];
