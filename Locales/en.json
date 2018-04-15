@@ -318,7 +318,10 @@
 		"username": "Username",
 		"themes": {
 			"theme-default": "Default",
-			"theme-blueSky": "Blue Sky"
+			"theme-blueSky": "Blue Sky",
+			"theme-greenIslands": "Green Islands",
+			"theme-redRoses": "Red Roses",
+			"theme-greyClouds": "Grey Clouds"
 		},
 		"languages": {
 			"english": "English"

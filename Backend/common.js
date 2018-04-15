@@ -276,7 +276,10 @@ exports.variableTypes = variableTypes;
 // all color themes
 const colorThemes = Object.freeze({
     DEFAULT: 'theme-default',
-    BLUESKY: 'theme-blueSky'
+    BLUESKY: 'theme-blueSky',
+    GREENISLANDS: 'theme-greenIslands',
+    REDROSES: 'theme-redRoses',
+    GREYCLOUDS: "theme-greyClouds"
 });
 exports.colorThemes = colorThemes;
 
