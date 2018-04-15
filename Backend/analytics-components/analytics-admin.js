@@ -83,16 +83,10 @@ const getAdminAnalytics = function (projectObj, tickets, callback) {
                 admin.push({
                     teamId: adminAnalytics[i].teamId,
                     teamName: adminAnalytics[i].teamName,
-                    history: [{
-                        date: adminAnalytics[i].date,
-                        doneCount: adminAnalytics[i].doneCount
-                    }]
+                    history: [adminAnalytics[i].doneCount]
                 });
             } else {
-                admin[index].history.push({
-                    date: adminAnalytics[i].date,
-                    doneCount: adminAnalytics[i].doneCount
-                })
+                admin[index].history.push(adminAnalytics[i].doneCount);
             }
         }
 
