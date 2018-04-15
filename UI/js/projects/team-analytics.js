@@ -69,6 +69,8 @@ var displayReleases = true;
 const sprintsAutocompleteId = '#sprintsAutocomplete';
 const releasesAutocompleteId = '#releasesAutocomplete';
 
+var globalDateOptions = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
+
 $(function () {
     queryScrumStatistics();
 });
@@ -409,7 +411,7 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
                 $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[0]
             ],
             borderWidth: 2,
-            label: "TODO1"
+            label: translate('tickets')
         },
         {
             data: Object.values(currentUserPoints),
@@ -430,9 +432,9 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
                 $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[0]
             ],
             borderWidth: 2,
-            label: "TODO2"
+            label: translate('points')
         }],
-        labels: [ 'a', 'b', 'c', 'd', 'e', 'f']
+        labels: [0,1,2,3,4,5]
     };
 
     var options = {
@@ -443,7 +445,7 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
         tooltips: {
             callbacks: {
                 label: function(item, data) {
-                    return data.datasets[item.datasetIndex].label+ ": "+ data.labels[item.index]+ ": "+ data.datasets[item.datasetIndex].data[item.index];
+                    return data.datasets[item.datasetIndex].label+ ": "+ translate(`state${data.labels[item.index]}`)+ ": "+ data.datasets[item.datasetIndex].data[item.index];
                 }
             }
         },
@@ -480,7 +482,7 @@ function displayUserDateDivision() {
 
     var allData = {};
 
-    globalData['sprints'].find(sprint => sprint['sprintStatus'] === 2)['history'].forEach(sprint => dates.push(new Date(sprint['date']).toDateString()));
+    globalData['sprints'].find(sprint => sprint['sprintStatus'] === 2)['history'].forEach(sprint => dates.push(new Date(sprint['date']).toLocaleDateString(meObject['lnaguage'], globalDateOptions)));
     globalData['sprints'].find(sprint => sprint['sprintStatus'] === 2)['history'].forEach(sprint => {
         const states = sprint['members'].find(user => user['username'] === meObject['username'])['states'];
         for (var item in states) {
@@ -516,7 +518,6 @@ function displayUserDateDivision() {
 }
 
 function displayFilteredTeamData() {
-    //TODO: explain why you need a sprint
     var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
     var currentTeamStates = null;
     var currentTeamPoints = null;
@@ -532,7 +533,7 @@ function displayFilteredTeamData() {
         currentTeamStates = currentTeamObject ? currentTeamObject['states'] : null;
         currentTeamPoints = currentTeamObject ? currentTeamObject['points'] : null;
 
-        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(new Date(sprint['date']).toDateString()));
+        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(new Date(sprint['date']).toLocaleDateString(meObject['lnaguage'], globalDateOptions)));
         globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => {
             const states = sprint['members'].find(user => user['username'] === sprintFilterUser)['states'];
             for (var item in states) {
@@ -558,7 +559,7 @@ function displayFilteredTeamData() {
         currentTeamStates = newStatsObject;
         currentTeamPoints = newPointsObject;
 
-        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(new Date(sprint['date']).toDateString()));
+        globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => dates.push(new Date(sprint['date']).toLocaleDateString(meObject['lnaguage'], globalDateOptions)));
 
         var tempData = {};
         globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => {
@@ -636,7 +637,6 @@ function displayteamCards(currentTeamStates, currentTeamPoints) {
 }
 
 function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
-    //TODO: draw no data if null
     var ctx = document.getElementById(teamTicketDivisionId).getContext('2d');
     var data = {
         datasets: [{
@@ -658,7 +658,7 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
                 $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[0]
             ],
             borderWidth: 2,
-            label: "TODO1"
+            label: translate('tickets')
         },
         {
             data: Object.values(currentTeamPoints),
@@ -679,9 +679,9 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
                 $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[0]
             ],
             borderWidth: 2,
-            label: "TODO2"
+            label: translate('points')
         }],
-        labels: [ 'a', 'b', 'c', 'd', 'e', 'f']
+        labels: [0,1,2,3,4,5]
     };
 
     var options = {
@@ -692,7 +692,7 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
         tooltips: {
             callbacks: {
                 label: function(item, data) {
-                    return data.datasets[item.datasetIndex].label+ ": "+ data.labels[item.index]+ ": "+ data.datasets[item.datasetIndex].data[item.index];
+                    return data.datasets[item.datasetIndex].label+ ": "+ translate(`state${data.labels[item.index]}`)+ ": "+ data.datasets[item.datasetIndex].data[item.index];
                 }
             }
         },
@@ -761,7 +761,6 @@ function displayTeamBurndown(burndownData, dates) {
     data = {
         datasets: [
             {
-                label: translate('TODO something about burndown'),
                 data: burndownData,
                 fill: false,
                 borderColor: color,
@@ -798,7 +797,6 @@ function displayTeamBurndown(burndownData, dates) {
 }
 
 function displayFilteredReleaseData(didReleaseChange = false) {
-    //TODO: explain why you need a sprint
     var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
     var currentReleaseStates = null;
     var currentReleasePoints = null;
@@ -818,7 +816,7 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         currentReleaseStates = currentReleaseObject ? currentReleaseObject['states'] : null;
         currentReleasePoints = currentReleaseObject ? currentReleaseObject['points'] : null;
 
-        globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => dates.push(new Date(release['date']).toDateString()));
+        globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => dates.push(new Date(release['date']).toLocaleDateString(meObject['lnaguage'], globalDateOptions)));
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => {
             const states = release['members'].find(user => user['username'] === releaseFilterUser)['states'];
             for (var item in states) {
@@ -845,7 +843,7 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         currentReleaseStates = newStatsObject;
         currentReleasePoints = newPointsObject;
 
-        globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => dates.push(new Date(release['date']).toDateString()));
+        globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => dates.push(new Date(release['date']).toLocaleDateString(meObject['lnaguage'], globalDateOptions)));
 
         var tempData = {};
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => {
@@ -963,7 +961,6 @@ function displayReleaseCards(currentReleaseStates, currentReleasePoints) {
 }
 
 function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
-    //TODO: draw no data if null
     var ctx = document.getElementById(releaseTicketDivisionId).getContext('2d');
     var data = {
         datasets: [{
@@ -985,7 +982,7 @@ function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
                 $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[0]
             ],
             borderWidth: 2,
-            label: "TODO1"
+            label: translate('tickets')
         },
         {
             data: Object.values(currentReleasePoints),
@@ -1006,9 +1003,9 @@ function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
                 $('.gradient-done').css('background').match(/rgb\(.*?\)/g)[0]
             ],
             borderWidth: 2,
-            label: "TODO2"
+            label: translate('points')
         }],
-        labels: [ 'a', 'b', 'c', 'd', 'e', 'f']
+        labels: [0,1,2,3,4,5]
     };
 
     var options = {
@@ -1019,7 +1016,7 @@ function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
         tooltips: {
             callbacks: {
                 label: function(item, data) {
-                    return data.datasets[item.datasetIndex].label+ ": "+ data.labels[item.index]+ ": "+ data.datasets[item.datasetIndex].data[item.index];
+                    return data.datasets[item.datasetIndex].label+ ": "+ translate(`state${data.labels[item.index]}`)+ ": "+ data.datasets[item.datasetIndex].data[item.index];
                 }
             }
         },
@@ -1210,7 +1207,6 @@ function displayKanbanCharts(data) {
 }
 
 function displayFilteredTeamDataKanban() {
-    //TODO: explain why you need a sprint
     var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
     var currentTeamStates = null;
     var currentTeamPoints = null;
@@ -1220,7 +1216,6 @@ function displayFilteredTeamDataKanban() {
         currentTeamStates = currentTeamObject ? currentTeamObject['states'] : null;
         currentTeamPoints = currentTeamObject ? currentTeamObject['points'] : null;
     } else {
-        //TODO this section change sprints to kanban
         const tempMembersObject = globalData['kanban']['members'];
         var newPointsObject = Object.create( dummyObject );
         tempMembersObject.forEach(user => {
@@ -1255,7 +1250,7 @@ function displayKanbanCumulative() {
       const flow = globalData['kanban']['cumulativeflowdiagram'];
 
       flow.forEach(entry => {
-          dates.push(new Date(entry['date']).toDateString());
+          dates.push(new Date(entry['date']).toLocaleDateString(meObject['lnaguage'], globalDateOptions));
 
           for (var item in stateList) {
               allData[item] ? allData[item].push(entry['states'][item]) : allData[item] = [entry['states'][item]];
