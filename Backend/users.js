@@ -62,7 +62,11 @@ const addUser = function (user, callback) {
         || typeof (user.username) !== common.variableTypes.STRING
         || typeof (user.password) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(user.type, 'value', common.userTypes)
-        || !common.isValueInObjectWithKeys(user.status, 'value', common.userStatus)) {
+        || !common.isValueInObjectWithKeys(user.status, 'value', common.userStatus)
+        || common.isEmptyString(user.username)
+        || common.isEmptyString(user.lname)
+        || common.isEmptyString(user.fname)
+        || common.isEmptyString(user.password)) {
         return callback(common.getError(2000), null);
     }
 
@@ -225,15 +229,18 @@ const updateUser = function (updateParams, callback) {
         return callback(common.getError(2007), null);
     }
 
-    if (typeof (updateParams.fname) === common.variableTypes.STRING) {
+    if (typeof (updateParams.fname) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.fname)) {
         updateQuery.$set.fname = updateParams.fname;
     }
 
-    if (typeof (updateParams.lname) === common.variableTypes.STRING) {
+    if (typeof (updateParams.lname) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.lname)) {
         updateQuery.$set.lname = updateParams.lname;
     }
 
-    if (typeof (updateParams.username) === common.variableTypes.STRING) {
+    if (typeof (updateParams.username) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.username)) {
         updateQuery.$set.username = updateParams.username;
         searchQuery = { $and: [{ _id: updateParams._id }, { username: { $ne: updateParams.username } }] };
     }
@@ -246,7 +253,8 @@ const updateUser = function (updateParams, callback) {
         updateQuery.$set.picture = updateParams.picture;
     }
 
-    if (typeof (updateParams.password) === common.variableTypes.STRING) {
+    if (typeof (updateParams.password) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.password)) {
         updateQuery.$set.password = updateParams.password;
     }
 

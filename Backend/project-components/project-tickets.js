@@ -53,7 +53,9 @@ const addTicket = function (ticket, callback) {
         || typeof (ticket.reporter) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(ticket.priority, 'value', common.ticketPriority)
         || !common.isValueInObjectWithKeys(ticket.state, 'value', common.ticketStates)
-        || !common.isValueInObjectWithKeys(ticket.type, 'value', common.ticketTypes)) {
+        || !common.isValueInObjectWithKeys(ticket.type, 'value', common.ticketTypes)
+        || common.isEmptyString(ticket.title)
+        || common.isEmptyString(ticket.description)) {
         return callback(common.getError(7006), null);
     }
 
@@ -361,11 +363,13 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
 
     searchQuery.$and = [{ _id: ticketId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }];
 
-    if (typeof (updateParams.title) === common.variableTypes.STRING) {
+    if (typeof (updateParams.title) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.title)) {
         updateQuery.$set.title = updateParams.title;
     }
 
-    if (typeof (updateParams.description) === common.variableTypes.STRING) {
+    if (typeof (updateParams.description) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.description)) {
         updateQuery.$set.description = updateParams.description;
     }
 

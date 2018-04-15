@@ -138,7 +138,10 @@ const renderProjectPage = function (req, res) {
                 isClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
                 forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value,
                 selectedBoardType: projectObj.boardType,
-                forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+                forceDeadline: typeof (projectObj.deadlineDate) === common_backend.variableTypes.STRING
+                    && typeof (projectObj.deadlineTime) === common_backend.variableTypes.STRING
+                    && !common_backend.isEmptyString(projectObj.deadlineDate)
+                    && !common_backend.isEmptyString(projectObj.deadlineTime),
                 deadlineDate: projectObj.deadlineDate,
                 deadlineTime: projectObj.deadlineTime,
                 attachments: attachmentsList
@@ -535,7 +538,11 @@ const updateProjectTeamsList = function (req, res) {
 
                 let updateTeamsCounter = 0;
                 if (updateTeamsCounter === resolvedTeamsList.length) {
-                    return res.status(200).send('ok');
+                    if (projectObj.status === common_backend.projectStatus.ACTIVE.value) {
+                        updateActiveTeam();
+                    } else {
+                        return res.status(200).send('ok');
+                    }
                 }
                 for (let i = 0; i < resolvedTeamsList.length; i++) {
                     let team = resolvedTeamsList[i];

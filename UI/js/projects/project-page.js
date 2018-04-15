@@ -687,6 +687,16 @@ function generalSaveProject() {
     const deadlineDate = $(datepickerId).val();
     const deadlineTime = $(timepickerId).val();
 
+    if (canForceDeadlineValue) {
+        if (deadlineDate.length === 0) {
+            return warningSnackbar(translate('emptyDeadlineDate'));
+        }
+
+        if (deadlineTime.length === 0) {
+            return warningSnackbar(translate('emptyDeadlineTime'));
+        }
+    }
+
     swal({
         text: translate('saveProjectPrompt'),
         icon: 'warning',

@@ -38,19 +38,22 @@ const initialize = function (collectionObject) {
  * @param {function} callback callback function
  */
 const addUser = function (user, callback) {
-    usersCollection.findOne({ $or: [{ _id: user._id }, { username: user.username }] }, function (err, obj) {
-        if (err) {
-            return callback(common.getError(1003), null);
-        }
+    usersCollection.update(
+        { username: user.username },
+        { $setOnInsert: user },
+        { upsert: true },
+        function (err, res) {
+            if (err) {
+                return callback(common.getError(1004), null);
+            }
 
-        if (obj) {
-            return callback(common.getError(2001), null);
-        }
+            if (!res.result.upserted) {
+                return callback(common.getError(2001), null);
+            }
 
-        usersCollection.insert(user, function (err, res) {
-            return callback(err ? common.getError(1004) : null, err ? null : user);
-        });
-    });
+            return callback(null, user);
+        }
+    );
 }
 
 /**

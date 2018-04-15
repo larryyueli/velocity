@@ -47,7 +47,9 @@ const addProject = function (project, callback) {
     if (typeof (project.title) !== common.variableTypes.STRING
         || typeof (project.description) !== common.variableTypes.STRING
         || !common.isValueInObjectWithKeys(project.status, 'value', common.projectStatus)
-        || !Array.isArray(project.admins)) {
+        || !Array.isArray(project.admins)
+        || common.isEmptyString(project.title)
+        || common.isEmptyString(project.description)) {
         return callback(common.getError(5000), null);
     }
 
@@ -176,11 +178,13 @@ const updateProject = function (projectId, updateParams, callback) {
         return callback(common.getError(5006), null);
     }
 
-    if (typeof (updateParams.title) === common.variableTypes.STRING) {
+    if (typeof (updateParams.title) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.title)) {
         updateQuery.$set.title = updateParams.title;
     }
 
-    if (typeof (updateParams.description) === common.variableTypes.STRING) {
+    if (typeof (updateParams.description) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.description)) {
         updateQuery.$set.description = updateParams.description;
     }
 

@@ -41,7 +41,8 @@ const addSprint = function (sprint, callback) {
         || typeof (sprint.projectId) !== common.variableTypes.STRING
         || typeof (sprint.teamId) !== common.variableTypes.STRING
         || typeof (sprint.startDate) !== common.variableTypes.STRING
-        || typeof (sprint.endDate) !== common.variableTypes.STRING) {
+        || typeof (sprint.endDate) !== common.variableTypes.STRING
+        || common.isEmptyString(sprint.name)) {
         return callback(common.getError(10006), null);
     }
 
@@ -282,7 +283,8 @@ const updateSprintById = function (sprintId, teamId, projectId, updateParams, ca
 
     searchQuery.$and = [{ _id: sprintId }, { projectId: projectId }, { teamId: teamId }, { $or: [{ status: common.sprintStatus.ACTIVE.value }, { status: common.sprintStatus.OPEN.value }] }];
 
-    if (typeof (updateParams.name) === common.variableTypes.STRING) {
+    if (typeof (updateParams.name) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.name)) {
         updateQuery.$set.name = updateParams.name;
     }
 

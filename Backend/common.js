@@ -152,6 +152,7 @@ const errors = Object.freeze({
     5004: 'project not found',
     5005: 'failed to update projects, database issue',
     5006: 'failed to update project, missing information',
+    5007: 'failed to add a project, project already exists',
 
     //6000 teams
     6000: 'missing requirement',
@@ -737,4 +738,15 @@ const decryptText = function (text) {
     return decrypted;
 }
 exports.decryptText = decryptText;
+
+/**
+ * check if a string is empty
+ *
+ * @param {string} text string to check if its empty
+ * @return {boolean}
+ */
+const isEmptyString = function (text) {
+    return text.trim().length === 0;
+}
+exports.isEmptyString = isEmptyString;
 // </Global Function> -----------------------------------------------

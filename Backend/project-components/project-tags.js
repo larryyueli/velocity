@@ -39,7 +39,8 @@ const initialize = function (callback) {
 const addTag = function (tag, callback) {
     if (typeof (tag.name) !== common.variableTypes.STRING
         || typeof (tag.projectId) !== common.variableTypes.STRING
-        || typeof (tag.teamId) !== common.variableTypes.STRING) {
+        || typeof (tag.teamId) !== common.variableTypes.STRING
+        || common.isEmptyString(tag.name)) {
         return callback(common.getError(12006), null);
     }
 
@@ -234,7 +235,8 @@ const updateTagById = function (tagId, teamId, projectId, updateParams, callback
 
     searchQuery.$and = [{ _id: tagId }, { projectId: projectId }, { teamId: teamId }, { status: common.tagStatus.ACTIVE.value }];
 
-    if (typeof (updateParams.name) === common.variableTypes.STRING) {
+    if (typeof (updateParams.name) === common.variableTypes.STRING
+        && !common.isEmptyString(updateParams.name)) {
         updateQuery.$set.name = updateParams.name;
     }
 
