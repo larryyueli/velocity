@@ -1024,7 +1024,6 @@ function getListOfSprints() {
         limit: 20,
         onAutocomplete: function (val) {
             selectedSprint = sprintIdsObj[val];
-            // TODO loader
             displayFilteredTeamData();
         },
         minLength: 0,
@@ -1032,7 +1031,6 @@ function getListOfSprints() {
 
     $(sprintsAutocompleteId).on('keyup', function () {
         selectedSprint = sprintIdsObj[$(sprintsAutocompleteId).val()];
-        // TODO loader
         displayFilteredTeamData();
     });
 }
@@ -1050,7 +1048,6 @@ function getListOfReleases() {
         limit: 20,
         onAutocomplete: function (val) {
             selectedRelease = releaseIdsObj[val];
-            // TODO loader
             displayFilteredReleaseData(true);
         },
         minLength: 0,
@@ -1058,7 +1055,6 @@ function getListOfReleases() {
 
     $(releasesAutocompleteId).on('keyup', function () {
         selectedRelease = releaseIdsObj[$(releasesAutocompleteId).val()];
-        // TODO loader
         displayFilteredReleaseData(true);
     });
 }
