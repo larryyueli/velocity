@@ -45,7 +45,7 @@ const renderProjectPage = function (req, res) {
     }
 
     const projectId = req.params.projectId;
-    projects.getProjectById(projectId, function (err, projectObj) { // TODO: change to use active projects
+    projects.getProjectById(projectId, function (err, projectObj) {
         if (err) {
             logger.error(JSON.stringify(err));
             return res.status(404).render(common_api.pugPages.pageNotFound);
@@ -98,20 +98,51 @@ const renderProjectPage = function (req, res) {
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        return res.status(200).render(common_api.pugPages.projectPage, {
-            user: req.session.user,
-            title: projectObj.title,
-            isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
-            description: projectObj.description,
-            isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
-            isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
-            isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value,
-            isClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
-            forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value,
-            selectedBoardType: projectObj.boardType,
-            forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
-            deadlineDate: projectObj.deadlineDate,
-            deadlineTime: projectObj.deadlineTime
+        let attachmentsList = [];
+        const getAttachments = function (callback) {
+            let attachmentsCounter = 0;
+            if (attachmentsCounter === projectObj.attachments.length) {
+                callback();
+            }
+
+            for (let i = 0; i < projectObj.attachments.length; i++) {
+                const attId = projectObj.attachments[i];
+                cfs.fileExists(attId, function (err, fileObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err));
+                    }
+
+                    if (fileObj) {
+                        fileObj.isViewable = (common_backend.fileExtensions.IMAGES.indexOf(fileObj.extension) !== -1);
+                        attachmentsList.push(fileObj);
+                    }
+
+                    attachmentsCounter++;
+                    if (attachmentsCounter === projectObj.attachments.length) {
+                        callback();
+                    }
+                });
+            }
+
+        }
+
+        getAttachments(function () {
+            return res.status(200).render(common_api.pugPages.projectPage, {
+                user: req.session.user,
+                title: projectObj.title,
+                isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1,
+                description: projectObj.description,
+                isClassMode: settings.getModeType() === common_backend.modeTypes.CLASS,
+                isCollabMode: settings.getModeType() === common_backend.modeTypes.COLLABORATORS,
+                isActive: projectObj.status === common_backend.projectStatus.ACTIVE.value,
+                isClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
+                forceBoardType: projectObj.boardType !== common_backend.boardTypes.UNKNOWN.value,
+                selectedBoardType: projectObj.boardType,
+                forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+                deadlineDate: projectObj.deadlineDate,
+                deadlineTime: projectObj.deadlineTime,
+                attachments: attachmentsList
+            });
         });
     });
 }
@@ -290,7 +321,8 @@ const updateActiveProject = function (req, res) {
 
         let newProject = {
             title: req.body.title,
-            description: req.body.description
+            description: req.body.description,
+            attachments: Array.isArray(req.body.attachments) ? req.body.attachments : []
         };
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
@@ -389,6 +421,7 @@ const createProject = function (req, res) {
     const parsedBoardType = parseInt(req.body.boardType);
     const deadlineDateText = req.body.deadlineDate;
     const deadlineTimeText = req.body.deadlineTime;
+    const attachmentsList = req.body.attachments;
     const boardType = common_backend.convertStringToBoolean(req.body.canForceBoardType)
         ? typeof (parsedBoardType) === common_backend.variableTypes.NUMBER
             ? parsedBoardType
@@ -412,7 +445,8 @@ const createProject = function (req, res) {
         admins: [req.session.user._id],
         boardType: boardType,
         deadlineDate: deadlineDate,
-        deadlineTime: deadlineTime
+        deadlineTime: deadlineTime,
+        attachments: attachmentsList
     };
 
     projects.addProject(newProject, function (err, projectObj) {
@@ -828,6 +862,7 @@ const updateDraftProject = function (req, res) {
         const parsedBoardType = parseInt(req.body.boardType);
         const deadlineDateText = req.body.deadlineDate;
         const deadlineTimeText = req.body.deadlineTime;
+        const attachmentsList = Array.isArray(req.body.attachments) ? req.body.attachments : []
         const boardType = common_backend.convertStringToBoolean(req.body.canForceBoardType)
             ? typeof (parsedBoardType) === common_backend.variableTypes.NUMBER
                 ? parsedBoardType
@@ -849,7 +884,8 @@ const updateDraftProject = function (req, res) {
             description: req.body.description,
             boardType: boardType,
             deadlineDate: deadlineDate,
-            deadlineTime: deadlineTime
+            deadlineTime: deadlineTime,
+            attachments: attachmentsList
         };
         projects.updateProject(req.body.projectId, newProject, function (err, result) {
             if (err) {
@@ -1232,6 +1268,7 @@ const exportProjectsFile = function (req, res) {
         const fileData = JSON.stringify(filteredList);
         const fileName = common_backend.getUUID();
         const fileObject = {
+            fileId: fileName,
             fileName: fileName,
             filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
             fileExtension: 'velocity',
@@ -1313,6 +1350,7 @@ const importProjectsFile = function (req, res) {
     const uploadedFile = req.files.projectsImpotFile;
     const fileData = uploadedFile.data;
     const fileObject = {
+        fileId: fileName,
         fileName: fileName,
         filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,

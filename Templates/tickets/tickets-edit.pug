@@ -90,6 +90,14 @@ block content
                                             label(for='description') #{__('tickets.description')}
                                         .input-field.padding-10
                                             #description #{ticket.description}
+                                        .input-field.padding-10#attachmentsDivId
+                                            each attachment in attachments
+                                                .row.margin-bottom-0.margin-right-10
+                                                    .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                                        p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
+                                                        i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
+                                                        if attachment.isViewable
+                                                            i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
                                     if false
                                         .row.subtasksRow
                                             .input-field.padding-10#subtasksSelection
@@ -121,7 +129,7 @@ block content
                                                 .row.margin-bottom-0.margin-right-10
                                                     .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
                                                         img(src=`/picture/${relatedTicket.assigneePicture}`)
-                                                        p.truncateTextCommon #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                                        p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
                                                         i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
                                 .col.s12.l4
                                     .row
@@ -169,9 +177,6 @@ block content
                             .row
                                 button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                     i.material-icons.right save
-                            .row
-                                button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#uploadModal') upload modal trigger
-
                 #comments
                     .row
                         .col.s12
@@ -237,7 +242,9 @@ block content
                                                     | Before: #{resolveUsername(entry.from)}
                                                     br
                                                     | After: #{resolveUsername(entry.to)}
-
+    #imageViewer.modal
+        i.right.modal-action.modal-close.material-icons close
+        img.full-width#imageViewerImage
     #uploadModal.modal
         .modal-content
             i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
@@ -249,13 +256,12 @@ block content
                                 .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
                                     span
                                         | #{__('uploadModal.file')}
-                                        i.material-icons.right file_upload
                                     input(type='file')#file-input
                                 .file-path-wrapper
-                                    input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))
+                                    input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))#file-name
                         .row.right
-                            button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour#uploadButton #{__('uploadModal.upload')}
-                                i.material-icons.right send
+                            .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFile()')#uploadButton #{__('uploadModal.upload')}
+                                i.material-icons.right cloud_upload
 
 block scripts
     script(src='/js/tickets/tickets-edit.js')

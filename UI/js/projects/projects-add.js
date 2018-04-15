@@ -28,10 +28,56 @@ const titleId = '#title';
 const datepickerId = '#datepicker';
 const timepickerId = '#timepicker';
 const projectAddform = '#projectAddform';
+const uploadButton = '#uploadButton';
+const uploadModal = '#uploadModal';
+const uploadInput = '#file-input';
+const attachmentsDivId = '#attachmentsDivId';
+const uploadName = '#file-name';
+
+var attachmentsList = [];
 
 $(function () {
     $(navProjectsId).addClass('active');
     $(navmProjectsId).addClass('active');
+
+    initSummernote(descriptionId);
+    if ($(descriptionId).attr('value') === '1') {
+        $(descriptionId).summernote('disable');
+        $(descriptionId).summernote({
+            disableDragAndDrop: true,
+            shortcuts: false
+        });
+        $('div.note-btn-group.btn-group button').remove();
+        $('.note-toolbar-wrapper').remove();
+        $('.note-editable').css('background-color', '#ffffff')
+    }
+    $('#datepicker').pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
+    });
+
+    $('#timepicker').pickatime({
+        onClose: () => {
+            $(":focus").blur();
+        },
+        default: translate('now'),
+        fromnow: 0,
+        twelvehour: true,
+        donetext: translate('ok'),
+        cleartext: translate('clear'),
+        canceltext: translate('cancel'),
+        container: undefined,
+        autoclose: false,
+        ampmclickable: true
+    });
 
     $('select').material_select();
 
@@ -79,7 +125,8 @@ $(function () {
                 deadlineDate: deadlineDate,
                 deadlineTime: deadlineTime,
                 canForceBoardType: canForceBoardTypeValue,
-                canForceDeadline: canForceDeadlineValue
+                canForceDeadline: canForceDeadlineValue,
+                attachments: attachmentsList
             },
             success: function (data) {
                 window.location.href = `/project/${data}`;
@@ -93,3 +140,64 @@ $(function () {
         });
     });
 });
+
+/**
+ * upload a file
+*/
+function uploadFile() {
+    const files = $(uploadInput).get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        return warningSnackbar(translate('mustImportOneFile'));
+    }
+
+    formData.append('uploadedFile', files[0]);
+
+    $(uploadButton).attr('disabled', true);
+
+    $.ajax({
+        type: 'PUT',
+        url: '/upload/file',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            $(uploadModal).modal('close');
+            successSnackbar(translate('successfulFileUpload'));
+            attachmentsList.push(data);
+            $(attachmentsDivId).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div id="${data}" class="chip full-width related-chips text-left ticketStatusColors attachmentsClass">
+                        <p class="truncateTextCommon">${$(uploadName).val()}</p>
+                        <i onclick="removeAttachment('${data}')" class="close material-icons">delete_forever</i>
+                        <i onclick="downloadAttachment('${data}')" class="chipIcon material-icons">file_download</i>
+                    </div>
+                </div>
+            `);
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function () {
+            $(uploadButton).attr('disabled', false);
+        }
+    });
+}
+
+/**
+ * remove attachment
+*/
+function removeAttachment(id) {
+    delete attachmentsList[id];
+}
+
+/**
+ * download attachment
+*/
+function downloadAttachment(id) {
+    window.location = `/download/file?fileId=${id}`;
+}

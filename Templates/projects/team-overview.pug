@@ -6,6 +6,17 @@
                     h5 #{project.title}
                 .card-action
                     #description #{project.description}
+                    .row
+                        each attachment in attachments
+                            .row.margin-bottom-0.margin-right-10.margin-left-10
+                                .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                    p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
+                                    i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
+                                    if attachment.isViewable
+                                        i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
+                    #imageViewer.modal
+                        i.right.modal-action.modal-close.material-icons close
+                        img.full-width#imageViewerImage
         if !isProjectClosed && isUnKnownBoardType
             .row
                 .card.center

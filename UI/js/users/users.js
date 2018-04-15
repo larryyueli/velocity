@@ -62,7 +62,7 @@ $(function () {
 function getUsersList() {
     $.ajax({
         type: 'GET',
-        url: '/usersListComponent',
+        url: '/components/usersList',
         success: function (data) {
             userRow = $(data.usersEntryHTML);
             userList = data.usersList;

@@ -120,7 +120,7 @@ const renderProfilePage = function (req, res) {
         canEditEmail: settings.isUsersAbleEditEmail(),
         canEditFirstAndLastName: settings.isUsersAbleEditFirstAndLastName(),
         canEditPassword: settings.isUsersAbleEditPassword(),
-        notifications: [{ link: '/', type: 'account_circle', name: 'Hello, new notification', id: '22222' }]
+        notifications: []
     });
 }
 
@@ -157,7 +157,7 @@ const getProfilePicture = function (req, res) {
             imagePath = defaultImagePath;
         }
 
-        const validImageExtensions = ['jpeg', 'png'];
+        const validImageExtensions = common_backend.fileExtensions.IMAGES;
         if (validImageExtensions.indexOf(fileObj.extension) === -1) {
             logger.error(JSON.stringify(common_backend.getError(2008)));
             imagePath = defaultImagePath;
@@ -248,6 +248,7 @@ const updateProfilePicture = function (req, res) {
     const fileName = common_backend.getUUID();
     const fileExtension = uploadedFile.mimetype.split('/')[1];
     const fileObject = {
+        fileId: fileName,
         fileName: fileName,
         filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
@@ -557,6 +558,7 @@ const importUsersFile = function (req, res) {
     const fileName = common_backend.getUUID();
     const fileExtension = uploadedFile.mimetype.split('/')[1];
     const fileObject = {
+        fileId: fileName,
         fileName: fileName,
         filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: fileExtension,
@@ -699,6 +701,7 @@ const exportUsersFile = function (req, res) {
     const csvData = json2csvParser.parse(usersList);
     const fileName = common_backend.getUUID();
     const fileObject = {
+        fileId: fileName,
         fileName: fileName,
         filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
         fileExtension: 'csv',

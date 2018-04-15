@@ -139,7 +139,7 @@ app.use(
         src: `${__dirname}/sass`,
         dest: `${__dirname}/UI/stylesheets`,
         prefix: '/stylesheets',
-        debug: false, // TODO: remove before release
+        debug: false,
         outputStyle: 'compressed'
     })
 );
@@ -248,15 +248,23 @@ app.get('/components/team/backlog', api.handleProjectTeamBacklogPath);
 app.get('/components/team/board', api.handleActiveSprintTicketsListComponentPath);
 app.get('/components/team/issues', api.handleTicketsListComponentPath);
 app.get('/components/team/management', api.handleTeamManagementComponentsPath);
+app.get('/components/team/release', api.handleReleaseComponentsPath);
+app.get('/components/team/sprint', api.handleSprintComponentsPath);
+app.get('/components/team/tag', api.handleTagComponentsPath);
 app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/components/ticket/edit/page', api.handleTicketEditPageComponentsPath);
+app.get('/components/usersList', api.handleUsersListComponentPath);
+app.get('/download/file', api.handleDownloadFilePath);
 app.get('/lookup/ticket/by/displayId', api.handleLookupTicketByDisplayIdPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
 app.get('/picture/:pictureId', api.handleProfilePicturePath);
 app.get('/project/:projectId', api.handleProjectByIdPath);
 app.get('/project/:projectId/team/:teamId', api.handleProjectTeamPath);
+app.get('/project/:projectId/team/:teamId/release/:releaseId', api.handleReleasePagePath);
 app.get('/project/:projectId/team/:teamId/search', api.handleProjectTeamSearchPath);
+app.get('/project/:projectId/team/:teamId/sprint/:sprintId', api.handleSprintPagePath);
+app.get('/project/:projectId/team/:teamId/tag/:tagId', api.handleTagPagePath);
 app.get('/project/:projectId/team/:teamId/tickets/add', api.handleProjectTeamTicketsAddPath);
 app.get('/project/:projectId/team/:teamId/ticket/:ticketId', api.handleProjectTeamTicketPath);
 app.get('/project/team/members/list', api.handleProjectTeamMembersListPath);
@@ -271,7 +279,6 @@ app.get('/projects/export/file/download', api.handleProjectsExportFileDownloadPa
 app.get('/projects/import', api.handleProjectsImportPath);
 app.get('/settings', api.handleSettingsPath);
 app.get('/users', api.handleUsersPath);
-app.get('/usersListComponent', api.handleUsersListComponentPath);
 app.get('/users/add', api.handleUsersAddPath);
 app.get('/users/edit/:username', api.handleUsersEditPath);
 app.get('/users/export', api.handleUsersExportPath);
@@ -313,6 +320,7 @@ app.put('/projects/import/file', api.handleProjectsImportFilePath);
 app.put('/sprints/create', api.handleSprintsCreatePath);
 app.put('/tags/create', api.handleTagsCreatePath);
 app.put('/tickets/create', api.handleTicketsCreatePath);
+app.put('/upload/file', api.handleUploadFilePath);
 app.put('/users/create', api.handleUsersCreatePath);
 app.put('/users/import/file', api.handleUsersImportFilePath);
 app.put('/users/request/access', api.handleUsersRequestAccessPath);

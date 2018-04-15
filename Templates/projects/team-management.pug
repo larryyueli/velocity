@@ -31,7 +31,7 @@ ul.collapsible(data-collapsible='expandable')
                 else
                     ul.collection#appendSprintDiv
                         each sprint in sprintsList
-                            li(id=`sprint_${sprint._id}`).collection-item.avatar.clickable-item
+                            li(id=`sprint_${sprint._id}`).collection-item.avatar
                                 i.material-icons.circle date_range
                                 if sprint.status === commonSprintStatus.OPEN.value
                                     button(class=`sprintOpen_${sprint._id}`, onclick=`deleteSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
@@ -41,6 +41,8 @@ ul.collapsible(data-collapsible='expandable')
                                         i.material-icons.right check
                                 button(class=`sprintActive_${sprint._id} ${sprint.status === commonSprintStatus.ACTIVE.value ? '' : 'hidden'}`, onclick=`closeSprint('${sprint._id}', '${sprint.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right remove_circle
+                                button(onclick=`loadPage('/project/${projectId}/team/${teamId}/sprint/${sprint._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right receipt
                                 span.title #{sprint.name}
                                 p
                                     | #{`${__('projectPage.tabs.management.sprintStart')}: ${sprint.startDate}`}
@@ -70,7 +72,7 @@ ul.collapsible(data-collapsible='expandable')
                 else
                     ul.collection#appendReleaseDiv
                         each release in releasesList
-                            li(id=`release_${release._id}`).collection-item.avatar.clickable-item
+                            li(id=`release_${release._id}`).collection-item.avatar
                                 i.material-icons.circle dns
                                 if release.status === commonReleaseStatus.ACTIVE.value
                                     button(class=`releaseButton_${release._id}`, onclick=`deleteRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
@@ -78,6 +80,8 @@ ul.collapsible(data-collapsible='expandable')
                                 if release.status === commonReleaseStatus.ACTIVE.value
                                     button(class=`releaseButton_${release._id}`, onclick=`closeRelease('${release._id}', '${release.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                         i.material-icons.right remove_circle
+                                button(onclick=`loadPage('/project/${projectId}/team/${teamId}/release/${release._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right receipt
                                 span.title #{release.name}
     li
         .collapsible-header
@@ -103,8 +107,10 @@ ul.collapsible(data-collapsible='expandable')
                 else
                     ul.collection#appendTagDiv
                         each tag in tagsList
-                            li(id=`tag_${tag._id}`).collection-item.avatar.clickable-item
+                            li(id=`tag_${tag._id}`).collection-item.avatar
                                 i.material-icons.circle bookmark
-                                button(onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                button(class=`tagButton_tag`, onclick=`deleteTag('${tag._id}', '${tag.name}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
                                     i.material-icons.right delete_forever
+                                button(onclick=`loadPage('/project/${projectId}/team/${teamId}/tag/${tag._id}')`).btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons
+                                    i.material-icons.right receipt
                                 span.title #{tag.name}

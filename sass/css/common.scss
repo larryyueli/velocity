@@ -84,6 +84,10 @@
     margin-right: 10px !important;
 }
 
+.margin-left-10 {
+    margin-left: 10px !important;
+}
+
 .margin-right-1-5em {
     margin-right: 1.5em !important;
 }
@@ -416,4 +420,18 @@ div.note-editor.note-frame.panel.panel-default{
         top: 15px;
         right: 15px;
     }
+}
+
+.chipIcon {
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    line-height: 32px;
+    padding-left: 8px;
+    color: #000;
+    opacity: .2;
+}
+
+.chipIcon:hover {
+    opacity: .5;
 }
