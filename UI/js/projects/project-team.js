@@ -612,3 +612,18 @@ function deleteSprint(sprintId, sprintName) {
         }
     });
 }
+
+/**
+ * download attachment
+*/
+function downloadAttachment(id) {
+    window.location = `/download/file?fileId=${id}`;
+}
+
+/**
+ * view image
+*/
+function viewImage(id) {
+    $('#imageViewer').modal('open');
+    $('#imageViewerImage').attr('src', `/picture/${id}`);
+}

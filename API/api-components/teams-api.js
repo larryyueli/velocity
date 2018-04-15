@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common_api = require('./common-api.js');
 const notifications_api = require('./notifications-api.js');
 
+const cfs = require('../../Backend/customFileSystem.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
@@ -516,25 +517,56 @@ const renderTeamPage = function (req, res) {
                                 members: resolvedMembers
                             };
 
-                            return res.status(200).render(common_api.pugPages.projectTeam, {
-                                user: req.session.user,
-                                project: projectObj,
-                                team: resolvedTeamObj,
-                                canSearch: true,
-                                sprintsList: sprintsObjList,
-                                releasesList: releasesObjList,
-                                tagsList: tagsObjList,
-                                isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
-                                isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
-                                isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
-                                isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
-                                forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
-                                deadlineDate: projectObj.deadlineDate,
-                                deadlineTime: projectObj.deadlineTime,
-                                commonSprintStatus: common_backend.sprintStatus,
-                                commonReleaseStatus: common_backend.releaseStatus,
-                                projectId: projectId,
-                                teamId: teamId
+                            let attachmentsList = [];
+                            const getAttachments = function (callback) {
+                                let attachmentsCounter = 0;
+                                if (attachmentsCounter === projectObj.attachments.length) {
+                                    callback();
+                                }
+
+                                for (let i = 0; i < projectObj.attachments.length; i++) {
+                                    const attId = projectObj.attachments[i];
+                                    cfs.fileExists(attId, function (err, fileObj) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                        }
+
+                                        if (fileObj) {
+                                            fileObj.isViewable = (common_backend.fileExtensions.IMAGES.indexOf(fileObj.extension) !== -1);
+                                            attachmentsList.push(fileObj);
+                                        }
+
+                                        attachmentsCounter++;
+                                        if (attachmentsCounter === projectObj.attachments.length) {
+                                            callback();
+                                        }
+                                    });
+                                }
+
+                            }
+
+                            getAttachments(function () {
+                                return res.status(200).render(common_api.pugPages.projectTeam, {
+                                    user: req.session.user,
+                                    project: projectObj,
+                                    team: resolvedTeamObj,
+                                    canSearch: true,
+                                    sprintsList: sprintsObjList,
+                                    releasesList: releasesObjList,
+                                    tagsList: tagsObjList,
+                                    isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
+                                    isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
+                                    isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
+                                    isProjectClosed: projectObj.status === common_backend.projectStatus.CLOSED.value,
+                                    forceDeadline: projectObj.deadlineDate && projectObj.deadlineTime && projectObj.deadlineDate !== '' && projectObj.deadlineTime !== '',
+                                    deadlineDate: projectObj.deadlineDate,
+                                    deadlineTime: projectObj.deadlineTime,
+                                    commonSprintStatus: common_backend.sprintStatus,
+                                    commonReleaseStatus: common_backend.releaseStatus,
+                                    projectId: projectId,
+                                    teamId: teamId,
+                                    attachments: attachmentsList
+                                });
                             });
                         });
                     });

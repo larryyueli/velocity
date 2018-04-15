@@ -392,11 +392,11 @@ const ticketTypes = Object.freeze({
 exports.ticketTypes = ticketTypes;
 
 // common ticket default assignee
-const noAssignee = 'No Assignee'; // TODO: find another unique text
+const noAssignee = 'No Assignee';
 exports.noAssignee = noAssignee;
 
 // common ticket default reporter
-const noReporter = 'No Reporter'; // TODO: find another unique text
+const noReporter = 'No Reporter';
 exports.noReporter = noReporter;
 
 // common ticket default points
@@ -452,6 +452,12 @@ const releaseStatus = Object.freeze({
     ACTIVE: { value: 2, text: 'active' }
 });
 exports.releaseStatus = releaseStatus;
+
+// common file extensions
+const fileExtensions = Object.freeze({
+    IMAGES: ['jpeg', 'png']
+});
+exports.fileExtensions = fileExtensions;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

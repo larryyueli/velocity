@@ -148,6 +148,70 @@ const handleModeSelectPath = function (req, res) {
         });
     });
 }
+
+/**
+ * root path to upload a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleUploadFilePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const uploadedFile = req.files.uploadedFile;
+    const fileExtension = uploadedFile.mimetype.split('/')[1];
+    const fileObject = {
+        fileId: common_backend.getUUID(),
+        fileName: uploadedFile.name,
+        filePath: `${common_backend.cfsTree.USERS}/${req.session.user._id}`,
+        fileExtension: fileExtension,
+        fileData: uploadedFile.data,
+        filePermissions: common_backend.cfsPermission.PUBLIC,
+        fileCreator: req.session.user._id
+    };
+
+    cfs.writeFile(fileObject, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        return res.status(200).send(fileObj._id);
+    });
+}
+
+/**
+ * root path to upload a file
+ *
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleDownloadFilePath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    const fileId = req.query.fileId;
+    cfs.fileExists(fileId, function (err, fileObj) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return res.status(500).send(err);
+        }
+
+        if (fileObj.permission !== common_backend.cfsPermission.PUBLIC) {
+            logger.error(JSON.stringify(common_backend.getError(2058)));
+            return res.status(400).send(common_backend.getError(2058));
+        }
+
+        return res.download(fileObj.path, fileObj.name, function (err) {
+            if (err) {
+                logger.error(JSON.stringify(err));
+            }
+        });
+    });
+}
 // </Requests Function> -----------------------------------------------
 
 // <Comments Requests> ------------------------------------------------
@@ -157,8 +221,10 @@ exports.handleCommentDeletePath = comment_api.deleteComment;
 // </Comments Requests> -----------------------------------------------
 
 // <Common Requests> ------------------------------------------------
+exports.handleDownloadFilePath = handleDownloadFilePath;
 exports.handleModeSelectPath = handleModeSelectPath;
 exports.handleRootPath = handleRootPath;
+exports.handleUploadFilePath = handleUploadFilePath;
 exports.initialize = initialize;
 exports.isActiveSession = common_api.isActiveSession;
 // </Common Requests> -----------------------------------------------

@@ -71,6 +71,7 @@ const addProject = function (project, callback) {
     projectToAdd.boardType = common.isValueInObjectWithKeys(project.boardType, 'value', common.boardTypes) ? project.boardType : common.boardTypes.UNKNOWN.value;
     projectToAdd.deadlineDate = typeof (project.deadlineDate) === common.variableTypes.STRING ? project.deadlineDate : '';
     projectToAdd.deadlineTime = typeof (project.deadlineTime) === common.variableTypes.STRING ? project.deadlineTime : '';
+    projectToAdd.attachments = Array.isArray(project.attachments) ? project.attachments : [];
 
     db.addProject(projectToAdd, callback);
 }
@@ -189,6 +190,10 @@ const updateProject = function (projectId, updateParams, callback) {
 
     if (Array.isArray(updateParams.members)) {
         updateQuery.$set.members = updateParams.members;
+    }
+
+    if (Array.isArray(updateParams.attachments)) {
+        updateQuery.$set.attachments = updateParams.attachments;
     }
 
     if (typeof (updateParams.teamSize) === common.variableTypes.NUMBER

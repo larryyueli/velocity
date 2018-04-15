@@ -162,9 +162,10 @@ const existsSync = function (entryId, callback) {
  * @param {function} callback callback function
  */
 const writeFile = function (fileObj, callback) {
-    const fullPath = path.resolve(`${fileObj.filePath}/${fileObj.fileName}.${fileObj.fileExtension}`);
+    const fullPath = path.resolve(`${fileObj.filePath}/${fileObj.fileId}.${fileObj.fileExtension}`);
     const fileObject = {
-        _id: fileObj.fileName,
+        _id: fileObj.fileId,
+        name: fileObj.fileName,
         path: fullPath,
         type: common.cfsTypes.FILE,
         extension: fileObj.fileExtension,
@@ -245,12 +246,39 @@ const createCustomFileSystem = function (callback) {
     });
 }
 
+/**
+ * copy the file into a new path
+ *
+ * @param {string} fileId if of the file to be moved
+ * @param {function} newPath new path of the file
+ * @param {function} callback callback function
+ */
+const moveFile = function (fileId, newPath, callback) {
+    /*
+    fs.rename('oldFile.txt', 'newFile.txt', (err) => {
+        if (err) throw err;
+        console.log('Rename complete!');
+    });*/
+}
+
+/**
+ * copy the file into a new path, sync
+ *
+ * @param {string} fileId if of the file to be moved
+ * @param {function} newPath new path of the file
+ */
+const moveFileSync = function (fileId, newPath) {
+    /*fs.renameSync('oldFile.txt', 'newFile.txt');*/
+}
+
 // <exports> -----------------------------------
 exports.createCustomFileSystem = createCustomFileSystem;
 exports.dirExists = existsSync;
 exports.fileExists = existsSync;
 exports.initialize = initialize;
 exports.mkdir = mkdir;
+exports.moveFile = moveFile;
+exports.moveFileSync = moveFileSync;
 exports.removeCustomFileSystem = removeCustomFileSystem;
 exports.resetCustomFileSystem = resetCustomFileSystem;
 exports.rmdir = rmdir;

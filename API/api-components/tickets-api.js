@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const common_api = require('./common-api.js');
 const notifications_api = require('./notifications-api.js');
 
+const cfs = require('../../Backend/customFileSystem.js');
 const common_backend = require('../../Backend/common.js');
 const logger = require('../../Backend/logger.js');
 const projects = require('../../Backend/projects.js');
@@ -127,6 +128,7 @@ const createTicket = function (req, res) {
     let sprints = req.body.sprints;
     let releases = req.body.releases;
     let tags = req.body.tags;
+    let attachments = req.body.attachments;
 
     if (!Array.isArray(sprints)) {
         try {
@@ -155,6 +157,16 @@ const createTicket = function (req, res) {
         catch (err) {
             logger.error(JSON.stringify(common_backend.getError(1011)));
             tags = [];
+        }
+    }
+
+    if (!Array.isArray(attachments)) {
+        try {
+            attachments = JSON.parse(attachments);
+        }
+        catch (err) {
+            logger.error(JSON.stringify(common_backend.getError(1011)));
+            attachments = [];
         }
     }
 
@@ -197,7 +209,8 @@ const createTicket = function (req, res) {
                     points: parseInt(req.body.points),
                     priority: parseInt(req.body.priority),
                     reporter: req.session.user._id,
-                    inBacklog: true
+                    inBacklog: true,
+                    attachments: attachments
                 };
 
                 if (assigneeObj) {
@@ -569,6 +582,33 @@ const renderTicketPage = function (req, res) {
                         }
                     }
 
+                    let attachmentsList = [];
+                    const getAttachments = function (callback) {
+                        let attachmentsCounter = 0;
+                        if (attachmentsCounter === ticketObj.attachments.length) {
+                            callback();
+                        }
+
+                        for (let i = 0; i < ticketObj.attachments.length; i++) {
+                            const attId = ticketObj.attachments[i];
+                            cfs.fileExists(attId, function (err, fileObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                }
+
+                                if (fileObj) {
+                                    fileObj.isViewable = (common_backend.fileExtensions.IMAGES.indexOf(fileObj.extension) !== -1);
+                                    attachmentsList.push(fileObj);
+                                }
+
+                                attachmentsCounter++;
+                                if (attachmentsCounter === ticketObj.attachments.length) {
+                                    callback();
+                                }
+                            });
+                        }
+
+                    }
 
                     projects.getSprintsByIds(projectId, teamId, ticketObj.sprints, function (err, sprintsObjList) {
                         if (err) {
@@ -588,64 +628,67 @@ const renderTicketPage = function (req, res) {
                                     return res.status(404).render(common_api.pugPages.pageNotFound);
                                 }
 
-                                return res.status(200).render(common_api.pugPages.ticketModification, {
-                                    user: req.session.user,
-                                    projectId: projectId,
-                                    teamId: teamId,
-                                    reporter: reporter,
-                                    assignee: assignee,
-                                    ticket: ticketObj,
-                                    comments: commentsList,
-                                    sprints: sprintsObjList,
-                                    releases: releasesObjList,
-                                    tags: tagsObjList,
-                                    relatedTickets: resolvedRelatedTickets,
-                                    resolveState: (state) => {
-                                        return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
-                                    },
-                                    resolveUsername: (userId) => {
-                                        return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
-                                    },
-                                    resolveCommentContent: (content) => {
-                                        let splitContent = content.split(' ');
-                                        let resolvedContent = '';
+                                getAttachments(function () {
+                                    return res.status(200).render(common_api.pugPages.ticketModification, {
+                                        user: req.session.user,
+                                        projectId: projectId,
+                                        teamId: teamId,
+                                        reporter: reporter,
+                                        assignee: assignee,
+                                        ticket: ticketObj,
+                                        comments: commentsList,
+                                        sprints: sprintsObjList,
+                                        releases: releasesObjList,
+                                        tags: tagsObjList,
+                                        relatedTickets: resolvedRelatedTickets,
+                                        resolveState: (state) => {
+                                            return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
+                                        },
+                                        resolveUsername: (userId) => {
+                                            return usersIdObj[userId] ? `${usersIdObj[userId].fname} ${usersIdObj[userId].lname}` : common_backend.noAssignee;
+                                        },
+                                        resolveCommentContent: (content) => {
+                                            let splitContent = content.split(' ');
+                                            let resolvedContent = '';
 
-                                        for (let i = 0; i < splitContent.length; i++) {
-                                            let phrase = splitContent[i];
-                                            let firstChar = phrase.charAt(0);
-                                            switch (firstChar) {
-                                                case '@':
-                                                    let userId = phrase.slice(1);
-                                                    let user = usersIdObj[userId];
-                                                    if (user) {
-                                                        resolvedContent += `<b>@${user.username}</b> `;
-                                                    } else {
-                                                        resolvedContent += `@UNKNOWN `;
-                                                    }
-                                                    break;
-                                                case '#':
-                                                    let ticketId = phrase.slice(1);
-                                                    let ticket = ticketsIdObj[ticketId];
-                                                    if (ticket) {
-                                                        resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
-                                                    } else {
-                                                        resolvedContent += `#UNKNOWN `;
-                                                    }
-                                                    break;
-                                                default:
-                                                    resolvedContent += `${phrase} `;
-                                                    break;
+                                            for (let i = 0; i < splitContent.length; i++) {
+                                                let phrase = splitContent[i];
+                                                let firstChar = phrase.charAt(0);
+                                                switch (firstChar) {
+                                                    case '@':
+                                                        let userId = phrase.slice(1);
+                                                        let user = usersIdObj[userId];
+                                                        if (user) {
+                                                            resolvedContent += `<b>@${user.username}</b> `;
+                                                        } else {
+                                                            resolvedContent += `@UNKNOWN `;
+                                                        }
+                                                        break;
+                                                    case '#':
+                                                        let ticketId = phrase.slice(1);
+                                                        let ticket = ticketsIdObj[ticketId];
+                                                        if (ticket) {
+                                                            resolvedContent += `<a href='/project/${ticket.projectId}/team/${ticket.teamId}/ticket/${ticket._id}'>#${ticket.displayId} </a>`;
+                                                        } else {
+                                                            resolvedContent += `#UNKNOWN `;
+                                                        }
+                                                        break;
+                                                    default:
+                                                        resolvedContent += `${phrase} `;
+                                                        break;
+                                                }
                                             }
-                                        }
 
-                                        return resolvedContent.trim();
-                                    },
-                                    canSearch: true,
-                                    commonSprintStatus: common_backend.sprintStatus,
-                                    commonReleaseStatus: common_backend.releaseStatus,
-                                    isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
-                                    isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
-                                    isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value
+                                            return resolvedContent.trim();
+                                        },
+                                        canSearch: true,
+                                        commonSprintStatus: common_backend.sprintStatus,
+                                        commonReleaseStatus: common_backend.releaseStatus,
+                                        isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
+                                        isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
+                                        isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
+                                        attachments: attachmentsList
+                                    });
                                 });
                             });
                         });
@@ -695,6 +738,7 @@ const updateTicket = function (req, res) {
     let sprints = req.body.sprints;
     let releases = req.body.releases;
     let tags = req.body.tags;
+    let attachments = req.body.attachments;
 
     if (!Array.isArray(sprints)) {
         try {
@@ -723,6 +767,16 @@ const updateTicket = function (req, res) {
         catch (err) {
             logger.error(JSON.stringify(common_backend.getError(1011)));
             tags = [];
+        }
+    }
+
+    if (!Array.isArray(attachments)) {
+        try {
+            attachments = JSON.parse(attachments);
+        }
+        catch (err) {
+            logger.error(JSON.stringify(common_backend.getError(1011)));
+            attachments = [];
         }
     }
 
@@ -773,7 +827,8 @@ const updateTicket = function (req, res) {
                         type: newType,
                         state: newState,
                         points: newPoints,
-                        priority: newPriority
+                        priority: newPriority,
+                        attachments: attachments
                     };
 
                     if (common_backend.isValueInObjectWithKeys(newState, 'value', common_backend.ticketStates)

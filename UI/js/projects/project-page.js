@@ -145,13 +145,64 @@ var selectedUsers = [];
 var selectedObjects = [];
 var userDragged = null;
 
+const uploadButton = '#uploadButton';
+const uploadModal = '#uploadModal';
+const uploadInput = '#file-input';
+const attachmentsDivId = '#attachmentsDivId';
+const uploadName = '#file-name';
+
+var attachmentsList = [];
+
 $(function () {
     // Navbar highlight
     $(navProjectsId).addClass('active');
     $(navmProjectsId).addClass('active');
 
+    initSummernote(descriptionId);
+    if ($(descriptionId).attr('value') === '1') {
+        $(descriptionId).summernote('disable');
+        $(descriptionId).summernote({
+            disableDragAndDrop: true,
+            shortcuts: false
+        });
+        $('div.note-btn-group.btn-group button').remove();
+        $('.note-toolbar-wrapper').remove();
+        $('.note-editable').css('background-color', '#ffffff')
+    }
+    $('#datepicker').pickadate({
+        onClose: () => {
+            $(":focus").blur();
+        },
+        selectMonths: true,
+        selectYears: 15,
+        today: translate('today'),
+        clear: translate('clear'),
+        close: translate('ok'),
+        closeOnSelect: false,
+        container: undefined
+    });
+
+    $('#timepicker').pickatime({
+        onClose: () => {
+            $(":focus").blur();
+        },
+        default: translate('now'),
+        fromnow: 0,
+        twelvehour: true,
+        donetext: translate('ok'),
+        cleartext: translate('clear'),
+        canceltext: translate('cancel'),
+        container: undefined,
+        autoclose: false,
+        ampmclickable: true
+    });
+
     // Dropdown setup
     $('select').material_select();
+
+    $('.attachmentsClass').each(function (index) {
+        attachmentsList.push($(this).attr('id'));
+    });
 
     // Event listeners
     // Filters
@@ -654,7 +705,8 @@ function generalSaveProject() {
                     deadlineDate: deadlineDate,
                     deadlineTime: deadlineTime,
                     canForceBoardType: canForceBoardTypeValue,
-                    canForceDeadline: canForceDeadlineValue
+                    canForceDeadline: canForceDeadlineValue,
+                    attachments: attachmentsList
                 },
                 success: function (data) {
                     successSnackbar(translate('updatedProject'));
@@ -756,7 +808,8 @@ function generalActiveUpdateProject() {
                 data: {
                     projectId: projectId,
                     title: titleText,
-                    description: descriptionText
+                    description: descriptionText,
+                    attachments: attachmentsList
                 },
                 success: function (data) {
                     successSnackbar(translate('updatedProject'));
@@ -1691,3 +1744,75 @@ function passTeamFilter(team) {
 }
 
 // ------------------------ End teams section -----------------------
+
+/**
+ * upload a file
+*/
+function uploadFile() {
+    const files = $(uploadInput).get(0).files;
+    var formData = new FormData();
+
+    if (files.length !== 1) {
+        return warningSnackbar(translate('mustImportOneFile'));
+    }
+
+    formData.append('uploadedFile', files[0]);
+
+    $(uploadButton).attr('disabled', true);
+
+    $.ajax({
+        type: 'PUT',
+        url: '/upload/file',
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (data) {
+            $(uploadModal).modal('close');
+            successSnackbar(translate('successfulFileUpload'));
+
+            attachmentsList.push(data);
+            $(attachmentsDivId).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div id="${data}" class="chip full-width related-chips text-left ticketStatusColors attachmentsClass">
+                        <p class="truncateTextCommon">${$(uploadName).val()}</p>
+                        <i onclick="removeAttachment('${data}')" class="close material-icons">delete_forever</i>
+                        <i onclick="downloadAttachment('${data}')" class="chipIcon material-icons">file_download</i>
+                    </div>
+                </div>
+            `);
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function () {
+            $(uploadButton).attr('disabled', false);
+        }
+    });
+}
+
+/**
+ * remove attachment
+*/
+function removeAttachment(id) {
+    if (attachmentsList.indexOf(id) !== -1) {
+        attachmentsList.splice(attachmentsList.indexOf(id), 1);
+    }
+}
+
+/**
+ * download attachment
+*/
+function downloadAttachment(id) {
+    window.location = `/download/file?fileId=${id}`;
+}
+
+/**
+ * view image
+*/
+function viewImage(id) {
+    $('#imageViewer').modal('open');
+    $('#imageViewerImage').attr('src', `/picture/${id}`);
+}

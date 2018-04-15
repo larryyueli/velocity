@@ -51,7 +51,10 @@ const currentTicketAssignee = '#current-ticket-assingee';
 const uploadButton = '#uploadButton';
 const uploadModal = '#uploadModal';
 const uploadInput = '#file-input';
+const attachmentsDivId = '#attachmentsDivId';
+const uploadName = '#file-name';
 
+var attachmentsList = [];
 var selectedAssignee = null;
 var usernamesArray = [];
 var selectedSprints = [];
@@ -92,6 +95,10 @@ $(function () {
 
     $('.tag-chips').each(function (index) {
         selectedTags.push($(this).attr('id'));
+    });
+
+    $('.attachmentsClass').each(function (index) {
+        attachmentsList.push($(this).attr('id'));
     });
 
     $('.related-chips').each(function (index) {
@@ -187,7 +194,8 @@ function updateTicketAction() {
             sprints: selectedSprints,
             releases: selectedReleases,
             tags: selectedTags,
-            links: selectedRelatedObj
+            links: selectedRelatedObj,
+            attachments: attachmentsList
         },
         success: function (data) {
             successSnackbar(translate('updatedTicket'));
@@ -625,19 +633,30 @@ function uploadFile() {
         return warningSnackbar(translate('mustImportOneFile'));
     }
 
-    formData.append('ticketImpotFile', files[0]);
+    formData.append('uploadedFile', files[0]);
 
     $(uploadButton).attr('disabled', true);
-    return;
+
     $.ajax({
         type: 'PUT',
-        url: '/users/import/file',
+        url: '/upload/file',
         processData: false,
         contentType: false,
         data: formData,
         success: function (data) {
             $(uploadModal).modal('close');
             successSnackbar(translate('successfulFileUpload'));
+
+            attachmentsList.push(data);
+            $(attachmentsDivId).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div id="${data}" class="chip full-width related-chips text-left ticketStatusColors attachmentsClass">
+                        <p class="truncateTextCommon">${$(uploadName).val()}</p>
+                        <i onclick="removeAttachment('${data}')" class="close material-icons">delete_forever</i>
+                        <i onclick="downloadAttachment('${data}')" class="chipIcon material-icons">file_download</i>
+                    </div>
+                </div>
+            `);
         },
         error: function (data) {
             handle401And404(data);
@@ -649,4 +668,28 @@ function uploadFile() {
             $(uploadButton).attr('disabled', false);
         }
     });
+}
+
+/**
+ * remove attachment
+*/
+function removeAttachment(id) {
+    if (attachmentsList.indexOf(id) !== -1) {
+        attachmentsList.splice(attachmentsList.indexOf(id), 1);
+    }
+}
+
+/**
+ * download attachment
+*/
+function downloadAttachment(id) {
+    window.location = `/download/file?fileId=${id}`;
+}
+
+/**
+ * view image
+*/
+function viewImage(id) {
+    $('#imageViewer').modal('open');
+    $('#imageViewerImage').attr('src', `/picture/${id}`);
 }
