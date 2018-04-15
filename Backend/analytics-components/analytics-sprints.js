@@ -91,6 +91,7 @@ const getCurrentAnalyticsForSprint = function (sprint, teams, tickets, callback)
             for (let z = 0; z < teams[j].members.length; z++) {
                 analyticsObj.members.push(createSprintMemberObject(teams[j].members[z], sprint._id, tickets));
             }
+            analyticsObj.members.push(createUnassignedMembersObject(tickets, teams[j]._id));
         }
     }
     getLimitedSprintAnalyticsListSorted({ $and: [{ sprintId: sprint._id }] }, { idate: 1 }, 0, function (err, sprintAnalytics) {
@@ -164,6 +165,7 @@ const createSprintMemberObject = function (userId, sprintId, tickets) {
         fname: usersIdObj[userId].fname,
         lname: usersIdObj[userId].lname,
         username: usersIdObj[userId].username,
+        unassigned: false,
         states: {},
         points: {}
     }
@@ -176,6 +178,34 @@ const createSprintMemberObject = function (userId, sprintId, tickets) {
     for (let i = 0; i < tickets.length; i++) {
         if (tickets[i].assignee === userId &&
             tickets[i].sprints.indexOf(sprintId) > -1) {
+            memberObject.states[tickets[i].state]++;
+            memberObject.points[tickets[i].state] += tickets[i].points;
+        }
+    }
+
+    return memberObject;
+}
+
+/**
+ * Creates an unassigned members object
+ * @param {*} tickets 
+ * @param {*} teamId 
+ */
+const createUnassignedMembersObject = function (tickets, teamId) {
+    let memberObject = {
+        unassigned: true,
+        states: {},
+        points: {}
+    }
+
+    Object.keys(common.ticketStates).forEach(state => {
+        memberObject.states[common.ticketStates[state].value] = 0;
+        memberObject.points[common.ticketStates[state].value] = 0;
+    });
+
+    for (let i = 0; i < tickets.length; i++) {
+        if (tickets[i].assignee === common.noAssignee
+            && tickets[i].teamId === teamId) {
             memberObject.states[tickets[i].state]++;
             memberObject.points[tickets[i].state] += tickets[i].points;
         }
