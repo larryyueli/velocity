@@ -113,6 +113,7 @@ exports.updateReleases = db_releases.updateReleases;
 // <Releases Analytics Collection> ----------------------------------------------
 exports.addReleaseAnalytics = db_analytics_releases.addReleaseAnalytics;
 exports.getLimitedReleaseAnalyticsListSorted = db_analytics_releases.getLimitedReleaseAnalyticsListSorted;
+exports.updateReleaseAnalytics = db_analytics_releases.updateReleaseAnalytics;
 // <Releases Analytics Collection> ----------------------------------------------
 
 // <Settings Collection> ----------------------------------------------
@@ -133,6 +134,7 @@ exports.updateSprints = db_sprints.updateSprints;
 // <Sprints Analytics Collection> ----------------------------------------------
 exports.addSprintAnalytics = db_analytics_sprints.addSprintAnalytics;
 exports.getLimitedSprintAnalyticsListSorted = db_analytics_sprints.getLimitedSprintAnalyticsListSorted;
+exports.updateSprintAnalytics = db_analytics_sprints.updateSprintAnalytics;
 // <Sprints Analytics Collection> ----------------------------------------------
 
 // <Tags Collection> ----------------------------------------------

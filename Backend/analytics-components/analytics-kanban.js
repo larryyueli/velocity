@@ -49,6 +49,7 @@ const saveKanbanAnalytics = function () {
  * @param {function} callback callback function
  */
 const saveSpecificKanbanAnalytics = function (teams, tickets, callback) {
+
     let kanbanAnalyticsList = [];
     for (let i = 0; i < teams.length; i++) {
         if (teams[i].boardType === common.boardTypes.KANBAN.value) {
@@ -161,8 +162,17 @@ const getKanbanAnalytics = function (team, tickets, callback) {
             cumulativeflowdiagram: []
         };
         for (let i = 0; i < kanbanAnalytics.length; i++) {
+            let currentMembers = common.convertJsonListToList('_id', kanbanAnalytics[i].members);
+            let pastMembers = common.convertJsonListToList('_id', kanban.members);
             kanban.members = kanbanAnalytics[i].members;
             kanban.cumulativeflowdiagram.push(kanbanAnalytics[i].cumulativeflowdiagram[0]);
+
+            for (let j = 0; j < pastMembers.length; j++) {
+                if (currentMembers.indexOf(pastMembers[j]) === -1) {
+                    kanban.members.push(createKanbanMemberObject(pastMembers[j], tickets, team._id));
+                    kanban.cumulativeflowdiagram = createFlowDiagramEntry(kanban.members);
+                }
+            }
         }
         return callback(null, kanban);
     });

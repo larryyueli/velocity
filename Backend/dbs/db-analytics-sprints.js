@@ -66,9 +66,28 @@ const getLimitedSprintAnalyticsListSorted = function (searchQuery, sortQuery, li
     });
 }
 
+/**
+ * find sprints by the search parameters,
+ * then update their values by the update parameters
+ *
+ * @param {object} searchQuery search parameters
+ * @param {object} updateQuery update parameters
+ * @param {function} callback callback function
+ */
+const updateSprintAnalytics = function (searchQuery, updateQuery, callback) {
+    sprintsAnalyticsCollection.update(searchQuery, updateQuery, function (err, result) {
+        if (err) {
+            return callback(common.getError(8005), null);
+        }
+
+        return callback(null, 'ok');
+    });
+}
+
 
 // <exports> -----------------------------------
 exports.addSprintAnalytics = addSprintAnalytics;
 exports.getLimitedSprintAnalyticsListSorted = getLimitedSprintAnalyticsListSorted;
 exports.initialize = initialize;
+exports.updateSprintAnalytics = updateSprintAnalytics;
 // </exports> ----------------------------------

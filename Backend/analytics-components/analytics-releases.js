@@ -34,15 +34,13 @@ const saveReleaseAnalytics = function () {
         projects.getProjectsTeams(projectsList, function (err, teams) {
             projects.getReleasesByProjectIds(projectsList, function (err, releases) {
                 projects.getTicketsByProjectIds(projectsList, function (err, tickets) {
-                    let releaseAnalyticsList = [];
                     for (let i = 0; i < releases.length; i++) {
-                        releaseAnalyticsList.push(getCurrentAnalyticsForRelease(releases[i], teams, tickets));
-                    }
-                    for (let i = 0; i < releaseAnalyticsList.length; i++) {
-                        db.addReleaseAnalytics(releaseAnalyticsList[i], function (err, analyticsObj) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
-                            }
+                        getCurrentAnalyticsForRelease(releases[i], teams, tickets, function (err, analyticsObj) {
+                            db.addReleaseAnalytics(analyticsObj, function (err, releaseObj) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                }
+                            });
                         });
                     }
                 });
@@ -60,17 +58,21 @@ const saveReleaseAnalytics = function () {
  * @param {function} callback callback function
  */
 const saveSpecificReleaseAnalytics = function (releaseObj, team, tickets, callback) {
-    let analyticsObj = getCurrentAnalyticsForRelease(releaseObj, [team], tickets);
-    db.addReleaseAnalytics(analyticsObj, callback);
+    getCurrentAnalyticsForRelease(releaseObj, [team], tickets, function (err, analyticsObj) {
+        db.addReleaseAnalytics(analyticsObj, callback);
+    });
 }
 
 /**
  * Gets the current analytics for a release
- * @param {object} release 
- * @param {array} teams 
- * @param {array} tickets 
+ * Also fixes discrepancies in past data when ran
+ * 
+ * @param {object} release release object
+ * @param {array} teams teams list
+ * @param {array} tickets tickets list
+ * @param {function} callback callback function
  */
-const getCurrentAnalyticsForRelease = function (release, teams, tickets) {
+const getCurrentAnalyticsForRelease = function (release, teams, tickets, callback) {
     let analyticsObj = {
         _id: common.getUUID(),
         date: common.getDate(),
@@ -87,8 +89,61 @@ const getCurrentAnalyticsForRelease = function (release, teams, tickets) {
             }
         }
     }
+    getLimitedReleaseAnalyticsListSorted({ $and: [{ releaseId: release._id }] }, { idate: 1 }, 0, function (err, releaseAnalytics) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return callback(common.getError(8002), null);
+        }
 
-    return analyticsObj;
+        let membersDeleted = [];
+        let membersAdded = [];
+        let updatedMembers = [];
+        if (releaseAnalytics.length !== 0) {
+            let currentMembers = common.convertJsonListToList('_id', analyticsObj.members);
+            let pastMembers = common.convertJsonListToList('_id', releaseAnalytics[releaseAnalytics.length - 1].members);
+            for (let i = 0; i < pastMembers.length; i++) {
+                if (currentMembers.indexOf(pastMembers[i]) === -1) {
+                    membersDeleted.push(createReleaseMemberObject(pastMembers[i], release._id, tickets));
+                }
+                for (let j = 0; j < currentMembers.length; j++) {
+                    if (pastMembers.indexOf(currentMembers[j]) === -1
+                        && updatedMembers.indexOf(currentMembers[j]) === -1) {
+                        updatedMembers.push(currentMembers[j]);
+                        membersAdded.push(createReleaseMemberObject(currentMembers[j], release._id, []));
+                    }
+                }
+            }
+            analyticsObj.members.push.apply(analyticsObj.members, membersDeleted);
+        }
+
+        let updatedAnalytics = [];
+        for (let i = 0; i < releaseAnalytics.length; i++) {
+            let pastMembers = common.convertJsonListToList('_id', releaseAnalytics[i].members);
+            for (let j = 0; j < updatedMembers.length; j++) {
+                if (pastMembers.indexOf(updatedMembers[j]) === -1) {
+                    releaseAnalytics[i].members.push.apply(releaseAnalytics[i].members, membersAdded);
+                    updatedAnalytics.push(releaseAnalytics[i]);
+                }
+            }
+        }
+
+        if (updatedAnalytics.length !== 0) {
+            let processedAnalytics = 0;
+            for (let i = 0; i < updatedAnalytics.length; i++) {
+                updateReleaseMembersAnalytics(updatedAnalytics[i], function (err, releaseObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err))
+                    }
+                    processedAnalytics++;
+                    if (processedAnalytics === updatedAnalytics.length) {
+                        return callback(null, analyticsObj);
+                    }
+                });
+            }
+        } else {
+            return callback(null, analyticsObj);
+        }
+    });
 }
 
 /**
@@ -141,49 +196,82 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
         releaseIdList.push({ releaseId: releaseIds[i] });
     }
 
-    getLimitedReleaseAnalyticsListSorted({ $and: [{ $or: releaseIdList }] }, { idate: 1 }, 0, function (err, releaseAnalytics) {
+    getCurrentAnalyticsForRelease(releases, [team], tickets, function (err, updateObj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(8002), null);
         }
-        let releasesList = [];
-        for (let i = 0; i < releaseAnalytics.length; i++) {
-            let currentReleases = common.convertJsonListToList('releaseId', releasesList);
-            let index = currentReleases.indexOf(releaseAnalytics[i].releaseId);
-            if (index === -1) {
-                releasesList.push({
-                    releaseId: releaseAnalytics[i].releaseId,
-                    releaseName: releaseAnalytics[i].releaseName,
-                    releaseStatus: releaseAnalytics[i].releaseStatus,
-                    history: [{
+
+        getLimitedReleaseAnalyticsListSorted({ $and: [{ $or: releaseIdList }] }, { idate: 1 }, 0, function (err, releaseAnalytics) {
+            if (err) {
+                logger.error(err);
+                return callback(common.getError(8002), null);
+            }
+            let releasesList = [];
+            for (let i = 0; i < releaseAnalytics.length; i++) {
+                let currentReleases = common.convertJsonListToList('releaseId', releasesList);
+                let index = currentReleases.indexOf(releaseAnalytics[i].releaseId);
+                if (index === -1) {
+                    releasesList.push({
+                        releaseId: releaseAnalytics[i].releaseId,
+                        releaseName: releaseAnalytics[i].releaseName,
+                        releaseStatus: releaseAnalytics[i].releaseStatus,
+                        history: [{
+                            date: releaseAnalytics[i].date,
+                            members: releaseAnalytics[i].members
+                        }]
+                    });
+                } else {
+                    if (releaseAnalytics[i].releaseStatus === common.releaseStatus.CLOSED.value) {
+                        releasesList[index].releaseStatus = common.releaseStatus.CLOSED.value;
+                    }
+                    releasesList[index].history.push({
                         date: releaseAnalytics[i].date,
                         members: releaseAnalytics[i].members
-                    }]
-                });
-            } else {
-                if (releaseAnalytics[i].releaseStatus === common.releaseStatus.CLOSED.value) {
-                    releasesList[index].releaseStatus = common.releaseStatus.CLOSED.value;
+                    });
                 }
-                releasesList[index].history.push({
-                    date: releaseAnalytics[i].date,
-                    members: releaseAnalytics[i].members
+            }
+            let activeStatusIndicies = [];
+            for (let i = 0; i < releasesList.length; i++) {
+                if (releasesList[i].releaseStatus === common.releaseStatus.ACTIVE.value) {
+                    activeStatusIndicies.push(i);
+                }
+            }
+            if (activeStatusIndicies.length === 0) {
+                return callback(null, releasesList);
+            }
+            let processedActives = 0;
+            for (let i = 0; i < activeStatusIndicies.length; i++) {
+                setUpReleaseActiveAppend(releases[activeStatusIndicies[i]], [team], tickets, activeStatusIndicies[i], function (err, todayObj) {
+                    releasesList[todayObj.index].history.push({
+                        date: todayObj.date,
+                        members: todayObj.members
+                    });
+                    processedActives++;
+                    if (processedActives === activeStatusIndicies.length) {
+                        return callback(null, releasesList);
+                    }
                 });
             }
-        }
-        for (let i = 0; i < releasesList.length; i++) {
-            if (releasesList[i].releaseStatus === common.releaseStatus.ACTIVE.value) {
-                let currentReleases = common.convertJsonListToList('_id', releases);
-                let index = currentReleases.indexOf(releaseAnalytics[i].releaseId);
-                let today = getCurrentAnalyticsForRelease(releases[index], [team], tickets);
-                releasesList[i].history.push({
-                    date: today.date,
-                    members: today.members
-                });
-            }
-        }
-        return callback(null, releasesList);
+        });
     });
 
+}
+
+/**
+ * Sets up the release object to be appended to history
+ * 
+ * @param {object} release release obj
+ * @param {object} team team obj
+ * @param {array} tickets tickets
+ * @param {int} index index in releasesList
+ * @param {function} callback callback function
+ */
+const setUpReleaseActiveAppend = function (release, team, tickets, index, callback) {
+    getCurrentAnalyticsForRelease(release, team, tickets, function (err, analyticsObj) {
+        analyticsObj.index = index;
+        return callback(null, analyticsObj);
+    });
 }
 
 /**
@@ -196,6 +284,20 @@ const getReleaseAnalytics = function (team, releases, tickets, callback) {
  */
 const getLimitedReleaseAnalyticsListSorted = function (searchQuery, sortQuery, lim, callback) {
     db.getLimitedReleaseAnalyticsListSorted(searchQuery, sortQuery, lim, callback);
+}
+
+/**
+ * Updates the release analytics members object
+ * @param {object} releaseAnalyticsObj release analytics object
+ * @param {function} callback callback function
+ */
+const updateReleaseMembersAnalytics = function (releaseAnalyticsObj, callback) {
+    let searchQuery = {};
+    searchQuery.$and = [{ _id: releaseAnalyticsObj._id }];
+    let updateQuery = {};
+    updateQuery.$set = {};
+    updateQuery.$set.members = releaseAnalyticsObj.members;
+    db.updateReleaseAnalytics(searchQuery, updateQuery, callback);
 }
 
 // <exports> -----------------------------------

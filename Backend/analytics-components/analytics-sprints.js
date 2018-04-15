@@ -34,16 +34,16 @@ const saveSprintAnalytics = function () {
         projects.getProjectsTeams(projectsList, function (err, teams) {
             projects.getSprintsByProjectIds(projectsList, function (err, sprints) {
                 projects.getTicketsByProjectIds(projectsList, function (err, tickets) {
-                    let sprintAnalyticsList = [];
                     for (let i = 0; i < sprints.length; i++) {
-                        sprintAnalyticsList.push(getCurrentAnalyticsForSprint(sprints[i], teams, tickets));
-                    }
-                    for (let i = 0; i < sprintAnalyticsList.length; i++) {
-                        db.addSprintAnalytics(sprintAnalyticsList[i], function (err, analyticsObj) {
-                            if (err) {
-                                logger.error(JSON.stringify(err));
-                            }
-                        });
+                        if (sprints[i].status === common.sprintStatus.ACTIVE.value) {
+                            getCurrentAnalyticsForSprint(sprints[i], teams, tickets, function (err, analyticsObj) {
+                                db.addSprintAnalytics(analyticsObj, function (err, sprintObj) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                    }
+                                });
+                            });
+                        }
                     }
                 });
             });
@@ -60,17 +60,21 @@ const saveSprintAnalytics = function () {
  * @param {function} callback callback function
  */
 const saveSpecificSprintAnalytics = function (sprintObj, team, tickets, callback) {
-    let analyticsObj = getCurrentAnalyticsForSprint(sprintObj, [team], tickets);
-    db.addSprintAnalytics(analyticsObj, callback);
+    getCurrentAnalyticsForSprint(sprintObj, [team], tickets, function (err, analyticsObj) {
+        db.addSprintAnalytics(analyticsObj, callback);
+    });
 }
 
 /**
  * Gets the current analytics for a sprint
- * @param {object} sprint 
- * @param {array} teams 
- * @param {array} tickets 
+ * Also fixes discrepancies in past data when ran
+ * 
+ * @param {object} sprint sprint object
+ * @param {array} teams teams list
+ * @param {array} tickets tickets list
+ * @param {function} callback callback function
  */
-const getCurrentAnalyticsForSprint = function (sprint, teams, tickets) {
+const getCurrentAnalyticsForSprint = function (sprint, teams, tickets, callback) {
     let analyticsObj = {
         _id: common.getUUID(),
         date: common.getDate(),
@@ -89,8 +93,61 @@ const getCurrentAnalyticsForSprint = function (sprint, teams, tickets) {
             }
         }
     }
+    getLimitedSprintAnalyticsListSorted({ $and: [{ sprintId: sprint._id }] }, { idate: 1 }, 0, function (err, sprintAnalytics) {
+        if (err) {
+            logger.error(JSON.stringify(err));
+            return callback(common.getError(8002), null);
+        }
 
-    return analyticsObj;
+        let membersDeleted = [];
+        let membersAdded = [];
+        let updatedMembers = [];
+        if (sprintAnalytics.length !== 0) {
+            let currentMembers = common.convertJsonListToList('_id', analyticsObj.members);
+            let pastMembers = common.convertJsonListToList('_id', sprintAnalytics[sprintAnalytics.length - 1].members);
+            for (let i = 0; i < pastMembers.length; i++) {
+                if (currentMembers.indexOf(pastMembers[i]) === -1) {
+                    membersDeleted.push(createSprintMemberObject(pastMembers[i], sprint._id, tickets));
+                }
+                for (let j = 0; j < currentMembers.length; j++) {
+                    if (pastMembers.indexOf(currentMembers[j]) === -1
+                        && updatedMembers.indexOf(currentMembers[j]) === -1) {
+                        updatedMembers.push(currentMembers[j]);
+                        membersAdded.push(createSprintMemberObject(currentMembers[j], sprint._id, []));
+                    }
+                }
+            }
+            analyticsObj.members.push.apply(analyticsObj.members, membersDeleted);
+        }
+
+        let updatedAnalytics = [];
+        for (let i = 0; i < sprintAnalytics.length; i++) {
+            let pastMembers = common.convertJsonListToList('_id', sprintAnalytics[i].members);
+            for (let j = 0; j < updatedMembers.length; j++) {
+                if (pastMembers.indexOf(updatedMembers[j]) === -1) {
+                    sprintAnalytics[i].members.push.apply(sprintAnalytics[i].members, membersAdded);
+                    updatedAnalytics.push(sprintAnalytics[i]);
+                }
+            }
+        }
+
+        if (updatedAnalytics.length !== 0) {
+            let processedAnalytics = 0;
+            for (let i = 0; i < updatedAnalytics.length; i++) {
+                updateSprintMembersAnalytics(updatedAnalytics[i], function (err, sprintObj) {
+                    if (err) {
+                        logger.error(JSON.stringify(err))
+                    }
+                    processedAnalytics++;
+                    if (processedAnalytics === updatedAnalytics.length) {
+                        return callback(null, analyticsObj);
+                    }
+                });
+            }
+        } else {
+            return callback(null, analyticsObj);
+        }
+    });
 }
 
 /**
@@ -143,49 +200,64 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
         sprintIdList.push({ sprintId: sprintIds[i] });
     }
 
-    getLimitedSprintAnalyticsListSorted({ $and: [{ $or: sprintIdList }] }, { idate: 1 }, 0, function (err, sprintAnalytics) {
+    getCurrentAnalyticsForSprint(sprints, [team], tickets, function (err, updateObj) {
         if (err) {
             logger.error(err);
             return callback(common.getError(8002), null);
         }
-        let sprintsList = [];
-        for (let i = 0; i < sprintAnalytics.length; i++) {
-            let currentSprints = common.convertJsonListToList('sprintId', sprintsList);
-            let index = currentSprints.indexOf(sprintAnalytics[i].sprintId);
-            if (index === -1) {
-                sprintsList.push({
-                    sprintId: sprintAnalytics[i].sprintId,
-                    sprintName: sprintAnalytics[i].sprintName,
-                    sprintStatus: sprintAnalytics[i].sprintStatus,
-                    sprintStart: sprintAnalytics[i].sprintStart,
-                    sprintEnd: sprintAnalytics[i].sprintEnd,
-                    history: [{
+
+        getLimitedSprintAnalyticsListSorted({ $and: [{ $or: sprintIdList }] }, { idate: 1 }, 0, function (err, sprintAnalytics) {
+            if (err) {
+                logger.error(err);
+                return callback(common.getError(8002), null);
+            }
+            
+            let sprintsList = [];
+            for (let i = 0; i < sprintAnalytics.length; i++) {
+                let currentSprints = common.convertJsonListToList('sprintId', sprintsList);
+                let index = currentSprints.indexOf(sprintAnalytics[i].sprintId);
+                if (index === -1) {
+                    sprintsList.push({
+                        sprintId: sprintAnalytics[i].sprintId,
+                        sprintName: sprintAnalytics[i].sprintName,
+                        sprintStatus: sprintAnalytics[i].sprintStatus,
+                        sprintStart: sprintAnalytics[i].sprintStart,
+                        sprintEnd: sprintAnalytics[i].sprintEnd,
+                        history: [{
+                            date: sprintAnalytics[i].date,
+                            members: sprintAnalytics[i].members
+                        }]
+                    });
+                } else {
+                    if (sprintAnalytics[i].sprintStatus === common.sprintStatus.CLOSED.value) {
+                        sprintsList[index].sprintStatus = common.sprintStatus.CLOSED.value;
+                    }
+                    sprintsList[index].history.push({
                         date: sprintAnalytics[i].date,
                         members: sprintAnalytics[i].members
-                    }]
-                });
-            } else {
-                if (sprintAnalytics[i].sprintStatus === common.sprintStatus.CLOSED.value) {
-                    sprintsList[index].sprintStatus = common.sprintStatus.CLOSED.value;
+                    });
                 }
-                sprintsList[index].history.push({
-                    date: sprintAnalytics[i].date,
-                    members: sprintAnalytics[i].members
-                });
             }
-        }
-        for (let i = 0; i < sprintsList.length; i++) {
-            if (sprintsList[i].sprintStatus === common.sprintStatus.ACTIVE.value) {
-                let currentSprints = common.convertJsonListToList('_id', sprints);
-                let index = currentSprints.indexOf(sprintAnalytics[i].sprintId);
-                let today = getCurrentAnalyticsForSprint(sprints[index], [team], tickets);
-                sprintsList[i].history.push({
-                    date: today.date,
-                    members: today.members
-                });
+            let activeFound = false;
+            for (let i = 0; i < sprintsList.length; i++) {
+                if (sprintsList[i].sprintStatus === common.sprintStatus.ACTIVE.value) {
+                    let currentSprints = common.convertJsonListToList('_id', sprints);
+                    let indexInSprints = currentSprints.indexOf(sprintAnalytics[i].sprintId);
+                    let indexToSaveIn = i;
+                    getCurrentAnalyticsForSprint(sprints[indexInSprints], [team], tickets, function(err, todayObj) {
+                        sprintsList[indexToSaveIn].history.push({
+                            date: todayObj.date,
+                            members: todayObj.members
+                        });
+                        return callback(null, sprintsList);
+                    });
+                    activeFound = true;
+                }
             }
-        }
-        return callback(null, sprintsList);
+            if (!activeFound) {
+                return callback(null, sprintsList);
+            }
+        });
     });
 
 }
@@ -200,6 +272,20 @@ const getSprintAnalytics = function (team, sprints, tickets, callback) {
  */
 const getLimitedSprintAnalyticsListSorted = function (searchQuery, sortQuery, lim, callback) {
     db.getLimitedSprintAnalyticsListSorted(searchQuery, sortQuery, lim, callback);
+}
+
+/**
+ * Updates the sprint analytics members object
+ * @param {object} sprintAnalyticsObj sprint analytics object
+ * @param {function} callback callback function
+ */
+const updateSprintMembersAnalytics = function (sprintAnalyticsObj, callback) {
+    let searchQuery = {};
+    searchQuery.$and = [{ _id: sprintAnalyticsObj._id }];
+    let updateQuery = {};
+    updateQuery.$set = {};
+    updateQuery.$set.members = sprintAnalyticsObj.members;
+    db.updateSprintAnalytics(searchQuery, updateQuery, callback);
 }
 
 // <exports> -----------------------------------
