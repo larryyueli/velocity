@@ -298,10 +298,18 @@ const renderReleasePage = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            return res.status(200).render(common_api.pugPages.releasePage, {
-                user: req.session.user,
-                projectId: projectId,
-                teamId: teamId
+            projects.getSprintById(projectId, teamId, releaseId, function (err, releaseObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).render(common_api.pugPages.releasePage, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    release: releaseObj
+                });
             });
         });
     });

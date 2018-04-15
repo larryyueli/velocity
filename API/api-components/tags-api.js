@@ -235,10 +235,18 @@ const renderTagPage = function (req, res) {
                 return res.status(404).render(common_api.pugPages.pageNotFound);
             }
 
-            return res.status(200).render(common_api.pugPages.tagPage, {
-                user: req.session.user,
-                projectId: projectId,
-                teamId: teamId
+            projects.getTagById(projectId, teamId, tagId, function (err, tagObj) {
+                if (err) {
+                    logger.error(JSON.stringify(err));
+                    return res.status(404).render(common_api.pugPages.pageNotFound);
+                }
+
+                return res.status(200).render(common_api.pugPages.tagPage, {
+                    user: req.session.user,
+                    projectId: projectId,
+                    teamId: teamId,
+                    tag: tagObj
+                });
             });
         });
     });
