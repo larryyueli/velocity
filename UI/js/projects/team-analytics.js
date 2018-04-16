@@ -104,8 +104,10 @@ const releasesAutocompleteId = '#releasesAutocomplete';
 var globalDateOptions = { weekday: 'long', year: 'numeric', month: 'numeric', day: 'numeric' };
 
 $(function () {
-    startLoad(analyticsLoaderId, scrumAnalyticsId);
-    queryScrumStatistics();
+    $(optionAnalyticsId).click(() => {
+        startLoad(analyticsLoaderId, scrumAnalyticsId);
+        queryScrumStatistics();
+    });
 });
 
 function queryScrumStatistics() {
@@ -313,8 +315,7 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
 
     var options = {
         legend: {
-            display: true,
-            position: 'right'
+            display: false
         },
         tooltips: {
             callbacks: {
@@ -561,8 +562,7 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
 
     var options = {
         legend: {
-            display: true,
-            position: 'right'
+            display: false
         },
         tooltips: {
             callbacks: {
@@ -886,8 +886,7 @@ function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
 
     var options = {
         legend: {
-            display: true,
-            position: 'right'
+            display: false
         },
         tooltips: {
             callbacks: {

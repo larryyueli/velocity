@@ -40,8 +40,10 @@ $(function () {
         displayIssuesList();
     });
 
-    startLoad(issuesLoadId, issuesListId);
-    getIssues();
+    $(optionIssuesId).click(() => {
+        startLoad(issuesLoadId, issuesListId);
+        getIssues();
+    });
 });
 
 function getIssues() {

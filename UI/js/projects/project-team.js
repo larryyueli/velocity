@@ -46,6 +46,11 @@ const assigneeAutocompleteId = '#assigneeAutocomplete';
 const sprintFilterUserAutocompleteId = '#sprintFilterUserAutocomplete';
 const releaseFilterUserAutocompleteId = '#releaseFilterUserAutocomplete';
 
+const optionAnalyticsId = '#option-analytics';
+const optionBacklogId = '#option-backlog';
+const optionBoardId = '#option-board';
+const optionIssuesId = '#option-issues';
+
 var releaseComponent = null;
 var selectedAssignee = null;
 var selectedAssigneeBoard = null;

@@ -20,36 +20,36 @@ block content
         .row
             .col.s12
                 .row
-                    ul.tabs
-                        li.tab.col.s2
-                            a.noLineLink.active#option-board(href='#overview')
+                    ul.tabs.overflow-x-hidden.text-align-center
+                        li.tab
+                            a.noLineLink.active#option-overview(href='#overview')
                                 i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour assignment
                                 |
                                 .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.overview.title')}
                         if !isUnKnownBoardType
-                            li.tab.col.s2
+                            li.tab
                                 a.noLineLink.active#option-board(href='#board')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.board.title')}
                             if isScrumBoardType
-                                li.tab.col.s2
+                                li.tab
                                     a.noLineLink#option-backlog(href='#backlog')
                                         i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour view_list
                                         |
                                         .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.backlog.title')}
-                            li.tab.col.s2
+                            li.tab
                                 a.noLineLink#option-issues(href='#issues')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour message
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.issues.title')}
-                            li.tab.col.s2
-                                a.noLineLink.active#option-board(href='#analytics')
+                            li.tab
+                                a.noLineLink.active#option-analytics(href='#analytics')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour timeline
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.analytics.title')}
-                            li.tab.col.s2
-                                a.noLineLink.active#option-board(href='#management')
+                            li.tab
+                                a.noLineLink.active#option-management(href='#management')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour settings
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projects.tabs.management.title')}

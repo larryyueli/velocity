@@ -57,8 +57,10 @@ $(function () {
         displaySprintsList();
     });
 
-    startLoad(sprintsLoadId, sprintsListId);
-    getBacklog();
+    $(optionBacklogId).click(() => {
+        startLoad(sprintsLoadId, sprintsListId);
+        getBacklog();
+    });
 });
 
 function getBacklog() {
