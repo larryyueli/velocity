@@ -252,6 +252,7 @@ app.use(function (req, res, next) {
 
 // <Get Requests> ------------------------------------------------
 app.get('/', api.handleRootPath);
+app.get('/about', api.handleAboutPath);
 app.get('/components/projectsAdminsList', api.handleProjectsAdminsListComponentPath);
 app.get('/components/projectsGroupAssign', api.handleProjectsGroupAssignPath);
 app.get('/components/projectsList', api.handleProjectsListComponentPath);
