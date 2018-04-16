@@ -1,4 +1,33 @@
 {
+	"about": {
+		"analytics": {
+			"start": "Analytics"
+		},
+		"boards": {
+			"start": "Boards"
+		},
+		"intro": {
+			"start": "What is Velocity?",
+			"sentence1": "Velocity is a CS organizational website, offering multiple kinds of developmental environments that can be used by both classes and groups."
+		},
+		"modes": {
+			"start": "Modes"
+		},
+		"name": "About",
+		"projects": {
+			"start": "Projects"
+		},
+		"teams": {
+			"start": "Teams"
+		},
+		"tickets": {
+			"start": "Tickets"
+		},
+		"who": {
+			"start": "Who are we?",
+			"sentence1": "Velocity's development started at and has been supported by the University of Toronto Mississauga. Below is a list of the contributors so far."
+		}
+	},
 	"actions": {
 		"activate": "Activate",
 		"apply": "Apply",
