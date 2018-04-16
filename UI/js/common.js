@@ -67,6 +67,7 @@ UI Translations for user display
 10000 -> sprints
 11000 -> releases
 12000 -> tags
+13000 -> feedback
 */
 const translations = Object.freeze({
     //1000 system errors
@@ -199,6 +200,10 @@ const translations = Object.freeze({
     12006: 'Failed to create a tag',
     12007: 'Failed to update a tag',
 
+    //13,000 feedback
+    13005: 'Failed to submit feedback',
+    13006: 'Can not access feedback page',
+
     activatedProject: 'Project has been activated',
     closedProject: 'Project has been closed',
     activateProjectPrompt: 'Are you sure you want to activate this project?',
@@ -235,6 +240,7 @@ const translations = Object.freeze({
     progressTickets: 'In Development Tickets',
     randomize: 'Randomize',
     randomizeRemainingWarning: 'Are you sure you would like to randomize all unassigned users in new groups?',
+    successFeedback: 'Feedback sent successfully',
     selectGroup: 'Select Group',
     size: 'Size',
     successfulFileUpload: 'File uploaded successfully',

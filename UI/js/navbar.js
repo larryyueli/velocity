@@ -23,6 +23,9 @@ var noNotifications = $('#noNotifications');
 var clearNotifications = $('#clearNotifications');
 var navSearchField = $('#navSearchField');
 
+const feedbackSubjectId = '#feedbackSubject';
+const feedbackMessageId = '#feedbackMessage';
+
 const logoutButton = $('#nav-logout');
 
 $('.button-collapse').sideNav({
@@ -174,6 +177,7 @@ logoutButton.click(function () {
 });
 
 $(function () {
+    $('#feedbackModal').modal();
     var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
     socket.onmessage = function (event) {
         addNotification(JSON.parse(event.data)['notifList']);
@@ -190,3 +194,28 @@ $(function () {
         });
     }
 });
+
+function openFeedback() {
+    $('#feedbackModal').modal('open');
+}
+
+function uploadFeedback() {
+    $.ajax({
+        type: 'PUT',
+        url: '/feedback/create',
+        data: {
+            subject: $(feedbackSubjectId).val(),
+            body: $(feedbackMessageId).val()
+        },
+        success: function (data) {
+            $('#feedbackModal').modal('close');
+            successSnackbar(translate('successFeedback'));
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        }
+    });
+}
