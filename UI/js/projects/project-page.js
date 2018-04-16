@@ -85,6 +85,7 @@ const joinGroupId = '#joinGroup';
 const joinLinkId = '#joinLink';
 const leaveGroupId = '#leaveGroup';
 const membersId = '#members';
+const myProjectAdminId = '#myProjectAdmin';
 const nameId = '#name';
 const newGroupNameId = '#newGroupName';
 const newGroupId = '#newGroup';
@@ -112,9 +113,6 @@ const unassignedUserListId = '#unassignedList';
 const unassignedUserListName = 'unassignedList';
 const unassignedUsersRowId = '#unassignedUsersRow';
 const userGroupId = '#userGroup';
-
-// Options in the select
-const optionGroups = $('#option-groups');
 
 // Filter Ids
 const adminsSearchId = '#adminsSearch';
@@ -144,6 +142,13 @@ const generalActiveUpdateButton = '#generalActiveUpdateButton';
 // Navbar Ids
 const navmProjectsId = '#navm-projects';
 const navProjectsId = '#nav-projects';
+
+// Tab Ids
+const optionAnalyticsId = '#option-analytics';
+const optionBoardsId = '#option-boards';
+const optionGroupsId = '#option-groups';
+const optionUsersId = '#option-users';
+
 
 // Drag Variables
 var inDragMode = false;
@@ -381,20 +386,32 @@ $(function () {
     $(canForceBoardType).change();
     $(canForceDeadline).change();
 
-    // Loads the groups and unassigned users, and starts the loaders
-    startLoad(groupLoadId, groupListId);
-    startLoad(unassignedLoadId, unassignedUserListId);
-    getGroupAssign();
+    $(optionAnalyticsId).click(() => {
+        startLoad(analyticsLoadId, analyticsListId);
+        getAnalytics();
+    });
 
-    startLoad(projectAdminsLoadId, projectAdminsListId);
-    startLoad(projectUsersLoadId, projectUsersListId);
-    getUsersList();
+    $(optionBoardsId).click(() => {
+        startLoad(teamsloadId, teamslistId);
+        getTeamsList();
+    });
 
-    startLoad(teamsloadId, teamslistId);
-    getTeamsList();
+    $(optionGroupsId).click(() => {
+        startLoad(groupLoadId, groupListId);
+        startLoad(unassignedLoadId, unassignedUserListId);
+        getGroupAssign();
+    });
 
-    startLoad(analyticsLoadId, analyticsListId);
-    getAnalytics();
+    $(optionUsersId).click(() => {
+        startLoad(projectAdminsLoadId, projectAdminsListId);
+        startLoad(projectUsersLoadId, projectUsersListId);
+        getUsersList();
+    });
+
+    if ($(myProjectAdminId).html() !== 'true') {
+        startLoad(groupLoadId, groupListId);
+        getGroupAssign();
+    }
 });
 
 // ----------------------- Begin general helpers section -----------------------
@@ -1697,7 +1714,7 @@ function selectUser(event, clicked) {
     const nameSplit = clicked.find('#name').text().split('-');
     const userName = nameSplit[nameSplit.length - 1].trim();
 
-    if (event.ctrlKey) {
+    if (event.ctrlKey || event.metaKey) {
         if (selectedUsers.indexOf(userName) !== -1) {
             let usernameIndex = selectedUsers.indexOf(userName);
             selectedUsers.splice(usernameIndex, 1);

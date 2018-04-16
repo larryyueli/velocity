@@ -500,5 +500,6 @@ const initSummernote = function (descriptionId) {
     $('.modal').modal({
         dismissible: false
     });
+    if ($(descriptionId) && $(descriptionId))
     $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
 }

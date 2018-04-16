@@ -59,8 +59,10 @@ const allStatuses = ['new', 'inDevelopment', 'codeReview', 'readyForTest', 'inTe
 $(function () {
     $('.collapsible').collapsible();
 
-    startLoad(boardsUserLoadId, boardsUserListId);
-    getBoard();
+    $(optionBoardId).click(() => {
+        startLoad(boardsUserLoadId, boardsUserListId);
+        getBoard();
+    });
 });
 
 function getBoard() {
@@ -271,7 +273,7 @@ function ticketDragStartHandler(ev) {
 
 function ticketDragoverHandler(ev, to) {
     if (!isReadonly && dataFrom !== to && dataUser === $(ev.currentTarget).attr('value')) {
-        ev.currentTarget.style.border = 'green dashed 2px';
+        ev.currentTarget.style.border = `${colours.green} dashed 2px`;
         ev.dataTransfer.dropEffect = 'move';
         ev.preventDefault();
     }
