@@ -22,67 +22,86 @@ block content
                     .card-action
                         p #{__('about.who.sentence1')}
                         ol
-                        li Ahmed Qarmout: since January 2018
-                        li Ramy Esteero: since January 2018
-                        li Sergey Gayvoronskiy: since January 2018
-                        p Supervisor: Larry Yueli Zhang
+                        li #{`Ahmed Qarmout: ${__('about.since.january2018')}`}
+                        li #{`Ramy Esteero: ${__('about.since.january2018')}`}
+                        li #{`Sergey Gayvoronskiy: ${__('about.since.january2018')}`}
+                        p #{`${__('about.supervisor')}: Larry Yueli Zhang`}
                 .card
                     .card-title 
                         h4#title General Information
                     .card-action
                         .row
+                            hr
                             .col.l2.m3.s12
-                                i.material-icons.large whatshot
+                                i.material-icons.large settings
                             .col.l10.m9.s12
-                                h5 Questions
-                                p The amount of points recieved upon answering a question correctly depends on how many people have already answered the question. The maximum and minimum amount of points recieved is provided by the instructor.
-                                | There are 6 question types:
-                                ol
-                                li Choose All
-                                li Matching
-                                li Multiple Choice
-                                li Ordering
-                                li Regular
-                                li True and False
-                                p Answering a question inncorecty will display a hint if provided by the instructor. You will also be locked out of the question for an amount of time that is set by the instructor.
-                                | Answering a question correctly allows the student to rate the question's difficulty.
+                                h5 #{__('about.modes.start')}
+                                p #{__('about.modes.sentence1')}
+                                p #{__('about.modes.sentence2')}
+                                p #{__('about.modes.sentence3')}
                         .row
                             hr
                             .col.l2.m3.s12
-                                i.material-icons.large trending_up
+                                i.material-icons.large folder_open
                             .col.l10.m9.s12
-                                h5 Analytics
-                                p Here is were you monitor your daily preformance with respect to the class.
-                                | There are many things that can be seen in the analytics, such as :
+                                h5 #{__('about.projects.start')}
+                                p #{__('about.projects.sentence1')}
                                 ol
-                                li Questions Answered
-                                li Accuracy
-                                li Points
-                                li Points Per Attempt
-                                li Overall Points
-                                li Question Points Distribution
-                                li Question Accuracy Distribution
-                                p This will display your score VS. the average score of the class, and your ranking in the class in all the above categories. Daily analytics are updated at midnight.
+                                li #{__('about.projects.point1')}
+                                li #{__('about.projects.point2')}
+                                li #{__('about.projects.point3')}
+                                li #{__('about.projects.point4')}
+                                li #{__('about.projects.point5')}
+                        .row
+                            hr
+                            .col.l2.m3.s12
+                                i.material-icons.large people
+                            .col.l10.m9.s12
+                                h5 #{__('about.teams.start')}
+                                p #{__('about.teams.sentence1')}
+                                p #{__('about.teams.sentence2')}
+                                p #{__('about.teams.sentence3')}
+                        .row
+                            hr
+                            .col.l2.m3.s12
+                                i.material-icons.large grid_on
+                            .col.l10.m9.s12
+                                h5 #{__('about.boards.start')}
+                                p #{__('about.boards.sentence1')}
+                                p #{__('about.boards.sentence2')}
+                                p #{__('about.boards.sentence3')}
                         .row
                             hr
                             .col.l2.m3.s12
                                 i.material-icons.large list
                             .col.l10.m9.s12
-                                h5 Leaderboard
-                                p 
-                                | There are four types of leaderboards; Overall, Points, Accuracy, and Points Per Attempt.
-                                | The leaderboard is only displayed when there are 3 or more students enrolled in the course.
-                                | The amount of students that appear on the leaderboard is controlled by the course instructor, however, you will always be able to see your rank in the leaderboard.
+                                h5 #{__('about.tickets.start')}
+                                p #{`${__('about.tickets.sentence1')} ${__('about.tickets.sentence2')}`}
                         .row
                             hr
                             .col.l2.m3.s12
-                                i.material-icons.large feedback
+                                i.material-icons.large web
                             .col.l10.m9.s12
-                                h5 Feedback
-                                p 
-                                | There are two types of feedback, feedback for the course instructor and feedback for the Quizzard developers.
-                                | Students are able to submit feedback that only the instructor is able to view. Both students and instructors are able
-                                | to submit feedback for the developers. 
+                                h5 #{__('about.management.start')}
+                                p #{__('about.management.sentence1')}
+                                ol
+                                li #{__('about.management.point1')}
+                                li #{__('about.management.point2')}
+                                li #{__('about.management.point3')}
+                        .row
+                            hr
+                            .col.l2.m3.s12
+                                i.material-icons.large trending_up
+                            .col.l10.m9.s12
+                                h5 #{__('about.analytics.start')}
+                                p #{__('about.analytics.sentence1')}
+                                ol
+                                li #{__('about.analytics.point1')}
+                                li #{__('about.analytics.point2')}
+                                li #{__('about.analytics.point3')}
+                                li #{__('about.analytics.point4')}
+                                li #{__('about.analytics.point5')}
+                                li #{__('about.analytics.point6')}
             
-        p.text-center Velocity is licensed under the GNU General Public License v3.0.
-        p.text-center Copyright &copy; 2018
+        p.text-center #{__('about.license')}
+        p.text-center #{__('about.copyright')} &copy; 2018
