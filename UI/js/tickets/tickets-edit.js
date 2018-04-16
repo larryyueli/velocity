@@ -53,6 +53,9 @@ const uploadModal = '#uploadModal';
 const uploadInput = '#file-input';
 const attachmentsDivId = '#attachmentsDivId';
 const uploadName = '#file-name';
+const viewDescription = '#viewDescription';
+const editCard = '#editCard';
+const viewCard = '#viewCard';
 
 var attachmentsList = [];
 var selectedAssignee = null;
@@ -111,6 +114,15 @@ $(function () {
     selectedAssignee = $(currentTicketAssignee).html();
 
     initSummernote(descriptionId);
+    initSummernote(viewDescription);
+    $(viewDescription).summernote('disable');
+    $(viewDescription).summernote({
+        disableDragAndDrop: true,
+        shortcuts: false
+    });
+    $('#viewCard div.note-btn-group.btn-group button').remove();
+    $('#viewCard .note-toolbar-wrapper').remove();
+    $('#viewCard .note-editable').css('background-color', '#ffffff');
 
     getListOfAssignee();
     getListOfSprints();
@@ -692,4 +704,12 @@ function downloadAttachment(id) {
 function viewImage(id) {
     $('#imageViewer').modal('open');
     $('#imageViewerImage').attr('src', `/picture/${id}`);
+}
+
+/**
+ * toggle edit mode
+ */
+function toggleEditMode() {
+    $(viewCard).addClass('hidden');
+    $(editCard).removeClass('hidden');
 }

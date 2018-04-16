@@ -33,7 +33,104 @@ block content
         .row
             .col.s12
                 #userTicket
-                    .card.center
+                    .card.center#viewCard
+                        .card-content
+                            .row
+                                .input-field.padding-10
+                                    label #{__('tickets.id')}: #{ticket.displayId}
+                            .row
+                                .input-field.padding-10
+                                    label #{__('tickets.ticketTitle')}
+                                    br
+                                    h6.left #{`${ticket.title}`}
+                        .card-action
+                            .row
+                                .col.s12.l8.margin-10.secondaryColour-border-colour.padding-top-0
+                                    .row
+                                        .input-field.padding-10.col.s12.m3.padding-top-0
+                                            label #{__('tickets.type')}
+                                            br
+                                            h6.left #{__(`tickets.types.${ticketType}`)}
+                                        .input-field.padding-10.col.s12.m3.padding-top-0
+                                            label #{__('tickets.state')}
+                                            br
+                                            h6.left #{__(`tickets.states.${ticketState}`)}
+                                        .input-field.padding-10.col.s12.m3.padding-top-0
+                                            label #{__('tickets.priority')}
+                                            br
+                                            h6.left #{__(`tickets.priorities.${ticketPriority}`)}
+                                        .input-field.padding-10.col.s12.m3.padding-top-0
+                                            label #{__('tickets.points')}
+                                            br
+                                            h6.left #{`${ticket.points}`}
+                                    .row
+                                        .input-field.padding-10.padding-top-0
+                                            label(for='description') #{__('tickets.description')}
+                                        .input-field.padding-10.padding-top-0
+                                            #viewDescription #{ticket.description}
+                                        .input-field.padding-10.padding-top-0
+                                            each attachment in attachments
+                                                .row.margin-bottom-0.margin-right-10
+                                                    .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                                        p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
+                                                        i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
+                                                        if attachment.isViewable
+                                                            i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
+                                    if false
+                                        .row.subtasksRow
+                                            .input-field.padding-10
+                                                input.validate(type='text', name='subtasks')
+                                                label(for='description') #{__('tickets.subtasks')}
+                                    .row.milestoneIssuesRow
+                                        .input-field.padding-10
+                                            input.validate(type='text', name='milestoneIssues')
+                                            label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
+                                    .row
+                                        .input-field.padding-10
+                                            each relatedTicket in relatedTickets
+                                                .row.margin-bottom-0.margin-right-10
+                                                    .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
+                                                        img(src=`/picture/${relatedTicket.assigneePicture}`)
+                                                        p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                .col.s12.l4
+                                    .row
+                                        .input-field.padding-10
+                                            label(for='autocomplete-input') #{__('tickets.reporter')}
+                                            br
+                                            h6 #{`${reporter}`}
+                                    .row
+                                        .input-field.padding-10
+                                            label(for='assigneeAutocomplete') #{__('tickets.assignee')}
+                                            br
+                                            h6 #{`${assignee}`}
+                                    .row.hidden #{ticket.assignee}
+                                    .row.margin-bottom-0.margin-top-0
+                                        .input-field.padding-10
+                                            label #{__('tickets.release')}
+                                            br
+                                            each release in releases
+                                                .chip.release-chips(id=`${release._id}`)
+                                                    | #{release.name}
+                                    if isScrumBoardType
+                                        .row.margin-bottom-0.margin-top-0
+                                            .input-field.padding-10
+                                                label #{__('tickets.sprints')}
+                                                br
+                                                each sprint in sprints
+                                                    .chip.sprint-chips(id=`${sprint._id}`)
+                                                        | #{sprint.name}
+                                    .row.margin-bottom-0.margin-top-0
+                                        .input-field.padding-10
+                                            label #{__('tickets.tags')}
+                                            br
+                                            each tag in tags
+                                                .chip.tag-chips(id=`${tag._id}`)
+                                                    | #{tag.name}
+                            if !isProjectClosed
+                                .row
+                                    button.waves-effect.waves-light.btn.primaryColour-background-colour(onclick='toggleEditMode()') #{__('actions.edit')}
+                                        i.material-icons.right mode_edit
+                    .card.center.hidden#editCard
                         .card-content
                             .row
                                 .input-field.padding-10
@@ -95,6 +192,7 @@ block content
                                                 .row.margin-bottom-0.margin-right-10
                                                     .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
                                                         p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
+                                                        i.close.material-icons(onclick=`removeAttachment('${attachment._id}')`) delete_forever
                                                         i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
                                                         if attachment.isViewable
                                                             i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview

@@ -13,7 +13,7 @@ block content
         h3 #{__('feedback.title')}
         ul.collection
             if feedbackList.length === 0
-                h6.center #{__('feedback.noFeedback')}
+                h6.center !{__('feedback.noFeedback')}
             else
                 each feedback in feedbackList
                     li.collection-item.avatar

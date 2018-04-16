@@ -152,6 +152,22 @@ const handleModeSelectPath = function (req, res) {
 }
 
 /**
+ * path to get to the about page
+ * 
+ * @param {object} req req object
+ * @param {object} res res object
+ */
+const handleAboutPath = function (req, res) {
+    if (!common_api.isActiveSession(req)) {
+        return res.status(401).render(common_api.pugPages.login);
+    }
+
+    return res.status(200).render(common_api.pugPages.about, {
+        user: req.session.user
+    });
+}
+
+/**
  * root path to upload a file
  *
  * @param {object} req req object
@@ -223,6 +239,7 @@ exports.handleCommentDeletePath = comment_api.deleteComment;
 // </Comments Requests> -----------------------------------------------
 
 // <Common Requests> ------------------------------------------------
+exports.handleAboutPath = handleAboutPath;
 exports.handleDownloadFilePath = handleDownloadFilePath;
 exports.handleModeSelectPath = handleModeSelectPath;
 exports.handleRootPath = handleRootPath;
