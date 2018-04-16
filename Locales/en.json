@@ -470,5 +470,12 @@
 	"feedback": {
 		"title": "Feedback",
 		"noFeedback": "No feedback available"
+	},
+	"feedbackModal": {
+		"title": "Submit Feedback",
+		"feedbackSubject": "Subject of the feedback",
+		"subject": "Subject",
+		"feedbackMessage": "Message of the feedback",
+		"message": "Message"
 	}
 }
