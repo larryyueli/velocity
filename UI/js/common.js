@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // common colour varianles
 const colours = Object.freeze({
-    green: 'green',
+    green: '#14892c',
     orangeDark: 'orange accent-4',
-    red: 'red',
+    red: '#ff6d9b',
     redDark: 'red darken-4',
-    yellow: 'yellow'
+    yellow: '#ffd351'
 });
 
 const snack = Object.freeze({
@@ -500,5 +500,6 @@ const initSummernote = function (descriptionId) {
     $('.modal').modal({
         dismissible: false
     });
+    if ($(descriptionId) && $(descriptionId))
     $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
 }

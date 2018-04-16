@@ -10,35 +10,36 @@ block title
 block content
     include ../navbar
     br
+    p.hidden#myProjectAdmin #{isProjectAdmin}
     .container
         if isProjectAdmin
             .row
-                .col.s10.offset-s1
+                .col.s12
                     .row
-                        ul.tabs.overflow-x-hidden
-                            li.tab.col.s2
+                        ul.tabs.overflow-x-hidden.text-align-center
+                            li.tab
                                 a.noLineLink.active#option-general(href='#general')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
-                            li.tab.col.s2
+                            li.tab
                                 a.noLineLink#option-users(href='#users')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
-                            li.tab.col.s2
+                            li.tab
                                 a.noLineLink#option-groups(href='#groups')
                                     i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
                                     |
                                     .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
                             if (isActive || isClosed)
-                                li.tab.col.s2
-                                    a.noLineLink#option-groups(href='#boards')
+                                li.tab
+                                    a.noLineLink#option-boards(href='#boards')
                                         i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
                                         |
                                         .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
-                                li.tab.col.s2
-                                    a.noLineLink#option-groups(href='#analytics')
+                                li.tab
+                                    a.noLineLink#option-analytics(href='#analytics')
                                         i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour timeline
                                         |
                                         .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.analytics.title')}
@@ -125,7 +126,7 @@ block content
                                                                         input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))#file-name
                                                             .row.right
                                                                 .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFile()')#uploadButton #{__('uploadModal.upload')}
-                                                                    i.material-icons.right cloud_upload                                   
+                                                                    i.material-icons.right cloud_upload
                                     .row
                                         .container.center
                                             if !isClosed
