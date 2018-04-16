@@ -84,9 +84,14 @@ ul#account_nav.side-nav
             i.material-icons info
             | #{__('pageNames.about')}
     li#nav-feedback
-        a.navbarLinkHidden.waves-effect(href='#!')
-            i.material-icons feedback
-            | #{__('pageNames.submitFeedback')}
+        if user.canAccessFeedback
+            a.navbarLinkHidden.waves-effect(href='/feedback/admin')
+                i.material-icons feedback
+                | #{__('pageNames.feedback')}
+        else
+            a.navbarLinkHidden.waves-effect(href='#!')
+                i.material-icons feedback
+                | #{__('pageNames.submitFeedback')}
     li
         .divider
     li#nav-logout

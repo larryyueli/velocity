@@ -87,7 +87,8 @@
 		"projects": "Projects",
 		"settings": "Settings",
 		"submitFeedback": "Submit Feedback",
-		"users": "Users"
+		"users": "Users",
+		"feedback": "Feedback"
 	},
 	"pageNotFound": {
 		"description": "We could not find the page you were looking for",
@@ -399,5 +400,9 @@
 				}
 			}
 		}
+	},
+	"feedback": {
+		"title": "Feedback",
+		"noFeedback": "No feedback available"
 	}
 }

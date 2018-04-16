@@ -27,6 +27,7 @@ const db_analytics_kanban = require('./dbs/db-analytics-kanban.js');
 const db_analytics_releases = require('./dbs/db-analytics-releases.js');
 const db_analytics_sprints = require('./dbs/db-analytics-sprints.js');
 const db_comments = require('./dbs/db-comments.js');
+const db_feedback = require('./dbs/db-feedback.js');
 const db_notifications = require('./dbs/db-notifications.js');
 const db_projects = require('./dbs/db-projects.js');
 const db_releases = require('./dbs/db-releases.js');
@@ -54,6 +55,7 @@ const initialize = function (callback) {
         db_analytics_releases.initialize(client.db(config.db_name).collection('analytics_releases'));
         db_analytics_sprints.initialize(client.db(config.db_name).collection('analytics_sprints'));
         db_comments.initialize(client.db(config.db_name).collection('comments'));
+        db_feedback.initialize(client.db(config.db_name).collection('feedback'));
         db_notifications.initialize(client.db(config.db_name).collection('notifications'));
         db_projects.initialize(client.db(config.db_name).collection('projects'));
         db_releases.initialize(client.db(config.db_name).collection('releases'));
@@ -81,6 +83,12 @@ exports.getLimitedCommentsListSorted = db_comments.getLimitedCommentsListSorted;
 exports.getComment = db_comments.getComment;
 exports.updateComment = db_comments.updateComment;
 // </Comments Collection> ---------------------------------------------
+
+// <Feedbacks Collection> ----------------------------------------------
+exports.addFeedback = db_feedback.addFeedback;
+exports.getLimitedFeedbacksListSorted = db_feedback.getLimitedFeedbacksListSorted;
+exports.getFeedback = db_feedback.getFeedback;
+// </Feedbacks Collection> ---------------------------------------------
 
 // <Kanban Analytics Collection> ----------------------------------------------
 exports.addKanbanAnalytics = db_analytics_kanban.addKanbanAnalytics;
