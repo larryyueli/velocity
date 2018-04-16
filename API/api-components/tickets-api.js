@@ -687,7 +687,11 @@ const renderTicketPage = function (req, res) {
                                         isUnKnownBoardType: teamObj.boardType === common_backend.boardTypes.UNKNOWN.value,
                                         isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
                                         isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
-                                        attachments: attachmentsList
+                                        attachments: attachmentsList,
+                                        isProjectClosed: projectObj.status !== common_backend.projectStatus.ACTIVE.value,
+                                        ticketType: common_backend.getValueInObjectByKey(ticketObj.type, 'value', 'text', common_backend.ticketTypes),
+                                        ticketState: common_backend.getValueInObjectByKey(ticketObj.state, 'value', 'text', common_backend.ticketStates),
+                                        ticketPriority: common_backend.getValueInObjectByKey(ticketObj.priority, 'value', 'text', common_backend.ticketPriority)
                                     });
                                 });
                             });
