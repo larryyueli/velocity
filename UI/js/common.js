@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // common colour varianles
 const colours = Object.freeze({
-    green: '#14892c',
+    green: 'green',
     orangeDark: 'orange accent-4',
-    red: '#ff6d9b',
+    red: 'red',
     redDark: 'red darken-4',
-    yellow: '#ffd351'
+    yellow: 'yellow'
 });
 
 const snack = Object.freeze({
