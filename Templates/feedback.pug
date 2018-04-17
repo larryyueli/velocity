@@ -20,7 +20,7 @@ block content
                         i.material-icons.circle feedback
                         span.title #{feedback.subject}
                         br
-                        pre !{feedback.body}
+                        | !{feedback.body.split('\n').join('<br/>')}
 
 block scripts
     script(src='/js/feedback.js')
