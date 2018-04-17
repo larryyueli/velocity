@@ -835,6 +835,19 @@ function generalActiveUpdateProject() {
 
     const titleText = $(titleId).val();
     const descriptionText = $(descriptionId).summernote('code');
+    const canForceDeadlineValue = $(canForceDeadline).is(':checked');
+    const deadlineDate = $(datepickerId).val();
+    const deadlineTime = $(timepickerId).val();
+
+    if (canForceDeadlineValue) {
+        if (deadlineDate.length === 0) {
+            return warningSnackbar(translate('emptyDeadlineDate'));
+        }
+
+        if (deadlineTime.length === 0) {
+            return warningSnackbar(translate('emptyDeadlineTime'));
+        }
+    }
 
     swal({
         text: translate('updateProjectPrompt'),
@@ -850,6 +863,9 @@ function generalActiveUpdateProject() {
                     projectId: projectId,
                     title: titleText,
                     description: descriptionText,
+                    deadlineDate: deadlineDate,
+                    deadlineTime: deadlineTime,
+                    canForceDeadline: canForceDeadlineValue,
                     attachments: attachmentsList
                 },
                 success: function (data) {
@@ -1835,14 +1851,14 @@ function displayAdminAnalytics() {
             $(`.${team['teamId']}-done`).sparkline(team['history'], {
                 lineColor: 'green',
                 fillColor: 'lightGreen',
-                highlightLineColor:'#c8fd00',
+                highlightLineColor: '#c8fd00',
                 minSpotColor: false,
                 maxSpotColor: false,
                 spotRadius: 1,
                 spotColor: false,
                 type: 'line',
                 height: '30',
-                width:'150'
+                width: '150'
             });
         } else {
             $(`.${team['teamId']}-done`).html(translate('na'));

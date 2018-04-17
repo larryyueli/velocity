@@ -17,8 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const typeSelection = $('#typeSelection');
-const subtaskRow = $('.subtasksRow')
-const milestoneIssuesRow = $('.milestoneIssuesRow')
+const subtaskRow = $('.subtasksRow');
+const milestoneIssuesRow = $('.milestoneIssuesRow');
+const milestoneRow = $('.milestoneRow');
+const milestoneOuterRow = $('.milestoneOuterRow');
+const relatedIssuesRow = $('.relatedIssuesRow');
 const subtaskSelection = $('#subtasksSelection');
 const milestoneIssuesSelection = $('#milestoneIssuesSelection');
 const saveTicketButtonId = '#saveTicketButton';
@@ -56,9 +59,17 @@ const uploadName = '#file-name';
 const viewDescription = '#viewDescription';
 const editCard = '#editCard';
 const viewCard = '#viewCard';
+const saveMilestoneButton = '#saveMilestoneButton';
+const milestoneInput = '#milestoneInput';
+const milestoneDiv = '#milestoneDiv';
+const milestoneIssuesDiv = '#milestoneIssuesDiv';
+const milestoneIssuesInput = '#milestoneIssuesInput';
+const saveMilestoneIssuesButton = '#saveMilestoneIssuesButton';
 
 var attachmentsList = [];
+var milestonesIssuesList = [];
 var selectedAssignee = null;
+var selectedMilestone = null;
 var usernamesArray = [];
 var selectedSprints = [];
 var selectedReleases = [];
@@ -74,13 +85,19 @@ var commentComponent = null;
 $(function () {
     typeSelection.change(function () {
         if (typeSelection.val() == 0) {
-            subtaskRow.hide();
+            subtaskRow.show();
+            milestoneOuterRow.show();
+            relatedIssuesRow.show();
             milestoneIssuesRow.hide();
         } else if (typeSelection.val() == 1) {
             subtaskRow.show();
+            milestoneOuterRow.show();
+            relatedIssuesRow.show();
             milestoneIssuesRow.hide();
         } else {
             subtaskRow.hide();
+            milestoneOuterRow.hide();
+            relatedIssuesRow.hide();
             milestoneIssuesRow.show();
         }
     });
@@ -101,6 +118,14 @@ $(function () {
     });
 
     $('.attachmentsClass').each(function (index) {
+        attachmentsList.push($(this).attr('id'));
+    });
+
+    $('.milestone-chips').each(function (index) {
+        attachmentsList.push($(this).attr('id'));
+    });
+
+    $('.milestoneIssues-chips').each(function (index) {
         attachmentsList.push($(this).attr('id'));
     });
 
@@ -207,7 +232,9 @@ function updateTicketAction() {
             releases: selectedReleases,
             tags: selectedTags,
             links: selectedRelatedObj,
-            attachments: attachmentsList
+            attachments: attachmentsList,
+            milestone: selectedMilestone,
+            milestonesIssues: milestonesIssuesList
         },
         success: function (data) {
             successSnackbar(translate('updatedTicket'));
@@ -608,7 +635,7 @@ function saveLinkFunction() {
                 <div class="row margin-bottom-0 margin-right-10">
                     <div class="chip full-width related-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
-                        <p class="truncateTextCommon">${relatedText}: ${relatedTicket}. ${data.title}</p>
+                        <p class="truncateTextCommon margin-bottom-0">${relatedText}: ${relatedTicket}. ${data.title}</p>
                         <i class="close material-icons" onClick="removeRelatedId('${data._id}')">delete_forever</i>
                     </div>
                 </div>`);
@@ -663,7 +690,7 @@ function uploadFile() {
             $(attachmentsDivId).append(`
                 <div class="row margin-bottom-0 margin-right-10">
                     <div id="${data}" class="chip full-width related-chips text-left ticketStatusColors attachmentsClass">
-                        <p class="truncateTextCommon">${$(uploadName).val()}</p>
+                        <p class="truncateTextCommon margin-bottom-0">${$(uploadName).val()}</p>
                         <i onclick="removeAttachment('${data}')" class="close material-icons">delete_forever</i>
                         <i onclick="downloadAttachment('${data}')" class="chipIcon material-icons">file_download</i>
                     </div>
@@ -712,4 +739,110 @@ function viewImage(id) {
 function toggleEditMode() {
     $(viewCard).addClass('hidden');
     $(editCard).removeClass('hidden');
+}
+
+/**
+ * save milestone function
+*/
+function saveMilestoneFunction() {
+    const milestoneTicket = $(milestoneInput).val();
+
+    $(saveMilestoneButton).attr('disabled', true);
+
+    $.ajax({
+        type: 'GET',
+        url: '/lookup/ticket/by/displayId',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            displayId: milestoneTicket
+        },
+        success: function (data) {
+            if (selectedMilestone) {
+                $(`#${selectedMilestone} > .close`).trigger('click');
+            }
+
+            selectedMilestone = data._id;
+
+            $(milestoneDiv).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div class="chip full-width milestone-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
+                        <img src="/picture/${data.assigneePicture}">
+                        <p class="truncateTextCommon margin-bottom-0">${milestoneTicket}. ${data.title}</p>
+                        <i class="close material-icons" onClick="removeMilestoneId('${data._id}')">delete_forever</i>
+                    </div>
+                </div>`);
+            milestoneRow.hide();
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function (data) {
+            $(saveMilestoneButton).attr('disabled', false);
+        }
+    });
+}
+
+/**
+ * remove milestone
+*/
+function removeMilestoneId(id) {
+    selectedMilestone = null;
+    milestoneRow.show();
+}
+
+/**
+ * save milestone issues function
+*/
+function saveMilestoneIssuesFunction() {
+    const milestoneIssueTicket = $(milestoneIssuesInput).val();
+
+    $(saveMilestoneIssuesButton).attr('disabled', true);
+
+    $.ajax({
+        type: 'GET',
+        url: '/lookup/ticket/by/displayId',
+        data: {
+            projectId: projectId,
+            teamId: teamId,
+            displayId: milestoneIssueTicket
+        },
+        success: function (data) {
+            if (milestonesIssuesList.indexOf(data._id) !== -1) {
+                removeMilestoneIssue(data._id);
+                $(`#${data._id} > .close`).trigger('click');
+            }
+
+            milestonesIssuesList.push(data._id);
+            $(milestoneIssuesDiv).append(`
+                <div class="row margin-bottom-0 margin-right-10">
+                    <div class="chip full-width milestoneIssues-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
+                        <img src="/picture/${data.assigneePicture}">
+                        <p class="truncateTextCommon margin-bottom-0">${milestoneIssueTicket}. ${data.title}</p>
+                        <i class="close material-icons" onClick="removeMilestoneIssue('${data._id}')">delete_forever</i>
+                    </div>
+                </div>`);
+        },
+        error: function (data) {
+            handle401And404(data);
+
+            const jsonResponse = data.responseJSON;
+            failSnackbar(getErrorMessageFromResponse(jsonResponse));
+        },
+        complete: function (data) {
+            $(saveMilestoneIssuesButton).attr('disabled', false);
+        }
+    });
+}
+
+/**
+ * remove milestone issue
+*/
+function removeMilestoneIssue(id) {
+    if (milestonesIssuesList.indexOf(id) !== -1) {
+        milestonesIssuesList.splice(milestonesIssuesList.indexOf(id), 1);
+    }
 }

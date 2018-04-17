@@ -379,7 +379,8 @@
 		"label": "Ticket",
 		"id": "Ticket Id",
 		"displayId": "Display Id",
-		"releases": "Releases"
+		"releases": "Releases",
+		"milestone": "Milestone"
 	},
 	"uploadModal": {
 		"file": "File",

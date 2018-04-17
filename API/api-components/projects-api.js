@@ -337,9 +337,24 @@ const updateActiveProject = function (req, res) {
             return res.status(400).send(common_backend.getError(2043));
         }
 
+        const deadlineDateText = req.body.deadlineDate;
+        const deadlineTimeText = req.body.deadlineTime;
+        const deadlineDate = common_backend.convertStringToBoolean(req.body.canForceDeadline)
+            ? typeof (deadlineDateText) === common_backend.variableTypes.STRING
+                ? deadlineDateText
+                : null
+            : '';
+        const deadlineTime = common_backend.convertStringToBoolean(req.body.canForceDeadline)
+            ? typeof (deadlineTimeText) === common_backend.variableTypes.STRING
+                ? deadlineTimeText
+                : null
+            : '';
+
         let newProject = {
             title: req.body.title,
             description: req.body.description,
+            deadlineDate: deadlineDate,
+            deadlineTime: deadlineTime,
             attachments: Array.isArray(req.body.attachments) ? req.body.attachments : []
         };
         projects.updateProject(req.body.projectId, newProject, function (err, result) {

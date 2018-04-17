@@ -51,6 +51,12 @@ block content
                                             label #{__('tickets.type')}
                                             br
                                             h6.left #{__(`tickets.types.${ticketType}`)}
+                                            if ticket.type === 0
+                                                img.ticketIconsViewOnly(src='/img/icon-code-file.png')
+                                            if ticket.type === 1
+                                                img.ticketIconsViewOnly(src='/img/icon-ladybird.png')
+                                            if ticket.type === 2
+                                                img.ticketIconsViewOnly(src='/img/icon-purchase-order.png')
                                         .input-field.padding-10.col.s12.m3.padding-top-0
                                             label #{__('tickets.state')}
                                             br
@@ -59,6 +65,12 @@ block content
                                             label #{__('tickets.priority')}
                                             br
                                             h6.left #{__(`tickets.priorities.${ticketPriority}`)}
+                                            if ticket.priority === 0
+                                                img.ticketIconsViewOnly(src='/img/icon-low-priority.png')
+                                            if ticket.priority === 1
+                                                img.ticketIconsViewOnly(src='/img/icon-meduim-priority.png')
+                                            if ticket.priority === 2
+                                                img.ticketIconsViewOnly(src='/img/icon-high-priority.png')
                                         .input-field.padding-10.col.s12.m3.padding-top-0
                                             label #{__('tickets.points')}
                                             br
@@ -79,11 +91,11 @@ block content
                                     if false
                                         .row.subtasksRow
                                             .input-field.padding-10
-                                                input.validate(type='text', name='subtasks')
+                                                input(type='text', name='subtasks')
                                                 label(for='description') #{__('tickets.subtasks')}
                                     .row.milestoneIssuesRow
                                         .input-field.padding-10
-                                            input.validate(type='text', name='milestoneIssues')
+                                            input(type='text', name='milestoneIssues')
                                             label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
                                     .row
                                         .input-field.padding-10
@@ -97,12 +109,14 @@ block content
                                         .input-field.padding-10
                                             label(for='autocomplete-input') #{__('tickets.reporter')}
                                             br
-                                            h6 #{`${reporter}`}
+                                            img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedReporterPicture}`)
+                                            | #{`${reporter}`}
                                     .row
                                         .input-field.padding-10
                                             label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                             br
-                                            h6 #{`${assignee}`}
+                                            img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedAssigneePicture}`)
+                                            | #{`${assignee}`}
                                     .row.hidden #{ticket.assignee}
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
@@ -137,7 +151,7 @@ block content
                                     label #{__('tickets.id')}: #{ticket.displayId}
                             .row
                                 .input-field.padding-10
-                                    input.validate(type='text', name='titleField', value=`${ticket.title}`)#titleField
+                                    input(type='text', name='titleField', value=`${ticket.title}`)#titleField
                                     label(for='titleField') #{__('tickets.ticketTitle')}
                         .card-action
                             .row
@@ -199,13 +213,28 @@ block content
                                     if false
                                         .row.subtasksRow
                                             .input-field.padding-10#subtasksSelection
-                                                input.validate(type='text', name='subtasks')
+                                                input(type='text', name='subtasks')
                                                 label(for='description') #{__('tickets.subtasks')}
                                     .row.milestoneIssuesRow
-                                        .input-field.padding-10#milestoneIssuesSelection
-                                            input.validate(type='text', name='milestoneIssues')
+                                        .input-field.col.s10.padding-10#milestoneIssuesSelection
+                                            input#milestoneIssuesInput(type='text', name='milestoneIssues')
                                             label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
-                                    .row
+                                        .input-field.col.s2
+                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneIssuesFunction()')#saveMilestoneIssuesButton
+                                                i.material-icons.right save
+                                        #milestoneIssuesDiv
+                                    .milestoneOuterRow
+                                        label.left #{__('tickets.milestone')}
+                                        br
+                                        .row.milestoneRow
+                                            .input-field.col.s10.padding-10#milestoneSelection
+                                                input#milestoneInput(type='text', name='milestone')
+                                            .input-field.col.s2
+                                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneFunction()')#saveMilestoneButton
+                                                    i.material-icons.right save
+                                        #milestoneDiv
+                                        br
+                                    .row.relatedIssuesRow
                                         .input-field.col.s4
                                             select#relatedSelectedInput
                                                 option(value='0') #{__('tickets.relation.blocks')}
@@ -216,7 +245,7 @@ block content
                                                 option(value='5') #{__('tickets.relation.fixed_by')}
                                             label #{__('tickets.relation.label')}
                                         .input-field.col.s6
-                                            input#relatedInput.validate(type='text')
+                                            input#relatedInput(type='text')
                                             label(for='relatedInput') #{__('tickets.id')}
                                         .input-field.col.s2
                                             button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
@@ -356,7 +385,7 @@ block content
                                         | #{__('uploadModal.file')}
                                     input(type='file')#file-input
                                 .file-path-wrapper
-                                    input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))#file-name
+                                    input.file-path(type='text', placeholder=__('uploadModal.selectFile'))#file-name
                         .row.right
                             .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFile()')#uploadButton #{__('uploadModal.upload')}
                                 i.material-icons.right cloud_upload
