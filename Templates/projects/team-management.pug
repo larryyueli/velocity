@@ -15,21 +15,21 @@ ul.collapsible(data-collapsible='expandable')
                         label(for='tags') #{__('projectPage.tabs.management.newSprint')}
                 .col.s3
                     .input-field
-                        input.datepicker(type='text', name='startDate')#startDatePicker
+                        input.datepicker.pointer(type='text', name='startDate')#startDatePicker
                         label(for='startDate') #{__('projectPage.tabs.management.sprintStart')}
                 .col.s3
                     .input-field
-                        input.datepicker(type='text', name='endDate')#endDatePicker
+                        input.datepicker.pointer(type='text', name='endDate')#endDatePicker
                         label(for='endDate') #{__('projectPage.tabs.management.sprintEnd')}
                 .col.s2
                     button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour.right#sprintCreation #{__('actions.create')}
                         i.material-icons.right add
             hr.sprintInputRow
             .row
-                if sprintsList.length === 0
-                    h6.center #{__('projectPage.tabs.management.noSprints')}
-                else
-                    ul.collection#appendSprintDiv
+                ul.collection#appendSprintDiv
+                    if sprintsList.length === 0
+                        h6.center#appendSprintDivEmpty #{__('projectPage.tabs.management.noSprints')}
+                    else
                         each sprint in sprintsList
                             li(id=`sprint_${sprint._id}`).collection-item.avatar
                                 i.material-icons.circle date_range
@@ -67,10 +67,10 @@ ul.collapsible(data-collapsible='expandable')
                         i.material-icons.right add
             hr.releaseInputRow
             .row
-                if releasesList.length === 0
-                    h6.center #{__('projectPage.tabs.management.noReleases')}
-                else
-                    ul.collection#appendReleaseDiv
+                ul.collection#appendReleaseDiv
+                    if releasesList.length === 0
+                        h6.center#appendReleaseDivEmpty #{__('projectPage.tabs.management.noReleases')}
+                    else
                         each release in releasesList
                             li(id=`release_${release._id}`).collection-item.avatar
                                 i.material-icons.circle dns
@@ -102,10 +102,10 @@ ul.collapsible(data-collapsible='expandable')
                         i.material-icons.right add
             hr.tagInputRow
             .row
-                if tagsList.length === 0
-                    h6.center #{__('projectPage.tabs.management.noTags')}
-                else
-                    ul.collection#appendTagDiv
+                ul.collection#appendTagDiv
+                    if tagsList.length === 0
+                        h6.center#appendTagDivEmpty #{__('projectPage.tabs.management.noTags')}
+                    else
                         each tag in tagsList
                             li(id=`tag_${tag._id}`).collection-item.avatar
                                 i.material-icons.circle bookmark

@@ -39,6 +39,9 @@ const tagField = '#tagField';
 const tagInputRow = '.tagInputRow';
 const tagVisibility = '#tagVisibility';
 const teamId = splithref[6];
+const appendTagDivEmpty = '#appendTagDivEmpty';
+const appendReleaseDivEmpty = '#appendReleaseDivEmpty';
+const appendSprintDivEmpty = '#appendSprintDivEmpty';
 
 const assigneeAutocompleteBoardId = '#assigneeAutocompleteBoard';
 const assigneeAutocompleteIssueId = '#assigneeAutocompleteIssue';
@@ -204,6 +207,7 @@ function createRelease() {
                 $(releaseInputRow).hide();
                 $(releaseVisibility).show();
                 $(releaseField).val('');
+                $(appendReleaseDivEmpty).addClass('hidden');
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -238,6 +242,7 @@ function createTag() {
                 $(tagInputRow).hide();
                 $(tagVisibility).show();
                 $(tagField).val('');
+                $(appendTagDivEmpty).addClass('hidden');
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
@@ -290,6 +295,7 @@ function createSprint() {
                 $(sprintStart).val('');
                 $(sprintEnd).val('');
                 $(`.sprintActive_${data._id}`).hide();
+                $(appendSprintDivEmpty).addClass('hidden');
             },
             error: function (data) {
                 const jsonResponse = data.responseJSON;
