@@ -430,6 +430,35 @@ div.note-editor.note-frame.panel.panel-default{
     }
 }
 
+#feedbackModal {
+    background-color: white;
+    border-radius: 5px;
+    max-width: 500px;
+    height: 500px;
+    text-align: center;
+
+    .modal-content {
+        height: 100%;
+    }
+
+    h3 {
+        color: #575757;
+        font-weight: 600;
+        font-size: 30px;
+    }
+
+    textarea {
+        max-height: 170px;
+        overflow-y: auto;
+    }
+
+    #closeModal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+}
+
 .chipIcon {
     cursor: pointer;
     float: right;

@@ -84,15 +84,37 @@ ul#account_nav.side-nav
             i.material-icons info
             | #{__('pageNames.about')}
     li#nav-feedback
-        a.navbarLinkHidden.waves-effect(href='#!')
-            i.material-icons feedback
-            | #{__('pageNames.submitFeedback')}
+        if user.canAccessFeedback
+            a.navbarLinkHidden.waves-effect(href='/feedback/admin')
+                i.material-icons feedback
+                | #{__('pageNames.feedback')}
+        else
+            a.navbarLinkHidden.waves-effect(onclick='openFeedback();')
+                i.material-icons feedback
+                | #{__('pageNames.submitFeedback')}
     li
         .divider
     li#nav-logout
         a.navbarLinkHidden.waves-effect(href='#!')
             i.material-icons exit_to_app
             | #{__('pageNames.logout')}
+
+#feedbackModal.modal
+    .modal-content
+        i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+        h3 #{__('feedbackModal.title')}
+        .row
+            .col.s12
+                .row
+                    .input-field
+                        input(type='text', placeholder=__('feedbackModal.feedbackSubject'))#feedbackSubject
+                        label(for='feedbackSubject') #{__('feedbackModal.subject')}
+                    .input-field
+                        textarea(placeholder=__('feedbackModal.feedbackMessage'))#feedbackMessage.materialize-textarea
+                        label(for='feedbackMessage') #{__('feedbackModal.message')}
+                .row.right
+                    .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFeedback()') #{__('actions.submit')}
+                        i.material-icons.right feedback
 
 ul#notifications_nav.side-nav
     p.center.padding-top-10#noNotifications(class=!notifications || (notifications && notifications.length === 0) ? '' : 'hidden')

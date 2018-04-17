@@ -101,6 +101,8 @@ const addUser = function (user, callback) {
             || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
         userToAdd.canAccessGrades = (user.type === common.userTypes.PROFESSOR.value
             || user.type === common.userTypes.TA.value);
+        userToAdd.canAccessFeedback = (user.type === common.userTypes.PROFESSOR.value
+            || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
         userToAdd.canCreateProjects = (user.type === common.userTypes.PROFESSOR.value
             || user.type === common.userTypes.COLLABORATOR_ADMIN.value);
 
@@ -282,6 +284,8 @@ const updateUser = function (updateParams, callback) {
             || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
         updateQuery.$set.canAccessGrades = (updateParams.type === common.userTypes.PROFESSOR.value
             || updateParams.type === common.userTypes.TA.value);
+        updateQuery.$set.canAccessFeedback = (updateParams.type === common.userTypes.PROFESSOR.value
+            || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
         updateQuery.$set.canCreateProjects = (updateParams.type === common.userTypes.PROFESSOR.value
             || updateParams.type === common.userTypes.COLLABORATOR_ADMIN.value);
     }

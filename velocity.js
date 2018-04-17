@@ -266,6 +266,7 @@ app.get('/components/teamsList', api.handleTeamsListComponentPath);
 app.get('/components/ticket/edit/page', api.handleTicketEditPageComponentsPath);
 app.get('/components/usersList', api.handleUsersListComponentPath);
 app.get('/download/file', api.handleDownloadFilePath);
+app.get('/feedback/admin', api.handleFeedbackAdminPath);
 app.get('/lookup/ticket/by/displayId', api.handleLookupTicketByDisplayIdPath);
 app.get('/me', api.handleMePath);
 app.get('/profile', api.handleProfilePath);
@@ -327,6 +328,7 @@ app.post('/users/update', api.handleUsersUpdatePath);
 
 // <Put Requests> ------------------------------------------------
 app.put('/comment/create', api.handleTicketsCommentPath);
+app.put('/feedback/create', api.handleFeedbackCreatePath);
 app.put('/releases/create', api.handleReleasesCreatePath);
 app.put('/projects/create', api.handleProjectCreatePath);
 app.put('/projects/import/file', api.handleProjectsImportFilePath);

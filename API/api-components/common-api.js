@@ -23,6 +23,7 @@ const common_backend = require('../../Backend/common.js');
 // File names to render the pages
 const pugPages = Object.freeze({
     about: 'about',
+    feedback: 'feedback',
     login: 'login',
     modeSelector: 'modeSelector',
     pageNotFound: 'pageNotFound',

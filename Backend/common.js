@@ -41,6 +41,7 @@ const config = require('./config.js');
  * 10,000 -> sprints
  * 11,000 -> releases
  * 12,000 -> tags
+ * 13,000 -> feedback
  */
 const errors = Object.freeze({
     //1000 system
@@ -226,6 +227,15 @@ const errors = Object.freeze({
     12005: 'failed to update tag, database issue',
     12006: 'failed to create a tag, missing information',
     12007: 'failed to update a tag, missing information',
+
+    //13,000 feedback
+    13000: 'missing requirement',
+    13001: 'failed to add feedback, database issue',
+    13002: 'failed to get feedback list, database issue',
+    13003: 'failed to create feedback, missing information',
+    13004: 'feedback not found',
+    13005: 'can not submit feedback, permission denied',
+    13006: 'can not access feedback page, permission denied',
 });
 exports.errors = errors;
 
@@ -463,6 +473,13 @@ const fileExtensions = Object.freeze({
     IMAGES: ['jpeg', 'png']
 });
 exports.fileExtensions = fileExtensions;
+
+// common feedback status
+const feedbackStatus = Object.freeze({
+    DELETED: { value: 0, text: 'deleted' },
+    ACTIVE: { value: 1, text: 'active' }
+});
+exports.feedbackStatus = feedbackStatus;
 // </Global Constants> ------------------------------------------
 
 // <Global Function> --------------------------------------------

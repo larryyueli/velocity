@@ -153,7 +153,8 @@
 		"projects": "eu",
 		"settings": "commodo",
 		"submitFeedback": "adipisicing cillum",
-		"users": "consectetur"
+		"users": "consectetur",
+		"feedback": "cillum"
 	},
 	"pageNotFound": {
 		"description": "esse tempor velit duis mollit exercitation consectetur excepteur quis ut",
@@ -168,17 +169,17 @@
 		"all": "excepteur",
 		"form": {
 			"description": "aute anim ad",
-			"fields": [
-				{
-					"currentIndex": 0
-				}
-			],
+			"fields": {
+				"title": "aute",
+				"description": "laboris"
+			},
 			"title": "ex nisi amet laboris",
-			"deadline": [
-				{
-					"currentIndex": 0
-				}
-			]
+			"deadline": {
+				"date": "non",
+				"time": "veniam",
+				"label": "amet",
+				"forcelabel": "Force laboris"
+			}
 		},
 		"status": {
 			"active": "non",
@@ -187,41 +188,27 @@
 			"label": "amet"
 		},
 		"tabs": {
-			"analytics": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"backlog": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"board": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"issues": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"overview": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"settings": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"management": [
-				{
-					"currentIndex": 0
-				}
-			]
+			"analytics": {
+				"title": "amet"
+			},
+			"backlog": {
+				"title": "magna"
+			},
+			"board": {
+				"title": "bas"
+			},
+			"issues": {
+				"title": "dolor"
+			},
+			"overview": {
+				"title": "sit"
+			},
+			"settings": {
+				"title": "amet"
+			},
+			"management": {
+				"title": "lorem"
+			}
 		},
 		"title": "voluptate elit amet",
 		"type": {
@@ -231,62 +218,88 @@
 		},
 		"label": "cupidatat",
 		"export": {
-			"complete": [
-				{
-					"currentIndex": 0
+			"complete": {
+				"form": {
+					"description": "lorem ipsum dolor sit amet",
+					"title": "cupidatat esse ipsum"
 				}
-			],
-			"form": [
-				{
-					"currentIndex": 0
-				}
-			]
+			},
+			"form": {
+				"description": "lorem ipsum dolor sit amet",
+				"title": "lorem ipsum dolor sit amet"
+			}
 		},
 		"import": {
-			"complete": [
-				{
-					"currentIndex": 0
+			"complete": {
+				"form": {
+					"added": "voluptate elit amet",
+					"description": "voluptate elit amet",
+					"failed": "voluptate elit amet",
+					"processed": "voluptate elit amet",
+					"report": "lorem",
+					"title": "voluptate elit amet"
 				}
-			],
-			"form": [
-				{
-					"currentIndex": 0
-				}
-			]
+			},
+			"form": {
+				"button": "dolor",
+				"description": "voluptate elit amet",
+				"placeHolder": "voluptate elit amet",
+				"title": "voluptate elit amet"
+			}
 		}
 	},
 	"projectPage": {
 		"tabs": {
-			"boards": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"general": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"groups": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"users": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"management": [
-				{
-					"currentIndex": 0
-				}
-			],
-			"analytics": [
-				{
-					"currentIndex": 0
-				}
-			]
+			"boards": {
+				"title": "sit"
+			},
+			"general": {
+				"forceBoardType": "voluptate elit amet",
+				"title": "dolor",
+				"boardTypeSelection": "lorem ipsum dolor:",
+				"deadlines": "amet",
+				"deadline": "lorem ipsum"
+			},
+			"groups": {
+				"deleteGroups": "voluptate elit amet",
+				"groupPrefix": "voluptate elit amet",
+				"groupName": "voluptate elit amet",
+				"groups": "lorem",
+				"groupSelectionMode": "voluptate elit amet",
+				"groupSize": "voluptate elit amet",
+				"groupStatus": "voluptate elit amet",
+				"newGroup": "voluptate elit amet",
+				"selectGroups": "voluptate elit amet",
+				"types": {
+					"individual": "lorem",
+					"instructor": "lorem impsum",
+					"randomize": "dolor",
+					"student": "sit amet"
+				},
+				"title": "esse",
+				"unassignedUsers": "eras delo"
+			},
+			"users": {
+				"projectAdmins": "voluptate elit amet",
+				"projectUsers": "voluptate elit amet",
+				"title": "dolor"
+			},
+			"management": {
+				"releases": "lorem",
+				"sprints": "impsum",
+				"sprintEnd": "solor sit",
+				"sprintStart": "lorem ipsum",
+				"tags": "solor",
+				"noReleases": "sit amet",
+				"noTags": "lorem",
+				"noSprints": "lorem ipsum",
+				"newRelease": "ipsum dolor",
+				"newTag": "lorem",
+				"newSprint": "ipsum"
+			},
+			"analytics": {
+				"title": "anat"
+			}
 		},
 		"title": "duis ea ad"
 	},
@@ -424,28 +437,46 @@
 		"usersEditFormTitle": "qui pariatur tempor",
 		"label": "anim",
 		"import": {
-			"complete": [
-				{
-					"currentIndex": 0
+			"complete": {
+				"form": {
+					"added": "duis in proident",
+					"description": "mollit nostrud proident",
+					"exists": "do in aute",
+					"failed": "qui pariatur tempor",
+					"processed": "duis in proident",
+					"report": "mollit nostrud proident",
+					"title": "do in auted"
 				}
-			],
-			"form": [
-				{
-					"currentIndex": 0
-				}
-			]
+			},
+			"form": {
+				"button": "lorem",
+				"description": "esse tempor velit duis mollit exercitation consectetur excepteur quis ut",
+				"placeHolder": "qui pariatur tempor",
+				"title": "duis in proidentm"
+			}
 		},
 		"export": {
-			"form": [
-				{
-					"currentIndex": 0
+			"form": {
+				"description": "mollit nostrud proident",
+				"title": "do in autem"
+			},
+			"complete": {
+				"form": {
+					"description": "qui pariatur tempor",
+					"title": "qui pariatur tempor"
 				}
-			],
-			"complete": [
-				{
-					"currentIndex": 0
-				}
-			]
+			}
 		}
+	},
+	"feedback": {
+		"title": "duis in proident",
+		"noFeedback": "mollit nostrud proident"
+	},
+	"feedbackModal": {
+		"title": "do in aute",
+		"feedbackSubject": "qui pariatur tempor",
+		"subject": "duis in proident",
+		"feedbackMessage": "mollit nostrud proident",
+		"message": "do in aute"
 	}
 }

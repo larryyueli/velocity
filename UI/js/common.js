@@ -67,6 +67,7 @@ UI Translations for user display
 10000 -> sprints
 11000 -> releases
 12000 -> tags
+13000 -> feedback
 */
 const translations = Object.freeze({
     en: {
@@ -200,6 +201,10 @@ const translations = Object.freeze({
         12006: 'Failed to create a tag',
         12007: 'Failed to update a tag',
 
+        //13,000 feedback
+        13005: 'Failed to submit feedback',
+        13006: 'Can not access feedback page',
+
         activatedProject: 'Project has been activated',
         closedProject: 'Project has been closed',
         activateProjectPrompt: 'Are you sure you want to activate this project?',
@@ -316,7 +321,7 @@ const translations = Object.freeze({
 
         today: 'Today',
         now: 'Now'
-    }, 
+    },
     fr: {
         1000: "nulla quis",
         1009: "irure fugiat quis eiusmod ex",
@@ -424,6 +429,9 @@ const translations = Object.freeze({
         12005: "eu sunt do et",
         12006: "minim ad incididunt cupidatat et",
         12007: "nulla aliqua officia in minim",
+        13005: 'eu sunt aliqua officia',
+        13006: 'ad incididunt cupidatat aliqua officia',
+
         activatedProject: "aute ad qui nulla",
         closedProject: "dolore est do minim",
         activateProjectPrompt: "consequat esse deserunt pariatur velit ad aliquip proident proident",

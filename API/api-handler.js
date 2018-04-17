@@ -23,6 +23,7 @@ const path = require('path');
 const analytics_api = require('./api-components/analytics-api.js');
 const comment_api = require('./api-components/comments-api.js');
 const common_api = require('./api-components/common-api.js');
+const feedback_api = require('./api-components/feedback-api.js');
 const notifications_api = require('./api-components/notifications-api.js');
 const projects_api = require('./api-components/projects-api.js');
 const releases_api = require('./api-components/releases-api.js');
@@ -246,6 +247,11 @@ exports.handleUploadFilePath = handleUploadFilePath;
 exports.initialize = initialize;
 exports.isActiveSession = common_api.isActiveSession;
 // </Common Requests> -----------------------------------------------
+
+// <Feedbacks Requests> ------------------------------------------------
+exports.handleFeedbackAdminPath = feedback_api.renderFeedbackPage;
+exports.handleFeedbackCreatePath = feedback_api.createFeedback;
+// </Feedbacks Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
 exports.handleDeleteAllNotificationsPath = notifications_api.deleteAllNotifications;
