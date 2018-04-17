@@ -219,6 +219,10 @@ const createUnassignedMembersObject = function (tickets, teamId) {
  */
 const getReleaseAnalytics = function (team, releases, tickets, callback) {
 
+    if (releases.length === 0) {
+        return callback(null, []);
+    }
+
     const releaseIds = common.convertJsonListToList('_id', releases);
     let releaseIdList = [];
 
