@@ -12,9 +12,9 @@
 		},
 		"boards": {
 			"start": "Boards",
-			"sentence1": "When you're working in a project, you'll either be working within a scrum enviroment, or a kanban one.",
-			"sentence2": "Within a scrum enviroment, you'll be working in iterations, and your board will be designed to reflect on that. You'll be able to see exactly what everyone is currently working on for the current sprint, and the status of everything.",
-			"sentence3": "Within a kanban enviroment, as there are no iterations, you'll instead be shown what everyone has globally, and the status of everyone's work."
+			"sentence1": "When you're working in a project, you'll either be working within a scrum environment, or a kanban one.",
+			"sentence2": "Within a scrum environment, you'll be working in iterations, and your board will be designed to reflect on that. You'll be able to see exactly what everyone is currently working on for the current sprint, and the status of everything.",
+			"sentence3": "Within a kanban environment, as there are no iterations, you'll instead be shown what everyone has globally, and the status of everyone's work."
 		},
 		"copyright": "Copyright",
 		"intro": {
@@ -24,7 +24,7 @@
 		"license": "Velocity is licensed under the GNU General Public License v3.0.",
 		"management": {
 			"start": "Management",
-			"sentence1": "When managing a project, if you are in a scrum enviroment, you'll be able to assign tickets with three different things to organize them.",
+			"sentence1": "When managing a project, if you are in a scrum environment, you'll be able to assign tickets with three different things to organize them.",
 			"point1": "Releases",
 			"point2": "Sprints",
 			"point3": "Tags"
@@ -420,7 +420,8 @@
 			"theme-greyClouds": "Grey Clouds"
 		},
 		"languages": {
-			"english": "English"
+			"english": "English",
+			"french": "French"
 		}
 	},
 	"users": {
