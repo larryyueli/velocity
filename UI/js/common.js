@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2016
+Copyright (C) 2018
 Developed at University of Toronto
 
 This program is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ const translations = Object.freeze({
         2013: 'Project is already closed',
         2014: 'Project is not in draft',
         2015: 'Cant update team, invalid action',
-        2016: 'User is already in a team',
+        2016: 'You are already in a team, leave it to join a new one',
         2017: 'User is not in a team',
         2020: 'Cant exceed team size',
         2021: 'Mismatching team names',

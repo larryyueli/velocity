@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2016
+Copyright (C) 2018
 Developed at University of Toronto
 
 This program is free software: you can redistribute it and/or modify
