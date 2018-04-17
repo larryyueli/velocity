@@ -161,19 +161,22 @@ const getKanbanAnalytics = function (team, tickets, callback) {
             members: [],
             cumulativeflowdiagram: []
         };
+        let membersToAdd = [];
+        membersToAdd.push.apply(membersToAdd, team.members);
         for (let i = 0; i < kanbanAnalytics.length; i++) {
             let currentMembers = common.convertJsonListToList('_id', kanbanAnalytics[i].members);
-            let pastMembers = common.convertJsonListToList('_id', kanban.members);
-            kanban.members = kanbanAnalytics[i].members;
-            kanban.cumulativeflowdiagram.push(kanbanAnalytics[i].cumulativeflowdiagram[0]);
-
-            for (let j = 0; j < pastMembers.length; j++) {
-                if (currentMembers.indexOf(pastMembers[j]) === -1) {
-                    kanban.members.push(createKanbanMemberObject(pastMembers[j], tickets, team._id));
-                    kanban.cumulativeflowdiagram = createFlowDiagramEntry(kanban.members);
+            for (let j = 0; j < currentMembers.length; j++) {
+                if (membersToAdd.indexOf(currentMembers[j]) === -1) {
+                    membersToAdd.push(currentMembers[j]);
                 }
             }
+            kanban.cumulativeflowdiagram.push(kanbanAnalytics[i].cumulativeflowdiagram[0]);            
         }
+        for (let i = 0; i < membersToAdd.length; i++) {
+            kanban.members.push(createKanbanMemberObject(membersToAdd[i], tickets, team._id));
+        }
+        kanban.cumulativeflowdiagram.push(createFlowDiagramEntry(kanban.members));
+
         return callback(null, kanban);
     });
 
