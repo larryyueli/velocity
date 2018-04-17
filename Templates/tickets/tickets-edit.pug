@@ -83,7 +83,7 @@ block content
                                         .input-field.padding-10.padding-top-0
                                             each attachment in attachments
                                                 .row.margin-bottom-0.margin-right-10
-                                                    .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                                    .chip.full-width.text-left.ticketStatusColors(id=`${attachment._id}`)
                                                         p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
                                                         i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
                                                         if attachment.isViewable
@@ -123,7 +123,7 @@ block content
                                             label #{__('tickets.release')}
                                             br
                                             each release in releases
-                                                .chip.release-chips(id=`${release._id}`)
+                                                .chip(id=`${release._id}`)
                                                     | #{release.name}
                                     if isScrumBoardType
                                         .row.margin-bottom-0.margin-top-0
@@ -131,14 +131,14 @@ block content
                                                 label #{__('tickets.sprints')}
                                                 br
                                                 each sprint in sprints
-                                                    .chip.sprint-chips(id=`${sprint._id}`)
+                                                    .chip(id=`${sprint._id}`)
                                                         | #{sprint.name}
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
                                             label #{__('tickets.tags')}
                                             br
                                             each tag in tags
-                                                .chip.tag-chips(id=`${tag._id}`)
+                                                .chip(id=`${tag._id}`)
                                                     | #{tag.name}
                             if !isProjectClosed
                                 .row
@@ -204,7 +204,7 @@ block content
                                         .input-field.padding-10#attachmentsDivId
                                             each attachment in attachments
                                                 .row.margin-bottom-0.margin-right-10
-                                                    .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                                    .chip.full-width.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
                                                         p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
                                                         i.close.material-icons(onclick=`removeAttachment('${attachment._id}')`) delete_forever
                                                         i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
@@ -254,7 +254,7 @@ block content
                                         .input-field.padding-10#relatedTicketDivId
                                             each relatedTicket in relatedTickets
                                                 .row.margin-bottom-0.margin-right-10
-                                                    .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
+                                                    .chip.full-width.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
                                                         img(src=`/picture/${relatedTicket.assigneePicture}`)
                                                         p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
                                                         i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
