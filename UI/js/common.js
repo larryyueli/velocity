@@ -712,7 +712,3 @@ const initSummernote = function (descriptionId) {
         $(descriptionId).summernote('code', $(descriptionId)[0].textContent);
     }
 }
-
-
-//Languages
-
