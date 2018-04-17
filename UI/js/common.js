@@ -484,22 +484,23 @@ function toggleVisibility(element) {
  * @param {Object} element element
  */
 const initSummernote = function (descriptionId) {
-    $(descriptionId).summernote({ height: 200 });
-    $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
-    $('div.note-btn-group.btn-group.note-insert button').unbind();
-    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').removeClass('note-icon-link');
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').addClass('material-icons');
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').html('cloud_upload');
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
-        $('#uploadModal').modal('open');
-    });
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
-    $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').remove();
-    $('div.note-btn-group.btn-group.note-view button:nth-child(3)').remove();
-    $('.modal').modal({
-        dismissible: false
-    });
-    if ($(descriptionId) && $(descriptionId))
-    $(descriptionId).summernote('code', $(descriptionId)[0].textContent)
+    if ($(descriptionId) && $(descriptionId)[0]) {
+        $(descriptionId).summernote({ height: 200 });
+        $('div.note-btn-group.btn-group button').unbind('mouseenter mouseleave').addClass('customSummernoteButton');
+        $('div.note-btn-group.btn-group.note-insert button').unbind();
+        $('div.note-btn-group.btn-group.note-view button:nth-child(3)').unbind();
+        $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').removeClass('note-icon-link');
+        $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').addClass('material-icons');
+        $('div.note-btn-group.btn-group.note-insert button:nth-child(1) i').html('cloud_upload');
+        $('div.note-btn-group.btn-group.note-insert button:nth-child(1)').click(function () {
+            $('#uploadModal').modal('open');
+        });
+        $('div.note-btn-group.btn-group.note-insert button:nth-child(3)').remove();
+        $('div.note-btn-group.btn-group.note-insert button:nth-child(2)').remove();
+        $('div.note-btn-group.btn-group.note-view button:nth-child(3)').remove();
+        $('.modal').modal({
+            dismissible: false
+        });
+        $(descriptionId).summernote('code', $(descriptionId)[0].textContent);
+    }
 }
