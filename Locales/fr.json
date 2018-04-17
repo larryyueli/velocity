@@ -1,0 +1,451 @@
+{
+	"about": {
+		"analytics": {
+			"start": "nostrud",
+			"sentence1": "exercitation consequat proident sit eu non velit ea minim aliqua ullamco ut cupidatat veniam tempor labore ex voluptate ea duis excepteur quis id consequat Lorem cillum sunt ut",
+			"point1": "est amet ullamco laboris fugiat velit",
+			"point2": "culpa aliqua elit sit non culpa deserunt",
+			"point3": "et do incididunt sunt ullamco est",
+			"point4": "do deserunt irure sint consequat velit aliqua veniam laborum cupidatat",
+			"point5": "cupidatat sunt",
+			"point6": "consectetur ad"
+		},
+		"boards": {
+			"start": "aliquip",
+			"sentence1": "ex esse dolor amet laboris cillum et Lorem incididunt in deserunt laborum proident incididunt sit tempor anim minim",
+			"sentence2": "adipisicing non occaecat do anim occaecat in dolor dolor proident deserunt non nostrud commodo amet nulla eiusmod id magna nostrud non dolor anim dolore non id exercitation occaecat non sint nostrud voluptate occaecat elit do sit nostrud aliqua officia qui",
+			"sentence3": "pariatur labore dolore cillum reprehenderit dolor dolor nostrud mollit labore amet pariatur laboris laboris eiusmod mollit velit adipisicing consectetur elit ipsum elit tempor"
+		},
+		"copyright": "veniam",
+		"intro": {
+			"start": "voluptate irure cillum",
+			"sentence1": "voluptate irure qui commodo quis occaecat nisi esse aliquip do consectetur ullamco do esse minim ut do cillum in deserunt fugiat"
+		},
+		"license": "aliquip aliqua deserunt aliquip elit ut amet reprehenderit velit irure",
+		"management": {
+			"start": "dolor",
+			"sentence1": "ex enim laboris exercitation Lorem magna amet do nulla nostrud culpa nostrud mollit et in enim et ad cupidatat in tempor sunt laborum dolor",
+			"point1": "adipisicing",
+			"point2": "incididunt",
+			"point3": "magna"
+		},
+		"modes": {
+			"start": "Lorem",
+			"sentence1": "ad consequat Lorem est est elit consequat irure qui incididunt labore proident reprehenderit laboris dolore aliquip",
+			"sentence2": "do ut cillum duis nostrud cillum laborum tempor non adipisicing nostrud ullamco sint amet minim ipsum eiusmod duis aliquip esse anim irure ut adipisicing mollit et officia sint eu labore amet",
+			"sentence3": "aliquip exercitation nostrud et veniam dolor aliquip adipisicing sunt qui nisi ex officia eiusmod magna aliquip veniam enim dolor minim veniam est"
+		},
+		"name": "non",
+		"projects": {
+			"start": "consequat",
+			"sentence1": "mollit ex occaecat proident mollit sit non et laborum pariatur deserunt aliqua proident commodo ut labore eu qui exercitation ullamco cillum ex nulla reprehenderit qui amet consequat et consequat adipisicing adipisicing minim",
+			"point1": "deserunt irure duis pariatur sint",
+			"point2": "occaecat laborum dolor minim pariatur incididunt",
+			"point3": "deserunt eu consequat nisi veniam minim occaecat",
+			"point4": "cillum esse pariatur officia magna est Lorem magna sint magna",
+			"point5": "qui adipisicing minim"
+		},
+		"supervisor": "id",
+		"since": {
+			"january2018": "aliqua consequat nisi"
+		},
+		"teams": {
+			"start": "cillum",
+			"sentence1": "cupidatat fugiat proident quis quis eu irure nulla ullamco nisi sit cupidatat officia eu id ad",
+			"sentence2": "voluptate Lorem et deserunt aliquip do nostrud nostrud amet ex nostrud qui eu pariatur incididunt sit est duis proident irure sint",
+			"sentence3": "consectetur occaecat fugiat do consectetur quis minim ullamco elit est qui cillum et consectetur occaecat non ad cupidatat nulla ullamco incididunt fugiat dolore velit sit officia amet laborum"
+		},
+		"tickets": {
+			"start": "veniam",
+			"sentence1": "aliquip occaecat ea nisi irure adipisicing id amet aute aliqua do exercitation ea labore veniam cupidatat anim cupidatat sit",
+			"sentence2": "voluptate do eu culpa magna dolor nulla enim et quis laborum eu veniam id enim anim amet sit minim amet aute consectetur labore cillum qui nulla tempor"
+		},
+		"who": {
+			"start": "fugiat nulla adipisicing",
+			"sentence1": "incididunt pariatur laborum ea deserunt aliqua eu ad nostrud dolore voluptate commodo duis voluptate ut labore ad nulla laborum qui quis velit dolor"
+		}
+	},
+	"actions": {
+		"activate": "ipsum",
+		"apply": "in",
+		"cancel": "aliqua",
+		"close": "Lorem",
+		"comment": "fugiat",
+		"create": "do",
+		"delete": "consectetur",
+		"done": "qui",
+		"edit": "ea",
+		"import": "et",
+		"randomizeRemaining": "ad est",
+		"reset": "laboris",
+		"save": "ut",
+		"submit": "culpa",
+		"update": "reprehenderit",
+		"export": "est",
+		"download": "amet"
+	},
+	"analytics": {
+		"doneProgress": "mollit incididunt",
+		"selectSprint": "culpa laborum tempor laborum officia eu deserunt labore eiusmod",
+		"selectRelease": "id non Lorem incididunt est sunt cupidatat commodo qui",
+		"teamName": "tempor qui",
+		"tickets": "elit",
+		"user": "occaecat",
+		"yourData": "ullamco enim",
+		"stateDivision": "dolor veniam",
+		"statesOverTime": "sint qui aliquip",
+		"teamData": "eiusmod occaecat",
+		"teamStateDivision": "sunt fugiat",
+		"teamStatesOverTime": "elit eu adipisicing",
+		"teamBurndown": "labore aliqua",
+		"releaseData": "magna eu",
+		"releaseStateDivision": "ea exercitation",
+		"releaseStatesOverTime": "ut ut deserunt",
+		"releaseCumulativeChart": "elit cillum",
+		"kanbanCumulativeChart": "quis cupidatat"
+	},
+	"app": {
+		"name": "dolor"
+	},
+	"filters": {
+		"all": "excepteur"
+	},
+	"history": {
+		"history": "commodo",
+		"release": "id",
+		"sprint": "velit",
+		"tag": "anim"
+	},
+	"login": {
+		"signIn": "fugiat irure",
+		"signUp": "mollit pariatur",
+		"forgotPassword": "amet proident",
+		"title": "eiusmod aute culpa"
+	},
+	"modeSelector": {
+		"classMode": {
+			"description": "anim nisi non proident eu eiusmod in adipisicing commodo ullamco non sint labore veniam veniam aute pariatur aute ad ullamco fugiat deserunt",
+			"features": "fugiat minim officia consequat sunt irure est aute excepteur incididunt reprehenderit exercitation nostrud voluptate fugiat non eu laboris",
+			"title": "ex aliquip",
+			"usage": "excepteur mollit labore consequat"
+		},
+		"collaboratorMode": {
+			"description": "dolor cupidatat ea reprehenderit officia laboris adipisicing nulla consectetur nulla est nisi ut cupidatat et ut incididunt dolore officia",
+			"features": "cupidatat esse dolore ullamco aliqua id adipisicing occaecat mollit fugiat qui reprehenderit dolor culpa eu aliquip enim irure sit nulla consequat elit",
+			"title": "sit fugiat",
+			"usage": "duis fugiat commodo quis"
+		},
+		"description": "est qui esse ex esse laborum id velit occaecat aliqua",
+		"header": "laboris eu id",
+		"title": "consectetur ut"
+	},
+	"notifications": {
+		"clearAll": "anim nostrud laborum",
+		"new": "irure",
+		"noNew": "irure non laboris"
+	},
+	"pageNames": {
+		"about": "fugiat",
+		"chatRoom": "non excepteur",
+		"grades": "eu",
+		"logout": "cillum",
+		"profile": "Lorem",
+		"projects": "eu",
+		"settings": "commodo",
+		"submitFeedback": "adipisicing cillum",
+		"users": "consectetur"
+	},
+	"pageNotFound": {
+		"description": "esse tempor velit duis mollit exercitation consectetur excepteur quis ut",
+		"prompt": "aute deserunt qui Lorem voluptate",
+		"title": "pariatur laboris labore anim"
+	},
+	"profile": {
+		"selectPicture": "sit labore minim dolor",
+		"title": "nisi pariatur cillum"
+	},
+	"projects": {
+		"all": "excepteur",
+		"form": {
+			"description": "aute anim ad",
+			"fields": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"title": "ex nisi amet laboris",
+			"deadline": [
+				{
+					"currentIndex": 0
+				}
+			]
+		},
+		"status": {
+			"active": "non",
+			"closed": "magna",
+			"draft": "veniam",
+			"label": "amet"
+		},
+		"tabs": {
+			"analytics": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"backlog": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"board": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"issues": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"overview": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"settings": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"management": [
+				{
+					"currentIndex": 0
+				}
+			]
+		},
+		"title": "voluptate elit amet",
+		"type": {
+			"kanban": "do",
+			"label": "ea ut",
+			"scrum": "esse"
+		},
+		"label": "cupidatat",
+		"export": {
+			"complete": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"form": [
+				{
+					"currentIndex": 0
+				}
+			]
+		},
+		"import": {
+			"complete": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"form": [
+				{
+					"currentIndex": 0
+				}
+			]
+		}
+	},
+	"projectPage": {
+		"tabs": {
+			"boards": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"general": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"groups": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"users": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"management": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"analytics": [
+				{
+					"currentIndex": 0
+				}
+			]
+		},
+		"title": "duis ea ad"
+	},
+	"settings": {
+		"general": {
+			"active": "est dolore occaecat excepteur duis occaecat non",
+			"title": "excepteur nisi"
+		},
+		"users": {
+			"email": "consequat",
+			"fullName": "in pariatur sit reprehenderit",
+			"password": "incididunt",
+			"permissionsEdit": "tempor aliquip esse",
+			"title": "cupidatat laboris"
+		},
+		"title": "laboris dolore tempor"
+	},
+	"switch": {
+		"on": "aute",
+		"off": "ex"
+	},
+	"tickets": {
+		"assignee": "in",
+		"create": "consequat esse",
+		"description": "culpa",
+		"milestoneIssues": "cupidatat consequat",
+		"points": "amet",
+		"priority": "id",
+		"priorities": {
+			"high": "sunt",
+			"low": "consectetur",
+			"medium": "excepteur"
+		},
+		"relatedTickets": "amet consequat",
+		"release": "est",
+		"reporter": "in",
+		"state": "incididunt",
+		"states": {
+			"code_review": "nulla nostrud",
+			"done": "quis",
+			"new": "in",
+			"in_development": "non quis",
+			"in_test": "sint fugiat",
+			"ready_for_test": "fugiat elit irure"
+		},
+		"sprints": "sunt",
+		"subtasks": "adipisicing",
+		"tabs": {
+			"comments": "laborum",
+			"state": "id aute",
+			"assignee": "consectetur mollit",
+			"ticket": "reprehenderit",
+			"comment": "incididunt",
+			"history": "dolor"
+		},
+		"tags": "cupidatat",
+		"ticketDescription": "laborum exercitation",
+		"ticketTitle": "cillum",
+		"title": "amet veniam sunt",
+		"type": "sit",
+		"types": {
+			"bug": "excepteur",
+			"milestone": "fugiat",
+			"story": "sit"
+		},
+		"writeComment": "ipsum dolor",
+		"noHistory": "aliquip culpa",
+		"relation": {
+			"blocks": "laborum",
+			"blocked_by": "aliqua labore",
+			"duplicates": "nisi",
+			"duplicated_by": "eiusmod aute",
+			"fixes": "commodo",
+			"fixed_by": "minim consectetur",
+			"label": "eiusmod et"
+		},
+		"label": "anim",
+		"id": "in magna",
+		"displayId": "aliquip id",
+		"releases": "adipisicing"
+	},
+	"uploadModal": {
+		"file": "sit",
+		"selectFile": "enim pariatur proident duis cillum",
+		"title": "velit proident",
+		"upload": "ipsum"
+	},
+	"userInformation": {
+		"confirmPassword": "amet dolor",
+		"currentPassword": "duis laborum",
+		"email": "Lorem",
+		"firstName": "anim est",
+		"language": "minim",
+		"lastName": "proident pariatur",
+		"newPassword": "est nostrud",
+		"notifications": "ad",
+		"password": "mollit",
+		"picture": "occaecat",
+		"status": {
+			"active": "ad",
+			"disabled": "pariatur",
+			"pending": "eiusmod"
+		},
+		"theme": "mollit",
+		"types": {
+			"modeSelector": "magna dolor",
+			"collaboratorAdmin": "mollit irure",
+			"collaborator": "labore",
+			"professor": "enim",
+			"ta": "mollit non",
+			"student": "irure"
+		},
+		"username": "non",
+		"themes": {
+			"theme-default": "sunt",
+			"theme-blueSky": "mollit deserunt",
+			"theme-greenIslands": "aute commodo",
+			"theme-redRoses": "consequat deserunt",
+			"theme-greyClouds": "occaecat minim"
+		},
+		"languages": {
+			"english": "English",
+			"french": "French"
+		}
+	},
+	"users": {
+		"all": "deserunt",
+		"searchFilter": "pariatur dolore",
+		"title": "officia voluptate labore",
+		"userStatus": "mollit in",
+		"userType": "veniam non",
+		"usersAddFormDescription": "excepteur duis in proident",
+		"usersAddFormTitle": "mollit nostrud proident",
+		"usersEditFormDescription": "magna deserunt do in aute",
+		"usersEditFormTitle": "qui pariatur tempor",
+		"label": "anim",
+		"import": {
+			"complete": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"form": [
+				{
+					"currentIndex": 0
+				}
+			]
+		},
+		"export": {
+			"form": [
+				{
+					"currentIndex": 0
+				}
+			],
+			"complete": [
+				{
+					"currentIndex": 0
+				}
+			]
+		}
+	}
+}

@@ -116,14 +116,6 @@ const notificationsWS = new ws.Server({
     port: config.notificationsWSPort
 });
 
-// Setting up i18n library
-i18n.configure({
-    locales: config.languageOptions,
-    defaultLocale: config.defaultLanguage,
-    directory: `${__dirname}/Locales`,
-    objectNotation: true
-});
-
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/Templates`);
 
@@ -158,6 +150,13 @@ app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
 app.use(forceSSL);
 app.use(sessionParser);
 app.use(function (req, res, next) {
+    i18n.configure({
+        locales: config.languageOptions,
+        defaultLocale: api.isActiveSession(req) ? req.session.user.language : config.defaultLanguage,
+        directory: `${__dirname}/Locales`,
+        objectNotation: true
+    });
+    
     res.locals.__ = res.__ = function () {
         return i18n.__.apply(req, arguments);
     };

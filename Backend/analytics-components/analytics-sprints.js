@@ -223,6 +223,10 @@ const createUnassignedMembersObject = function (tickets, teamId) {
  */
 const getSprintAnalytics = function (team, sprints, tickets, callback) {
 
+    if (sprints.length === 0) {
+        return callback(null, []);
+    }
+
     const sprintIds = common.convertJsonListToList('_id', sprints);
     let sprintIdList = [];
 

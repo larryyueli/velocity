@@ -93,6 +93,7 @@ const editProfile = function (id) {
 
     user['notificationEnabled'] = $(notificationSwitch)[0].checked;
     user['theme'] = $(theme)[0].value;
+    user['language'] = $('#language')[0].value;
 
     $.ajax({
         type: 'POST',

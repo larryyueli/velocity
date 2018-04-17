@@ -435,7 +435,7 @@ const updateBoardType = function (req, res) {
                     });
                 } else {
                     return res.status(200).send('ok');
-                }                
+                }
             });
         });
     });
@@ -471,7 +471,7 @@ const renderTeamPage = function (req, res) {
             return res.status(404).render(common_api.pugPages.pageNotFound);
         }
 
-        projects.getConfiguredTeamById(projectId, teamId, function (err, teamObj) {
+        projects.getTeamById(projectId, teamId, function (err, teamObj) {
             if (err) {
                 logger.error(JSON.stringify(err));
                 return res.status(404).render(common_api.pugPages.pageNotFound);

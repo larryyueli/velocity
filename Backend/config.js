@@ -56,7 +56,7 @@ const sessionResave = false;
 const saveUninitializedSession = false;
 const rollingSession = true;
 const secureSessionCookie = true;
-const languageOptions = ['en'];
+const languageOptions = ['en', 'fr'];
 const defaultLanguage = 'en';
 
 exports.maxSessionAge = maxSessionAge;
