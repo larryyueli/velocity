@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2016
+Copyright (C) 2018
 Developed at University of Toronto
 
 This program is free software: you can redistribute it and/or modify
@@ -214,7 +214,8 @@ function fillBoardTicketRow(issue) {
     bindedRow.find(displayIdId).html(`<a class="ticket-link" target="_blank" href="/project/${projectId}/team/${teamId}/ticket/${issue._id}">${issue.displayId}</a>`);
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
-    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" height="auto" width="95%" class="profilePic">`);
+    bindedRow.find(imageId).html(`<img class="circle hide-on-large-only" src="/picture/${issue.assigneePicture}" alt="" width="35px" height="35px">
+    <img class="circle hide-on-med-and-down" src="/picture/${issue.assigneePicture}" alt="" width="50px" height="50px">`);
 
     return bindedRow[0].outerHTML;
 }

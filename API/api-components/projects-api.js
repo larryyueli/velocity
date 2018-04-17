@@ -421,7 +421,8 @@ const updateProjectAdminsList = function (req, res) {
         }
 
         const newProject = {
-            admins: newAdminsList
+            admins: newAdminsList,
+            members: common_backend.joinSets(newAdminsList, projectObj.members)
         };
         projects.updateProject(projectId, newProject, function (err, result) {
             if (err) {

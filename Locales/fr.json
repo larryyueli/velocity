@@ -379,7 +379,8 @@
 		"label": "anim",
 		"id": "in magna",
 		"displayId": "aliquip id",
-		"releases": "adipisicing"
+		"releases": "adipisicing",
+		"milestone": "Lorem"
 	},
 	"uploadModal": {
 		"file": "sit",
