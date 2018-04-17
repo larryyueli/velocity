@@ -86,7 +86,7 @@ const createRelease = function (req, res) {
                             return res.status(500).send(err);
                         }
     
-                        return res.status(200).send('ok');
+                        return res.status(200).send(releaseObj);
                     });
                 });
             });
