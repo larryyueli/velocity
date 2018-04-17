@@ -531,14 +531,18 @@ const renderTicketPage = function (req, res) {
 
                     let assignee = '';
                     let resolvedAssignee = usersIdObj[ticketObj.assignee];
+                    let resolvedAssigneePicture = null;
                     if (resolvedAssignee) {
-                        assignee = `${resolvedAssignee.fname} ${resolvedAssignee.lname}`
+                        assignee = `${resolvedAssignee.fname} ${resolvedAssignee.lname}`;
+                        resolvedAssigneePicture = resolvedAssignee.picture;
                     }
 
                     let reporter = common_backend.noReporter;
                     let resolvedReporter = usersIdObj[ticketObj.reporter];
+                    let resolvedReporterPicture = null;
                     if (resolvedReporter) {
-                        reporter = `${resolvedReporter.fname} ${resolvedReporter.lname}`
+                        reporter = `${resolvedReporter.fname} ${resolvedReporter.lname}`;
+                        resolvedReporterPicture = resolvedReporter.picture;
                     }
 
                     for (let i = 0; i < commentsList.length; i++) {
@@ -641,6 +645,8 @@ const renderTicketPage = function (req, res) {
                                         releases: releasesObjList,
                                         tags: tagsObjList,
                                         relatedTickets: resolvedRelatedTickets,
+                                        resolvedAssigneePicture: resolvedAssigneePicture,
+                                        resolvedReporterPicture: resolvedReporterPicture,
                                         resolveState: (state) => {
                                             return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
                                         },

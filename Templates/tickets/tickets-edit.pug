@@ -51,6 +51,12 @@ block content
                                             label #{__('tickets.type')}
                                             br
                                             h6.left #{__(`tickets.types.${ticketType}`)}
+                                            if ticket.type === 0
+                                                img.ticketIconsViewOnly(src='/img/icon-code-file.png')
+                                            if ticket.type === 1
+                                                img.ticketIconsViewOnly(src='/img/icon-ladybird.png')
+                                            if ticket.type === 2
+                                                img.ticketIconsViewOnly(src='/img/icon-purchase-order.png')
                                         .input-field.padding-10.col.s12.m3.padding-top-0
                                             label #{__('tickets.state')}
                                             br
@@ -59,6 +65,12 @@ block content
                                             label #{__('tickets.priority')}
                                             br
                                             h6.left #{__(`tickets.priorities.${ticketPriority}`)}
+                                            if ticket.priority === 0
+                                                img.ticketIconsViewOnly(src='/img/icon-low-priority.png')
+                                            if ticket.priority === 1
+                                                img.ticketIconsViewOnly(src='/img/icon-meduim-priority.png')
+                                            if ticket.priority === 2
+                                                img.ticketIconsViewOnly(src='/img/icon-high-priority.png')
                                         .input-field.padding-10.col.s12.m3.padding-top-0
                                             label #{__('tickets.points')}
                                             br
@@ -97,12 +109,14 @@ block content
                                         .input-field.padding-10
                                             label(for='autocomplete-input') #{__('tickets.reporter')}
                                             br
-                                            h6 #{`${reporter}`}
+                                            img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedReporterPicture}`)
+                                            | #{`${reporter}`}
                                     .row
                                         .input-field.padding-10
                                             label(for='assigneeAutocomplete') #{__('tickets.assignee')}
                                             br
-                                            h6 #{`${assignee}`}
+                                            img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedAssigneePicture}`)
+                                            | #{`${assignee}`}
                                     .row.hidden #{ticket.assignee}
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
