@@ -214,7 +214,7 @@ function fillBoardTicketRow(issue) {
     bindedRow.find(displayIdId).html(`<a class="ticket-link" target="_blank" href="/project/${projectId}/team/${teamId}/ticket/${issue._id}">${issue.displayId}</a>`);
     bindedRow.find(nameId).html(issue.title);
     bindedRow.find(estimateId).html(issue.points);
-    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" width="60px" height="60px">`);
+    bindedRow.find(imageId).html(`<img class="circle" src="/picture/${issue.assigneePicture}" alt="" width="45px" height="45px">`);
 
     return bindedRow[0].outerHTML;
 }
