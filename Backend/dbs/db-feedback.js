@@ -87,7 +87,7 @@ const getFeedback = function (searchQuery, callback) {
 
 // <exports> -----------------------------------
 exports.addFeedback = addFeedback;
-exports.getLimitedFeedbacksListSorted = getLimitedFeedbacksListSorted;
 exports.getFeedback = getFeedback;
+exports.getLimitedFeedbacksListSorted = getLimitedFeedbacksListSorted;
 exports.initialize = initialize;
 // </exports> ----------------------------------

@@ -86,8 +86,8 @@ exports.updateComment = db_comments.updateComment;
 
 // <Feedbacks Collection> ----------------------------------------------
 exports.addFeedback = db_feedback.addFeedback;
-exports.getLimitedFeedbacksListSorted = db_feedback.getLimitedFeedbacksListSorted;
 exports.getFeedback = db_feedback.getFeedback;
+exports.getLimitedFeedbacksListSorted = db_feedback.getLimitedFeedbacksListSorted;
 // </Feedbacks Collection> ---------------------------------------------
 
 // <Kanban Analytics Collection> ----------------------------------------------

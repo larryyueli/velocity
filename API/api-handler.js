@@ -249,8 +249,8 @@ exports.isActiveSession = common_api.isActiveSession;
 // </Common Requests> -----------------------------------------------
 
 // <Feedbacks Requests> ------------------------------------------------
-exports.handleFeedbackCreatePath = feedback_api.createFeedback;
 exports.handleFeedbackAdminPath = feedback_api.renderFeedbackPage;
+exports.handleFeedbackCreatePath = feedback_api.createFeedback;
 // </Feedbacks Requests> -----------------------------------------------
 
 // <Notifications Requests> ------------------------------------------------
