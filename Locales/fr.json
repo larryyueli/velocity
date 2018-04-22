@@ -380,7 +380,9 @@
 		"id": "in magna",
 		"displayId": "aliquip id",
 		"releases": "adipisicing",
-		"milestone": "Lorem"
+		"milestone": "Lorem",
+		"noReporter": "Lorem",
+		"noAssignee": "Lorem"
 	},
 	"uploadModal": {
 		"file": "sit",

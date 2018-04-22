@@ -77,8 +77,8 @@ function displayList() {
         if (passFilter(project)) {
             $(projectsListId).append(fillRow(project));
 
-            $(`#${project._id}`).on('click', function() {
-                 window.location.href = `/project/${project._id}`;
+            $(`#${project._id}`).on('click', function () {
+                window.location.href = `/project/${project._id}`;
             });
         }
     });

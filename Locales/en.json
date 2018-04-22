@@ -380,7 +380,12 @@
 		"id": "Ticket Id",
 		"displayId": "Display Id",
 		"releases": "Releases",
-		"milestone": "Milestone"
+		"milestone": "Milestone",
+		"noReporter": "No Reporter",
+		"noAssignee": "No Assignee",
+		"noReleases": "No Releases",
+		"noSprints": "No Sprints",
+		"noTags": "No Tags"
 	},
 	"uploadModal": {
 		"file": "File",

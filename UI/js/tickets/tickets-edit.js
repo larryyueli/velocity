@@ -65,6 +65,7 @@ const milestoneDiv = '#milestoneDiv';
 const milestoneIssuesDiv = '#milestoneIssuesDiv';
 const milestoneIssuesInput = '#milestoneIssuesInput';
 const saveMilestoneIssuesButton = '#saveMilestoneIssuesButton';
+const createTicketButtonId = '#createTicketButton';
 
 var attachmentsList = [];
 var milestonesIssuesList = [];
@@ -134,6 +135,10 @@ $(function () {
         let value = $(this).attr('id').split('_')[1];
         selectedRelatedObj[id] = value;
         $(this).attr('id', id);
+    });
+
+    $(createTicketButtonId).click(() => {
+        window.location = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
 
     selectedAssignee = $(currentTicketAssignee).html();

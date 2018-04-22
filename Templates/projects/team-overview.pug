@@ -17,7 +17,7 @@
                     #imageViewer.modal
                         i.right.modal-action.modal-close.material-icons close
                         img.full-width#imageViewerImage
-        if !isProjectClosed && isUnKnownBoardType
+        if !isProjectClosed && isUnKnownBoardType && !isProjectAdmin
             .row
                 .card.center
                     .card-content
