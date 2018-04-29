@@ -325,7 +325,7 @@
 		"assignee": "Assignee",
 		"create": "Create Ticket",
 		"description": "Description",
-		"milestoneIssues": "Milestone issues",
+		"milestoneTickets": "Milestone Tickets",
 		"points": "Points",
 		"priority": "Priority",
 		"priorities": {

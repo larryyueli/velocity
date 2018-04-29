@@ -92,15 +92,6 @@ block content
                                                         i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
                                                         if attachment.isViewable
                                                             i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
-                                    if false
-                                        .row.subtasksRow
-                                            .input-field.padding-10
-                                                input(type='text', name='subtasks')
-                                                label(for='description') #{__('tickets.subtasks')}
-                                    .row.milestoneIssuesRow
-                                        .input-field.padding-10
-                                            input(type='text', name='milestoneIssues')
-                                            label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
                                     .row
                                         .input-field.padding-10
                                             each relatedTicket in relatedTickets
@@ -234,17 +225,17 @@ block content
                                             .input-field.padding-10#subtasksSelection
                                                 input(type='text', name='subtasks')
                                                 label(for='description') #{__('tickets.subtasks')}
-                                    .row.milestoneIssuesRow
-                                        .input-field.col.s10.padding-10#milestoneIssuesSelection
-                                            input#milestoneIssuesInput(type='text', name='milestoneIssues')
-                                            label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
+                                    .row.milestoneTicketRow
+                                        .input-field.col.s10.padding-10#milestoneTicketSelection
+                                            input#milestoneTicketInput(type='text', name='milestoneTicket')
+                                            label(for='milestoneTicket') #{__('tickets.milestoneTickets')}
                                         .input-field.col.s2
-                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneIssuesFunction()')#saveMilestoneIssuesButton
+                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='savemilestoneTicketFunction()')#savemilestoneTicketButton
                                                 i.material-icons.right save
-                                        #milestoneIssuesDiv
+                                        #milestoneTicketDiv
                                     .milestoneOuterRow
-                                        label.left #{__('tickets.milestone')}
-                                        br
+                                        .row
+                                            label.left #{__('tickets.milestone')}
                                         .row.milestoneRow
                                             .input-field.col.s10.padding-10#milestoneSelection
                                                 input#milestoneInput(type='text', name='milestone')
@@ -252,7 +243,7 @@ block content
                                                 button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneFunction()')#saveMilestoneButton
                                                     i.material-icons.right save
                                         #milestoneDiv
-                                        br
+                                    br
                                     .row.relatedIssuesRow
                                         .input-field.col.s4
                                             select#relatedSelectedInput

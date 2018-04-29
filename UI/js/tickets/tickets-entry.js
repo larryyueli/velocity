@@ -18,9 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const typeSelection = $('#typeSelection');
 const subtaskRow = $('.subtasksRow')
-const milestoneIssuesRow = $('.milestoneIssuesRow')
+const milestoneTicketRow = $('.milestoneTicketRow')
 const subtaskSelection = $('#subtasksSelection');
-const milestoneIssuesSelection = $('#milestoneIssuesSelection');
+const milestoneTicketSelection = $('#milestoneTicketSelection');
 const createTicketButtonId = '#createTicketButton';
 const descriptionId = '#description';
 const splithref = window.location.href.split('/');
@@ -61,13 +61,13 @@ var tagIdsObj = {};
 typeSelection.change(function () {
     if (typeSelection.val() == 0) {
         subtaskRow.hide();
-        milestoneIssuesRow.hide();
+        milestoneTicketRow.hide();
     } else if (typeSelection.val() == 1) {
         subtaskRow.show();
-        milestoneIssuesRow.hide();
+        milestoneTicketRow.hide();
     } else {
         subtaskRow.hide();
-        milestoneIssuesRow.show();
+        milestoneTicketRow.show();
     }
 });
 

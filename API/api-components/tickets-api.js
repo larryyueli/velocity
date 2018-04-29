@@ -745,10 +745,12 @@ const updateTicket = function (req, res) {
     const ticketId = req.body.ticketId;
     const assignee = req.body.assignee;
     const links = req.body.links;
+    const milestone = req.body.milestone;
     let sprints = req.body.sprints;
     let releases = req.body.releases;
     let tags = req.body.tags;
     let attachments = req.body.attachments;
+    let milestoneTickets = req.body.milestoneTickets;
 
     if (!Array.isArray(sprints)) {
         try {
@@ -787,6 +789,16 @@ const updateTicket = function (req, res) {
         catch (err) {
             logger.error(JSON.stringify(common_backend.getError(1011)));
             attachments = [];
+        }
+    }
+
+    if (!Array.isArray(milestoneTickets)) {
+        try {
+            milestoneTickets = JSON.parse(milestoneTickets);
+        }
+        catch (err) {
+            logger.error(JSON.stringify(common_backend.getError(1011)));
+            milestoneTickets = [];
         }
     }
 
@@ -1203,19 +1215,31 @@ const updateTicket = function (req, res) {
                         }
                     }
 
+                    let processMilestone = function () {
+
+                    }
+
+                    let processMilestoneTickets = function () {
+
+                    }
+
                     processSprints(function () {
                         processReleases(function () {
                             processTags(function () {
                                 processLinks(function () {
-                                    updatedTicket.inBacklog = teamObj.boardType === common_backend.boardTypes.KANBAN.value
-                                        || (teamObj.boardType === common_backend.boardTypes.SCRUM.value && updatedTicket.sprints.length === 0);
-                                    projects.updateTicketById(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
-                                        if (err) {
-                                            logger.error(JSON.stringify(err));
-                                            return res.status(500).send(err);
-                                        }
+                                    processMilestone(function () {
+                                        processMilestoneTickets(function () {
+                                            updatedTicket.inBacklog = teamObj.boardType === common_backend.boardTypes.KANBAN.value
+                                                || (teamObj.boardType === common_backend.boardTypes.SCRUM.value && updatedTicket.sprints.length === 0);
+                                            projects.updateTicketById(ticketObj._id, teamId, projectId, updatedTicket, function (err, result) {
+                                                if (err) {
+                                                    logger.error(JSON.stringify(err));
+                                                    return res.status(500).send(err);
+                                                }
 
-                                        return res.status(200).send('ok');
+                                                return res.status(200).send('ok');
+                                            });
+                                        });
                                     });
                                 });
                             });
