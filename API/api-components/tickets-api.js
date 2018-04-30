@@ -614,6 +614,73 @@ const renderTicketPage = function (req, res) {
 
                     }
 
+                    let milestoneTicket = ticketsIdObj[ticketObj.milestone];
+                    if (milestoneTicket && milestoneTicket.type === common_backend.ticketTypes.MILESTONE.value) {
+                        const resolvedReporter = usersIdObj[milestoneTicket.reporter] ? `${usersIdObj[milestoneTicket.reporter].fname} ${usersIdObj[milestoneTicket.reporter].lname}` : common_backend.noReporter;
+                        const resolvedAssignee = usersIdObj[milestoneTicket.assignee] ? `$${usersIdObj[milestoneTicket.assignee].fname} ${usersIdObj[milestoneTicket.assignee].lname}}` : common_backend.noReporter;
+                        const reporterPicture = usersIdObj[milestoneTicket.reporter] ? usersIdObj[milestoneTicket.reporter].picture : null;
+                        const assigneePicture = usersIdObj[milestoneTicket.assignee] ? usersIdObj[milestoneTicket.assignee].picture : null;
+                        milestoneTicket = {
+                            _id: milestoneTicket._id,
+                            reporterId: milestoneTicket.reporter,
+                            assigneeId: milestoneTicket.assignee,
+                            reporter: resolvedReporter,
+                            assignee: resolvedAssignee,
+                            reporterPicture: reporterPicture,
+                            assigneePicture: assigneePicture,
+                            ctime: milestoneTicket.ctime,
+                            mtime: milestoneTicket.mtime,
+                            displayId: milestoneTicket.displayId,
+                            title: milestoneTicket.title,
+                            status: milestoneTicket.status,
+                            state: milestoneTicket.state,
+                            type: milestoneTicket.type,
+                            priority: milestoneTicket.priority
+                        };
+                    }
+
+                    let resolvedMilestoneTickets = [];
+                    let milestoneTicketsDoneProgressCounter = 0;
+                    let milestoneTicketsDoneProgressTotal = 0;
+                    let milestoneTicketsPointsProgressCounter = 0;
+                    let milestoneTicketsPointsProgressTotal = 0;
+                    for (let i = 0; i < ticketObj.milestoneTickets.length; i++) {
+                        let relatedTicket = ticketsIdObj[ticketObj.milestoneTickets[i]];
+                        if (relatedTicket && relatedTicket.type !== common_backend.ticketTypes.MILESTONE.value) {
+                            milestoneTicketsDoneProgressTotal += 1;
+                            milestoneTicketsDoneProgressCounter += (relatedTicket.state === common_backend.ticketStates.DONE.value) ? 1 : 0;
+                            milestoneTicketsPointsProgressTotal += relatedTicket.points;
+                            milestoneTicketsPointsProgressCounter += (relatedTicket.state === common_backend.ticketStates.DONE.value) ? relatedTicket.points : 0;
+                            const resolvedReporter = usersIdObj[relatedTicket.reporter] ? `${usersIdObj[relatedTicket.reporter].fname} ${usersIdObj[relatedTicket.reporter].lname}` : common_backend.noReporter;
+                            const resolvedAssignee = usersIdObj[relatedTicket.assignee] ? `$${usersIdObj[relatedTicket.assignee].fname} ${usersIdObj[relatedTicket.assignee].lname}}` : common_backend.noReporter;
+                            const reporterPicture = usersIdObj[relatedTicket.reporter] ? usersIdObj[relatedTicket.reporter].picture : null;
+                            const assigneePicture = usersIdObj[relatedTicket.assignee] ? usersIdObj[relatedTicket.assignee].picture : null;
+                            let resolvedTicket = {
+                                _id: relatedTicket._id,
+                                reporterId: relatedTicket.reporter,
+                                assigneeId: relatedTicket.assignee,
+                                reporter: resolvedReporter,
+                                assignee: resolvedAssignee,
+                                reporterPicture: reporterPicture,
+                                assigneePicture: assigneePicture,
+                                ctime: relatedTicket.ctime,
+                                mtime: relatedTicket.mtime,
+                                displayId: relatedTicket.displayId,
+                                title: relatedTicket.title,
+                                status: relatedTicket.status,
+                                state: relatedTicket.state,
+                                type: relatedTicket.type,
+                                priority: relatedTicket.priority,
+                                points: relatedTicket.points
+                            };
+                            resolvedMilestoneTickets.push(resolvedTicket);
+                        }
+                    }
+                    let milestoneTicketsDoneProgressPercentage = (milestoneTicketsDoneProgressTotal > 0)
+                        ? Math.floor(milestoneTicketsDoneProgressCounter / milestoneTicketsDoneProgressTotal * 100) : 0;
+                    let milestoneTicketsPointsProgressPercentage = (milestoneTicketsPointsProgressTotal > 0)
+                        ? Math.floor(milestoneTicketsPointsProgressCounter / milestoneTicketsPointsProgressTotal * 100) : 0;
+
                     projects.getSprintsByIds(projectId, teamId, ticketObj.sprints, function (err, sprintsObjList) {
                         if (err) {
                             logger.error(JSON.stringify(err));
@@ -644,9 +711,13 @@ const renderTicketPage = function (req, res) {
                                         sprints: sprintsObjList,
                                         releases: releasesObjList,
                                         tags: tagsObjList,
+                                        milestone: milestoneTicket,
+                                        milestoneTickets: resolvedMilestoneTickets,
                                         relatedTickets: resolvedRelatedTickets,
                                         resolvedAssigneePicture: resolvedAssigneePicture,
                                         resolvedReporterPicture: resolvedReporterPicture,
+                                        milestoneTicketsDoneProgressPercentage: milestoneTicketsDoneProgressPercentage,
+                                        milestoneTicketsPointsProgressPercentage: milestoneTicketsPointsProgressPercentage,
                                         resolveState: (state) => {
                                             return common_backend.getValueInObjectByKey(state, 'value', 'text', common_backend.ticketStates);
                                         },
@@ -694,6 +765,7 @@ const renderTicketPage = function (req, res) {
                                         isKanbanBoardType: teamObj.boardType === common_backend.boardTypes.KANBAN.value,
                                         isScrumBoardType: teamObj.boardType === common_backend.boardTypes.SCRUM.value,
                                         attachments: attachmentsList,
+                                        ticketTypes: common_backend.ticketTypes,
                                         isProjectClosed: projectObj.status !== common_backend.projectStatus.ACTIVE.value,
                                         ticketType: common_backend.getValueInObjectByKey(ticketObj.type, 'value', 'text', common_backend.ticketTypes),
                                         ticketState: common_backend.getValueInObjectByKey(ticketObj.state, 'value', 'text', common_backend.ticketStates),
@@ -745,7 +817,7 @@ const updateTicket = function (req, res) {
     const ticketId = req.body.ticketId;
     const assignee = req.body.assignee;
     const links = req.body.links;
-    const milestone = req.body.milestone;
+    const milestoneId = req.body.milestone;
     let sprints = req.body.sprints;
     let releases = req.body.releases;
     let tags = req.body.tags;
@@ -1098,7 +1170,9 @@ const updateTicket = function (req, res) {
                                 let counter = 0;
                                 for (let i = 0; i < ticketsObjList.length; i++) {
                                     const ticket = ticketsObjList[i];
-                                    if (ticketObj._id !== ticket._id) {
+                                    if (ticketObj._id !== ticket._id
+                                        || (ticket.type !== common_backend.ticketTypes.BUG.value
+                                            && ticket.type !== common_backend.ticketTypes.STORY.value)) {
                                         if (linksIdsList.indexOf(ticket._id) === -1) {
                                             for (let j = 0; j < ticket.links.length; j++) {
                                                 if (ticket.links[j].ticketId === ticketObj._id) {
@@ -1215,12 +1289,112 @@ const updateTicket = function (req, res) {
                         }
                     }
 
-                    let processMilestone = function () {
+                    let processMilestone = function (callback) {
+                        if (ticketObj.type === common_backend.ticketTypes.MILESTONE.value) {
+                            updatedTicket.milestone = '';
+                            return callback();
+                        }
+
+                        if (ticketObj.type !== common_backend.ticketTypes.BUG.value
+                            && ticketObj.type !== common_backend.ticketTypes.STORY.value) {
+                            return callback();
+                        }
+
+                        updatedTicket.milestoneTickets = [];
+                        projects.removeMilestoneFromTickets(ticketObj.milestoneTickets, projectId, teamId, function (err, result) {
+                            if (err) {
+                                logger.error(JSON.stringify(err));
+                                return res.status(500).send(err);
+                            }
+
+                            projects.getMilestoneById(projectId, teamId, ticketObj.milestone, function (err, exMilestoneObj) {
+                                updatedTicket.milestone = '';
+
+                                let updateNewMilestone = function (callback) {
+                                    projects.getMilestoneById(projectId, teamId, milestoneId, function (err, milestoneObj) {
+                                        if (milestoneObj) {
+                                            updatedTicket.milestone = milestoneObj._id;
+                                            milestoneObj.milestoneTickets = common_backend.joinSets(milestoneObj.milestoneTickets, [ticketObj._id]);
+                                            projects.updateTicketById(milestoneObj._id, teamId, projectId, { milestoneTickets: milestoneObj.milestoneTickets }, function (err, result) {
+                                                if (err) {
+                                                    logger.error(JSON.stringify(err));
+                                                    return res.status(500).send(err);
+                                                }
+
+                                                return callback();
+                                            });
+                                        } else {
+                                            return callback();
+                                        }
+                                    });
+                                }
+
+                                if (exMilestoneObj) {
+                                    exMilestoneObj.milestoneTickets.splice(exMilestoneObj.milestoneTickets.indexOf(ticketObj._id), 1);
+                                    projects.updateTicketById(exMilestoneObj._id, teamId, projectId, { milestoneTickets: exMilestoneObj.milestoneTickets }, function (err, result) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                            return res.status(500).send(err);
+                                        }
+
+                                        updateNewMilestone(callback);
+                                    });
+                                } else {
+                                    updateNewMilestone(callback);
+                                }
+                            });
+                        });
 
                     }
 
-                    let processMilestoneTickets = function () {
+                    let processMilestoneTickets = function (callback) {
+                        if (Array.isArray(milestoneTickets)) {
+                            let allMilestoneTickets = common_backend.joinSets(ticketObj.milestoneTickets, milestoneTickets);
+                            projects.getTicketsByIds(projectId, teamId, allMilestoneTickets, function (err, milestoneTicketsList) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
 
+                                let allTicketsId = common_backend.convertJsonListToList('_id', milestoneTicketsList);
+                                let validTicketsIds = [];
+                                for (let i = 0; i < milestoneTickets.length; i++) {
+                                    let ticketId = milestoneTickets[i];
+                                    if (allTicketsId.indexOf(ticketId) !== -1) {
+                                        validTicketsIds.push(ticketId);
+                                    }
+                                }
+
+                                let milestoneTicketsToRemove = common_backend.getArrayDiff(allTicketsId, validTicketsIds);
+
+                                projects.addMilestoneToTickets(projectId, teamId, ticketObj._id, validTicketsIds, function (err, result) {
+                                    if (err) {
+                                        logger.error(JSON.stringify(err));
+                                        return res.status(500).send(err);
+                                    }
+
+                                    projects.removeMilestoneFromTickets(projectId, teamId, milestoneTicketsToRemove, function (err, result) {
+                                        if (err) {
+                                            logger.error(JSON.stringify(err));
+                                            return res.status(500).send(err);
+                                        }
+
+                                        updatedTicket.milestoneTickets = validTicketsIds;
+                                        return callback();
+                                    });
+                                });
+                            });
+                        } else {
+                            updatedTicket.milestoneTickets = [];
+                            projects.removeMilestoneFromTickets(ticketObj.milestoneTickets, projectId, teamId, function (err, result) {
+                                if (err) {
+                                    logger.error(JSON.stringify(err));
+                                    return res.status(500).send(err);
+                                }
+
+                                return callback();
+                            });
+                        }
                     }
 
                     processSprints(function () {

@@ -329,7 +329,9 @@ exports.updateTeamInProject = teams.updateTeamInProject;
 // </teams> ----------------------------------
 
 // <tickets> -----------------------------------
+exports.addMilestoneToTickets = tickets.addMilestoneToTickets;
 exports.addTicketToTeam = tickets.addTicket;
+exports.getMilestoneById = tickets.getMilestoneById;
 exports.getTicketByDisplayId = tickets.getTicketByDisplayId;
 exports.getTicketById = tickets.getTicketById;
 exports.getTicketsByIds = tickets.getTicketsByIds;
@@ -339,6 +341,7 @@ exports.getTicketsByTeamId = tickets.getTicketsByTeamId;
 exports.getTicketsInBacklog = tickets.getTicketsInBacklog;
 exports.getTicketsWithNoSprints = tickets.getTicketsWithNoSprints;
 exports.putTicketsInBacklog = tickets.putTicketsInBacklog;
+exports.removeMilestoneFromTickets = tickets.removeMilestoneFromTickets;
 exports.searchTicketsByProjectId = tickets.searchTicketsByProjectId;
 exports.searchTicketsByTeamId = tickets.searchTicketsByTeamId;
 exports.updateTicketById = tickets.updateTicketById;

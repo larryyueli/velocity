@@ -691,7 +691,7 @@ exports.convertJsonListToList = convertJsonListToList;
  *
  * @param {array} list1 first list
  * @param {array} list2 second list
- * @return {list} result object
+ * @return {list} result list
  */
 const joinSets = function (list1, list2) {
     let result = [];
@@ -714,7 +714,7 @@ exports.joinSets = joinSets;
  *
  * @param {array} list1 first list
  * @param {array} list2 second list
- * @return {list} result object
+ * @return {list} result list
  */
 const joinLists = function (list1, list2) {
     let result = [];

@@ -385,7 +385,9 @@
 		"noAssignee": "No Assignee",
 		"noReleases": "No Releases",
 		"noSprints": "No Sprints",
-		"noTags": "No Tags"
+		"noTags": "No Tags",
+		"milestoneTicketsDoneProgress": "Milestone Tickets Done Progress",
+		"milestoneTicketsPointsProgress": "Milestone Tickets Points Progress"
 	},
 	"uploadModal": {
 		"file": "File",
