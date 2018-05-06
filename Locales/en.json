@@ -429,8 +429,10 @@
 			"theme-greyClouds": "Grey Clouds"
 		},
 		"languages": {
-			"english": "English",
-			"french": "French"
+			"russian": "Russian",
+			"spanish": "Spanish",
+			"french": "French",
+			"english": "English"
 		}
 	},
 	"users": {

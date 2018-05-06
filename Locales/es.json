@@ -1,0 +1,492 @@
+{
+    "feedback": {
+        "noFeedback": "No hay comentarios disponibles",
+        "title": "Realimentación"
+    },
+    "app": {
+        "name": "Velocidad"
+    },
+    "actions": {
+        "comment": "Comentario",
+        "reset": "Reiniciar",
+        "activate": "Activar",
+        "edit": "Editar",
+        "import": "Importar",
+        "create": "Crear",
+        "update": "Actualizar",
+        "submit": "Enviar",
+        "randomizeRemaining": "Aleatorizar el resto",
+        "export": "Exportar",
+        "done": "Hecho",
+        "close": "Cerca",
+        "cancel": "Cancelar",
+        "apply": "Aplicar",
+        "download": "Descargar",
+        "save": "Salvar",
+        "delete": "Borrar"
+    },
+    "analytics": {
+        "tickets": "Entradas",
+        "releaseStatesOverTime": "Estados a lo largodel tiempo",
+        "teamBurndown": "Cuadro de incendio",
+        "teamStateDivision": "División Estatal",
+        "releaseStateDivision": "División Estatal",
+        "kanbanCumulativeChart": "Gráfico acumulativo",
+        "teamData": "Datos del equipo",
+        "doneProgress": "Progreso hecho",
+        "teamName": "Nombre del equipo",
+        "statesOverTime": "Estados a lo largo del tiempo",
+        "teamStatesOverTime": "Estados a lo largo del tiempo",
+        "releaseCumulativeChart": "Gráfico acumulativo",
+        "releaseData": "Release Data",
+        "user": "Usuario",
+        "selectSprint": "Debes seleccionar un sprint para ver sus análisis",
+        "yourData": "Tu información",
+        "selectRelease": "Debe seleccionar un lanzamiento para ver sus análisis",
+        "stateDivision": "División Estatal"
+    },
+    "filters": {
+        "all": "Todas"
+    },
+    "pageNames": {
+        "profile": "Perfil",
+        "about": "Acerca de",
+        "submitFeedback": "Enviar comentarios",
+        "logout": "Cerrar sesión",
+        "users": "Usuarios",
+        "chatRoom": "Sala de chat",
+        "settings": "Configuraciones",
+        "grades": "Grados",
+        "projects": "Proyectos",
+        "feedback": "Realimentación"
+    },
+    "pageNotFound": {
+        "prompt": "Regrese a su página principal",
+        "description": "No pudimos encontrar la página que estabas buscando",
+        "title": "Página de velocidad no encontrada"
+    },
+    "modeSelector": {
+        "classMode": {
+            "usage": "Usa el modo de clase ahora",
+            "title": "Modo de clase",
+            "description": "Si eres profesor y te gustaría utilizar Velocity en tu clase, entonces el modo de clase es el adecuado para ti.",
+            "features": "Este modo ofrece características como: hacer asignaciones, asignar grupos, agregar asistentes de enseñanza, crear rúbricas / criterios de marcado, y mucho más."
+        },
+        "header": "Bienvenido a Velocity!",
+        "title": "Seleccionar modo",
+        "collaboratorMode": {
+            "usage": "Use collaborator mode now",
+            "title": "Modo colaborador",
+            "description": "Si desea organizar sus proyectos usando scrum / kanban boards, entonces el modo colaborador es el adecuado para usted.",
+            "features": "Este modo ofrece características como: Hacer proyectos, trabajar con otros en una organización, organización con scrum y kanban, y mucho más."
+        },
+        "description": "Por favor seleccione el modo que le gustaría usar"
+    },
+    "profile": {
+        "selectPicture": "Selecciona tu foto de perfil",
+        "title": "Velocidad - Perfil"
+    },
+    "users": {
+        "all": "Todas",
+        "usersEditFormDescription": "Editar la información de una cuenta de usuario",
+        "usersAddFormDescription": "Agrega una cuenta de usuario",
+        "userType": "Tipo de usuario",
+        "export": {
+            "complete": {
+                "form": {
+                    "description": "La lista de cuentas de usuario ha sido exportada",
+                    "title": "Exportar trabajo completado"
+                }
+            },
+            "form": {
+                "description": "Exportar la lista completa de usuarios",
+                "title": "Formulario de exportación de cuentas"
+            }
+        },
+        "searchFilter": "Filtro de búsqueda",
+        "title": "Velocidad - Usuarios",
+        "userStatus": "Estatus de usuario",
+        "usersEditFormTitle": "Formulario de edición de cuenta",
+        "label": "Usuario",
+        "import": {
+            "complete": {
+                "form": {
+                    "added": "Número total de usuarios agregados",
+                    "description": "La lista de cuentas de usuario ha sido importada",
+                    "exists": "La cantidad total de usuarios ya existe",
+                    "title": "Importar trabajo completado",
+                    "failed": "Número total de intentos fallidos",
+                    "processed": "Número total de usuarios procesados",
+                    "report": "Informe"
+                }
+            },
+            "form": {
+                "button": "Archivo",
+                "placeHolder": "Seleccione su archivo csv",
+                "description": "Su archivo CSV debe tener los siguientes campos: nombre de usuario, contraseña, nombre, apellido y correo electrónico",
+                "title": "Forma de importación de cuentas"
+            }
+        },
+        "usersAddFormTitle": "Formulario de creación de cuenta"
+    },
+    "feedbackModal": {
+        "feedbackSubject": "Sujeto de la retroalimentación",
+        "message": "Mensaje",
+        "subject": "Tema",
+        "feedbackMessage": "Mensaje de la retroalimentación",
+        "title": "Enviar comentarios"
+    },
+    "notifications": {
+        "noNew": "no hay notificaciones nuevas",
+        "new": "nuevo",
+        "clearAll": "borrar todas las notificaciones"
+    },
+    "userInformation": {
+        "status": {
+            "active": "Activo",
+            "disabled": "Discapacitado",
+            "pending": "Pendiente"
+        },
+        "picture": "imagen",
+        "language": "Idioma",
+        "firstName": "Nombre de pila",
+        "languages": {
+			"russian": "Russian",
+			"spanish": "Spanish",
+			"french": "French",
+			"english": "English"
+		},
+        "lastName": "Apellido",
+        "newPassword": "Nueva contraseña",
+        "themes": {
+			"theme-default": "Default",
+			"theme-blueSky": "Blue Sky",
+			"theme-greenIslands": "Green Islands",
+			"theme-redRoses": "Red Roses",
+			"theme-greyClouds": "Grey Clouds"
+		},
+        "username": "Nombre de usuario",
+        "notifications": "Notificaciones",
+        "theme": "Tema",
+        "currentPassword": "contraseña actual",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña",
+        "email": "Email",
+        "types": {
+            "collaboratorAdmin": "Administrador colaborador",
+            "professor": "Profesor",
+            "student": "Estudiante",
+            "collaborator": "Colaborador",
+            "modeSelector": "Selector de modo",
+            "ta": "Asistente de enseñanza"
+        }
+    },
+    "projects": {
+        "status": {
+            "active": "Activo",
+            "draft": "Borrador",
+            "closed": "Cerrado",
+            "label": "Status"
+        },
+        "all": "Todas",
+        "export": {
+            "complete": {
+                "form": {
+                    "description": "La lista de proyectos ha sido exportada",
+                    "title": "Exportar trabajo completado"
+                }
+            },
+            "form": {
+                "description": "Exportar la lista completa de proyectos",
+                "title": "Formulario de exportación de proyectos"
+            }
+        },
+        "form": {
+            "fields": {
+                "description": "Descripción",
+                "title": "Título"
+            },
+            "deadline": {
+                "date": "Fecha",
+                "forcelabel": "Fecha límite de fuerza",
+                "label": "Fecha tope",
+                "time": "Hora"
+            },
+            "description": "Formulario de creación de proyecto",
+            "title": "Crea un nuevo proyecto"
+        },
+        "title": "Velocidad - Proyectos",
+        "tabs": {
+            "management": {
+                "title": "administración"
+            },
+            "settings": {
+                "title": "Configuraciones"
+            },
+            "overview": {
+                "title": "Visión de conjunto"
+            },
+            "analytics": {
+                "title": "Analítica"
+            },
+            "board": {
+                "title": "Tablero"
+            },
+            "backlog": {
+                "title": "Reserva"
+            },
+            "issues": {
+                "title": "Cuestiones"
+            }
+        },
+        "import": {
+            "complete": {
+                "form": {
+                    "added": "Número total de proyectos agregados",
+                    "description": "La lista de proyectos ha sido importada",
+                    "title": "Importar trabajo completado",
+                    "failed": "Número total de intentos fallidos",
+                    "processed": "Número total de proyectos procesados",
+                    "report": "Informe"
+                }
+            },
+            "form": {
+                "button": "Archivo",
+                "placeHolder": "Seleccione su archivo de velocidad",
+                "description": "Para obtener resultados óptimos, utilice un archivo .velocity válido",
+                "title": "Formulario de importación de proyectos"
+            }
+        },
+        "type": {
+            "kanban": "Kanban",
+            "scrum": "Melé",
+            "label": "Tipo de placa"
+        },
+        "label": "Proyecto"
+    },
+    "tickets": {
+        "subtasks": "Subtareas",
+        "description": "Descripción",
+        "releases": "Lanzamientos",
+        "reporter": "Reportero",
+        "tabs": {
+            "comment": "Comentario",
+            "comments": "Comentarios",
+            "assignee": "Historia de la persona asignada",
+            "state": "Historia del estado",
+            "ticket": "Boleto",
+            "history": "Historia"
+        },
+        "milestoneTickets": "Entradas Milestone",
+        "noReleases": "Sin lanzamientos",
+        "states": {
+            "in_development": "En desarrollo",
+            "code_review": "Revisión decódigo",
+            "done": "Hecho",
+            "new": "Nuevo",
+            "ready_for_test": "Listo para la prueba",
+            "in_test": "En prueba"
+        },
+        "assignee": "Cesionario",
+        "noHistory": "No historia",
+        "relation": {
+            "blocks": "Bloques",
+            "blocked_by": "Bloqueado por",
+            "duplicates": "Duplicados",
+            "fixes": "Correcciones",
+            "label": "Entradas relacionadas",
+            "duplicated_by": "Duplicado por",
+            "fixed_by": "Arreglado por"
+        },
+        "relatedTickets": "Entradas relacionadas",
+        "milestone": "Hito",
+        "displayId": "Display ID",
+        "noReporter": "Sin reportero",
+        "ticketDescription": "Descripción del ticket",
+        "id": "Identificación de entradas",
+        "types": {
+            "story": "Historia",
+            "bug": "Error",
+            "milestone": "Hito"
+        },
+        "sprints": "Sprints",
+        "noTags": "No etiquetas",
+        "milestoneTicketsDoneProgress": "Entradas de Milestone hechas progreso",
+        "noAssignee": "Sin asignatario",
+        "title": "Velocity - Entradas",
+        "noSprints": "Sin Sprints",
+        "create": "Crear ticket",
+        "tags": "Etiquetas",
+        "ticketTitle": "Título",
+        "priorities": {
+            "high": "Alto",
+            "medium": "Medio",
+            "low": "Bajo"
+        },
+        "label": "Boleto",
+        "priority": "Prioridad",
+        "state": "Estado",
+        "points": "Puntos",
+        "writeComment": "Escribir comentario",
+        "release": "Lanzamiento",
+        "milestoneTicketsPointsProgress": "Milestone Tickets Puntos de progreso",
+        "type": "Tipo"
+    },
+    "about": {
+        "who": {
+            "start": "¿Quienes somos?",
+            "sentence1": "El desarrollo de Velocity comenzó en y ha sido apoyado por la Universidad de Toronto Mississauga. A continuación hay una lista de los contribuyentes hasta ahora."
+        },
+        "supervisor": "Supervisor",
+        "modes": {
+            "start": "Modos",
+            "sentence1": "Al usar la velocidad, tendrá la opción entre trabajar en modo clase o modo collab.",
+            "sentence2": "En el modo de clase, los profesores pueden crear proyectos y asignarles estudiantes. Los estudiantes pueden trabajar dentro de los proyectos asignados, mientras que los profesores y tas pueden ver e interactuar con su trabajo.",
+            "sentence3": "En el modo colaborativo, las cosas están más unidas, concolaboradores que trabajan entre ellos dentro de los proyectos que crearán sus administradores elegidos."
+        },
+        "analytics": {
+            "start": "Analítica",
+            "point2": "El estado actual de cada usuariopara cada sprint",
+            "point3": "División estatal para sprints y lanzamientos",
+            "point4": "Progreso del estado a lo largo del tiempo para un sprint o lanzamiento elegido",
+            "sentence1": "Velocity ofrece un amplio conjunto de análisis para que tanto los administradores como los usuarios puedan ver y ver su progreso. Dentro de cada proyecto, puede encontrar lo siguiente.",
+            "point6": "Gráfico acumulativo",
+            "point1": "Resumen del administrador del progreso de cada equipo",
+            "point5": "Cuadro de incendio"
+        },
+        "intro": {
+            "start": "¿Qué es Velocity?",
+            "sentence1": "Velocity es un sitio web de CS, que ofrece múltiples tipos de entornos de desarrollo que pueden ser utilizados tanto por clases como por grupos."
+        },
+        "projects": {
+            "point1": "Agregar usuarios al proyecto",
+            "start": "Proyectos",
+            "point2": "Agregar administradores de proyecto al proyecto",
+            "point3": "Crear equipos con una pantalla de selección robusta",
+            "point4": "Configure los ajustes del equipo, como el tamaño y el nombre del prefijo",
+            "sentence1": "Los administradores y los administradores colaboradores tienen la capacidad de crear proyectos. Antes de permitir que el proyecto se ponga en marcha, hay una cantidad de cosas que el creador puede hacer con el proyecto.",
+            "point5": "Tipo de tablero de fuerza"
+        },
+        "name": "Acerca de",
+        "tickets": {
+            "start": "Entradas",
+            "sentence1": "Al trabajar con el proyecto, sus tareas se marcarán con tickets. Los boletos pueden ser errores, historias o hitos.",
+            "sentence2": "Las entradas también tendrán diferentesestatuas, que es la forma en que usted y otras personas dentro de su equipo podrán seguir el trabajo actual que se está realizando dentro del proyecto."
+        },
+        "license": "Velocity está licenciado bajo la Licencia Pública General de GNU v3.0.",
+        "management": {
+            "start": "administración",
+            "point2": "Sprints",
+            "point3": "Etiquetas",
+            "sentence1": "Al administrar un proyecto, si se encuentra en un entorno scrum, podrá asignar tickets con tres cosas diferentes para organizarlos.",
+            "point1": "Lanzamientos"
+        },
+        "boards": {
+            "start": "Tableros",
+            "sentence1": "Cuando trabajas en un proyecto, estarás trabajando en un entorno scrum o kanban.",
+            "sentence2": "Dentro de un entorno scrum, trabajará en iteraciones, y su placa estará diseñada para reflexionar sobre eso. Podrás ver exactamente en qué está trabajando todo el mundo para el sprint actual y el estado de todo.",
+            "sentence3": "Dentro de un entorno kanban, ya que no hay iteraciones, en su lugar, se mostrará lo que todos tienen globalmente, y el estado del trabajo de todos."
+        },
+        "copyright": "Derechos de autor",
+        "since": {
+            "january2018": "desde enero de 2018"
+        },
+        "teams": {
+            "start": "Equipos",
+            "sentence1": "Si te asignan un proyecto, siempre te asignarán un equipo para trabajar.",
+            "sentence2": "A menos que el tamaño del equipo sea 1, esto le permitirá trabajar con otros en el proyecto para desarrollar su objetivo.",
+            "sentence3": "Ya sea que se trate de problemas que encuentre, una función para implementar o un hito que deba cumplirse, estará trabajando con otros para lograr el mismo objetivo final."
+        }
+    },
+    "settings": {
+        "title": "Velocidad - Configuración",
+        "users": {
+            "title": "Ajustes de usuario",
+            "fullName": "Nombre y apellido:",
+            "password": "Contraseña:",
+            "email": "Email:",
+            "permissionsEdit": "Los usuarios pueden editar"
+        },
+        "general": {
+            "active": "Clase activa (si los usuarios pueden iniciar sesión):",
+            "title": "Configuración general"
+        }
+    },
+    "uploadModal": {
+        "selectFile": "Seleccione un archivo para cargar",
+        "upload": "Subir",
+        "file": "Archivo",
+        "title": "Subir archivo"
+    },
+    "switch": {
+        "on": "En",
+        "off": "Apagado"
+    },
+    "projectPage": {
+        "tabs": {
+            "management": {
+                "releases": "Lanzamientos",
+                "tags": "Etiquetas",
+                "newTag": "Nueva etiqueta",
+                "newSprint": "Nuevo Sprint",
+                "newRelease": "Nuevo lanzamiento",
+                "sprints": "Sprints",
+                "sprintStart": "Fecha de inicio",
+                "noSprints": "Sin Sprints",
+                "noReleases": "Sin lanzamientos",
+                "noTags": "No etiquetas",
+                "sprintEnd": "Fecha final"
+            },
+            "users": {
+                "projectAdmins": "Administradores del proyecto",
+                "projectUsers": "Usuarios del proyecto",
+                "title": "Usuarios"
+            },
+            "general": {
+                "boardTypeSelection": "Seleccione su tipo de tablero:",
+                "deadline": "Fecha límite del proyecto",
+                "forceBoardType": "Forzar tipo de tablero para equipos",
+                "deadlines": "Plazos",
+                "title": "General"
+            },
+            "analytics": {
+                "title": "Analítica"
+            },
+            "groups": {
+                "newGroup": "Nuevo grupo",
+                "unassignedUsers": "Usuarios no asignados",
+                "groupPrefix": "Prefijo de grupo",
+                "groupSelectionMode": "Modo de selección de grupo",
+                "groups": "Grupos",
+                "groupStatus": "Estado del grupo",
+                "types": {
+                    "instructor": "El instructor selecciona",
+                    "individual": "Individual",
+                    "randomize": "Aleatorizar",
+                    "student": "Seleccionar estudiante"
+                },
+                "groupSize": "Tamaño del grupo",
+                "title": "Grupos",
+                "deleteGroups": "Eliminar grupos",
+                "groupName": "Nombre del grupo",
+                "selectGroups": "Seleccione un grupo"
+            },
+            "boards": {
+                "title": "Tableros"
+            }
+        },
+        "title": "Velocidad - Proyecto"
+    },
+    "login": {
+        "signIn": "Iniciar sesión",
+        "forgotPassword": "Se te olvidó tu contraseña",
+        "signUp": "Regístrate",
+        "title": "Velocidad - Iniciar sesión"
+    },
+    "history": {
+        "release": "Lanzamiento",
+        "sprint": "Sprint",
+        "tag": "Etiqueta",
+        "history": "Historia"
+    }
+}
