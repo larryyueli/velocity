@@ -404,10 +404,7 @@ const searchTicketsByTeamId = function (projectId, teamId, term, callback) {
 /**
  * set the backlog flag true for the list of ticket Ids
  *
- * @param {array} ticketIdsList ticket ids listupdateTickets(
-        { $and: [{ $or: idsList }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }, { state: { $ne: common.ticketStates.DONE.value } }] },
-        { $set: { mtime: common.getDate(), imtime: common.getISODate(), inBacklog: true } },
-        callback);
+ * @param {array} ticketIdsList ticket ids list
  * @param {function} callback callback function
  */
 const putTicketsInBacklog = function (projectId, teamId, ticketIdsList, callback) {
