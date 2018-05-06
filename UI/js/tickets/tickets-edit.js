@@ -21,7 +21,6 @@ const milestoneTicketsOuterRow = $('.milestoneTicketsOuterRow');
 const milestoneRow = $('.milestoneRow');
 const milestoneOuterRow = $('.milestoneOuterRow');
 const relatedIssuesRow = $('.relatedIssuesRow');
-const subtaskSelection = $('#subtasksSelection');
 const milestoneTicketsSelection = $('#milestoneTicketsSelection');
 const saveTicketButtonId = '#saveTicketButton';
 const descriptionId = '#description';
@@ -477,7 +476,7 @@ function getListOfSprints() {
                                     <i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">delete_forever</i>
                                     <i onclick="openSprintInNewTab('${sprintIdsObj[val]}')" class="chipIcon material-icons">open_in_new</i>
                                 </div>
-                        </div>`);
+                            </div>`);
                     }
                     $(sprintsAutocompleteId).val('');
                 },
@@ -537,7 +536,7 @@ function getListOfReleases() {
                                     <i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">delete_forever</i>
                                     <i onclick="openReleaseInNewTab('${releaseIdsObj[val]}')" class="chipIcon material-icons">open_in_new</i>
                                 </div>
-                        </div>`);
+                            </div>`);
                     }
                     $(releasesAutocompleteId).val('');
                 },
@@ -653,7 +652,7 @@ function saveLinkFunction() {
 
             selectedRelatedObj[data._id] = relatedValue;
             $(relatedTicketDivId).append(`
-                <div class="row margin-bottom-0 padding-right-10 padding-left-10">
+                <div class="row margin-bottom-0">
                     <div class="chip full-width related-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
                         <p class="truncateTextCommon margin-bottom-0">${relatedText}: ${relatedTicket}. ${data.title}</p>
@@ -661,6 +660,7 @@ function saveLinkFunction() {
                         <i onclick="openTicketInNewTab('${data._id}')" class="chipIcon material-icons">open_in_new</i>
                     </div>
                 </div>`);
+            $(relatedInput).val('');
         },
         error: function (data) {
             handle401And404(data);
@@ -800,6 +800,7 @@ function saveMilestoneFunction() {
                     </div>
                 </div>`);
             milestoneRow.hide();
+            $(milestoneInput).val('');
         },
         error: function (data) {
             handle401And404(data);
@@ -857,6 +858,7 @@ function saveMilestoneTicketsFunction() {
                         <i onclick="openTicketInNewTab('${data._id}')" class="chipIcon material-icons">open_in_new</i>
                     </div>
                 </div>`);
+            $(milestoneTicketsInput).val('');
         },
         error: function (data) {
             handle401And404(data);

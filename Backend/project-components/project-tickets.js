@@ -263,6 +263,36 @@ const removeMilestoneFromTickets = function (projectId, teamId, ticketsIds, call
 }
 
 /**
+ * remove ticket from milestones list
+ * 
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} ticketId ticket id
+ * @param {function} callback callback function
+ */
+const removeTicketFromMilestones = function (projectId, teamId, ticketId, callback) {
+    updateTickets(
+        { $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate() }, $pull: { milestoneTickets: ticketId } },
+        callback);
+}
+
+/**
+ * remove tickets from milestones list
+ * 
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} ticketIdsList ticket ids list
+ * @param {function} callback callback function
+ */
+const removeTicketsFromMilestones = function (projectId, teamId, ticketIdsList, callback) {
+    updateTickets(
+        { $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }, { type: common.ticketTypes.MILESTONE.value }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate() }, $pull: { milestoneTickets: { $in: ticketIdsList } } },
+        callback);
+}
+
+/**
  * find the list of tickets with no sprints
  *
  * @param {string} projectId project id
@@ -556,6 +586,8 @@ exports.getTicketsWithNoSprints = getTicketsWithNoSprints;
 exports.initialize = initialize;
 exports.putTicketsInBacklog = putTicketsInBacklog;
 exports.removeMilestoneFromTickets = removeMilestoneFromTickets;
+exports.removeTicketFromMilestones = removeTicketFromMilestones;
+exports.removeTicketsFromMilestones = removeTicketsFromMilestones;
 exports.searchTicketsByProjectId = searchTicketsByProjectId;
 exports.searchTicketsByTeamId = searchTicketsByTeamId;
 exports.updateTicketById = updateTicketById;

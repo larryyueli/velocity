@@ -312,31 +312,32 @@ block content
                                                     i.material-icons.right save
                                         #milestoneDiv
                                     br
-                                    .row.relatedIssuesRow
-                                        .input-field.col.s4
-                                            select#relatedSelectedInput
-                                                option(value='0') #{__('tickets.relation.blocks')}
-                                                option(value='1') #{__('tickets.relation.blocked_by')}
-                                                option(value='2') #{__('tickets.relation.duplicates')}
-                                                option(value='3') #{__('tickets.relation.duplicated_by')}
-                                                option(value='4') #{__('tickets.relation.fixes')}
-                                                option(value='5') #{__('tickets.relation.fixed_by')}
-                                            label #{__('tickets.relation.label')}
-                                        .input-field.col.s6
-                                            input#relatedInput(type='text', name='relatedInput')
-                                            label(for='relatedInput') #{__('tickets.id')}
-                                        .input-field.col.s2
-                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
-                                                i.material-icons.right save
-                                    .row.margin-top-0.padding-top-0
-                                        .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0#relatedTicketDivId
-                                            each relatedTicket in relatedTickets
-                                                .row.margin-bottom-0
-                                                    .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
-                                                        img(src=`/picture/${relatedTicket.assigneePicture}`)
-                                                        p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
-                                                        i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
-                                                        i.chipIcon.material-icons(onclick=`openTicketInNewTab('${relatedTicket._id}')`) open_in_new
+                                    .relatedIssuesRow
+                                        .row
+                                            .input-field.col.s4
+                                                select#relatedSelectedInput
+                                                    option(value='0') #{__('tickets.relation.blocks')}
+                                                    option(value='1') #{__('tickets.relation.blocked_by')}
+                                                    option(value='2') #{__('tickets.relation.duplicates')}
+                                                    option(value='3') #{__('tickets.relation.duplicated_by')}
+                                                    option(value='4') #{__('tickets.relation.fixes')}
+                                                    option(value='5') #{__('tickets.relation.fixed_by')}
+                                                label #{__('tickets.relation.label')}
+                                            .input-field.col.s6
+                                                input#relatedInput(type='text', name='relatedInput')
+                                                label(for='relatedInput') #{__('tickets.id')}
+                                            .input-field.col.s2
+                                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
+                                                    i.material-icons.right save
+                                        .row.margin-top-0.padding-top-0
+                                            .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0#relatedTicketDivId
+                                                each relatedTicket in relatedTickets
+                                                    .row.margin-bottom-0
+                                                        .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
+                                                            img(src=`/picture/${relatedTicket.assigneePicture}`)
+                                                            p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                                            i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
+                                                            i.chipIcon.material-icons(onclick=`openTicketInNewTab('${relatedTicket._id}')`) open_in_new
                                 .col.s12.l4
                                     .row
                                         .input-field.padding-10

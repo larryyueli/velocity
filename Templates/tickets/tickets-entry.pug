@@ -72,33 +72,46 @@ block content
                                         #description
                                     .input-field.padding-10
                                         #attachmentsDivId
-                                if false
-                                    .row.subtasksRow
-                                        .input-field.padding-10#subtasksSelection
-                                            input.validate(type='text', name='subtasks')
-                                            label(for='description') #{__('tickets.subtasks')}
-                                .row.milestoneTicketRow
-                                    .input-field.padding-10#milestoneTicketSelection
-                                        input.validate(type='text', name='milestoneTicket')
-                                        label(for='milestoneTicket') #{__('tickets.milestoneTickets')}
-                                .row
-                                    .input-field.col.s4
-                                        select#relatedSelectedInput
-                                            option(value='0') #{__('tickets.relation.blocks')}
-                                            option(value='1') #{__('tickets.relation.blocked_by')}
-                                            option(value='2') #{__('tickets.relation.duplicates')}
-                                            option(value='3') #{__('tickets.relation.duplicated_by')}
-                                            option(value='4') #{__('tickets.relation.fixes')}
-                                            option(value='5') #{__('tickets.relation.fixed_by')}
-                                        label #{__('tickets.relation.label')}
-                                    .input-field.col.s6
-                                        input#relatedInput.validate(type='text')
-                                        label(for='relatedInput') #{__('tickets.id')}
-                                    .input-field.col.s2
-                                        button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
-                                            i.material-icons.right save
-                                .row
-                                    .input-field.padding-10#relatedTicketDivId
+                                .milestoneTicketsOuterRow
+                                    .row.margin-top-0.padding-top-0.margin-bottom-0
+                                        label.left #{__('tickets.milestoneTickets')}
+                                    .row
+                                        .input-field.col.s10.padding-10#milestoneTicketsSelection
+                                            input#milestoneTicketsInput(type='text', name='milestoneTickets')
+                                        .input-field.col.s2
+                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneTicketsFunction()')#saveMilestoneTicketsButton
+                                                i.material-icons.right save
+                                        #milestoneTicketsDiv
+                                .milestoneOuterRow
+                                    .row.margin-top-0.padding-top-0.margin-bottom-0
+                                        label.left #{__('tickets.milestone')}
+                                    .row.milestoneRow
+                                        .input-field.col.s10.padding-10#milestoneSelection
+                                            input#milestoneInput(type='text', name='milestone')
+                                        .input-field.col.s2
+                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneFunction()')#saveMilestoneButton
+                                                i.material-icons.right save
+                                    #milestoneDiv
+                                br
+                                .relatedIssuesRow
+                                    .row
+                                        .input-field.col.s4
+                                            select#relatedSelectedInput
+                                                option(value='0') #{__('tickets.relation.blocks')}
+                                                option(value='1') #{__('tickets.relation.blocked_by')}
+                                                option(value='2') #{__('tickets.relation.duplicates')}
+                                                option(value='3') #{__('tickets.relation.duplicated_by')}
+                                                option(value='4') #{__('tickets.relation.fixes')}
+                                                option(value='5') #{__('tickets.relation.fixed_by')}
+                                            label #{__('tickets.relation.label')}
+                                        .input-field.col.s6
+                                            input#relatedInput.validate(type='text')
+                                            label(for='relatedInput') #{__('tickets.id')}
+                                        .input-field.col.s2
+                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
+                                                i.material-icons.right save
+                                    .row
+                                        .input-field.padding-10#relatedTicketDivId
                             .col.s12.l4
                                 .row
                                     .input-field.padding-10
