@@ -156,7 +156,7 @@ app.use(function (req, res, next) {
         directory: `${__dirname}/Locales`,
         objectNotation: true
     });
-    
+
     res.locals.__ = res.__ = function () {
         return i18n.__.apply(req, arguments);
     };
@@ -245,7 +245,16 @@ httpServer.listen(config.httpPort, function () {
  * Log some information about the request
  */
 app.use(function (req, res, next) {
-    logger.log(`${req.method}: ${req.url} SESSION._id:${api.isActiveSession(req) ? JSON.stringify(req.session.user._id) : ' NO USER'} QUERY:${JSON.stringify(req.query)} PARAMS:${JSON.stringify(req.params)} BODY:${JSON.stringify(req.body)}`);
+    const sensitivePaths = [
+        '/login',
+        '/profile/update',
+        '/users/update'
+    ];
+
+    const loggedUser = api.isActiveSession(req) ? JSON.stringify(req.session.user._id) : ' NO USER';
+    const loggedRequestInfo = `QUERY:${JSON.stringify(req.query)} PARAMS:${JSON.stringify(req.params)} BODY:${JSON.stringify(req.body)}`;
+    const loggedInfo = sensitivePaths.indexOf(req.url) == -1 ? loggedRequestInfo : '--- This Request Contains Sensitive User Information ---';
+    logger.log(`${req.method}: ${req.url} SESSION._id:${loggedUser} ${loggedInfo}`);
     next();
 });
 
