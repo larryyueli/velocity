@@ -36,7 +36,7 @@ db.createUser({
 
 Now we have successfully created an authenticated mongodb. Only with this account can the application server read/write to the db.
 
-When initializing the db in Backend/db.js, Once the db connection is open, use this function below to authenticate, remember to change the `'appuser', 'apppass'` arguements to the quizzard account you have created:
+When initializing the db in Backend/db.js, Once the db connection is open, use this function below to authenticate, remember to change the `'appuser', 'apppass'` arguements to the velocity account you have created:
 ```
 db.authenticate('appuser', 'apppass', function(err, result) {
   ...
