@@ -13,6 +13,10 @@ block content
     .container
         br
         .row
+            if !isProjectClosed
+                button.waves-effect.waves-light.right.btn.primaryColour-background-colour#createTicketButton #{__('tickets.label')}
+                    i.material-icons.right add
+        .row
             .col.s12
                 ul.tabs.overflow-x-hidden.text-align-center
                     li.tab
@@ -52,9 +56,9 @@ block content
                                             br
                                             h6.left #{__(`tickets.types.${ticketType}`)}
                                             if ticket.type === 0
-                                                img.ticketIconsViewOnly(src='/img/icon-code-file.png')
-                                            if ticket.type === 1
                                                 img.ticketIconsViewOnly(src='/img/icon-ladybird.png')
+                                            if ticket.type === 1
+                                                img.ticketIconsViewOnly(src='/img/icon-code-file.png')
                                             if ticket.type === 2
                                                 img.ticketIconsViewOnly(src='/img/icon-purchase-order.png')
                                         .input-field.padding-10.col.s12.m3.padding-top-0
@@ -80,66 +84,117 @@ block content
                                             label(for='description') #{__('tickets.description')}
                                         .input-field.padding-10.padding-top-0
                                             #viewDescription #{ticket.description}
-                                        .input-field.padding-10.padding-top-0
-                                            each attachment in attachments
-                                                .row.margin-bottom-0.margin-right-10
-                                                    .chip.full-width.text-left.ticketStatusColors(id=`${attachment._id}`)
-                                                        p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
-                                                        i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
-                                                        if attachment.isViewable
-                                                            i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
-                                    if false
-                                        .row.subtasksRow
-                                            .input-field.padding-10
-                                                input(type='text', name='subtasks')
-                                                label(for='description') #{__('tickets.subtasks')}
-                                    .row.milestoneIssuesRow
-                                        .input-field.padding-10
-                                            input(type='text', name='milestoneIssues')
-                                            label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
-                                    .row
-                                        .input-field.padding-10
-                                            each relatedTicket in relatedTickets
-                                                .row.margin-bottom-0.margin-right-10
-                                                    .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
-                                                        img(src=`/picture/${relatedTicket.assigneePicture}`)
-                                                        p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                    if attachments.length !== 0
+                                        .row.margin-top-0.padding-top-0.margin-bottom-0
+                                            .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0
+                                                each attachment in attachments
+                                                    .row.margin-bottom-0
+                                                        .chip.full-width.text-left.ticketStatusColors(id=`${attachment._id}`)
+                                                            p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
+                                                            i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
+                                                            if attachment.isViewable
+                                                                i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
+                                    br
+                                    if (ticket.type === ticketTypes.BUG.value || ticket.type === ticketTypes.STORY.value) && milestone
+                                        .row.margin-top-0.padding-top-0.margin-bottom-0
+                                            .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0
+                                                .row
+                                                    label.left #{__('tickets.milestone')}
+                                                    br
+                                                .row
+                                                    .chip.full-width.text-left.ticketStatusColors(class=`state${milestone.state}`, id=`${milestone._id}_${milestone.state}`)
+                                                        img(src=`/picture/${milestone.assigneePicture}`)
+                                                        p.truncateTextCommon.margin-bottom-0 #{`${milestone.displayId}. ${milestone.title}`}
+                                                        i.chipIcon.material-icons(onclick=`openTicketInNewTab('${milestone._id}')`) open_in_new
+                                    if ticket.type === ticketTypes.BUG.value || ticket.type === ticketTypes.STORY.value
+                                        if relatedTickets.length !== 0
+                                            .row.margin-top-0.padding-top-0.margin-bottom-0
+                                                label.left #{__('tickets.relatedTickets')}
+                                            .row.margin-top-0.padding-top-0
+                                                .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0
+                                                    each relatedTicket in relatedTickets
+                                                        .row.margin-bottom-0.margin-top-0.padding-top-0
+                                                            .chip.full-width.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
+                                                                img(src=`/picture/${relatedTicket.assigneePicture}`)
+                                                                p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                                                i.chipIcon.material-icons(onclick=`openTicketInNewTab('${relatedTicket._id}')`) open_in_new
+                                    if ticket.type === ticketTypes.MILESTONE.value
+                                        if milestoneTickets.length !== 0
+                                            .row.margin-top-0.padding-top-0.margin-bottom-0
+                                                label.left #{__('tickets.milestoneTicketsDoneProgress')}
+                                            .progress.loaderBackgroundColour-background-colour
+                                                .determinate.primaryColour-background-colour(style=`width: ${milestoneTicketsDoneProgressPercentage}%`)
+                                            .row.margin-top-0.padding-top-0.margin-bottom-0
+                                                label.left #{__('tickets.milestoneTicketsPointsProgress')}
+                                            .progress.loaderBackgroundColour-background-colour
+                                                .determinate.primaryColour-background-colour(style=`width: ${milestoneTicketsPointsProgressPercentage}%`)
+                                            .row.margin-top-0.padding-top-0.margin-bottom-0
+                                                label.left #{__('tickets.milestoneTickets')}
+                                            .row.margin-top-0.padding-top-0
+                                                .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0
+                                                    each milestoneTicket in milestoneTickets
+                                                        .row.margin-bottom-0.margin-top-0.padding-top-0
+                                                            .chip.full-width.text-left.ticketStatusColors(class=`state${milestoneTicket.state}`, id=`${milestoneTicket._id}_${milestoneTicket.state}`)
+                                                                img(src=`/picture/${milestoneTicket.assigneePicture}`)
+                                                                i.chipIcon.material-icons(onclick=`openTicketInNewTab('${milestoneTicket._id}')`) open_in_new
+                                                                p.truncateTextCommon.margin-bottom-0 #{`${milestoneTicket.displayId}. ${milestoneTicket.title}`}
                                 .col.s12.l4
                                     .row
                                         .input-field.padding-10
-                                            label(for='autocomplete-input') #{__('tickets.reporter')}
+                                            label #{__('tickets.reporter')}
                                             br
-                                            img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedReporterPicture}`)
-                                            | #{`${reporter}`}
+                                            if reporter
+                                                img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedReporterPicture}`)
+                                                | #{`${reporter}`}
+                                            else
+                                                h6 #{__('tickets.noReporter')}
                                     .row
                                         .input-field.padding-10
-                                            label(for='assigneeAutocomplete') #{__('tickets.assignee')}
+                                            label #{__('tickets.assignee')}
                                             br
-                                            img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedAssigneePicture}`)
-                                            | #{`${assignee}`}
+                                            if assignee
+                                                img.circle.ticketIconsViewOnly.margin-right-10(src=`/picture/${resolvedAssigneePicture}`)
+                                                | #{`${assignee}`}
+                                            else
+                                                h6 #{__('tickets.noAssignee')}
                                     .row.hidden #{ticket.assignee}
-                                    .row.margin-bottom-0.margin-top-0
+                                    .row
                                         .input-field.padding-10
                                             label #{__('tickets.release')}
                                             br
-                                            each release in releases
-                                                .chip(id=`${release._id}`)
-                                                    | #{release.name}
+                                            if releases.length === 0
+                                                h6 #{__('tickets.noReleases')}
+                                            else
+                                                each release in releases
+                                                    .row.margin-bottom-0.margin-top-0.padding-top-0
+                                                        .chip.full-width.text-left(id=`${release._id}`)
+                                                            i.chipIcon.material-icons(onclick=`openReleaseInNewTab('${release._id}')`) open_in_new
+                                                            p.truncateTextCommon.margin-bottom-0 #{release.name}
                                     if isScrumBoardType
                                         .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10
                                                 label #{__('tickets.sprints')}
                                                 br
-                                                each sprint in sprints
-                                                    .chip(id=`${sprint._id}`)
-                                                        | #{sprint.name}
+                                                if sprints.length === 0
+                                                    h6 #{__('tickets.noSprints')}
+                                                else
+                                                    each sprint in sprints
+                                                        .row.margin-bottom-0.margin-top-0.padding-top-0
+                                                            .chip.full-width.text-left(id=`${sprint._id}`)
+                                                                i.chipIcon.material-icons(onclick=`openSprintInNewTab('${sprint._id}')`) open_in_new
+                                                                p.truncateTextCommon.margin-bottom-0 #{sprint.name}
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
                                             label #{__('tickets.tags')}
                                             br
-                                            each tag in tags
-                                                .chip(id=`${tag._id}`)
-                                                    | #{tag.name}
+                                            if tags.length === 0
+                                                h6 #{__('tickets.noTags')}
+                                            else
+                                                each tag in tags
+                                                    .row.margin-bottom-0.margin-top-0.padding-top-0
+                                                        .chip.full-width.text-left(id=`${tag._id}`)
+                                                            i.chipIcon.material-icons(onclick=`openTagInNewTab('${tag._id}')`) open_in_new
+                                                            p.truncateTextCommon.margin-bottom-0 #{tag.name}
                             if !isProjectClosed
                                 .row
                                     button.waves-effect.waves-light.btn.primaryColour-background-colour(onclick='toggleEditMode()') #{__('actions.edit')}
@@ -203,29 +258,52 @@ block content
                                             #description #{ticket.description}
                                         .input-field.padding-10#attachmentsDivId
                                             each attachment in attachments
-                                                .row.margin-bottom-0.margin-right-10
+                                                .row.margin-bottom-0
                                                     .chip.full-width.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
                                                         p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
                                                         i.close.material-icons(onclick=`removeAttachment('${attachment._id}')`) delete_forever
                                                         i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
                                                         if attachment.isViewable
                                                             i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
-                                    if false
-                                        .row.subtasksRow
-                                            .input-field.padding-10#subtasksSelection
-                                                input(type='text', name='subtasks')
-                                                label(for='description') #{__('tickets.subtasks')}
-                                    .row.milestoneIssuesRow
-                                        .input-field.col.s10.padding-10#milestoneIssuesSelection
-                                            input#milestoneIssuesInput(type='text', name='milestoneIssues')
-                                            label(for='milestoneIssues') #{__('tickets.milestoneIssues')}
-                                        .input-field.col.s2
-                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneIssuesFunction()')#saveMilestoneIssuesButton
-                                                i.material-icons.right save
-                                        #milestoneIssuesDiv
-                                    .milestoneOuterRow
-                                        label.left #{__('tickets.milestone')}
+                                    .milestoneTicketsOuterRow
+                                        .row.margin-top-0.padding-top-0.margin-bottom-0
+                                            label.left #{__('tickets.milestoneTicketsDoneProgress')}
+                                        .progress.loaderBackgroundColour-background-colour
+                                            .determinate.primaryColour-background-colour(style=`width: ${milestoneTicketsDoneProgressPercentage}%`)
+                                        .row.margin-top-0.padding-top-0.margin-bottom-0
+                                            label.left #{__('tickets.milestoneTicketsPointsProgress')}
+                                        .progress.loaderBackgroundColour-background-colour
+                                            .determinate.primaryColour-background-colour(style=`width: ${milestoneTicketsPointsProgressPercentage}%`)
                                         br
+                                        .row.margin-top-0.padding-top-0.margin-bottom-0
+                                            label.left #{__('tickets.milestoneTickets')}
+                                        .row
+                                            .input-field.col.s10.padding-10#milestoneTicketsSelection
+                                                input#milestoneTicketsInput(type='text', name='milestoneTickets')
+                                            .input-field.col.s2
+                                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneTicketsFunction()')#saveMilestoneTicketsButton
+                                                    i.material-icons.right save
+                                        .row.margin-top-0.padding-top-0
+                                            .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0
+                                                each milestoneTicket in milestoneTickets
+                                                    .row.margin-bottom-0.margin-top-0.padding-top-0
+                                                        .chip.full-width.milestoneTickets-chips.text-left.ticketStatusColors(class=`state${milestoneTicket.state}`, id=`${milestoneTicket._id}`)
+                                                            img(src=`/picture/${milestoneTicket.assigneePicture}`)
+                                                            p.truncateTextCommon.margin-bottom-0 #{`${milestoneTicket.displayId}. ${milestoneTicket.title}`}
+                                                            i.close.material-icons(onclick=`removeMilestoneTicket('${milestoneTicket._id}')`) delete_forever
+                                                            i.chipIcon.material-icons(onclick=`openTicketInNewTab('${milestoneTicket._id}')`) open_in_new
+                                            #milestoneTicketsDiv
+                                    .milestoneOuterRow
+                                        .row.margin-top-0.padding-top-0.margin-bottom-0
+                                            label.left #{__('tickets.milestone')}
+                                        if milestone
+                                            .row.margin-top-0.padding-top-0.margin-bottom-0
+                                                .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0
+                                                .chip.full-width.milestone-chip.text-left.ticketStatusColors(class=`state${milestone.state}`, id=`${milestone._id}`)
+                                                    img(src=`/picture/${milestone.assigneePicture}`)
+                                                    p.truncateTextCommon.margin-bottom-0 #{`${milestone.displayId}. ${milestone.title}`}
+                                                    i.close.material-icons(onclick=`removeMilestoneId('${milestone._id}')`) delete_forever
+                                                    i.chipIcon.material-icons(onclick=`openTicketInNewTab('${milestone._id}')`) open_in_new
                                         .row.milestoneRow
                                             .input-field.col.s10.padding-10#milestoneSelection
                                                 input#milestoneInput(type='text', name='milestone')
@@ -233,31 +311,33 @@ block content
                                                 button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveMilestoneFunction()')#saveMilestoneButton
                                                     i.material-icons.right save
                                         #milestoneDiv
-                                        br
-                                    .row.relatedIssuesRow
-                                        .input-field.col.s4
-                                            select#relatedSelectedInput
-                                                option(value='0') #{__('tickets.relation.blocks')}
-                                                option(value='1') #{__('tickets.relation.blocked_by')}
-                                                option(value='2') #{__('tickets.relation.duplicates')}
-                                                option(value='3') #{__('tickets.relation.duplicated_by')}
-                                                option(value='4') #{__('tickets.relation.fixes')}
-                                                option(value='5') #{__('tickets.relation.fixed_by')}
-                                            label #{__('tickets.relation.label')}
-                                        .input-field.col.s6
-                                            input#relatedInput(type='text')
-                                            label(for='relatedInput') #{__('tickets.id')}
-                                        .input-field.col.s2
-                                            button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
-                                                i.material-icons.right save
-                                    .row
-                                        .input-field.padding-10#relatedTicketDivId
-                                            each relatedTicket in relatedTickets
-                                                .row.margin-bottom-0.margin-right-10
-                                                    .chip.full-width.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
-                                                        img(src=`/picture/${relatedTicket.assigneePicture}`)
-                                                        p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
-                                                        i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
+                                    br
+                                    .relatedIssuesRow
+                                        .row
+                                            .input-field.col.s4
+                                                select#relatedSelectedInput
+                                                    option(value='0') #{__('tickets.relation.blocks')}
+                                                    option(value='1') #{__('tickets.relation.blocked_by')}
+                                                    option(value='2') #{__('tickets.relation.duplicates')}
+                                                    option(value='3') #{__('tickets.relation.duplicated_by')}
+                                                    option(value='4') #{__('tickets.relation.fixes')}
+                                                    option(value='5') #{__('tickets.relation.fixed_by')}
+                                                label #{__('tickets.relation.label')}
+                                            .input-field.col.s6
+                                                input#relatedInput(type='text', name='relatedInput')
+                                                label(for='relatedInput') #{__('tickets.id')}
+                                            .input-field.col.s2
+                                                button.btn.btn-flat.waves-effect.waves-light.right.no-text-flat-buttons(onclick='saveLinkFunction()')#saveLinkButton
+                                                    i.material-icons.right save
+                                        .row.margin-top-0.padding-top-0
+                                            .input-field.padding-right-10.padding-left-10.margin-top-0.padding-top-0#relatedTicketDivId
+                                                each relatedTicket in relatedTickets
+                                                    .row.margin-bottom-0
+                                                        .chip.full-width.related-chips.text-left.ticketStatusColors(class=`state${relatedTicket.state}`, id=`${relatedTicket._id}_${relatedTicket.state}`)
+                                                            img(src=`/picture/${relatedTicket.assigneePicture}`)
+                                                            p.truncateTextCommon.margin-bottom-0 #{`${__('tickets.relation.'+relatedTicket.relatedText)}: ${relatedTicket.displayId}. ${relatedTicket.title}`}
+                                                            i.close.material-icons(onclick=`removeRelatedId('${relatedTicket._id}')`) delete_forever
+                                                            i.chipIcon.material-icons(onclick=`openTicketInNewTab('${relatedTicket._id}')`) open_in_new
                                 .col.s12.l4
                                     .row
                                         .input-field.padding-10
@@ -275,10 +355,12 @@ block content
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10#ticketReleasesDivId
                                             each release in releases
-                                                    .chip.release-chips(id=`${release._id}`)
-                                                        | #{release.name}
+                                                .row.margin-bottom-0.margin-top-0.padding-top-0.padding-right-10.padding-left-10
+                                                    .chip.release-chips.full-width.text-left(id=`${release._id}`)
+                                                        p.truncateTextCommon.margin-bottom-0 #{release.name}
                                                         if release.status !== commonReleaseStatus.CLOSED.value
-                                                            i.close.material-icons(onclick=`removeReleaseId('${release._id}')`) delete_forever
+                                                            i.close.material-icons(onclick=`removeTagId('${release._id}')`) delete_forever
+                                                        i.chipIcon.material-icons(onclick=`openReleaseInNewTab('${release._id}')`) open_in_new
                                     if isScrumBoardType
                                         .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10
@@ -287,10 +369,12 @@ block content
                                         .row.margin-bottom-0.margin-top-0
                                             .input-field.padding-10#ticketSprintsDivId
                                                 each sprint in sprints
-                                                    .chip.sprint-chips(id=`${sprint._id}`)
-                                                        | #{sprint.name}
-                                                        if sprint.status !== commonSprintStatus.CLOSED.value
-                                                            i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) delete_forever
+                                                    .row.margin-bottom-0.margin-top-0.padding-top-0.padding-right-10.padding-left-10
+                                                        .chip.sprint-chips.full-width.text-left(id=`${sprint._id}`)
+                                                            p.truncateTextCommon.margin-bottom-0 #{sprint.name}
+                                                            if sprint.status !== commonSprintStatus.CLOSED.value
+                                                                i.close.material-icons(onclick=`removeSprintId('${sprint._id}')`) delete_forever
+                                                            i.chipIcon.material-icons(onclick=`openSprintInNewTab('${sprint._id}')`) open_in_new
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10
                                             input.autocomplete(type='text')#tagsAutocomplete
@@ -298,9 +382,11 @@ block content
                                     .row.margin-bottom-0.margin-top-0
                                         .input-field.padding-10#ticketTagsDivId
                                             each tag in tags
-                                                .chip.tag-chips(id=`${tag._id}`)
-                                                    | #{tag.name}
-                                                    i.close.material-icons(onclick=`removeTagId('${tag._id}')`) delete_forever
+                                                .row.margin-bottom-0.margin-top-0.padding-top-0.padding-right-10.padding-left-10
+                                                    .chip.tag-chips.full-width.text-left(id=`${tag._id}`)
+                                                        p.truncateTextCommon.margin-bottom-0 #{tag.name}
+                                                        i.close.material-icons(onclick=`removeTagId('${tag._id}')`) delete_forever
+                                                        i.chipIcon.material-icons(onclick=`openTagInNewTab('${tag._id}')`) open_in_new
                             .row
                                 button.waves-effect.waves-light.btn.primaryColour-background-colour#saveTicketButton #{__('actions.save')}
                                     i.material-icons.right save

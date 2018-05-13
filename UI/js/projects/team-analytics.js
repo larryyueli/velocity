@@ -112,99 +112,99 @@ $(function () {
 
 function queryScrumStatistics() {
     $.ajax({
-      type: 'GET',
-      url: '/project/team/analytics',
-      data: {
-        projectId: projectId,
-        teamId: teamId
-      },
-      success: function (data) {
-        globalData = data;
+        type: 'GET',
+        url: '/project/team/analytics',
+        data: {
+            projectId: projectId,
+            teamId: teamId
+        },
+        success: function (data) {
+            globalData = data;
 
-        if (data.boardType === 2) {
-            if (data['sprints'].length === 0) {
-                displayTeam = false;
-                displayYou = false;
-            } else {
-                $(teamDataId).removeClass('hidden');
-                var currentSprint = data['sprints'].find(sprint => sprint['sprintStatus'] === 2);
-                if (!currentSprint) {
-                    if (data['sprints'].length) {
-                        currentSprint = data['sprints'][data['sprints'].length - 1];
-                    }
+            if (data.boardType === 2) {
+                if (data['sprints'].length === 0) {
+                    displayTeam = false;
                     displayYou = false;
                 } else {
-                    const currentUserObject = data['sprints'].find(sprint => sprint['sprintId'] === currentSprint['sprintId'])['history'].reduce((prev, current) => {
-                        return (new Date(prev.date) > new Date(current.date)) ? prev : current;
-                    })['members'].find(user => user['username'] === meObject['username']);
-
-                    if (currentUserObject) {
-                        $(yourDataId).removeClass('hidden');
-                    } else {
+                    $(teamDataId).removeClass('hidden');
+                    var currentSprint = data['sprints'].find(sprint => sprint['sprintStatus'] === 2);
+                    if (!currentSprint) {
+                        if (data['sprints'].length) {
+                            currentSprint = data['sprints'][data['sprints'].length - 1];
+                        }
                         displayYou = false;
+                    } else {
+                        const currentUserObject = data['sprints'].find(sprint => sprint['sprintId'] === currentSprint['sprintId'])['history'].reduce((prev, current) => {
+                            return (new Date(prev.date) > new Date(current.date)) ? prev : current;
+                        })['members'].find(user => user['username'] === meObject['username']);
+
+                        if (currentUserObject) {
+                            $(yourDataId).removeClass('hidden');
+                        } else {
+                            displayYou = false;
+                        }
                     }
-                }
-                if (currentSprint) {
-                    $(sprintsAutocompleteId).val(currentSprint['sprintName']);
-                    selectedSprint = currentSprint['sprintId'];
-                    $(sprintsAutocompleteId).parent().find('label').addClass('active');
+                    if (currentSprint) {
+                        $(sprintsAutocompleteId).val(currentSprint['sprintName']);
+                        selectedSprint = currentSprint['sprintId'];
+                        $(sprintsAutocompleteId).parent().find('label').addClass('active');
+                    }
+
+                    getListOfSprints();
                 }
 
-                getListOfSprints();
-            }
+                if (data['releases'].length === 0) {
+                    displayReleases = false;
+                } else {
+                    $(releaseDataId).removeClass('hidden');
+                    var currentRelease = null;
+                    if (data['releases'].length) {
+                        currentRelease = data['releases'][data['releases'].length - 1];
+                    }
+                    if (currentRelease) {
+                        $(releasesAutocompleteId).val(currentRelease['releaseName']);
+                        selectedRelease = currentRelease['releaseId'];
+                        $(releasesAutocompleteId).parent().find('label').addClass('active');
+                    }
 
-            if (data['releases'].length === 0) {
+                    getListOfReleases();
+                }
+
+                displayScrumCharts(data);
+            } else {
+                const currentUserObject = data['kanban']['members'].find(user => user['username'] === meObject['username']);
+
+                if (currentUserObject) {
+                    $(yourDataId).removeClass('hidden');
+                    $(`#${userTicketDivisionId}`).addClass('hidden');
+                    $(`#${userTicketDivisionChartId}`).addClass('hidden');
+                    $(`#${userTicketDivisionTitleId}`).addClass('hidden');
+                    $(`#${userTicketDivisionChartTitleId}`).addClass('hidden');
+                } else {
+                    displayYou = false;
+                }
+
+                if (data['kanban']['members'].length) {
+                    $(teamDataId).removeClass('hidden');
+                    $(`#${teamTicketDivisionId}`).addClass('hidden');
+                    $(`#${teamTicketDivisionChartId}`).addClass('hidden');
+                    $(`#${teamTicketDivisionTitleId}`).addClass('hidden');
+                    $(`#${teamTicketDivisionChartTitleId}`).addClass('hidden');
+                    $(sprintFilterWrapperId).addClass('hidden');
+                } else {
+                    displayTeam = false;
+                }
+
                 displayReleases = false;
-            } else {
-                $(releaseDataId).removeClass('hidden');
-                var currentRelease = null;
-                if (data['releases'].length) {
-                    currentRelease = data['releases'][data['releases'].length - 1];
-                }
-                if (currentRelease) {
-                    $(releasesAutocompleteId).val(currentRelease['releaseName']);
-                    selectedRelease = currentRelease['releaseId'];
-                    $(releasesAutocompleteId).parent().find('label').addClass('active');
-                }
 
-                getListOfReleases();
+                displayKanbanCharts(data);
             }
 
-            displayScrumCharts(data);
-        } else {
-            const currentUserObject = data['kanban']['members'].find(user => user['username'] === meObject['username']);
-
-            if (currentUserObject) {
-                $(yourDataId).removeClass('hidden');
-                $(`#${userTicketDivisionId}`).addClass('hidden');
-                $(`#${userTicketDivisionChartId}`).addClass('hidden');
-                $(`#${userTicketDivisionTitleId}`).addClass('hidden');
-                $(`#${userTicketDivisionChartTitleId}`).addClass('hidden');
-            } else {
-                displayYou = false;
-            }
-
-            if (data['kanban']['members'].length) {
-                $(teamDataId).removeClass('hidden');
-                $(`#${teamTicketDivisionId}`).addClass('hidden');
-                $(`#${teamTicketDivisionChartId}`).addClass('hidden');
-                $(`#${teamTicketDivisionTitleId}`).addClass('hidden');
-                $(`#${teamTicketDivisionChartTitleId}`).addClass('hidden');
-                $(sprintFilterWrapperId).addClass('hidden');
-            } else {
-                displayTeam = false;
-            }
-
-            displayReleases = false;
-
-            displayKanbanCharts(data);
+            endLoad(analyticsLoaderId, scrumAnalyticsId);
+        },
+        error: function (data) {
+            alert('error');
         }
-
-        endLoad(analyticsLoaderId, scrumAnalyticsId);
-      },
-      error: function (data) {
-          alert('error');
-      }
     });
 }
 
@@ -310,7 +310,7 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
             borderWidth: 2,
             label: translate('points')
         }],
-        labels: [0,1,2,3,4,5]
+        labels: [0, 1, 2, 3, 4, 5]
     };
 
     var options = {
@@ -319,8 +319,8 @@ function displayUserPieDivision(currentUserStates, currentUserPoints) {
         },
         tooltips: {
             callbacks: {
-                label: function(item, data) {
-                    return data.datasets[item.datasetIndex].label+ ": "+ translate(`state${data.labels[item.index]}`)+ ": "+ data.datasets[item.datasetIndex].data[item.index];
+                label: function (item, data) {
+                    return data.datasets[item.datasetIndex].label + ": " + translate(`state${data.labels[item.index]}`) + ": " + data.datasets[item.datasetIndex].data[item.index];
                 }
             }
         },
@@ -394,7 +394,7 @@ function displayUserDateDivision() {
 
 function displayFilteredTeamData() {
     startLoad(teamLoderId, teamContentId);
-    var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
+    var dummyObject = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     var currentTeamStates = null;
     var currentTeamPoints = null;
     var showData = true;
@@ -418,15 +418,15 @@ function displayFilteredTeamData() {
         });
     } else if (selectedSprint && $(sprintFilterUserAutocompleteId).val().trim() === '') {
         const tempSprint = globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].reduce((prev, current) => {
-            return (new Date(prev.date > current.date)) ? prev : current;
+            return (new Date(prev.date) > new Date(current.date)) ? prev : current;
         })['members'];
-        var newPointsObject = Object.create( dummyObject );
+        var newPointsObject = Object.create(dummyObject);
         tempSprint.forEach(user => {
             for (var point in user['points']) {
                 newPointsObject[point] += user['points'][point];
             }
         });
-        var newStatsObject = Object.create( dummyObject );
+        var newStatsObject = Object.create(dummyObject);
         tempSprint.forEach(user => {
             for (var state in user['states']) {
                 newStatsObject[state] += user['states'][state];
@@ -441,7 +441,7 @@ function displayFilteredTeamData() {
         globalData['sprints'].find(sprint => sprint['sprintId'] === selectedSprint)['history'].forEach(sprint => {
             sprint['members'].forEach(user => {
                 for (var item in user['states']) {
-                    tempData[item] ? tempData[item] +=user['states'][item] : tempData[item] = user['states'][item];
+                    tempData[item] ? tempData[item] += user['states'][item] : tempData[item] = user['states'][item];
                 }
             })
 
@@ -557,7 +557,7 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
             borderWidth: 2,
             label: translate('points')
         }],
-        labels: [0,1,2,3,4,5]
+        labels: [0, 1, 2, 3, 4, 5]
     };
 
     var options = {
@@ -566,8 +566,8 @@ function displayteamPieDivision(currentTeamStates, currentTeamPoints) {
         },
         tooltips: {
             callbacks: {
-                label: function(item, data) {
-                    return data.datasets[item.datasetIndex].label+ ": "+ translate(`state${data.labels[item.index]}`)+ ": "+ data.datasets[item.datasetIndex].data[item.index];
+                label: function (item, data) {
+                    return data.datasets[item.datasetIndex].label + ": " + translate(`state${data.labels[item.index]}`) + ": " + data.datasets[item.datasetIndex].data[item.index];
                 }
             }
         },
@@ -673,7 +673,7 @@ function displayTeamBurndown(burndownData, dates) {
 
 function displayFilteredReleaseData(didReleaseChange = false) {
     startLoad(releaseLoderId, releaseContentId);
-    var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
+    var dummyObject = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     var currentReleaseStates = null;
     var currentReleasePoints = null;
     var currentReleaseStatesC = null;
@@ -704,13 +704,13 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         const tempRelease = globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].reduce((prev, current) => {
             return (new Date(prev.date) > new Date(current.date)) ? prev : current;
         })['members'];
-        var newPointsObject = Object.create( dummyObject );
+        var newPointsObject = Object.create(dummyObject);
         tempRelease.forEach(user => {
             for (var point in user['points']) {
                 newPointsObject[point] += user['points'][point];
             }
         });
-        var newStatsObject = Object.create( dummyObject );
+        var newStatsObject = Object.create(dummyObject);
         tempRelease.forEach(user => {
             for (var state in user['states']) {
                 newStatsObject[state] += user['states'][state];
@@ -725,7 +725,7 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => {
             release['members'].forEach(user => {
                 for (var item in user['states']) {
-                    tempData[item] ? tempData[item] +=user['states'][item] : tempData[item] = user['states'][item];
+                    tempData[item] ? tempData[item] += user['states'][item] : tempData[item] = user['states'][item];
                 }
             })
 
@@ -743,13 +743,13 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         const tempReleaseC = globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].reduce((prev, current) => {
             return (new Date(prev.date) > new Date(current.date)) ? prev : current;
         })['members'];
-        var newPointsObjectC = Object.create( dummyObject );
+        var newPointsObjectC = Object.create(dummyObject);
         tempReleaseC.forEach(user => {
             for (var point in user['points']) {
                 newPointsObjectC[point] += user['points'][point];
             }
         });
-        var newStatsObjectC = Object.create( dummyObject );
+        var newStatsObjectC = Object.create(dummyObject);
         tempReleaseC.forEach(user => {
             for (var state in user['states']) {
                 newStatsObjectC[state] += user['states'][state];
@@ -762,7 +762,7 @@ function displayFilteredReleaseData(didReleaseChange = false) {
         globalData['releases'].find(release => release['releaseId'] === selectedRelease)['history'].forEach(release => {
             release['members'].forEach(user => {
                 for (var item in user['states']) {
-                    tempDataC[item] ? tempDataC[item] +=user['states'][item] : tempDataC[item] = user['states'][item];
+                    tempDataC[item] ? tempDataC[item] += user['states'][item] : tempDataC[item] = user['states'][item];
                 }
             })
 
@@ -881,7 +881,7 @@ function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
             borderWidth: 2,
             label: translate('points')
         }],
-        labels: [0,1,2,3,4,5]
+        labels: [0, 1, 2, 3, 4, 5]
     };
 
     var options = {
@@ -890,8 +890,8 @@ function displayReleasePieDivision(currentReleaseStates, currentReleasePoints) {
         },
         tooltips: {
             callbacks: {
-                label: function(item, data) {
-                    return data.datasets[item.datasetIndex].label+ ": "+ translate(`state${data.labels[item.index]}`)+ ": "+ data.datasets[item.datasetIndex].data[item.index];
+                label: function (item, data) {
+                    return data.datasets[item.datasetIndex].label + ": " + translate(`state${data.labels[item.index]}`) + ": " + data.datasets[item.datasetIndex].data[item.index];
                 }
             }
         },
@@ -1077,7 +1077,7 @@ function displayKanbanCharts(data) {
 
 function displayFilteredTeamDataKanban() {
     startLoad(teamLoderId, teamContentId);
-    var dummyObject = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0};
+    var dummyObject = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     var currentTeamStates = null;
     var currentTeamPoints = null;
 
@@ -1087,13 +1087,13 @@ function displayFilteredTeamDataKanban() {
         currentTeamPoints = currentTeamObject ? currentTeamObject['points'] : null;
     } else {
         const tempMembersObject = globalData['kanban']['members'];
-        var newPointsObject = Object.create( dummyObject );
+        var newPointsObject = Object.create(dummyObject);
         tempMembersObject.forEach(user => {
             for (var point in user['points']) {
                 newPointsObject[point] += user['points'][point];
             }
         });
-        var newStatsObject = Object.create( dummyObject );
+        var newStatsObject = Object.create(dummyObject);
         tempMembersObject.forEach(user => {
             for (var state in user['states']) {
                 newStatsObject[state] += user['states'][state];

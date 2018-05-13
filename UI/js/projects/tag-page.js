@@ -36,11 +36,11 @@ const statusId = '#status';
 const typeIconId = '#typeIcon';
 const priorityIconId = '#priorityIcon';
 const nameId = '#name';
-const estimateId  = '#estimate';
+const estimateId = '#estimate';
 const imageId = '#image';
 const openTicketId = '#openTicket';
 
-$(function() {
+$(function () {
     $('select').material_select();
 
     $(typeSelectionIssueId).on('change', function () {
@@ -91,8 +91,8 @@ function displayIssuesList() {
             if (passIssuesFilter(issue)) {
                 $(issuesListId).append(fillIssuesRow(issue));
 
-                $(`#${issue._id}`).on('click', function() {
-                     window.location.href = `/project/${projectId}/team/${teamId}/ticket/${issue._id}`;
+                $(`#${issue._id}`).on('click', function () {
+                    window.location.href = `/project/${projectId}/team/${teamId}/ticket/${issue._id}`;
                 });
             }
         });
@@ -109,19 +109,19 @@ function fillIssuesRow(issue) {
     var bindedRow = issueEntry;
 
     bindedRow.find(statusId).removeClass((index, className) => {
-        return (className.match (/(^|\s)state\S+/g) || []).join(' ');
+        return (className.match(/(^|\s)state\S+/g) || []).join(' ');
     });
 
     if (issue.type === 0) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-ladybird.png" alt="" height="25" width="auto">');
     } else if (issue.type === 1) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-code-file.png" alt="" height="25" width="auto">');
-    }  else if (issue.type === 2) {
+    } else if (issue.type === 2) {
         bindedRow.find(typeIconId).html('<img src="/img/icon-purchase-order.png" alt="" height="25" width="auto">');
     }
 
-    if (issue.priority === 0 ) {
-       bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
+    if (issue.priority === 0) {
+        bindedRow.find(priorityIconId).html('<img src="/img/icon-low-priority.png" alt="" height="25" width="auto">');
     } else if (issue.priority === 1) {
         bindedRow.find(priorityIconId).html('<img src="/img/icon-medium-priority.png" alt="" height="25" width="auto">');
     } else if (issue.priority === 2) {

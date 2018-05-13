@@ -76,6 +76,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.tags = Array.isArray(ticket.tags) ? ticket.tags : [];
     ticketToAdd.links = Array.isArray(ticket.links) ? ticket.links : [];
     ticketToAdd.attachments = Array.isArray(ticket.attachments) ? ticket.attachments : [];
+    ticketToAdd.milestoneTickets = Array.isArray(ticket.milestoneTickets) ? ticket.milestoneTickets : [];
     ticketToAdd.title = ticket.title;
     ticketToAdd.description = ticket.description;
     ticketToAdd.status = common.ticketStatus.ACTIVE.value;
@@ -88,6 +89,7 @@ const addTicket = function (ticket, callback) {
     ticketToAdd.stateHistory = [];
     ticketToAdd.assigneeHistory = [];
     ticketToAdd.inBacklog = typeof (ticket.inBacklog) === common.variableTypes.BOOLEAN ? ticket.inBacklog : true;
+    ticketToAdd.milestone = typeof (ticket.milestone) === common.variableTypes.STRING ? ticket.milestone : '';
 
     db.addTicket(ticketToAdd, callback);
 }
@@ -155,6 +157,18 @@ const getTicketsByProjectIds = function (projectIds, callback) {
 }
 
 /**
+ * find a milestone
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} milestoneId milestone id
+ * @param {function} callback callback function
+ */
+const getMilestoneById = function (projectId, teamId, milestoneId, callback) {
+    getTicket({ $and: [{ _id: milestoneId }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }, { type: common.ticketTypes.MILESTONE.value }] }, callback);
+}
+
+/**
  * find a ticket
  *
  * @param {string} projectId project id
@@ -197,6 +211,85 @@ const getTicketsByIds = function (projectId, teamId, ticketsIds, callback) {
     }
 
     getLimitedTicketsListSorted({ $and: [{ $or: ticketsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] }, { title: 1 }, 0, callback);
+}
+
+/**
+ * add milestone to list of tickets
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} milestoneId milestone id
+ * @param {array} ticketsIds tickets ids
+ * @param {function} callback callback function
+ */
+const addMilestoneToTickets = function (projectId, teamId, milestoneId, ticketsIds, callback) {
+    let ticketsIdsList = [];
+    for (let i = 0; i < ticketsIds.length; i++) {
+        ticketsIdsList.push({ _id: ticketsIds[i] });
+    }
+
+    if (ticketsIds.length === 0) {
+        return callback(null, []);
+    }
+
+    updateTickets(
+        { $and: [{ $or: ticketsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate(), milestone: milestoneId } },
+        callback);
+}
+
+/**
+ * remove milestone from list of tickets
+ *
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} ticketsIds tickets ids
+ * @param {function} callback callback function
+ */
+const removeMilestoneFromTickets = function (projectId, teamId, ticketsIds, callback) {
+    let ticketsIdsList = [];
+    for (let i = 0; i < ticketsIds.length; i++) {
+        ticketsIdsList.push({ _id: ticketsIds[i] });
+    }
+
+    if (ticketsIds.length === 0) {
+        return callback(null, []);
+    }
+
+    updateTickets(
+        { $and: [{ $or: ticketsIdsList }, { projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate(), milestone: '' } },
+        callback);
+}
+
+/**
+ * remove ticket from milestones list
+ * 
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {string} ticketId ticket id
+ * @param {function} callback callback function
+ */
+const removeTicketFromMilestones = function (projectId, teamId, ticketId, callback) {
+    updateTickets(
+        { $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate() }, $pull: { milestoneTickets: ticketId } },
+        callback);
+}
+
+/**
+ * remove tickets from milestones list
+ * 
+ * @param {string} projectId project id
+ * @param {string} teamId team id
+ * @param {array} ticketIdsList ticket ids list
+ * @param {function} callback callback function
+ */
+const removeTicketsFromMilestones = function (projectId, teamId, ticketIdsList, callback) {
+    updateTickets(
+        { $and: [{ projectId: projectId }, { teamId: teamId }, { status: common.ticketStatus.ACTIVE.value }, { type: common.ticketTypes.MILESTONE.value }] },
+        { $set: { mtime: common.getDate(), imtime: common.getISODate() }, $pull: { milestoneTickets: { $in: ticketIdsList } } },
+        callback);
 }
 
 /**
@@ -396,6 +489,10 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
         updateQuery.$set.assignee = updateParams.assignee;
     }
 
+    if (typeof (updateParams.milestone) === common.variableTypes.STRING) {
+        updateQuery.$set.milestone = updateParams.milestone;
+    }
+
     if (typeof (updateParams.points) === common.variableTypes.NUMBER) {
         updateQuery.$set.points = updateParams.points;
     }
@@ -430,6 +527,10 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
 
     if (Array.isArray(updateParams.attachments)) {
         updateQuery.$set.attachments = updateParams.attachments;
+    }
+
+    if (Array.isArray(updateParams.milestoneTickets)) {
+        updateQuery.$set.milestoneTickets = updateParams.milestoneTickets;
     }
 
     if (common.isValueInObjectWithKeys(updateParams.priority, 'value', common.ticketPriority)) {
@@ -467,7 +568,9 @@ const updateTicketById = function (ticketId, teamId, projectId, updateParams, ca
 }
 
 // <exports> -----------------------------------
+exports.addMilestoneToTickets = addMilestoneToTickets;
 exports.addTicket = addTicket;
+exports.getMilestoneById = getMilestoneById;
 exports.getTicketByDisplayId = getTicketByDisplayId;
 exports.getTicketById = getTicketById;
 exports.getTicketsByIds = getTicketsByIds;
@@ -479,6 +582,9 @@ exports.getTicketsInBacklog = getTicketsInBacklog;
 exports.getTicketsWithNoSprints = getTicketsWithNoSprints;
 exports.initialize = initialize;
 exports.putTicketsInBacklog = putTicketsInBacklog;
+exports.removeMilestoneFromTickets = removeMilestoneFromTickets;
+exports.removeTicketFromMilestones = removeTicketFromMilestones;
+exports.removeTicketsFromMilestones = removeTicketsFromMilestones;
 exports.searchTicketsByProjectId = searchTicketsByProjectId;
 exports.searchTicketsByTeamId = searchTicketsByTeamId;
 exports.updateTicketById = updateTicketById;

@@ -325,7 +325,7 @@
 		"assignee": "Assignee",
 		"create": "Create Ticket",
 		"description": "Description",
-		"milestoneIssues": "Milestone issues",
+		"milestoneTickets": "Milestone Tickets",
 		"points": "Points",
 		"priority": "Priority",
 		"priorities": {
@@ -380,7 +380,14 @@
 		"id": "Ticket Id",
 		"displayId": "Display Id",
 		"releases": "Releases",
-		"milestone": "Milestone"
+		"milestone": "Milestone",
+		"noReporter": "No Reporter",
+		"noAssignee": "No Assignee",
+		"noReleases": "No Releases",
+		"noSprints": "No Sprints",
+		"noTags": "No Tags",
+		"milestoneTicketsDoneProgress": "Milestone Tickets Done Progress",
+		"milestoneTicketsPointsProgress": "Milestone Tickets Points Progress"
 	},
 	"uploadModal": {
 		"file": "File",
@@ -422,8 +429,10 @@
 			"theme-greyClouds": "Grey Clouds"
 		},
 		"languages": {
-			"english": "English",
-			"french": "French"
+			"russian": "Russian",
+			"spanish": "Spanish",
+			"french": "French",
+			"english": "English"
 		}
 	},
 	"users": {

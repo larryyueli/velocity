@@ -63,6 +63,11 @@ const createSprint = function (req, res) {
                 return res.status(400).send(common_backend.getError(2019));
             }
 
+            if (teamObj.boardType !== common_backend.boardTypes.SCRUM.value) {
+                logger.error(JSON.stringify(common_backend.getError(1000)));
+                return res.status(400).send(common_backend.getError(1000));
+            }
+
             let newSprint = {
                 projectId: projectId,
                 teamId: teamId,

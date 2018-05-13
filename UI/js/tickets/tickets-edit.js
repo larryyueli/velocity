@@ -17,13 +17,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 const typeSelection = $('#typeSelection');
-const subtaskRow = $('.subtasksRow');
-const milestoneIssuesRow = $('.milestoneIssuesRow');
+const milestoneTicketsOuterRow = $('.milestoneTicketsOuterRow');
 const milestoneRow = $('.milestoneRow');
 const milestoneOuterRow = $('.milestoneOuterRow');
 const relatedIssuesRow = $('.relatedIssuesRow');
-const subtaskSelection = $('#subtasksSelection');
-const milestoneIssuesSelection = $('#milestoneIssuesSelection');
+const milestoneTicketsSelection = $('#milestoneTicketsSelection');
 const saveTicketButtonId = '#saveTicketButton';
 const descriptionId = '#description';
 const newCommentId = '#newComment';
@@ -62,12 +60,13 @@ const viewCard = '#viewCard';
 const saveMilestoneButton = '#saveMilestoneButton';
 const milestoneInput = '#milestoneInput';
 const milestoneDiv = '#milestoneDiv';
-const milestoneIssuesDiv = '#milestoneIssuesDiv';
-const milestoneIssuesInput = '#milestoneIssuesInput';
-const saveMilestoneIssuesButton = '#saveMilestoneIssuesButton';
+const milestoneTicketsDiv = '#milestoneTicketsDiv';
+const milestoneTicketsInput = '#milestoneTicketsInput';
+const saveMilestoneTicketsButton = '#saveMilestoneTicketsButton';
+const createTicketButtonId = '#createTicketButton';
 
 var attachmentsList = [];
-var milestonesIssuesList = [];
+var milestonesTicketsList = [];
 var selectedAssignee = null;
 var selectedMilestone = null;
 var usernamesArray = [];
@@ -84,21 +83,18 @@ var commentComponent = null;
 
 $(function () {
     typeSelection.change(function () {
-        if (typeSelection.val() == 0) {
-            subtaskRow.show();
+        if (typeSelection.val() === '0') {
             milestoneOuterRow.show();
             relatedIssuesRow.show();
-            milestoneIssuesRow.hide();
-        } else if (typeSelection.val() == 1) {
-            subtaskRow.show();
+            milestoneTicketsOuterRow.hide();
+        } else if (typeSelection.val() === '1') {
             milestoneOuterRow.show();
             relatedIssuesRow.show();
-            milestoneIssuesRow.hide();
-        } else {
-            subtaskRow.hide();
+            milestoneTicketsOuterRow.hide();
+        } else if (typeSelection.val() === '2') {
             milestoneOuterRow.hide();
             relatedIssuesRow.hide();
-            milestoneIssuesRow.show();
+            milestoneTicketsOuterRow.show();
         }
     });
 
@@ -121,12 +117,16 @@ $(function () {
         attachmentsList.push($(this).attr('id'));
     });
 
-    $('.milestone-chips').each(function (index) {
-        attachmentsList.push($(this).attr('id'));
+    $('.milestone-chip').each(function (index) {
+        selectedMilestone = $(this).attr('id');
     });
 
-    $('.milestoneIssues-chips').each(function (index) {
-        attachmentsList.push($(this).attr('id'));
+    if (selectedMilestone) {
+        milestoneRow.hide();
+    }
+
+    $('.milestoneTickets-chips').each(function (index) {
+        milestonesTicketsList.push($(this).attr('id'));
     });
 
     $('.related-chips').each(function (index) {
@@ -134,6 +134,10 @@ $(function () {
         let value = $(this).attr('id').split('_')[1];
         selectedRelatedObj[id] = value;
         $(this).attr('id', id);
+    });
+
+    $(createTicketButtonId).click(() => {
+        window.location = `/project/${projectId}/team/${teamId}/tickets/add`;
     });
 
     selectedAssignee = $(currentTicketAssignee).html();
@@ -234,7 +238,7 @@ function updateTicketAction() {
             links: selectedRelatedObj,
             attachments: attachmentsList,
             milestone: selectedMilestone,
-            milestonesIssues: milestonesIssuesList
+            milestoneTickets: milestonesTicketsList
         },
         success: function (data) {
             successSnackbar(translate('updatedTicket'));
@@ -466,11 +470,15 @@ function getListOfSprints() {
                     if (selectedSprints.indexOf(sprintIdsObj[val]) === -1) {
                         selectedSprints.push(sprintIdsObj[val]);
                         $(ticketSprintsDivId).append(`
-                            <div class="chip sprint-chips" id=${sprintIdsObj[val]}>
-                                ${val}
-                                <i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">delete_forever</i>
+                            <div class="row margin-bottom-0 padding-right-10 padding-left-10">
+                                <div class="chip full-width sprint-chips text-left" id=${sprintIdsObj[val]}>
+                                    <p class="truncateTextCommon margin-bottom-0">${val}</p>
+                                    <i class="close material-icons" onClick="removeSprintId('${sprintIdsObj[val]}')">delete_forever</i>
+                                    <i onclick="openSprintInNewTab('${sprintIdsObj[val]}')" class="chipIcon material-icons">open_in_new</i>
+                                </div>
                             </div>`);
                     }
+                    $(sprintsAutocompleteId).val('');
                 },
                 minLength: 0,
             });
@@ -522,11 +530,15 @@ function getListOfReleases() {
                     if (selectedReleases.indexOf(releaseIdsObj[val]) === -1) {
                         selectedReleases.push(releaseIdsObj[val]);
                         $(ticketReleasesDivId).append(`
-                            <div class="chip release-chips" id=${releaseIdsObj[val]}>
-                                ${val}
-                                <i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">delete_forever</i>
+                            <div class="row margin-bottom-0 padding-right-10 padding-left-10">
+                                <div class="chip full-width release-chips text-left" id=${releaseIdsObj[val]}>
+                                    <p class="truncateTextCommon margin-bottom-0">${val}</p>
+                                    <i class="close material-icons" onClick="removeReleaseId('${releaseIdsObj[val]}')">delete_forever</i>
+                                    <i onclick="openReleaseInNewTab('${releaseIdsObj[val]}')" class="chipIcon material-icons">open_in_new</i>
+                                </div>
                             </div>`);
                     }
+                    $(releasesAutocompleteId).val('');
                 },
                 minLength: 0,
             });
@@ -577,11 +589,15 @@ function getListOfTags() {
                     if (selectedTags.indexOf(tagIdsObj[val]) === -1) {
                         selectedTags.push(tagIdsObj[val]);
                         $(ticketTagsDivId).append(`
-                            <div class="chip tag-chips" id=${tagIdsObj[val]}>
-                                ${val}
-                                <i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">delete_forever</i>
+                            <div class="row margin-bottom-0 padding-right-10 padding-left-10">
+                                <div class="chip full-width tag-chips text-left" id=${tagIdsObj[val]}>
+                                    <p class="truncateTextCommon margin-bottom-0">${val}</p>
+                                    <i class="close material-icons" onClick="removeTagId('${tagIdsObj[val]}')">delete_forever</i>
+                                    <i onclick="openTagInNewTab('${tagIdsObj[val]}')" class="chipIcon material-icons">open_in_new</i>
+                                </div>
                             </div>`);
                     }
+                    $(tagsAutocompleteId).val('');
                 },
                 minLength: 0,
             });
@@ -625,6 +641,10 @@ function saveLinkFunction() {
             displayId: relatedTicket
         },
         success: function (data) {
+            if (data.type !== 0 && data.type !== 1) {
+                return failSnackbar(getErrorMessageFromResponse({ code: 1000 }));
+            }
+
             if (selectedRelatedObj[data._id]) {
                 delete selectedRelatedObj[data._id];
                 $(`#${data._id} > .close`).trigger('click');
@@ -632,13 +652,15 @@ function saveLinkFunction() {
 
             selectedRelatedObj[data._id] = relatedValue;
             $(relatedTicketDivId).append(`
-                <div class="row margin-bottom-0 margin-right-10">
+                <div class="row margin-bottom-0">
                     <div class="chip full-width related-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
                         <p class="truncateTextCommon margin-bottom-0">${relatedText}: ${relatedTicket}. ${data.title}</p>
                         <i class="close material-icons" onClick="removeRelatedId('${data._id}')">delete_forever</i>
+                        <i onclick="openTicketInNewTab('${data._id}')" class="chipIcon material-icons">open_in_new</i>
                     </div>
                 </div>`);
+            $(relatedInput).val('');
         },
         error: function (data) {
             handle401And404(data);
@@ -758,6 +780,10 @@ function saveMilestoneFunction() {
             displayId: milestoneTicket
         },
         success: function (data) {
+            if (data.type !== 2) {
+                return failSnackbar(getErrorMessageFromResponse({ code: 1000 }));
+            }
+
             if (selectedMilestone) {
                 $(`#${selectedMilestone} > .close`).trigger('click');
             }
@@ -765,14 +791,16 @@ function saveMilestoneFunction() {
             selectedMilestone = data._id;
 
             $(milestoneDiv).append(`
-                <div class="row margin-bottom-0 margin-right-10">
+                <div class="row margin-bottom-0">
                     <div class="chip full-width milestone-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
                         <p class="truncateTextCommon margin-bottom-0">${milestoneTicket}. ${data.title}</p>
                         <i class="close material-icons" onClick="removeMilestoneId('${data._id}')">delete_forever</i>
+                        <i onclick="openTicketInNewTab('${data._id}')" class="chipIcon material-icons">open_in_new</i>
                     </div>
                 </div>`);
             milestoneRow.hide();
+            $(milestoneInput).val('');
         },
         error: function (data) {
             handle401And404(data);
@@ -797,10 +825,10 @@ function removeMilestoneId(id) {
 /**
  * save milestone issues function
 */
-function saveMilestoneIssuesFunction() {
-    const milestoneIssueTicket = $(milestoneIssuesInput).val();
+function saveMilestoneTicketsFunction() {
+    const milestoneIssueTicket = $(milestoneTicketsInput).val();
 
-    $(saveMilestoneIssuesButton).attr('disabled', true);
+    $(saveMilestoneTicketsButton).attr('disabled', true);
 
     $.ajax({
         type: 'GET',
@@ -811,20 +839,26 @@ function saveMilestoneIssuesFunction() {
             displayId: milestoneIssueTicket
         },
         success: function (data) {
-            if (milestonesIssuesList.indexOf(data._id) !== -1) {
-                removeMilestoneIssue(data._id);
+            if (data.type !== 0 && data.type !== 1) {
+                return failSnackbar(getErrorMessageFromResponse({ code: 1000 }));
+            }
+
+            if (milestonesTicketsList.indexOf(data._id) !== -1) {
+                removeMilestoneTicket(data._id);
                 $(`#${data._id} > .close`).trigger('click');
             }
 
-            milestonesIssuesList.push(data._id);
-            $(milestoneIssuesDiv).append(`
-                <div class="row margin-bottom-0 margin-right-10">
-                    <div class="chip full-width milestoneIssues-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
+            milestonesTicketsList.push(data._id);
+            $(milestoneTicketsDiv).append(`
+                <div class="row padding-right-10 padding-left-10 margin-top-0 padding-top-0 margin-bottom-0 padding-bottom-0">
+                    <div class="chip full-width milestoneTicket-chips text-left ticketStatusColors state${data.state}" id=${data._id}>
                         <img src="/picture/${data.assigneePicture}">
                         <p class="truncateTextCommon margin-bottom-0">${milestoneIssueTicket}. ${data.title}</p>
-                        <i class="close material-icons" onClick="removeMilestoneIssue('${data._id}')">delete_forever</i>
+                        <i class="close material-icons" onClick="removeMilestoneTicket('${data._id}')">delete_forever</i>
+                        <i onclick="openTicketInNewTab('${data._id}')" class="chipIcon material-icons">open_in_new</i>
                     </div>
                 </div>`);
+            $(milestoneTicketsInput).val('');
         },
         error: function (data) {
             handle401And404(data);
@@ -833,16 +867,48 @@ function saveMilestoneIssuesFunction() {
             failSnackbar(getErrorMessageFromResponse(jsonResponse));
         },
         complete: function (data) {
-            $(saveMilestoneIssuesButton).attr('disabled', false);
+            $(saveMilestoneTicketsButton).attr('disabled', false);
         }
     });
 }
 
 /**
- * remove milestone issue
+ * remove milestone ticket
 */
-function removeMilestoneIssue(id) {
-    if (milestonesIssuesList.indexOf(id) !== -1) {
-        milestonesIssuesList.splice(milestonesIssuesList.indexOf(id), 1);
+function removeMilestoneTicket(id) {
+    if (milestonesTicketsList.indexOf(id) !== -1) {
+        milestonesTicketsList.splice(milestonesTicketsList.indexOf(id), 1);
     }
+}
+
+/**
+ * open in new tab
+ */
+function openTicketInNewTab(ticketId) {
+    var win = window.open(`/project/${projectId}/team/${teamId}/ticket/${ticketId}`, '_blank');
+    win.focus();
+}
+
+/**
+ * open in new tab
+ */
+function openReleaseInNewTab(releaseId) {
+    var win = window.open(`/project/${projectId}/team/${teamId}/release/${releaseId}`, '_blank');
+    win.focus();
+}
+
+/**
+ * open in new tab
+ */
+function openTagInNewTab(tagId) {
+    var win = window.open(`/project/${projectId}/team/${teamId}/tag/${tagId}`, '_blank');
+    win.focus();
+}
+
+/**
+ * open in new tab
+ */
+function openSprintInNewTab(sprintId) {
+    var win = window.open(`/project/${projectId}/team/${teamId}/sprint/${sprintId}`, '_blank');
+    win.focus();
 }

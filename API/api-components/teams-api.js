@@ -581,7 +581,8 @@ const renderTeamPage = function (req, res) {
                                     commonReleaseStatus: common_backend.releaseStatus,
                                     projectId: projectId,
                                     teamId: teamId,
-                                    attachments: attachmentsList
+                                    attachments: attachmentsList,
+                                    isProjectAdmin: projectObj.admins.indexOf(req.session.user._id) !== -1
                                 });
                             });
                         });

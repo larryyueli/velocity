@@ -335,7 +335,9 @@ exports.cfsMainDirectories = cfsMainDirectories;
 // common languages
 const languages = Object.freeze({
     English: { value: 'en', text: 'english' },
-    French: { value: 'fr', text: 'french' }
+    French: { value: 'fr', text: 'french' },
+    Russian: { value: 'ru', text: 'russian' },
+    Spanish: { value: 'es', text: 'spanish' }
 });
 exports.languages = languages;
 
@@ -691,7 +693,7 @@ exports.convertJsonListToList = convertJsonListToList;
  *
  * @param {array} list1 first list
  * @param {array} list2 second list
- * @return {list} result object
+ * @return {list} result list
  */
 const joinSets = function (list1, list2) {
     let result = [];
@@ -714,7 +716,7 @@ exports.joinSets = joinSets;
  *
  * @param {array} list1 first list
  * @param {array} list2 second list
- * @return {list} result object
+ * @return {list} result list
  */
 const joinLists = function (list1, list2) {
     let result = [];

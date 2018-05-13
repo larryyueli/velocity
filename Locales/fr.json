@@ -1,483 +1,492 @@
 {
-	"about": {
-		"analytics": {
-			"start": "nostrud",
-			"sentence1": "exercitation consequat proident sit eu non velit ea minim aliqua ullamco ut cupidatat veniam tempor labore ex voluptate ea duis excepteur quis id consequat Lorem cillum sunt ut",
-			"point1": "est amet ullamco laboris fugiat velit",
-			"point2": "culpa aliqua elit sit non culpa deserunt",
-			"point3": "et do incididunt sunt ullamco est",
-			"point4": "do deserunt irure sint consequat velit aliqua veniam laborum cupidatat",
-			"point5": "cupidatat sunt",
-			"point6": "consectetur ad"
-		},
-		"boards": {
-			"start": "aliquip",
-			"sentence1": "ex esse dolor amet laboris cillum et Lorem incididunt in deserunt laborum proident incididunt sit tempor anim minim",
-			"sentence2": "adipisicing non occaecat do anim occaecat in dolor dolor proident deserunt non nostrud commodo amet nulla eiusmod id magna nostrud non dolor anim dolore non id exercitation occaecat non sint nostrud voluptate occaecat elit do sit nostrud aliqua officia qui",
-			"sentence3": "pariatur labore dolore cillum reprehenderit dolor dolor nostrud mollit labore amet pariatur laboris laboris eiusmod mollit velit adipisicing consectetur elit ipsum elit tempor"
-		},
-		"copyright": "veniam",
-		"intro": {
-			"start": "voluptate irure cillum",
-			"sentence1": "voluptate irure qui commodo quis occaecat nisi esse aliquip do consectetur ullamco do esse minim ut do cillum in deserunt fugiat"
-		},
-		"license": "aliquip aliqua deserunt aliquip elit ut amet reprehenderit velit irure",
-		"management": {
-			"start": "dolor",
-			"sentence1": "ex enim laboris exercitation Lorem magna amet do nulla nostrud culpa nostrud mollit et in enim et ad cupidatat in tempor sunt laborum dolor",
-			"point1": "adipisicing",
-			"point2": "incididunt",
-			"point3": "magna"
-		},
-		"modes": {
-			"start": "Lorem",
-			"sentence1": "ad consequat Lorem est est elit consequat irure qui incididunt labore proident reprehenderit laboris dolore aliquip",
-			"sentence2": "do ut cillum duis nostrud cillum laborum tempor non adipisicing nostrud ullamco sint amet minim ipsum eiusmod duis aliquip esse anim irure ut adipisicing mollit et officia sint eu labore amet",
-			"sentence3": "aliquip exercitation nostrud et veniam dolor aliquip adipisicing sunt qui nisi ex officia eiusmod magna aliquip veniam enim dolor minim veniam est"
-		},
-		"name": "non",
-		"projects": {
-			"start": "consequat",
-			"sentence1": "mollit ex occaecat proident mollit sit non et laborum pariatur deserunt aliqua proident commodo ut labore eu qui exercitation ullamco cillum ex nulla reprehenderit qui amet consequat et consequat adipisicing adipisicing minim",
-			"point1": "deserunt irure duis pariatur sint",
-			"point2": "occaecat laborum dolor minim pariatur incididunt",
-			"point3": "deserunt eu consequat nisi veniam minim occaecat",
-			"point4": "cillum esse pariatur officia magna est Lorem magna sint magna",
-			"point5": "qui adipisicing minim"
-		},
-		"supervisor": "id",
-		"since": {
-			"january2018": "aliqua consequat nisi"
-		},
-		"teams": {
-			"start": "cillum",
-			"sentence1": "cupidatat fugiat proident quis quis eu irure nulla ullamco nisi sit cupidatat officia eu id ad",
-			"sentence2": "voluptate Lorem et deserunt aliquip do nostrud nostrud amet ex nostrud qui eu pariatur incididunt sit est duis proident irure sint",
-			"sentence3": "consectetur occaecat fugiat do consectetur quis minim ullamco elit est qui cillum et consectetur occaecat non ad cupidatat nulla ullamco incididunt fugiat dolore velit sit officia amet laborum"
-		},
-		"tickets": {
-			"start": "veniam",
-			"sentence1": "aliquip occaecat ea nisi irure adipisicing id amet aute aliqua do exercitation ea labore veniam cupidatat anim cupidatat sit",
-			"sentence2": "voluptate do eu culpa magna dolor nulla enim et quis laborum eu veniam id enim anim amet sit minim amet aute consectetur labore cillum qui nulla tempor"
-		},
-		"who": {
-			"start": "fugiat nulla adipisicing",
-			"sentence1": "incididunt pariatur laborum ea deserunt aliqua eu ad nostrud dolore voluptate commodo duis voluptate ut labore ad nulla laborum qui quis velit dolor"
-		}
-	},
-	"actions": {
-		"activate": "ipsum",
-		"apply": "in",
-		"cancel": "aliqua",
-		"close": "Lorem",
-		"comment": "fugiat",
-		"create": "do",
-		"delete": "consectetur",
-		"done": "qui",
-		"edit": "ea",
-		"import": "et",
-		"randomizeRemaining": "ad est",
-		"reset": "laboris",
-		"save": "ut",
-		"submit": "culpa",
-		"update": "reprehenderit",
-		"export": "est",
-		"download": "amet"
-	},
-	"analytics": {
-		"doneProgress": "mollit incididunt",
-		"selectSprint": "culpa laborum tempor laborum officia eu deserunt labore eiusmod",
-		"selectRelease": "id non Lorem incididunt est sunt cupidatat commodo qui",
-		"teamName": "tempor qui",
-		"tickets": "elit",
-		"user": "occaecat",
-		"yourData": "ullamco enim",
-		"stateDivision": "dolor veniam",
-		"statesOverTime": "sint qui aliquip",
-		"teamData": "eiusmod occaecat",
-		"teamStateDivision": "sunt fugiat",
-		"teamStatesOverTime": "elit eu adipisicing",
-		"teamBurndown": "labore aliqua",
-		"releaseData": "magna eu",
-		"releaseStateDivision": "ea exercitation",
-		"releaseStatesOverTime": "ut ut deserunt",
-		"releaseCumulativeChart": "elit cillum",
-		"kanbanCumulativeChart": "quis cupidatat"
+	"feedback": {
+		"noFeedback": "Aucun commentaire disponible",
+		"title": "Retour d'information"
 	},
 	"app": {
-		"name": "dolor"
+		"name": "Rapidité"
+	},
+	"actions": {
+		"comment": "Commentaire",
+		"reset": "Réinitialiser",
+		"activate": "Activer",
+		"edit": "modifier",
+		"import": "Importer",
+		"create": "Créer",
+		"update": "Mettre à jour",
+		"submit": "Soumettre",
+		"randomizeRemaining": "Aléatoire restant",
+		"export": "Exportation",
+		"done": "Terminé",
+		"close": "Fermer",
+		"cancel": "Annuler",
+		"apply": "Appliquer",
+		"download": "Télécharger",
+		"save": "sauvegarder",
+		"delete": "Effacer"
+	},
+	"analytics": {
+		"tickets": "Des billets",
+		"releaseStatesOverTime": "États au fil du temps",
+		"teamBurndown": "Tableau de combustion",
+		"teamStateDivision": "Division d'État",
+		"releaseStateDivision": "Division d'État",
+		"kanbanCumulativeChart": "Graphique cumulatif",
+		"teamData": "Données de l'équipe",
+		"doneProgress": "Fait le progrès",
+		"teamName": "Nom de l'équipe",
+		"statesOverTime": "États au fil du temps",
+		"teamStatesOverTime": "États au fil du temps",
+		"releaseCumulativeChart": "Graphique cumulatif",
+		"releaseData": "Release Data",
+		"user": "Utilisateur",
+		"selectSprint": "Vous devez sélectionner un sprint pour voir son analyse",
+		"yourData": "Vos données",
+		"selectRelease": "Vous devez sélectionner une version pour afficher ses analyses",
+		"stateDivision": "Division d'État"
 	},
 	"filters": {
-		"all": "excepteur"
+		"all": "Tout"
 	},
-	"history": {
-		"history": "commodo",
-		"release": "id",
-		"sprint": "velit",
-		"tag": "anim"
+	"pageNames": {
+		"profile": "Profil",
+		"about": "Sur",
+		"submitFeedback": "Soumettre des commentaires",
+		"logout": "Connectez - Out",
+		"users": "Utilisateurs",
+		"chatRoom": "Tchat",
+		"settings": "Paramètres",
+		"grades": "Grades",
+		"projects": "Projets",
+		"feedback": "Retour d'information"
 	},
-	"login": {
-		"signIn": "fugiat irure",
-		"signUp": "mollit pariatur",
-		"forgotPassword": "amet proident",
-		"title": "eiusmod aute culpa"
+	"pageNotFound": {
+		"prompt": "Retournez à votre page principale",
+		"description": "Nous n'avons pas trouvé la page que vous cherchiez",
+		"title": "La page de vitesse n'a pas été trouvée"
 	},
 	"modeSelector": {
 		"classMode": {
-			"description": "anim nisi non proident eu eiusmod in adipisicing commodo ullamco non sint labore veniam veniam aute pariatur aute ad ullamco fugiat deserunt",
-			"features": "fugiat minim officia consequat sunt irure est aute excepteur incididunt reprehenderit exercitation nostrud voluptate fugiat non eu laboris",
-			"title": "ex aliquip",
-			"usage": "excepteur mollit labore consequat"
+			"usage": "Utilisez le mode classe maintenant",
+			"title": "Mode Classe",
+			"description": "Si vous êtes professeur et que vous souhaitez utiliser Velocity dans votre classe, le mode cours est celui qui vous convient.",
+			"features": "Ce mode offre des fonctions comme: Faire des devoirs, assigner des groupes, ajouter des assistants d'enseignement, créer des rubriques / critères de notation, et bien plus encore."
 		},
+		"header": "Bienvenue à Velocity!",
+		"title": "Sélectionnez le mode",
 		"collaboratorMode": {
-			"description": "dolor cupidatat ea reprehenderit officia laboris adipisicing nulla consectetur nulla est nisi ut cupidatat et ut incididunt dolore officia",
-			"features": "cupidatat esse dolore ullamco aliqua id adipisicing occaecat mollit fugiat qui reprehenderit dolor culpa eu aliquip enim irure sit nulla consequat elit",
-			"title": "sit fugiat",
-			"usage": "duis fugiat commodo quis"
+			"usage": "Use collaborator mode now",
+			"title": "Mode collaborateur",
+			"description": "Si vous souhaitez organiser vos projets en utilisant des forums scrum / kanban, alorsle mode collaborateur est fait pour vous.",
+			"features": "Ce mode offre des fonctionnalités telles que: créer des projets, travailler avec d'autres personnes dans le cadre d'une organisation, utiliser à la fois scrum et kanban, et bien plus encore."
 		},
-		"description": "est qui esse ex esse laborum id velit occaecat aliqua",
-		"header": "laboris eu id",
-		"title": "consectetur ut"
-	},
-	"notifications": {
-		"clearAll": "anim nostrud laborum",
-		"new": "irure",
-		"noNew": "irure non laboris"
-	},
-	"pageNames": {
-		"about": "fugiat",
-		"chatRoom": "non excepteur",
-		"grades": "eu",
-		"logout": "cillum",
-		"profile": "Lorem",
-		"projects": "eu",
-		"settings": "commodo",
-		"submitFeedback": "adipisicing cillum",
-		"users": "consectetur",
-		"feedback": "cillum"
-	},
-	"pageNotFound": {
-		"description": "esse tempor velit duis mollit exercitation consectetur excepteur quis ut",
-		"prompt": "aute deserunt qui Lorem voluptate",
-		"title": "pariatur laboris labore anim"
+		"description": "Veuillez sélectionner le mode que vous souhaitez utiliser"
 	},
 	"profile": {
-		"selectPicture": "sit labore minim dolor",
-		"title": "nisi pariatur cillum"
+		"selectPicture": "Sélectionnez votre photo de profil",
+		"title": "Velocity - Profil"
 	},
-	"projects": {
-		"all": "excepteur",
-		"form": {
-			"description": "aute anim ad",
-			"fields": {
-				"title": "aute",
-				"description": "laboris"
-			},
-			"title": "ex nisi amet laboris",
-			"deadline": {
-				"date": "non",
-				"time": "veniam",
-				"label": "amet",
-				"forcelabel": "Force laboris"
-			}
-		},
-		"status": {
-			"active": "non",
-			"closed": "magna",
-			"draft": "veniam",
-			"label": "amet"
-		},
-		"tabs": {
-			"analytics": {
-				"title": "amet"
-			},
-			"backlog": {
-				"title": "magna"
-			},
-			"board": {
-				"title": "bas"
-			},
-			"issues": {
-				"title": "dolor"
-			},
-			"overview": {
-				"title": "sit"
-			},
-			"settings": {
-				"title": "amet"
-			},
-			"management": {
-				"title": "lorem"
-			}
-		},
-		"title": "voluptate elit amet",
-		"type": {
-			"kanban": "do",
-			"label": "ea ut",
-			"scrum": "esse"
-		},
-		"label": "cupidatat",
+	"users": {
+		"all": "Tout",
+		"usersEditFormDescription": "Modifier les informations de compte d'un utilisateur",
+		"usersAddFormDescription": "Ajouter un compte d'utilisateur",
+		"userType": "Type d'utilisateur",
 		"export": {
 			"complete": {
 				"form": {
-					"description": "lorem ipsum dolor sit amet",
-					"title": "cupidatat esse ipsum"
+					"description": "La liste des comptes d'utilisateurs a été exportée",
+					"title": "Travail d'exportation terminé"
 				}
 			},
 			"form": {
-				"description": "lorem ipsum dolor sit amet",
-				"title": "lorem ipsum dolor sit amet"
+				"description": "Exporter la liste complète des utilisateurs",
+				"title": "Formulaire d'exportation de comptes"
+			}
+		},
+		"searchFilter": "Filtre de recherche",
+		"title": "Velocity - Utilisateurs",
+		"userStatus": "Statut de l'utilisateur",
+		"usersEditFormTitle": "Formulaire de modification du compte",
+		"label": "Utilisateur",
+		"import": {
+			"complete": {
+				"form": {
+					"added": "Nombre total d'utilisateurs ajoutés",
+					"description": "La liste des comptes d'utilisateurs a été importée",
+					"exists": "Le nombre total d'utilisateurs existe déjà",
+					"title": "Importer un travail terminé",
+					"failed": "Nombre total de tentatives infructueuses",
+					"processed": "Nombre total d'utilisateurs traités",
+					"report": "rapport"
+				}
+			},
+			"form": {
+				"button": "Fichier",
+				"placeHolder": "Sélectionnez votre fichier csv",
+				"description": "Votre fichier CSV doit contenir les champs suivants: nom d'utilisateur, mot de passe, prénom, nom de famille et adresse e-mail",
+				"title": "Formulaire d'importation de comptes"
+			}
+		},
+		"usersAddFormTitle": "Formulaire de création de compte"
+	},
+	"feedbackModal": {
+		"feedbackSubject": "Sujet du commentaire",
+		"message": "Message",
+		"subject": "Assujettir",
+		"feedbackMessage": "Message de la rétroaction",
+		"title": "Soumettre des commentaires"
+	},
+	"notifications": {
+		"noNew": "pas de nouvelles notifications",
+		"new": "Nouveau",
+		"clearAll": "effacer toutes les notifications"
+	},
+	"userInformation": {
+		"status": {
+			"active": "actif",
+			"disabled": "désactivé",
+			"pending": "en attendant"
+		},
+		"picture": "image",
+		"language": "La langue",
+		"firstName": "Prénom",
+		"languages": {
+			"russian": "Russian",
+			"spanish": "Spanish",
+			"french": "French",
+			"english": "English"
+		},
+		"lastName": "Nom de famille",
+		"newPassword": "nouveau mot de passe",
+		"themes": {
+			"theme-default": "Default",
+			"theme-blueSky": "Blue Sky",
+			"theme-greenIslands": "Green Islands",
+			"theme-redRoses": "Red Roses",
+			"theme-greyClouds": "Grey Clouds"
+		},
+		"username": "Nom d'utilisateur",
+		"notifications": "Notifications",
+		"theme": "Thème",
+		"currentPassword": "Mot de passe actuel",
+		"password": "Mot de passe",
+		"confirmPassword": "Confirmez le mot de passe",
+		"email": "Email",
+		"types": {
+			"collaboratorAdmin": "Collaborateur Admin",
+			"professor": "Professeur",
+			"student": "Étudiant",
+			"collaborator": "Collaborateur",
+			"modeSelector": "Sélecteur de mode",
+			"ta": "Assistant d'enseignement"
+		}
+	},
+	"projects": {
+		"status": {
+			"active": "actif",
+			"draft": "Brouillon",
+			"closed": "Fermé",
+			"label": "Status"
+		},
+		"all": "Tout",
+		"export": {
+			"complete": {
+				"form": {
+					"description": "La liste des projets a été exportée",
+					"title": "Travail d'exportationterminé"
+				}
+			},
+			"form": {
+				"description": "Exporter la liste complète des projets",
+				"title": "Formulaire d'exportation de projets"
+			}
+		},
+		"form": {
+			"fields": {
+				"description": "La description",
+				"title": "Titre"
+			},
+			"deadline": {
+				"date": "Rendez-vous amoureux",
+				"forcelabel": "Force Date limite",
+				"label": "Date limite",
+				"time": "Temps"
+			},
+			"description": "Formulaire de création de projet",
+			"title": "Créer un nouveau projet"
+		},
+		"title": "Velocity - Projets",
+		"tabs": {
+			"management": {
+				"title": "La gestion"
+			},
+			"settings": {
+				"title": "Paramètres"
+			},
+			"overview": {
+				"title": "Aperçu"
+			},
+			"analytics": {
+				"title": "Analytique"
+			},
+			"board": {
+				"title": "Planche"
+			},
+			"backlog": {
+				"title": "Arriéré"
+			},
+			"issues": {
+				"title": "Problèmes"
 			}
 		},
 		"import": {
 			"complete": {
 				"form": {
-					"added": "voluptate elit amet",
-					"description": "voluptate elit amet",
-					"failed": "voluptate elit amet",
-					"processed": "voluptate elit amet",
-					"report": "lorem",
-					"title": "voluptate elit amet"
+					"added": "Nombre total de projets ajoutés",
+					"description": "La liste des projets a été importée",
+					"title": "Importer un travail terminé",
+					"failed": "Nombre total de tentatives infructueuses",
+					"processed": "Nombre total de projets traités",
+					"report": "rapport"
 				}
 			},
 			"form": {
-				"button": "dolor",
-				"description": "voluptate elit amet",
-				"placeHolder": "voluptate elit amet",
-				"title": "voluptate elit amet"
+				"button": "Fichier",
+				"placeHolder": "Sélectionnez votre fichier de vélocité",
+				"description": "Pour des résultats optimaux, veuillez utiliser un fichier .velocity valide",
+				"title": "Formulaire d'importation de projets"
 			}
+		},
+		"type": {
+			"kanban": "Kanban",
+			"scrum": "Scrum",
+			"label": "Type de tableau"
+		},
+		"label": "Projet"
+	},
+	"tickets": {
+		"subtasks": "Sous-tâches",
+		"description": "La description",
+		"releases": "Communiqués",
+		"reporter": "Journaliste",
+		"tabs": {
+			"comment": "Commentaire",
+			"comments": "commentaires",
+			"assignee": "Historique des destinataires",
+			"state": "Histoire de l'état",
+			"ticket": "Billet",
+			"history": "Histoire"
+		},
+		"milestoneTickets": "Billets Milestone",
+		"noReleases": "Pas de rejets",
+		"states": {
+			"in_development": "En développement",
+			"code_review": "Révision de code",
+			"done": "Terminé",
+			"new": "Nouveau",
+			"ready_for_test": "Prêt pour Test",
+			"in_test": "En test"
+		},
+		"assignee": "Cessionnaire",
+		"noHistory": "Pas d'histoire",
+		"relation": {
+			"blocks": "Blocs",
+			"blocked_by": "Bloqué par",
+			"duplicates": "Duplicates",
+			"fixes": "Corrections",
+			"label": "Billets similaires",
+			"duplicated_by": "Dupliqué par",
+			"fixed_by": "Fixé par"
+		},
+		"relatedTickets": "Billets similaires",
+		"milestone": "Étape importante",
+		"displayId": "Afficher l'identifiant",
+		"noReporter": "Aucun journaliste",
+		"ticketDescription": "Description du billet",
+		"id": "ID de billets",
+		"types": {
+			"story": "Récit",
+			"bug": "Punaise",
+			"milestone": "Étape importante"
+		},
+		"sprints": "Sprints",
+		"noTags": "Aucun tag",
+		"milestoneTicketsDoneProgress": "Progrès réalisés sur les jalons",
+		"noAssignee": "Aucun cessionnaire",
+		"title": "Velocity - Billets",
+		"noSprints": "Pas de Sprints",
+		"create": "Créer un ticket",
+		"tags": "Mots clés",
+		"ticketTitle": "Titre",
+		"priorities": {
+			"high": "Haute",
+			"medium": "Moyen",
+			"low": "Faible"
+		},
+		"label": "Billet",
+		"priority": "Priorité",
+		"state": "Etat",
+		"points": "Points",
+		"writeComment": "Ecrire un commentaire",
+		"release": "Libération",
+		"milestoneTicketsPointsProgress": "Points Milestone Points Progression",
+		"type": "Type"
+	},
+	"about": {
+		"who": {
+			"start": "Qui sommes nous?",
+			"sentence1": "Le développement de Velocity a débutéet a été soutenu par l'Université de Toronto Mississauga. Voici une liste des contributeurs jusqu'à présent."
+		},
+		"supervisor": "Superviseur",
+		"modes": {
+			"start": "Modes",
+			"sentence1": "Lorsque vous utilisez la vélocité, vous avez la possibilité de travailler en mode classe ou en mode collab.",
+			"sentence2": "En classe, les professeurs peuvent créer des projets et leur attribuer des étudiants. Les étudiants peuvent travailler dans les projets assignés, tandis que les professeurs et les tas sont capables de voir et d'interagir avec leur travail.",
+			"sentence3": "En mode Collab, les choses sont plus soudées, les collaborateurs travaillant entre eux au sein de projets créés par leurs admins."
+		},
+		"analytics": {
+			"start": "Analytique",
+			"point2": "Statut actuel de chaque utilisateur pour chaque sprint",
+			"point3": "Division d'état pour les sprints et les communiqués",
+			"point4": "État des progrès au fil du temps pour un sprint ou une libération choisis",
+			"sentence1": "Velocity offre une riche suite d'analyses que les administrateurs et les utilisateurs peuvent consulter et voir leurs progrès. Dans chaque projet, vous pouvez trouver ce qui suit.",
+			"point6": "Graphique cumulatif",
+			"point1": "Vue d'ensemble de l'administration sur les progrès de chaque équipe",
+			"point5": "Tableau de combustion"
+		},
+		"intro": {
+			"start": "Qu'est-ce que Velocity?",
+			"sentence1": "Velocity est un site Web organisationnel de CS, offrant plusieurs types d'environnements de développement qui peuvent être utilisés par les classes et les groupes."
+		},
+		"projects": {
+			"point1": "Ajouter des utilisateurs au projet",
+			"start": "Projets",
+			"point2": "Ajouter des administrateurs de projet au projet",
+			"point3": "Créer des équipes avec un écran de sélection robuste",
+			"point4": "Configurer les paramètres de l'équipe, tels que la taille et le nom du préfixe",
+			"sentence1": "Les administrateurs et les administrateurs collaborateurs ont la possibilité de créer des projets. Avant de mettre le projet en ligne, il y a un certain nombre de choses que le créateur est capable de faire avec le projet.",
+			"point5": "Type de carte de force"
+		},
+		"name": "Sur",
+		"tickets": {
+			"start": "Des billets",
+			"sentence1": "En travaillant avec le projet, vos tâches seront marquées avec des tickets. Les tickets peuvent être des bugs, des histoires ou des jalons.",
+			"sentence2": "Les billets auront également différentes statues, ce qui vous permettra, ainsi qu'aux autres membres de votre équipe, desuivre les travaux en cours dans le cadre du projet."
+		},
+		"license": "Velocity est sous licence GNU General Public License v3.0.",
+		"management": {
+			"start": "La gestion",
+			"point2": "Sprints",
+			"point3": "Mots clés",
+			"sentence1": "Lorsque vous gérez un projet, si vous êtes dans un environnement de mêlée, vous pouvez attribuer des tickets avec trois choses différentes pour les organiser.",
+			"point1": "Communiqués"
+		},
+		"boards": {
+			"start": "Planches",
+			"sentence1": "Lorsque vous travaillez sur un projet, vous travaillez soit dans un environnement Scrum, soit dans un environnement Kanban.",
+			"sentence2": "Dans un environnement de mêlée, vous travaillerez sur des itérations, et votre conseil d'administration sera conçu pour réfléchir à cela. Vous serez en mesure de voir exactement ce que tout le monde travaille actuellement pour le sprint actuel, et le statut de tout.",
+			"sentence3": "Dans un environnement Kanban, comme il n'y a pas d'itération, on vous montrera ce que tout le monde a dans le monde, et le statut du travail de chacun."
+		},
+		"copyright": "droits d'auteur",
+		"since": {
+			"january2018": "depuis janvier 2018"
+		},
+		"teams": {
+			"start": "Équipes",
+			"sentence1": "Si vous êtes affecté à un projet, vous serez toujours affecté à une équipe avec laquelle travailler.",
+			"sentence2": "Sauf si la taille de l'équipe est 1, cela vous permettra de travailler avec d'autres personnes sur le projet pour développer votre cible.",
+			"sentence3": "Qu'il s'agisse de problèmes que vous trouvez, d'une fonctionnalité à mettre en œuvre ou d'une étape à franchir, vous travaillerez avec d'autres pour atteindre le même objectif final."
 		}
+	},
+	"settings": {
+		"title": "Velocity - Paramètres",
+		"users": {
+			"title": "Paramètres utilisateur",
+			"fullName": "Prénom et nom:",
+			"password": "Mot de passe:",
+			"email": "Email:",
+			"permissionsEdit": "Les utilisateurs peuvent modifier"
+		},
+		"general": {
+			"active": "Classe active (si les utilisateurs peuvent se connecter):",
+			"title": "réglages généraux"
+		}
+	},
+	"uploadModal": {
+		"selectFile": "Sélectionnez un fichier à télécharger",
+		"upload": "Télécharger",
+		"file": "Fichier",
+		"title": "Téléverser un fichier"
+	},
+	"switch": {
+		"on": "Sur",
+		"off": "De"
 	},
 	"projectPage": {
 		"tabs": {
-			"boards": {
-				"title": "sit"
-			},
-			"general": {
-				"forceBoardType": "voluptate elit amet",
-				"title": "dolor",
-				"boardTypeSelection": "lorem ipsum dolor:",
-				"deadlines": "amet",
-				"deadline": "lorem ipsum"
-			},
-			"groups": {
-				"deleteGroups": "voluptate elit amet",
-				"groupPrefix": "voluptate elit amet",
-				"groupName": "voluptate elit amet",
-				"groups": "lorem",
-				"groupSelectionMode": "voluptate elit amet",
-				"groupSize": "voluptate elit amet",
-				"groupStatus": "voluptate elit amet",
-				"newGroup": "voluptate elit amet",
-				"selectGroups": "voluptate elit amet",
-				"types": {
-					"individual": "lorem",
-					"instructor": "lorem impsum",
-					"randomize": "dolor",
-					"student": "sit amet"
-				},
-				"title": "esse",
-				"unassignedUsers": "eras delo"
+			"management": {
+				"releases": "Communiqués",
+				"tags": "Mots clés",
+				"newTag": "Nouveau tag",
+				"newSprint": "Nouveau Sprint",
+				"newRelease": "Nouvelle version",
+				"sprints": "Sprints",
+				"sprintStart": "Date de début",
+				"noSprints": "Pas de Sprints",
+				"noReleases": "Pas de rejets",
+				"noTags": "Aucun tag",
+				"sprintEnd": "Date de fin"
 			},
 			"users": {
-				"projectAdmins": "voluptate elit amet",
-				"projectUsers": "voluptate elit amet",
-				"title": "dolor"
+				"projectAdmins": "Administrateurs de projet",
+				"projectUsers": "Utilisateurs du projet",
+				"title": "Utilisateurs"
 			},
-			"management": {
-				"releases": "lorem",
-				"sprints": "impsum",
-				"sprintEnd": "solor sit",
-				"sprintStart": "lorem ipsum",
-				"tags": "solor",
-				"noReleases": "sit amet",
-				"noTags": "lorem",
-				"noSprints": "lorem ipsum",
-				"newRelease": "ipsum dolor",
-				"newTag": "lorem",
-				"newSprint": "ipsum"
+			"general": {
+				"boardTypeSelection": "Sélectionnezvotre type de planche:",
+				"deadline": "Date limite du projet",
+				"forceBoardType": "Forcer le type de carte pour les équipes",
+				"deadlines": "Dates limites",
+				"title": "Général"
 			},
 			"analytics": {
-				"title": "anat"
-			}
-		},
-		"title": "duis ea ad"
-	},
-	"settings": {
-		"general": {
-			"active": "est dolore occaecat excepteur duis occaecat non",
-			"title": "excepteur nisi"
-		},
-		"users": {
-			"email": "consequat",
-			"fullName": "in pariatur sit reprehenderit",
-			"password": "incididunt",
-			"permissionsEdit": "tempor aliquip esse",
-			"title": "cupidatat laboris"
-		},
-		"title": "laboris dolore tempor"
-	},
-	"switch": {
-		"on": "aute",
-		"off": "ex"
-	},
-	"tickets": {
-		"assignee": "in",
-		"create": "consequat esse",
-		"description": "culpa",
-		"milestoneIssues": "cupidatat consequat",
-		"points": "amet",
-		"priority": "id",
-		"priorities": {
-			"high": "sunt",
-			"low": "consectetur",
-			"medium": "excepteur"
-		},
-		"relatedTickets": "amet consequat",
-		"release": "est",
-		"reporter": "in",
-		"state": "incididunt",
-		"states": {
-			"code_review": "nulla nostrud",
-			"done": "quis",
-			"new": "in",
-			"in_development": "non quis",
-			"in_test": "sint fugiat",
-			"ready_for_test": "fugiat elit irure"
-		},
-		"sprints": "sunt",
-		"subtasks": "adipisicing",
-		"tabs": {
-			"comments": "laborum",
-			"state": "id aute",
-			"assignee": "consectetur mollit",
-			"ticket": "reprehenderit",
-			"comment": "incididunt",
-			"history": "dolor"
-		},
-		"tags": "cupidatat",
-		"ticketDescription": "laborum exercitation",
-		"ticketTitle": "cillum",
-		"title": "amet veniam sunt",
-		"type": "sit",
-		"types": {
-			"bug": "excepteur",
-			"milestone": "fugiat",
-			"story": "sit"
-		},
-		"writeComment": "ipsum dolor",
-		"noHistory": "aliquip culpa",
-		"relation": {
-			"blocks": "laborum",
-			"blocked_by": "aliqua labore",
-			"duplicates": "nisi",
-			"duplicated_by": "eiusmod aute",
-			"fixes": "commodo",
-			"fixed_by": "minim consectetur",
-			"label": "eiusmod et"
-		},
-		"label": "anim",
-		"id": "in magna",
-		"displayId": "aliquip id",
-		"releases": "adipisicing",
-		"milestone": "Lorem"
-	},
-	"uploadModal": {
-		"file": "sit",
-		"selectFile": "enim pariatur proident duis cillum",
-		"title": "velit proident",
-		"upload": "ipsum"
-	},
-	"userInformation": {
-		"confirmPassword": "amet dolor",
-		"currentPassword": "duis laborum",
-		"email": "Lorem",
-		"firstName": "anim est",
-		"language": "minim",
-		"lastName": "proident pariatur",
-		"newPassword": "est nostrud",
-		"notifications": "ad",
-		"password": "mollit",
-		"picture": "occaecat",
-		"status": {
-			"active": "ad",
-			"disabled": "pariatur",
-			"pending": "eiusmod"
-		},
-		"theme": "mollit",
-		"types": {
-			"modeSelector": "magna dolor",
-			"collaboratorAdmin": "mollit irure",
-			"collaborator": "labore",
-			"professor": "enim",
-			"ta": "mollit non",
-			"student": "irure"
-		},
-		"username": "non",
-		"themes": {
-			"theme-default": "sunt",
-			"theme-blueSky": "mollit deserunt",
-			"theme-greenIslands": "aute commodo",
-			"theme-redRoses": "consequat deserunt",
-			"theme-greyClouds": "occaecat minim"
-		},
-		"languages": {
-			"english": "English",
-			"french": "French"
-		}
-	},
-	"users": {
-		"all": "deserunt",
-		"searchFilter": "pariatur dolore",
-		"title": "officia voluptate labore",
-		"userStatus": "mollit in",
-		"userType": "veniam non",
-		"usersAddFormDescription": "excepteur duis in proident",
-		"usersAddFormTitle": "mollit nostrud proident",
-		"usersEditFormDescription": "magna deserunt do in aute",
-		"usersEditFormTitle": "qui pariatur tempor",
-		"label": "anim",
-		"import": {
-			"complete": {
-				"form": {
-					"added": "duis in proident",
-					"description": "mollit nostrud proident",
-					"exists": "do in aute",
-					"failed": "qui pariatur tempor",
-					"processed": "duis in proident",
-					"report": "mollit nostrud proident",
-					"title": "do in auted"
-				}
+				"title": "Analytique"
 			},
-			"form": {
-				"button": "lorem",
-				"description": "esse tempor velit duis mollit exercitation consectetur excepteur quis ut",
-				"placeHolder": "qui pariatur tempor",
-				"title": "duis in proidentm"
+			"groups": {
+				"newGroup": "Nouveau groupe",
+				"unassignedUsers": "Utilisateurs non affectés",
+				"groupPrefix": "Préfixe de groupe",
+				"groupSelectionMode": "Mode de sélection de groupe",
+				"groups": "Groupes",
+				"groupStatus": "Statut du groupe",
+				"types": {
+					"instructor": "Instructeur sélectionnez",
+					"individual": "Individuel",
+					"randomize": "Randomiser",
+					"student": "Étudiant sélectionner"
+				},
+				"groupSize": "Taille de groupe",
+				"title": "Groupes",
+				"deleteGroups": "Supprimer les groupes",
+				"groupName": "Nom de groupe",
+				"selectGroups": "Sélectionnez un groupe"
+			},
+			"boards": {
+				"title": "Planches"
 			}
 		},
-		"export": {
-			"form": {
-				"description": "mollit nostrud proident",
-				"title": "do in autem"
-			},
-			"complete": {
-				"form": {
-					"description": "qui pariatur tempor",
-					"title": "qui pariatur tempor"
-				}
-			}
-		}
+		"title": "Velocity - Projet"
 	},
-	"feedback": {
-		"title": "duis in proident",
-		"noFeedback": "mollit nostrud proident"
+	"login": {
+		"signIn": "S'identifier",
+		"forgotPassword": "Mot de passe oublié",
+		"signUp": "S'inscrire",
+		"title": "Velocity - Connexion"
 	},
-	"feedbackModal": {
-		"title": "do in aute",
-		"feedbackSubject": "qui pariatur tempor",
-		"subject": "duis in proident",
-		"feedbackMessage": "mollit nostrud proident",
-		"message": "do in aute"
+	"history": {
+		"release": "Libération",
+		"sprint": "Sprint",
+		"tag": "Marque",
+		"history": "Histoire"
 	}
 }
