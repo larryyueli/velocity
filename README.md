@@ -51,7 +51,7 @@ and `mongodb` installed.
     $ sh Scripts/certificateGenerator
     ```
 
-3. To secure MongoDB authentication and advanced firewall rules follow the steps provided under [Docs/MongoDb-Security](velocity/doc/MongoDb-Security.md).
+3. To secure MongoDB authentication and advanced firewall rules follow the steps provided under [Docs/MongoDb-Security](velocity/Docs/MongoDb-Security.md).
    - Note: You can skip this step if you are running this in a local environment (localhost).
 
 4. You can now launch the server by running
