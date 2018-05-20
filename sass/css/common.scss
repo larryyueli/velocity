@@ -1,0 +1,478 @@
+@import 'app.scss';
+
+.barrier-right {
+    border-right: 1px solid #464646;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.display-inline-flex {
+    display: inline-flex;
+}
+
+.display-flow-root {
+    display: flow-root;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.display-block {
+    display: block;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.padding-0 {
+    padding: 0 !important;
+}
+
+.padding-left-0 {
+    padding-left: 0 !important;
+}
+
+.padding-right-0 {
+    padding-right: 0 !important;
+}
+
+.padding-right-5 {
+    padding-right: 5px !important;
+}
+
+.padding-right-10 {
+    padding-right: 10px !important;
+}
+
+.padding-left-10 {
+    padding-left: 10px !important;
+}
+
+.padding-top-10 {
+    padding-top: 10px;
+}
+
+.padding-top-0 {
+    padding-top: 0px !important;
+}
+
+.padding-10 {
+    padding: 10px !important;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.margin-0 {
+    margin: 0 !important;
+}
+
+.margin-top-0 {
+    margin-top: 0px;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0px;
+}
+
+.margin-10 {
+    margin: 10 !important;
+}
+
+.margin-right-5 {
+    margin-right: 5px !important;
+}
+
+.margin-right-10 {
+    margin-right: 10px !important;
+}
+
+.margin-left-10 {
+    margin-left: 10px !important;
+}
+
+.margin-right-1-5em {
+    margin-right: 1.5em !important;
+}
+
+.vertical-align-middle {
+    vertical-align: middle;
+}
+
+.multiline {
+    white-space: pre-wrap;
+}
+
+.alignTextLeft {
+    text-align: left;
+}
+
+.noLineLink:link, .noLineLink:visited, .noLineLink:hover, .noLineLink:active {
+    text-decoration: none;
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.light-border {
+    border: 1px solid #e0e0e0;
+}
+
+.select-wrapper span.caret {
+    color: initial;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 10px;
+    margin: auto 0;
+    font-size: 10px;
+    line-height: 10px;
+}
+
+.caret {
+    display: inline-block;
+    width: auto;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 0px dashed;
+    border-top: 4px solid\9;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+
+.scroll-auto {
+    overflow: auto;
+}
+
+// Theme related
+.primaryColour-background-colour {
+    @include themify($themes) {
+        background-color: themed('primaryColour') !important;
+    }
+}
+
+.loaderBackgroundColour-background-colour {
+    @include themify($themes) {
+        background-color: themed('loaderBackgroundColour') !important;
+    }
+}
+
+.primaryColour-colour {
+    @include themify($themes) {
+        color: themed('primaryColour') !important;
+    }
+}
+
+.primaryTextOnPrimary-colour {
+    @include themify($themes) {
+        color: themed('primaryTextOnPrimary') !important;
+    }
+}
+
+.secondaryColour-background-colour {
+    @include themify($themes) {
+        background-color: themed('secondaryColour') !important;
+    }
+}
+
+.secondaryColour-border-colour {
+    @include themify($themes) {
+        border-color: themed('secondaryColour') !important;
+    }
+}
+
+.primaryTextOnSecondary-colour {
+    @include themify($themes) {
+        color: themed('primaryTextOnSecondary') !important;
+    }
+}
+
+.notificationBackground-background-colour {
+    @include themify($themes) {
+        background-color: themed('notificationBackground') !important;
+    }
+}
+
+.notificationNumber-colour {
+    @include themify($themes) {
+        color: themed('notificationNumber');
+    }
+}
+
+.cancelButtonBackground-background-colour {
+    @include themify($themes) {
+        background-color: themed('cancelButtonBackground') !important;
+    }
+}
+
+.cancelButtonText-colour {
+    @include themify($themes) {
+        color: themed('cancelButtonText') !important;
+    }
+}
+
+.resetButtonBackground-background-colour {
+    @include themify($themes) {
+        background-color: themed('resetButtonBackground') !important;
+    }
+}
+
+.resetButtonText-colour {
+    @include themify($themes) {
+        color: themed('resetButtonText') !important;
+    }
+}
+
+.activateButtonBackground-colour {
+    @include themify($themes) {
+        background-color: themed('activateButtonBackground') !important;
+    }
+}
+
+.activateButtonText-colour {
+    @include themify($themes) {
+        color: themed('activateButtonText') !important;
+    }
+}
+
+// Themed elements
+// Switch
+.switch label input[type=checkbox]:checked+.lever {
+    @extend .loaderBackgroundColour-background-colour;
+}
+
+.switch label input[type=checkbox]:checked+.lever:after {
+    @extend .primaryColour-background-colour;
+}
+
+.customSummernoteButton {
+    background-color: #ffffff;
+    color: #464646;
+    padding: 0 0.5rem;
+    margin: 0;
+}
+
+div.note-editor.note-frame.panel.panel-default{
+    border: 1px solid #eaeaea;
+    border-radius: 0px;
+}
+
+// Common elements
+.ticketPoints {
+    background: #666;
+    border: 2px solid #666;
+    border-radius: 100px;
+    color: #fff;
+    display: inline-block;
+    height: 25px;
+    min-width: 23px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+}
+
+.ticketStatus {
+    border-radius: 100px;
+    display: inline-block;
+    height: 25px;
+    min-width: 23px;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+
+    &.state0 {
+        @include themify($themes) {
+            background: themed('standardBlue') !important;
+            border: 2px solid themed('standardBlue') !important;
+            color: #fff;
+        }
+    }
+
+    &.state1 {
+        @include themify($themes) {
+            background: themed('standardYellow') !important;
+            border: 2px solid themed('standardYellow') !important;
+            color: #000;
+        }
+    }
+
+    &.state2 {
+        @include themify($themes) {
+            background: themed('standardRed') !important;
+            border: 2px solid themed('standardRed') !important;
+            color: #000;
+        }
+    }
+
+    &.state3 {
+        @include themify($themes) {
+            background: themed('standardLightBlue') !important;
+            border: 2px solid themed('standardLightBlue') !important;
+            color: #000;
+        }
+    }
+
+    &.state4 {
+        @include themify($themes) {
+            background: themed('standardOrange') !important;
+            border: 2px solid themed('standardOrange') !important;
+            color: #fff;
+        }
+    }
+
+    &.state5 {
+        @include themify($themes) {
+            background: themed('standardGreen') !important;
+            border: 2px solid themed('standardGreen') !important;
+            color: #fff;
+        }
+    }
+}
+
+.ticketStatusColors {
+    &.state0 {
+        @include themify($themes) {
+            background: themed('standardBlue') !important;
+            color: #fff;
+        }
+    }
+
+    &.state1 {
+        @include themify($themes) {
+            background: themed('standardYellow') !important;
+            color: #000;
+        }
+    }
+
+    &.state2 {
+        @include themify($themes) {
+            background: themed('standardRed') !important;
+            color: #000;
+        }
+    }
+
+    &.state3 {
+        @include themify($themes) {
+            background: themed('standardLightBlue') !important;
+            color: #000;
+        }
+    }
+
+    &.state4 {
+        @include themify($themes) {
+            background: themed('standardOrange') !important;
+            color: #fff;
+        }
+    }
+
+    &.state5 {
+        @include themify($themes) {
+            background: themed('standardGreen') !important;
+            color: #fff;
+        }
+    }
+}
+
+.clickable-item {
+    cursor: pointer;
+}
+
+.clickable-item:hover {
+    background-color: #ececec;
+}
+
+.truncateTextCommon {
+    display: inline-block !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 70%;
+}
+
+.no-text-flat-buttons {
+    padding-left: 0;
+    padding-right: 1em;
+}
+
+.hidden {
+    display: none;
+}
+
+#uploadModal {
+    background-color: white;
+    border-radius: 5px;
+    max-width: 500px;
+    height: 240px;
+    text-align: center;
+
+    .modal-content {
+        height: 100%;
+    }
+
+    h3 {
+        color: #575757;
+        font-weight: 600;
+        font-size: 30px;
+    }
+
+    #closeModal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+}
+
+#feedbackModal {
+    background-color: white;
+    border-radius: 5px;
+    max-width: 500px;
+    height: 500px;
+    text-align: center;
+
+    .modal-content {
+        height: 100%;
+    }
+
+    h3 {
+        color: #575757;
+        font-weight: 600;
+        font-size: 30px;
+    }
+
+    textarea {
+        max-height: 170px;
+        overflow-y: auto;
+    }
+
+    #closeModal {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+}
+
+.chipIcon {
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    line-height: 32px;
+    padding-left: 8px;
+    color: #000;
+    opacity: .2;
+}
+
+.chipIcon:hover {
+    opacity: .5;
+}

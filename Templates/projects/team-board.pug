@@ -1,0 +1,13 @@
+.row
+    a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#boardFilter"))')
+        i.material-icons search
+.row.hidden#boardFilter
+    form.col.s10.offset-s1
+        .row
+            .input-field.col.s12
+                input.autocomplete(type='text', name='assigneeAutocompleteBoard')#assigneeAutocompleteBoard
+                label(for='assigneeAutocompleteBoard') #{__('tickets.assignee')}
+
+.row.board
+    #boardsUserLoad
+    ul.collapsible(data-collapsible='expandable')#boardsUserList

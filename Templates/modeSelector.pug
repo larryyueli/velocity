@@ -1,0 +1,47 @@
+extends layout
+
+block title
+    title #{__('modeSelector.title')}
+
+block content
+    .container
+        .row
+            .center-align
+                h1
+                    b
+                        | #{__('modeSelector.header')}
+                h4
+                    | #{__('modeSelector.description')}
+        br
+        .row
+            .col.s12.l6
+                .card.primaryColour-background-colour.primaryTextOnPrimary-colour
+                    .card-content
+                        .center-align
+                            i.material-icons.md-80 people
+                            h4.margin-top-0 #{__('modeSelector.collaboratorMode.title')}
+                        p
+                            | #{__('modeSelector.collaboratorMode.description')}
+                        br
+                        p
+                            | #{__('modeSelector.collaboratorMode.features')}
+                    .card-action.cardAction.secondaryColour-background-colour.pointer
+                        .center-align
+                            a.pointer.noLineLink.primaryTextOnSecondary-colour(onClick='selectMode(1)') #{__('modeSelector.collaboratorMode.usage')}
+            .col.s12.l6
+                .card.primaryColour-background-colour.primaryTextOnPrimary-colour
+                    .card-content
+                        .center-align
+                            i.material-icons.md-80 school
+                            h4.margin-top-0 #{__('modeSelector.classMode.title')}
+                        p
+                            | #{__('modeSelector.classMode.description')}
+                        br
+                        p
+                            | #{__('modeSelector.classMode.features')}
+                    .card-action.cardAction.secondaryColour-background-colour.pointer
+                        .center-align
+                            a.pointer.noLineLink.primaryTextOnSecondary-colour(onClick='selectMode(0)') #{__('modeSelector.classMode.usage')}
+
+block scripts
+    script(src='/js/modeSelector.js')

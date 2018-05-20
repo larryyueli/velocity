@@ -1,0 +1,31 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/profile.css')
+
+block title
+    title #{__('settings.title')}
+
+block content
+    include ../navbar
+    br
+    .container
+        ul.collapsible(data-collapsible='expandable')
+            include settings-general
+            include settings-users
+    .row.center
+        .container
+            .row
+                .container.center
+                    button.waves-effect.waves-light.btn.col.s12.m4.resetButtonBackground-background-colour.resetButtonText-colour#resetButton
+                        | #{__('actions.reset')}
+                        i.material-icons.right replay
+                    button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#cancelButton
+                        | #{__('actions.cancel')}
+                        i.material-icons.right close
+                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#saveButton
+                        | #{__('actions.save')}
+                        i.material-icons.right save
+
+block scripts
+  script(src='/js/settings.js')

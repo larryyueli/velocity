@@ -1,0 +1,45 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/projects.css')
+
+block title
+    title #{__('projects.title')}
+
+block content
+    include ../navbar
+    br
+    .container
+        .row
+            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='toggleVisibility($("#projectsFilter"))')
+                i.material-icons search
+        .row.hidden#projectsFilter
+            form.col.s10.offset-s1
+                .row
+                    .input-field.col.s12.xl8
+                        input#searchFilter.validate(type='text')
+                        label(for='searchFilter')  #{__('users.searchFilter')}
+                    .input-field.col.s12.xl4
+                        select#statusFilter
+                            option(value='-1') #{__('users.all')}
+                            option(value='2') #{__('projects.status.active')}
+                            if user.canCreateProjects
+                                option(value='1') #{__('projects.status.draft')}
+                            option(value='0') #{__('projects.status.closed')}
+                        label #{__('projects.status.label')}
+        .row
+            if user.canCreateProjects
+                .col.s6
+                    a.waves-effect.waves-light.btn.left.primaryColour-background-colour.no-text-flat-buttons.margin-right-5(href='/projects/import')
+                        i.material-icons.right cloud_upload
+                    a.waves-effect.waves-light.btn.left.primaryColour-background-colour.no-text-flat-buttons(href='/projects/export')
+                        i.material-icons.right cloud_download
+                .col.s6
+                    a.waves-effect.waves-light.btn.right.primaryColour-background-colour(href='/projects/add') #{__('projects.label')}
+                        i.material-icons.right note_add
+        .row
+            #projectsLoad
+            ul.collection.scroll-auto.margin-0#projectsList
+
+block scripts
+    script(src='/js/projects/projects.js')

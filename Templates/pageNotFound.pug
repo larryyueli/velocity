@@ -1,0 +1,18 @@
+extends layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/pageNotFound.css')
+
+block title
+    title #{__('pageNotFound.title')}
+
+block content
+    include unauthNavbar
+
+    .center
+        .row
+            img#icon(src='/img/pageNotFoundCoyote.jpg')
+        .row
+            h4 #{__('pageNotFound.description')}
+        .row
+            a(href='/') #{__('pageNotFound.prompt')}

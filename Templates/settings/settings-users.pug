@@ -1,0 +1,30 @@
+li
+    .collapsible-header
+        i.material-icons person
+        | #{__('settings.users.title')}
+    .collapsible-body
+        h5 #{__('settings.users.permissionsEdit')}
+        span #{__('settings.users.fullName')}
+        .switch
+            label
+                | #{__('switch.off')}
+                input(type='checkbox', name='canEditFirstAndLastName', checked=canEditFirstAndLastName)#canEditNameSwitch
+                span.lever
+                | #{__('switch.on')}
+        br
+        span #{__('settings.users.email')}
+        .switch
+            label
+                | #{__('switch.off')}
+                input(type='checkbox', name='canEditEmail', checked=canEditEmail)#canEditEmailSwitch
+                span.lever
+                | #{__('switch.on')}
+        br
+        span #{__('settings.users.password')}
+        .switch
+            label
+                | #{__('switch.off')}
+                input(type='checkbox', name='canEditPassword', checked=canEditPassword)#canEditPasswordwitch
+                span.lever
+                | #{__('switch.on')}
+        br

@@ -1,0 +1,138 @@
+.navbar-fixed
+    nav.primaryColour-background-colour
+        .nav-wrapper
+            a.navbarLink.brand-logo.center(href='/') #{__('app.name')}
+            a.navbarLink.button-collapse(href='#', data-activates='mobile')
+                i.material-icons menu
+            ul.left.hide-on-med-and-down
+                li#nav-projects
+                    a.navbarLink(href='/projects') #{__('pageNames.projects')}
+                if user.canAccessUsers
+                    li#nav-users
+                        a.navbarLink(href='/users') #{__('pageNames.users')}
+                if user.canAccessSettings
+                    li#nav-settings
+                        a.navbarLink(href='/settings') #{__('pageNames.settings')}
+                if false
+                    if user.canAccessGrades
+                        li#nav-grades
+                            a.navbarLink(href='#!') #{__('pageNames.grades')}
+                    li#nav-chatRoom
+                        a.navbarLink(href='#!') #{__('pageNames.chatRoom')}
+            ul.right
+                if canSearch
+                    li
+                        .hide-on-med-and-down
+                            .col.s12
+                                .row
+                                    .input-field.col.s12
+                                        i.material-icons.prefix search
+                                        input#navSearchField.autocomplete(type='text')
+                                        label(for='searchField') Search
+                li
+                    a.navbarLink.button-collapse-open.right.padding-0.margin-0.notification-item.show-on-large(href='#!', data-activates='notifications_nav')
+                        i.material-icons.md-28 notifications
+                        .hide-on-small-only
+                            span.new.badge.notificationBackground-background-colour#notifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', data-badge-caption=__('notifications.new')) #{notifications? notifications.length : 0}
+                        .hide-on-med-and-up
+                            span.mobile-badge#mobileNotifCount(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '') #{notifications? notifications.length : 0}
+                li
+                    a.navbarLink.button-collapse.right.padding-0.show-on-large(href='#!', data-activates='account_nav')
+                        i.material-icons.md-28 account_circle
+
+ul#mobile.side-nav
+    li#navm-projects
+        a.navbarLinkHidden(href='/projects')
+            i.material-icons folder
+            | #{__('pageNames.projects')}
+    if user.canAccessUsers
+        li#navm-users
+            a.navbarLinkHidden(href='/users')
+                i.material-icons people
+                | #{__('pageNames.users')}
+    if user.canAccessSettings
+        li#navm-settings
+            a.navbarLinkHidden(href='/settings')
+                i.material-icons settings
+                | #{__('pageNames.settings')}
+    if false
+        if user.canAccessGrades
+            li#navm-grades
+                a.navbarLinkHidden(href='#!')
+                    i.material-icons edit
+                    | #{__('pageNames.grades')}
+        li#navm-chatRoom
+            a.navbarLinkHidden(href='#!')
+                i.material-icons chat
+                | #{__('pageNames.chatRoom')}
+
+ul#account_nav.side-nav
+    li#nav-info
+        .user-view
+            .background
+                img(src='/img/office.jpg')
+            img.circle(src=`/picture/${user.picture}`)
+            span.white-text.name #{user.fname} #{user.lname}
+            span.white-text.email #{user.username}
+            span.white-text.email #{user.email}
+    li#nav-profile
+        a.navbarLinkHidden.waves-effect(href='/profile')
+            i.material-icons person
+            | #{__('pageNames.profile')}
+    li#nav-about
+        a.navbarLinkHidden.waves-effect(href='/about')
+            i.material-icons info
+            | #{__('pageNames.about')}
+    li#nav-feedback
+        if user.canAccessFeedback
+            a.navbarLinkHidden.waves-effect(href='/feedback/admin')
+                i.material-icons feedback
+                | #{__('pageNames.feedback')}
+        else
+            a.navbarLinkHidden.waves-effect(onclick='openFeedback();')
+                i.material-icons feedback
+                | #{__('pageNames.submitFeedback')}
+    li
+        .divider
+    li#nav-logout
+        a.navbarLinkHidden.waves-effect(href='#!')
+            i.material-icons exit_to_app
+            | #{__('pageNames.logout')}
+
+#feedbackModal.modal
+    .modal-content
+        i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+        h3 #{__('feedbackModal.title')}
+        .row
+            .col.s12
+                .row
+                    .input-field
+                        input(type='text', placeholder=__('feedbackModal.feedbackSubject'))#feedbackSubject
+                        label(for='feedbackSubject') #{__('feedbackModal.subject')}
+                    .input-field
+                        textarea(placeholder=__('feedbackModal.feedbackMessage'))#feedbackMessage.materialize-textarea
+                        label(for='feedbackMessage') #{__('feedbackModal.message')}
+                .row.right
+                    .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFeedback()') #{__('actions.submit')}
+                        i.material-icons.right feedback
+
+ul#notifications_nav.side-nav
+    p.center.padding-top-10#noNotifications(class=!notifications || (notifications && notifications.length === 0) ? '' : 'hidden')
+        i
+            span #{__('notifications.noNew')}
+    p.center.padding-top-10.pointer#clearNotifications(class=!notifications || (notifications && notifications.length === 0) ? 'hidden' : '', onClick='clearAllNotifications()')
+        span.blue-text #{__('notifications.clearAll')}
+    if notifications && notifications.length !== 0
+        each notif in notifications
+            span
+                li
+                    a.navbarLinkHidden.waves-effect.padding-right-0.truncate(href=notif.link)
+                        i.material-icons.margin-right-10 #{notif.type}
+                        | #{notif.name}
+                    span.right.right-icons
+                        i.pointer.padding-right-5.material-icons.md-22.visibility-icon(onclick=`viewFullNotificationToggle($(this), ${notif.id})`) keyboard_arrow_down
+                        span.pointer.clear-notification.padding-right-10(id=`${notif.id}-clear`, onClick=`clearNotification($(this), ${notif.id})`) X
+                li.full-description.hidden(id=`${notif.id}-desc`)
+                    | #{notif.name}
+block scripts
+    script(src='/js/navbar.js')

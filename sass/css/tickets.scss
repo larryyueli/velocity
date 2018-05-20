@@ -1,0 +1,10 @@
+@import 'common.scss';
+
+.tabs .indicator {
+    @extend .primaryColour-background-colour;
+}
+
+.ticketIconsViewOnly {
+    height: 40px;
+    width: 40px;
+}

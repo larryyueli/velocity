@@ -1,0 +1,35 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/users.css')
+
+block title
+    title #{__('users.title')}
+
+block content
+    include ../navbar
+    br
+    .container#account-import-container
+        #loader
+        .row#account-import-div
+            .col.s12
+                .card.center
+                    .card-image
+                        a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href='/users')
+                            i.material-icons arrow_back
+                    .card-content
+                        h5.card-title #{__('users.import.form.title')}
+                        h6 #{__('users.import.form.description')}
+                    .card-action
+                        form(encType='multipart/form-data')#account-import-form
+                            .file-field.input-field
+                                .btn.primaryColour-background-colour
+                                    span #{__('users.import.form.button')}
+                                    input(type='file', accept='.csv')#account-import-form-input
+                                .file-path-wrapper
+                                    input.file-path.validate(type='text', placeholder=__('users.import.form.placeHolder'))
+                        br
+                        button.waves-effect.waves-light.btn.primaryColour-background-colour#account-import-form-submit #{__('actions.import')}
+                            i.material-icons.right cloud_download
+block scripts
+    script(src='/js/users/users-import.js')

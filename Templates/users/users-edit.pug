@@ -1,0 +1,68 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/users.css')
+
+block title
+    title #{__('users.title')}
+
+block content
+    include ../navbar
+    .container
+        br
+        .row
+            .col.s12
+                .card.center
+                    .card-image
+                        a.btn-floating.halfway-fab.waves-effect.waves-light.cancelButtonBackground-background-colour.cancelButtonText-colour.left(href='/users')
+                            i.material-icons arrow_back
+                    .card-content
+                        h5.card-title #{__('users.usersEditFormTitle')}
+                        h6 #{__('users.usersEditFormDescription')}
+                    .card-action
+                        .row
+                            form.col.s12#userEditform
+                                .row
+                                    .input-field.col.s6
+                                        input#fname.validate(type='text', name='fname', value=editUser.fname, required autofocus)
+                                        label(for='fname') #{__('userInformation.firstName')}
+                                    .input-field.col.s6
+                                        input#lname.validate(type='text', name='lname', value=editUser.lname, required)
+                                        label(for='lname') #{__('userInformation.lastName')}
+                                .row
+                                    .input-field.col.s12
+                                        input#username.validate(type='text', name='username', value=editUser.username, required)
+                                        label(for='username') #{__('userInformation.username')}
+                                .row
+                                    .input-field.col.s12
+                                        input#passwword.validate(type='password', name='password')
+                                        label(for='passwword') #{__('userInformation.password')}
+                                .row
+                                    .input-field.col.s12
+                                        input#email.validate(type='email', name='email', value=editUser.email, required)
+                                        label(for='email') #{__('userInformation.email')}
+                                .row
+                                    .input-field.col.s4
+                                        label(for='userType') #{__('users.userType')}:
+                                    .input-field.col.s8
+                                        select#userType
+                                            if isClassMode
+                                                option(value='5', selected=editUser.type===commonUserTypes.STUDENT.value) #{__('userInformation.types.student')}
+                                                option(value='4', selected=editUser.type===commonUserTypes.TA.value) #{__('userInformation.types.ta')}
+                                                option(value='3', selected=editUser.type===commonUserTypes.PROFESSOR.value) #{__('userInformation.types.professor')}
+                                            if isCollabMode
+                                                option(value='2', selected=editUser.type===commonUserTypes.COLLABORATOR.value) #{__('userInformation.types.collaborator')}
+                                                option(value='1', selected=editUser.type===commonUserTypes.COLLABORATOR_ADMIN.value) #{__('userInformation.types.collaboratorAdmin')}
+                                .row
+                                    .input-field.col.s4
+                                        label(for='userStatus') #{__('users.userStatus')}:
+                                    .input-field.col.s8
+                                        select#userStatus
+                                            option(value='2', selected=editUser.status===commonUserStatus.ACTIVE.value) #{__('userInformation.status.active')}
+                                            option(value='1', selected=editUser.status===commonUserStatus.PENDING.value) #{__('userInformation.status.pending')}
+                                            option(value='0', selected=editUser.status===commonUserStatus.DISABLED.value) #{__('userInformation.status.disabled')}
+                                .row
+                                    button.waves-effect.waves-light.btn.primaryColour-background-colour(type='submit') #{__('actions.save')}
+                                        i.material-icons.right save
+block scripts
+    script(src='/js/users/users-edit.js')

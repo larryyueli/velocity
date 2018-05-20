@@ -1,0 +1,340 @@
+extends ../layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/project-page.css')
+    link(rel='stylesheet' href='/summernote/summernote.css')
+
+block title
+    title #{__('projectPage.title')}
+
+block content
+    include ../navbar
+    br
+    p.hidden#myProjectAdmin #{isProjectAdmin}
+    .container
+        if isProjectAdmin
+            .row
+                .col.s12
+                    .row
+                        ul.tabs.overflow-x-hidden.text-align-center
+                            li.tab
+                                a.noLineLink.active#option-general(href='#general')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour security
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.general.title')}
+                            li.tab
+                                a.noLineLink#option-users(href='#users')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour person
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.users.title')}
+                            li.tab
+                                a.noLineLink#option-groups(href='#groups')
+                                    i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour people
+                                    |
+                                    .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.groups.title')}
+                            if (isActive || isClosed)
+                                li.tab
+                                    a.noLineLink#option-boards(href='#boards')
+                                        i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour dashboard
+                                        |
+                                        .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.boards.title')}
+                                li.tab
+                                    a.noLineLink#option-analytics(href='#analytics')
+                                        i.material-icons.tab-icon.hide-on-large-only.primaryColour-colour timeline
+                                        |
+                                        .hide-on-med-and-down.primaryColour-colour #{__('projectPage.tabs.analytics.title')}
+    .container
+        .row
+            .col.s12
+                if isProjectAdmin
+                    #general
+                        .card.center
+                            .card-content
+                                .row
+                                    form.col.s12#projectAddform
+                                        .row
+                                            if !isClosed
+                                                .input-field.col.s12
+                                                    input#title.validate(type='text', name='title', value=title ? title : "",required, autofocus)
+                                                    label(for='title') #{__('projects.form.fields.title')}
+                                            else
+                                                p #{__('projects.form.fields.title')}: #{title ? title : ""}
+                                        .row
+                                            #description(value = isClosed ? 1 : 0) #{description ? description : ""}
+                                        .row
+                                            .input-field.padding-10#attachmentsDivId
+                                                each attachment in attachments
+                                                    .row.margin-bottom-0.margin-right-10
+                                                        .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                                            p.truncateTextCommon #{`${attachment.name}`}
+                                                            if !isClosed
+                                                                i.close.material-icons(onclick=`removeAttachment('${attachment._id}')`) delete_forever
+                                                            i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
+                                                            if attachment.isViewable
+                                                                i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
+                                        .row
+                                            .col.s12.m4
+                                                span.left #{`${__('projectPage.tabs.general.forceBoardType')}:`}
+                                                br
+                                                .switch.left
+                                                    label
+                                                        | #{__('switch.off')}
+                                                        input(type='checkbox', name='forceBoardType', checked=forceBoardType, disabled=isActive || isClosed)#canForceBoardType
+                                                        span.lever
+                                                        | #{__('switch.on')}
+                                            .col.s12.m8
+                                                .input-field#boardSelectionRow
+                                                    select(disabled=isActive || isClosed).icons#boardSelection
+                                                        option(value=1, selected=selectedBoardType!==2)
+                                                            | #{__('projects.type.kanban')}
+                                                        option(value=2, selected=selectedBoardType===2)
+                                                            | #{__('projects.type.scrum')}
+                                                    label
+                                                        | #{__('projects.type.label')}
+                                        .row
+                                            .col.s12.m4
+                                                span.left #{`${__('projects.form.deadline.forcelabel')}:`}
+                                                br
+                                                .switch.left
+                                                    label
+                                                        | #{__('switch.off')}
+                                                        input(type='checkbox', name='forceDeadline', checked=forceDeadline, disabled=isClosed)#canForceDeadline
+                                                        span.lever
+                                                        | #{__('switch.on')}
+                                            .col.s12.m8
+                                                .row#deadlineSelectionRow
+                                                    .input-field.col.s6
+                                                        input.datepicker(type='text', placeholder=__('projects.form.deadline.date'), value=deadlineDate)#datepicker
+                                                    .input-field.col.s6
+                                                        input.timepicker(type='text', placeholder=__('projects.form.deadline.time'), value=deadlineTime)#timepicker
+                                        #imageViewer.modal
+                                            i.right.modal-action.modal-close.material-icons close
+                                            img.full-width#imageViewerImage
+                                        #uploadModal.modal
+                                            .modal-content
+                                                i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+                                                h3 #{__('uploadModal.title')}
+                                                    .row
+                                                        .col.s12
+                                                            .row
+                                                                .file-field.input-field
+                                                                    .btn.primaryColour-background-colour.primaryTextOnPrimary-colour
+                                                                        span
+                                                                            | #{__('uploadModal.file')}
+                                                                        input(type='file')#file-input
+                                                                    .file-path-wrapper
+                                                                        input.file-path.validate(type='text', placeholder=__('uploadModal.selectFile'))#file-name
+                                                            .row.right
+                                                                .btn.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='uploadFile()')#uploadButton #{__('uploadModal.upload')}
+                                                                    i.material-icons.right cloud_upload
+                                    .row
+                                        .container.center
+                                            if !isClosed
+                                                button.waves-effect.waves-light.btn.col.s12.m4.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                                    i.material-icons.right close
+                                                if isActive
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalCloseButton #{__('actions.close')}
+                                                        i.material-icons.right remove_circle
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActiveUpdateButton #{__('actions.update')}
+                                                        i.material-icons.right send
+                                                else
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.primaryColour-background-colour.primaryTextOnPrimary-colour#generalSaveButton #{__('actions.save')}
+                                                        i.material-icons.right save
+                                                    button.waves-effect.waves-light.btn.col.s12.m4.activateButtonBackground-colour.activateButtonText-colour#generalActivateButton #{__('actions.activate')}
+                                                        i.material-icons.right send
+                                            else
+                                                button.waves-effect.waves-light.btn.col.s12.cancelButtonBackground-background-colour.cancelButtonText-colour#generalDeleteButton #{__('actions.delete')}
+                                                    i.material-icons.right close
+                if isProjectAdmin
+                    #users
+                        .card
+                            if !isClosed
+                                .card-image
+                                    a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveAdminsConfiguration
+                                        i.material-icons save
+                            .card-content
+                                .row#projectAdminsRow
+                                    .col.s12
+                                        .row
+                                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#adminsSearch(onclick='toggleVisibility($("#adminsFilter"))')
+                                                i.material-icons search
+                                        .row.hidden#adminsFilter
+                                             .input-field.col.s12.m6
+                                                 input#searchAdminFilter.validate(type='text')
+                                                 label(for='searchAdminFilter')  #{__('users.searchFilter')}
+                                             .input-field.col.s12.m6
+                                                 select#typeAdminFilter
+                                                     if isClassMode
+                                                         option(value='-1') #{__('users.all')}
+                                                         option(value='5') #{__('userInformation.types.student')}
+                                                         option(value='4') #{__('userInformation.types.ta')}
+                                                         option(value='3') #{__('userInformation.types.professor')}
+                                                     if isCollabMode
+                                                         option(value='-1') #{__('users.all')}
+                                                         option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                                         option(value='2') #{__('userInformation.types.collaborator')}
+                                                 label #{__('users.userType')}
+                                .row
+                                    .col.s12.m6
+                                        h5.center #{__('projectPage.tabs.users.projectAdmins')}
+                                        #projectAdminsLoad
+                                        ul.collection.scroll-auto.margin-0#projectAdminsList
+                                    .col.s12.m6
+                                        h5.center #{__('projectPage.tabs.users.projectUsers')}
+                                        #projectUsersLoad
+                                        ul.collection.scroll-auto.margin-0#projectUsersList
+
+                #groups
+                    if isProjectAdmin && isClassMode
+                        .card.center#groupSelectionCard
+                            .card-content
+                                .row
+                                    h5 #{__('projectPage.tabs.groups.groupSelectionMode')}
+                                .row
+                                    .input-field.col.s12.m5
+                                        select#groupStatus
+                                            option(value='0')#groupType0 #{__('projectPage.tabs.groups.types.individual')}
+                                            option(value='1')#groupType1 #{__('projectPage.tabs.groups.types.instructor')}
+                                            option(value='2')#groupType2 #{__('projectPage.tabs.groups.types.student')}
+                                            option(value='3')#groupType3 #{__('projectPage.tabs.groups.types.randomize')}
+                                        label  #{__('projectPage.tabs.groups.groupStatus')}
+                                    .input-field.col.s6.m2
+                                        input#groupSize(type='number', min=2, value)
+                                        label#groupSizeLabel  #{__('projectPage.tabs.groups.groupSize')}
+                                    .input-field.col.s6.m2
+                                        input#groupPrefix(type='text')
+                                        label#groupPrefixLabel  #{__('projectPage.tabs.groups.groupPrefix')}
+                                    .input-field.col.s12.m3
+                                        button.waves-effect.waves-light.btn.col.s12.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#groupSelect #{__('actions.apply')}
+                                            i.material-icons.right send
+                    .card
+                        if isProjectAdmin && !isClosed
+                            .card-image
+                                a.btn-floating.halfway-fab.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour.right#saveGroupConfiguration
+                                    i.material-icons save
+                        .card-content
+                            .row
+                                .col.s12.l6
+                                    if isProjectAdmin
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.unassignedUsers')}
+                                        .row#unassignedUsersRow
+                                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#unassignedSearch(onclick='toggleVisibility($("#unassignedFilter"))')
+                                                i.material-icons search
+                                        .row.hidden#unassignedFilter
+                                            form
+                                                .input-field.col.s12.l6.xl7
+                                                    input#searchUserFilter.validate(type='text')
+                                                    label(for='searchUserFilter')  #{__('users.searchFilter')}
+                                                .input-field.col.s12.l6.xl5
+                                                    select#typeFilter
+                                                        if isClassMode
+                                                            option(value='-1') #{__('users.all')}
+                                                            option(value='5') #{__('userInformation.types.student')}
+                                                            option(value='4') #{__('userInformation.types.ta')}
+                                                            option(value='3') #{__('userInformation.types.professor')}
+                                                        if isCollabMode
+                                                            option(value='-1') #{__('users.all')}
+                                                            option(value='1') #{__('userInformation.types.collaboratorAdmin')}
+                                                            option(value='2') #{__('userInformation.types.collaborator')}
+                                                    label #{__('users.userType')}
+                                        if isClassMode && !isClosed
+                                            .row
+                                                button.center.waves-effect.waves-light.left.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour(type='button')#randomizeRemaining #{__('actions.randomizeRemaining')}
+
+                                        #unassignedLoad
+                                        ul.collection#unassignedList
+                                .col.s12(class=(isProjectAdmin) ? 'l6' : '')
+                                    if isProjectAdmin
+                                        .row.center
+                                            h5 #{__('projectPage.tabs.groups.groups')}
+                                    else
+                                        .row.center
+                                            h4 #{__('projectPage.tabs.groups.selectGroups')}
+                                    .row#groupsRow
+                                        a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#groupsSearch(onclick='toggleVisibility($("#groupsFilter"))')
+                                            i.material-icons search
+                                    .row.hidden#groupsFilter
+                                        form
+                                            .input-field.col.s12.l6
+                                                input#searchGroupFilter.validate(type='text')
+                                                label(for='searchGroupFilter')  #{__('users.searchFilter')}
+                                            .input-field.col.s12.l6
+                                                input#groupSizeFilter.validate(type='number')
+                                                label(for='groupSizeFilter')  #{__('projectPage.tabs.groups.groupSize')}
+                                    if !isProjectAdmin
+                                        ul.collapsible(data-collapsible='expandable')#userGroup
+                                        br
+                                    if !isClosed
+                                        .row
+                                            button.center.waves-effect.waves-light.left.btn.col.modal-trigger.primaryColour-background-colour.primaryTextOnPrimary-colour#newGroup(type='button', href='#groupCreateModal') #{__('projectPage.tabs.groups.newGroup')}
+                                            if isProjectAdmin
+                                                button.right.waves-effect.waves-light.left.btn.col.cancelButtonBackground-background-colour.cancelButtonText-colour(type='button')#deleteAllGroups #{__('projectPage.tabs.groups.deleteGroups')}
+
+
+                                    #groupLoad
+                                    ul.collapsible(data-collapsible='expandable')#groupList
+                if isProjectAdmin && (isActive || isClosed)
+                    #boards
+                        .row
+                            a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#teamsSearch(onclick='toggleVisibility($("#teamsFilter"))')
+                                i.material-icons search
+                        .row.hidden#teamsFilter
+                            form.col.s10.offset-s1
+                                .row
+                                    .input-field.col.s12
+                                        input#teamsSearchFilter.validate(type='text')
+                                        label(for='teamsSearchFilter')  #{__('users.searchFilter')}
+                        .row
+                            .col.s12
+                                #teamsload
+                                ul.collection.scroll-auto.margin-0#teamslist
+
+                    #analytics
+                        .row
+                            .col.s12
+                                .row
+                                    a.btn-floating.waves-effect.waves-light.primaryColour-background-colour.primaryTextOnPrimary-colour#teamAnalysisSearch(onclick='toggleVisibility($("#teamAnalysisFilter"))')
+                                        i.material-icons search
+                                .row.hidden#teamAnalysisFilter
+                                    form.col.s10.offset-s1
+                                        .row
+                                            .input-field.col.s12
+                                                input#analysisSearchFilter.validate(type='text')
+                                                label(for='analysisSearchFilter')  #{__('users.searchFilter')}
+                                .row
+                                    #analyticsLoad
+                                    table.highlight.centered.responsive-table#analyticsList
+                                        thead
+                                            tr
+                                                th #{__('analytics.teamName')}
+                                                th #{__('tickets.states.new')}
+                                                th #{__('tickets.states.in_development')}
+                                                th #{__('tickets.states.code_review')}
+                                                th #{__('tickets.states.ready_for_test')}
+                                                th #{__('tickets.states.in_test')}
+                                                th #{__('tickets.states.done')}
+                                                th #{__('analytics.doneProgress')}
+                                        tbody#analyticsTableBody
+                                    #analyticsTableBodyError
+
+    #groupCreateModal.modal
+        .modal-content
+            i.modal-action.modal-close.material-icons#closeModal(onclick='cancelling=true;') close
+            h3 #{__('projectPage.tabs.groups.groupName')}
+                .row
+                    .col.s12
+                        .row
+                            .input-field.col.s12
+                                i.material-icons.prefix label_outline
+                                input#newGroupName(placeholder=__('projectPage.tabs.groups.groupName'), type='text')
+                                label(for='newGroupName') #{__('projectPage.tabs.groups.groupName')}
+                        .row.right
+                            button.waves-effect.waves-light.btn.col.primaryColour-background-colour.primaryTextOnPrimary-colour#createGroupButton #{__('actions.create')}
+                                i.material-icons.right create_new_folder
+
+    #modals
+block scripts
+    script(src='/sparkline/jquery.sparkline.js')
+    script(src='/js/projects/project-page.js')
+    script(src='/summernote/summernote.js')

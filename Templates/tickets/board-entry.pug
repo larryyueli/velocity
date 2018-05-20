@@ -1,0 +1,16 @@
+.card.ticket.pointer(draggable="true" ondragstart="ticketDragStartHandler(event)")
+    .row
+        .col.s9.padding-left-0
+            .row.ticketTitle
+                .col.s12.display-inline-flex
+                    #typeIcon
+                    h6#displayId
+            .row
+                .col.s12.display-inline-flex
+                    #priorityIcon
+                    p.truncateText#name
+        .col.s3.padding-left-0
+            .row
+                #image
+            .row
+                span.ticketPoints#estimate

@@ -1,0 +1,74 @@
+extends layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/login.css')
+
+block title
+    title #{__('login.title')}
+
+block content
+    .layer
+    .container
+        .row
+            img#logo(src='img/logo.png')
+        .row
+            .col.s12.m6.offset-m3
+                .card.loginCard
+                    .card-content
+                        #loginSection
+                            span.card-title.center #{__('login.signIn')}
+                            form.form-login#loginForm
+                                br
+                                p#loginForm_invalid
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix person
+                                        input.form-control#loginForm_username(type='text' name='username' placeholder=__('userInformation.username') required autofocus)
+                                        label.sr-only(for='username') #{__('userInformation.username')}
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix vpn_key
+                                        input.form-control#loginForm_password(type='password' name='password' placeholder=__('userInformation.password') required)
+                                        label.sr-only(for='password') #{__('userInformation.password')}
+                                button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signIn')}
+                            a.center.display-block.padding-top-10.pointer#goToSignUp #{__('login.signUp')}
+                        #signUpSection.hidden
+                            span.card-title.center #{__('login.signUp')}
+                            form.form-login#signupForm
+                                br
+                                p.center#signupForm_invalid
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix person
+                                        input.form-control#signupForm_fname(type='text' name='fname' placeholder=__('userInformation.firstName') required autofocus)
+                                        label.sr-only(for='fname') #{__('userInformation.firstName')}
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix person
+                                        input.form-control#signupForm_lname(type='text' name='lname' placeholder=__('userInformation.lastName') required)
+                                        label.sr-only(for='lname') #{__('userInformation.lastName')}
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix person
+                                        input.form-control#signupForm_username(type='text' name='username' placeholder=__('userInformation.username') required)
+                                        label.sr-only(for='username') #{__('userInformation.username')}
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix email
+                                        input.form-control#signupForm_email(type='email' name='email' placeholder=__('userInformation.email') required)
+                                        label.sr-only(for='email') #{__('userInformation.email')}
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix vpn_key
+                                        input.form-control#signupForm_password(type='password' name='password' placeholder=__('userInformation.password') required)
+                                        label.sr-only(for='password') #{__('userInformation.password')}
+                                .row
+                                    .input-field
+                                        i.material-icons.prefix vpn_key
+                                        input.form-control#signupForm_confirmPassword(type='password' name='confirmPassword' placeholder=__('userInformation.confirmPassword') required)
+                                        label.sr-only(for='confirmPassword') #{__('userInformation.confirmPassword')}
+                                button(class='btn btn-lg btn-primary btn-block' type='submit') #{__('login.signUp')}
+                            a.center.display-block.padding-top-10.pointer#goToLogin #{__('login.signIn')}
+
+block scripts
+    script(src='/js/login.js')

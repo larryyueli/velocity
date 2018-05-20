@@ -1,0 +1,62 @@
+.row
+    .col.s12.l8
+        .row
+            .card.center
+                .card-content
+                    h5 #{project.title}
+                .card-action
+                    #description #{project.description}
+                    .row
+                        each attachment in attachments
+                            .row.margin-bottom-0.margin-right-10.margin-left-10
+                                .chip.full-width.related-chips.text-left.ticketStatusColors.attachmentsClass(id=`${attachment._id}`)
+                                    p.truncateTextCommon.margin-bottom-0 #{`${attachment.name}`}
+                                    i.chipIcon.material-icons(onclick=`downloadAttachment('${attachment._id}')`) file_download
+                                    if attachment.isViewable
+                                        i.chipIcon.material-icons(onclick=`viewImage('${attachment._id}')`, id=`attachment_${attachment._id}`) pageview
+                    #imageViewer.modal
+                        i.right.modal-action.modal-close.material-icons close
+                        img.full-width#imageViewerImage
+        if !isProjectClosed && isUnKnownBoardType && !isProjectAdmin
+            .row
+                .card.center
+                    .card-content
+                        h5 #{__('projectPage.tabs.general.boardTypeSelection')}
+                    .card-action
+                        .row
+                            .col.s8
+                                .input-field
+                                    select.icons#boardTypeSelection
+                                        option(value=1)
+                                            | #{__('projects.type.kanban')}
+                                        option(value=2)
+                                            | #{__('projects.type.scrum')}
+                                    label
+                                        | #{__('projects.type.label')}
+                            .col.s4
+                                a.waves-effect.waves-light.btn.primaryColour-background-colour.primaryTextOnPrimary-colour(onclick='saveBoardType()')
+                                    i.material-icons.left save
+                                    | #{__('actions.save')}
+        if !isUnKnownBoardType
+            if forceDeadline
+                .row
+                    ul.collection
+                        li.collection-item
+                            span.title #{__('projectPage.tabs.general.deadlines')}
+                        li.collection-item.avatar
+                            i.material-icons.circle folder
+                            span.title #{__('projectPage.tabs.general.deadline')}
+                            br
+                            | #{`${deadlineDate} ${deadlineTime}`}
+    .col.s12.l4
+        ul.collection
+            li.collection-item.center
+                h5 #{team.name}
+            each member in team.members
+                li.collection-item.avatar
+                    img.circle(src=`/picture/${member.picture}`, alt='')
+                    span.title #{member.fname} #{member.lname}
+                    br
+                    | #{member.username}
+                    br
+                    | #{member.email}

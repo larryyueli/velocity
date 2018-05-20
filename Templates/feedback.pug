@@ -1,0 +1,26 @@
+extends layout
+
+block styles
+    link(rel='stylesheet' href='/stylesheets/css/common.css')
+
+block title
+    title #{__('pageNames.feedback')}
+
+block content
+    include navbar
+    br
+    .container
+        h3 #{__('feedback.title')}
+        ul.collection
+            if feedbackList.length === 0
+                h6.center #{__('feedback.noFeedback')}
+            else
+                each feedback in feedbackList
+                    li.collection-item.avatar
+                        i.material-icons.circle feedback
+                        span.title #{feedback.subject}
+                        br
+                        | !{feedback.body.split('\n').join('<br/>')}
+
+block scripts
+    script(src='/js/feedback.js')

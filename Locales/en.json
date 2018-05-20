@@ -1,0 +1,492 @@
+{
+	"about": {
+		"analytics": {
+			"start": "Analytics",
+			"sentence1": "Velocity offers a rich suite of analytics for both admins and users to look at and to see their progress. Within each project, you can find the following.",
+			"point1": "Admin overview of every team's progress",
+			"point2": "Every users current status for every sprint",
+			"point3": "State division for sprints and releases",
+			"point4": "State progress over time for a chosen sprint or release",
+			"point5": "Burndown chart",
+			"point6": "Cumulative graph"
+		},
+		"boards": {
+			"start": "Boards",
+			"sentence1": "When you're working in a project, you'll either be working within a scrum environment, or a kanban one.",
+			"sentence2": "Within a scrum environment, you'll be working in iterations, and your board will be designed to reflect on that. You'll be able to see exactly what everyone is currently working on for the current sprint, and the status of everything.",
+			"sentence3": "Within a kanban environment, as there are no iterations, you'll instead be shown what everyone has globally, and the status of everyone's work."
+		},
+		"copyright": "Copyright",
+		"intro": {
+			"start": "What is Velocity?",
+			"sentence1": "Velocity is a CS organizational website, offering multiple kinds of developmental environments that can be used by both classes and groups."
+		},
+		"license": "Velocity is licensed under the GNU General Public License v3.0.",
+		"management": {
+			"start": "Management",
+			"sentence1": "When managing a project, if you are in a scrum environment, you'll be able to assign tickets with three different things to organize them.",
+			"point1": "Releases",
+			"point2": "Sprints",
+			"point3": "Tags"
+		},
+		"modes": {
+			"start": "Modes",
+			"sentence1": "When using velocity, you will have the option between working in class mode, or collab mode.",
+			"sentence2": "In class mode, professors can create projects and assign students to them. Students can work within assigned projects, while professors and tas are able to see and interact with their work.",
+			"sentence3": "In collab mode, things are more close knit, with collaborators working with each other within projects that their chosen admins will create."
+		},
+		"name": "About",
+		"projects": {
+			"start": "Projects",
+			"sentence1": "Admins and collaborator admins have the ability to create projects. Before letting the project go live, there is a number of things that the creator is able to do with the project.",
+			"point1": "Add users to the project",
+			"point2": "Add project admins to the project",
+			"point3": "Create teams with a robust selection screen",
+			"point4": "Configure team settings, such as the size and prefix name",
+			"point5": "Force board type"
+		},
+		"supervisor": "Supervisor",
+		"since": {
+			"january2018": "since January 2018"
+		},
+		"teams": {
+			"start": "Teams",
+			"sentence1": "If you're assigned to a project, you'll always be assigned to a team to work with.",
+			"sentence2": "Unless the team size is 1, this will allow you to work with others on the project to develop your target.",
+			"sentence3": "Whether it be issues you find, a feature to be implemented, or a milestone to be met, you'll be working with others to achieve the same end goal."
+		},
+		"tickets": {
+			"start": "Tickets",
+			"sentence1": "Working with the project, your tasks will be marked with tickets. Tickets can be either bugs, stories, or milestones.",
+			"sentence2": "Tickets will also have different statues, which is how you and others within your team be able to track the current work being done within the project."
+		},
+		"who": {
+			"start": "Who are we?",
+			"sentence1": "Velocity's development started at and has been supported by the University of Toronto Mississauga. Below is a list of the contributors so far."
+		}
+	},
+	"actions": {
+		"activate": "Activate",
+		"apply": "Apply",
+		"cancel": "Cancel",
+		"close": "Close",
+		"comment": "Comment",
+		"create": "Create",
+		"delete": "Delete",
+		"done": "Done",
+		"edit": "Edit",
+		"import": "Import",
+		"randomizeRemaining": "Randomize remaining",
+		"reset": "Reset",
+		"save": "Save",
+		"submit": "Submit",
+		"update": "Update",
+		"export": "Export",
+		"download": "Download"
+	},
+	"analytics": {
+		"doneProgress": "Done Progress",
+		"selectSprint": "You must select a sprint to view its analytics",
+		"selectRelease": "You must select a release to view its analytics",
+		"teamName": "Team Name",
+		"tickets": "Tickets",
+		"user": "User",
+		"yourData": "Your Data",
+		"stateDivision": "State Division",
+		"statesOverTime": "States Over Time",
+		"teamData": "Team Data",
+		"teamStateDivision": "State Division",
+		"teamStatesOverTime": "States Over Time",
+		"teamBurndown": "Burndown Chart",
+		"releaseData": "Release Data",
+		"releaseStateDivision": "State Division",
+		"releaseStatesOverTime": "States Over Time",
+		"releaseCumulativeChart": "Cumulative Chart",
+		"kanbanCumulativeChart": "Cumulative Chart"
+	},
+	"app": {
+		"name": "Velocity"
+	},
+	"filters": {
+		"all": "All"
+	},
+	"history": {
+		"history": "History",
+		"release": "Release",
+		"sprint": "Sprint",
+		"tag": "Tag"
+	},
+	"login": {
+		"signIn": "Log In",
+		"signUp": "Sign Up",
+		"forgotPassword": "Forgot Password",
+		"title": "Velocity - Login"
+	},
+	"modeSelector": {
+		"classMode": {
+			"description": "If you are a professor and would like to use Velocity in your classroom, then class mode is the one for you.",
+			"features": "This mode offers features like: Making assignments, assigning groups, adding teaching assistants, creating rubrics/marking criteria, and much more.",
+			"title": "Class Mode",
+			"usage": "Use class mode now"
+		},
+		"collaboratorMode": {
+			"description": "If you would like to organize your projects using scrum/kanban boards, then collaborator mode is the one for you.",
+			"features": "This mode offers features like: Making projects, working with others under an organization, organization using both scrum and kanban, and much more.",
+			"title": "Collaborator Mode",
+			"usage": "Use collaborator mode now"
+		},
+		"description": "Please select the mode that you would like to use",
+		"header": "Welcome to Velocity!",
+		"title": "Select mode"
+	},
+	"notifications": {
+		"clearAll": "clear all notifications",
+		"new": "new",
+		"noNew": "no new notifications"
+	},
+	"pageNames": {
+		"about": "About",
+		"chatRoom": "Chat Room",
+		"grades": "Grades",
+		"logout": "Logout",
+		"profile": "Profile",
+		"projects": "Projects",
+		"settings": "Settings",
+		"submitFeedback": "Submit Feedback",
+		"users": "Users",
+		"feedback": "Feedback"
+	},
+	"pageNotFound": {
+		"description": "We could not find the page you were looking for",
+		"prompt": "Return to your main page",
+		"title": "Velocity Page Not Found"
+	},
+	"profile": {
+		"selectPicture": "Select your profile picture",
+		"title": "Velocity - Profile"
+	},
+	"projects": {
+		"all": "All",
+		"form": {
+			"description": "Project creation form",
+			"fields": {
+				"title": "Title",
+				"description": "Description"
+			},
+			"title": "Create a new Project",
+			"deadline": {
+				"date": "Date",
+				"time": "Time",
+				"label": "Deadline",
+				"forcelabel": "Force Deadline"
+			}
+		},
+		"status": {
+			"active": "Active",
+			"closed": "Closed",
+			"draft": "Draft",
+			"label": "Status"
+		},
+		"tabs": {
+			"analytics": {
+				"title": "Analytics"
+			},
+			"backlog": {
+				"title": "Backlog"
+			},
+			"board": {
+				"title": "Board"
+			},
+			"issues": {
+				"title": "Issues"
+			},
+			"overview": {
+				"title": "Overview"
+			},
+			"settings": {
+				"title": "Settings"
+			},
+			"management": {
+				"title": "Management"
+			}
+		},
+		"title": "Velocity - Projects",
+		"type": {
+			"kanban": "Kanban",
+			"label": "Board Type",
+			"scrum": "Scrum"
+		},
+		"label": "Project",
+		"export": {
+			"complete": {
+				"form": {
+					"description": "The list of projects has been exported",
+					"title": "Export Job Completed"
+				}
+			},
+			"form": {
+				"description": "Export the full list of projects",
+				"title": "Projects Export Form"
+			}
+		},
+		"import": {
+			"complete": {
+				"form": {
+					"added": "Total number of projects added",
+					"description": "The list of projects has been imported",
+					"failed": "Total number of failed attempts",
+					"processed": "Total number of projects processed",
+					"report": "Report",
+					"title": "Import Job Completed"
+				}
+			},
+			"form": {
+				"button": "File",
+				"description": "For optimal results please use a valid .velocity file",
+				"placeHolder": "Select your velocity file",
+				"title": "Projects Import Form"
+			}
+		}
+	},
+	"projectPage": {
+		"tabs": {
+			"boards": {
+				"title": "Boards"
+			},
+			"general": {
+				"forceBoardType": "Force board type for teams",
+				"title": "General",
+				"boardTypeSelection": "Select your board type:",
+				"deadlines": "Deadlines",
+				"deadline": "Project Deadline"
+			},
+			"groups": {
+				"deleteGroups": "Delete Groups",
+				"groupPrefix": "Group Prefix",
+				"groupName": "Group Name",
+				"groups": "Groups",
+				"groupSelectionMode": "Group Selection Mode",
+				"groupSize": "Group Size",
+				"groupStatus": "Group Status",
+				"newGroup": "New Group",
+				"selectGroups": "Select a Group",
+				"types": {
+					"individual": "Individual",
+					"instructor": "Instructor select",
+					"randomize": "Randomize",
+					"student": "Student select"
+				},
+				"title": "Groups",
+				"unassignedUsers": "Unassigned Users"
+			},
+			"users": {
+				"projectAdmins": "Project Admins",
+				"projectUsers": "Project Users",
+				"title": "Users"
+			},
+			"management": {
+				"releases": "Releases",
+				"sprints": "Sprints",
+				"sprintEnd": "End Date",
+				"sprintStart": "Start Date",
+				"tags": "Tags",
+				"noReleases": "No Releases",
+				"noTags": "No Tags",
+				"noSprints": "No Sprints",
+				"newRelease": "New Release",
+				"newTag": "New Tag",
+				"newSprint": "New Sprint"
+			},
+			"analytics": {
+				"title": "Analytics"
+			}
+		},
+		"title": "Velocity - Project"
+	},
+	"settings": {
+		"general": {
+			"active": "Class active (if users can log in):",
+			"title": "General Settings"
+		},
+		"users": {
+			"email": "Email:",
+			"fullName": "First and last name:",
+			"password": "Password:",
+			"permissionsEdit": "Users can edit",
+			"title": "User Settings"
+		},
+		"title": "Velocity - Settings"
+	},
+	"switch": {
+		"on": "On",
+		"off": "Off"
+	},
+	"tickets": {
+		"assignee": "Assignee",
+		"create": "Create Ticket",
+		"description": "Description",
+		"milestoneTickets": "Milestone Tickets",
+		"points": "Points",
+		"priority": "Priority",
+		"priorities": {
+			"high": "High",
+			"low": "Low",
+			"medium": "Medium"
+		},
+		"relatedTickets": "Related Tickets",
+		"release": "Release",
+		"reporter": "Reporter",
+		"state": "State",
+		"states": {
+			"code_review": "Code Review",
+			"done": "Done",
+			"new": "New",
+			"in_development": "In Development",
+			"in_test": "In Test",
+			"ready_for_test": "Ready For Test"
+		},
+		"sprints": "Sprints",
+		"subtasks": "Subtasks",
+		"tabs": {
+			"comments": "Comments",
+			"state": "State History",
+			"assignee": "Assignee History",
+			"ticket": "Ticket",
+			"comment": "Comment",
+			"history": "History"
+		},
+		"tags": "Tags",
+		"ticketDescription": "Ticket Description",
+		"ticketTitle": "Title",
+		"title": "Velocity - Tickets",
+		"type": "Type",
+		"types": {
+			"bug": "Bug",
+			"milestone": "Milestone",
+			"story": "Story"
+		},
+		"writeComment": "Write Comment",
+		"noHistory": "No History",
+		"relation": {
+			"blocks": "Blocks",
+			"blocked_by": "Blocked By",
+			"duplicates": "Duplicates",
+			"duplicated_by": "Duplicated By",
+			"fixes": "Fixes",
+			"fixed_by": "Fixed By",
+			"label": "Related Tickets"
+		},
+		"label": "Ticket",
+		"id": "Ticket Id",
+		"displayId": "Display Id",
+		"releases": "Releases",
+		"milestone": "Milestone",
+		"noReporter": "No Reporter",
+		"noAssignee": "No Assignee",
+		"noReleases": "No Releases",
+		"noSprints": "No Sprints",
+		"noTags": "No Tags",
+		"milestoneTicketsDoneProgress": "Milestone Tickets Done Progress",
+		"milestoneTicketsPointsProgress": "Milestone Tickets Points Progress"
+	},
+	"uploadModal": {
+		"file": "File",
+		"selectFile": "Select a file to upload",
+		"title": "Upload File",
+		"upload": "Upload"
+	},
+	"userInformation": {
+		"confirmPassword": "Confirm Password",
+		"currentPassword": "Current Password",
+		"email": "Email",
+		"firstName": "First Name",
+		"language": "Language",
+		"lastName": "Last Name",
+		"newPassword": "New Password",
+		"notifications": "Notifications",
+		"password": "Password",
+		"picture": "picture",
+		"status": {
+			"active": "Active",
+			"disabled": "Disabled",
+			"pending": "Pending"
+		},
+		"theme": "Theme",
+		"types": {
+			"modeSelector": "Mode Selector",
+			"collaboratorAdmin": "Collaborator Admin",
+			"collaborator": "Collaborator",
+			"professor": "Professor",
+			"ta": "Teaching Assistant",
+			"student": "Student"
+		},
+		"username": "Username",
+		"themes": {
+			"theme-default": "Default",
+			"theme-blueSky": "Blue Sky",
+			"theme-greenIslands": "Green Islands",
+			"theme-redRoses": "Red Roses",
+			"theme-greyClouds": "Grey Clouds"
+		},
+		"languages": {
+			"russian": "Russian",
+			"spanish": "Spanish",
+			"french": "French",
+			"english": "English"
+		}
+	},
+	"users": {
+		"all": "All",
+		"searchFilter": "Search Filter",
+		"title": "Velocity - Users",
+		"userStatus": "User Status",
+		"userType": "User Type",
+		"usersAddFormDescription": "Add a user account",
+		"usersAddFormTitle": "Account Creation Form",
+		"usersEditFormDescription": "Edit a user's account information",
+		"usersEditFormTitle": "Account Edit Form",
+		"label": "User",
+		"import": {
+			"complete": {
+				"form": {
+					"added": "Total number of users added",
+					"description": "The list of user accounts has been imported",
+					"exists": "Total number of users already exist",
+					"failed": "Total number of failed attempts",
+					"processed": "Total number of users processed",
+					"report": "Report",
+					"title": "Import Job Completed"
+				}
+			},
+			"form": {
+				"button": "File",
+				"description": "Your CSV file needs to have the following fields: username, password, first name, last name and email",
+				"placeHolder": "Select your csv file",
+				"title": "Accounts Import Form"
+			}
+		},
+		"export": {
+			"form": {
+				"description": "Export the full list of users",
+				"title": "Accounts Export Form"
+			},
+			"complete": {
+				"form": {
+					"description": "The list of user accounts has been exported",
+					"title": "Export Job Completed"
+				}
+			}
+		}
+	},
+	"feedback": {
+		"title": "Feedback",
+		"noFeedback": "No feedback available"
+	},
+	"feedbackModal": {
+		"title": "Submit Feedback",
+		"feedbackSubject": "Subject of the feedback",
+		"subject": "Subject",
+		"feedbackMessage": "Message of the feedback",
+		"message": "Message"
+	}
+}

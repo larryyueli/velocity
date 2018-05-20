@@ -1,0 +1,36 @@
+.back::after {
+    display: block;
+    position: relative;
+    content: '';
+}
+
+.small-back::after {
+    background-image: linear-gradient(to bottom, transparent 40%, black 60%);
+    margin-top: -350px;
+    height: 500px;
+}
+
+.med-back::after {
+    background-image: linear-gradient(to bottom, transparent 25%, black 60%);
+    margin-top: -500px;
+    height: 650px;
+}
+
+.large-back::after {
+    background-image: linear-gradient(to bottom, transparent 25%, black 60%);
+    margin-top: -500px;
+    height: 650px;
+}
+
+.some {
+    display: block;
+    position: relative;
+    content: '';
+    margin-top: -275px;
+    color: white;
+    text-align: center;
+}
+
+.form-card {
+    padding: 20px;
+}

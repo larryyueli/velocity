@@ -1,0 +1,59 @@
+{
+  "name": "velocity",
+  "version": "1.0.0",
+  "description": "velocity description",
+  "main": "velocity.js",
+  "dependencies": {
+    "animate.css": "3.5.2",
+    "at.js": "1.5.3",
+    "bcryptjs": "2.4.3",
+    "body-parser": "1.18.2",
+    "bootstrap": "3.3.7",
+    "chart.js": "2.7.2",
+    "connect-mongo": "2.0.1",
+    "csvtojson": "1.1.9",
+    "express": "4.16.2",
+    "express-fileupload": "0.4.0",
+    "express-force-ssl": "0.3.2",
+    "express-session": "1.15.6",
+    "helmet": "3.9.0",
+    "i18n": "0.8.3",
+    "jquery": "3.2.1",
+    "jquery-sparkline": "2.4.0",
+    "jquery.caret": "0.3.1",
+    "json2csv": "4.0.2",
+    "materialize-css": "0.100.2",
+    "moment": "2.20.1",
+    "mongodb": "3.0.1",
+    "node-sass": "4.7.2",
+    "node-sass-middleware": "0.11.0",
+    "pug": "2.0.0-rc.4",
+    "query-string": "5.1.0",
+    "readline-sync": "1.4.7",
+    "rimraf": "2.6.2",
+    "summernote": "0.8.9",
+    "sweetalert": "2.1.0",
+    "uuid": "3.1.0",
+    "ws": "4.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dataGen": "node Scripts/dataGenerator.js",
+    "debug": "node velocity.js DEBUG",
+    "restart": "npm stop ; npm start",
+    "setup": "node Scripts/setup.js",
+    "start": "node velocity.js &",
+    "stop": "kill $(ps -ef | grep velocity | awk '{print $2}') > /dev/null",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larryyueli/velocity.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/larryyueli/velocity/issues"
+  },
+  "homepage": "https://github.com/larryyueli/velocity#readme"
+}

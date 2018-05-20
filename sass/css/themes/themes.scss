@@ -1,0 +1,197 @@
+$themes: (
+    default: (
+        primaryColour: #007f96,
+        primaryTextOnPrimary: #ffffff,
+        secondaryColour: #004e61,
+        primaryTextOnSecondary: #ffab40,
+
+        loaderBackgroundColour: #bcd7e2,
+
+        notificationBackground: #004353,
+        notificationNumber: #ffffff,
+
+        cancelButtonBackground: #f44336,
+        cancelButtonText: white,
+        resetButtonBackground: #868686,
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white,
+
+        standardGreen: #14892c,
+        standardRed: #ff6d9b,
+        standardYellow: #ffd351,
+        standardBlue: #4a6785,
+        standardOrange: #ffa501,
+        standardLightBlue: #00c0ff,
+
+        lighterStandardGreen: #5aed78,
+        lighterStandardRed: #ffa3c0,
+        lighterStandardYellow: #ffe496,
+        lighterStandardBlue: #95c0ed,
+        lighterStandardOrange: #ffcb6d,
+        lighterStandardLightBlue: #87e1ff,
+
+        lighterStandardGreenBack: rgba(90, 237, 119, 0.2),
+        lighterStandardRedBack: rgba(255, 163, 192, 0.2),
+        lighterStandardYellowBack: rgba(255, 228, 150, 0.2),
+        lighterStandardBlueBack: rgba(149, 192, 237, 0.2),
+        lighterStandardOrangeBack: rgba(255, 203, 109, 0.2),
+        lighterStandardLightBlueBack: rgba(135, 225, 255, 0.2),
+    ),
+    blueSky: (
+        primaryColour: #006888,
+        primaryTextOnPrimary: white,
+        secondaryColour: #007cb6,
+        primaryTextOnSecondary: #ffab40,
+
+        loaderBackgroundColour: #bcd7e2,
+
+        notificationBackground: #00415f,
+        notificationNumber: #ffffff,
+
+        cancelButtonBackground: #f44336,
+        cancelButtonText: white,
+        resetButtonBackground: #868686,
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white,
+
+        standardGreen: #14892c,
+        standardRed: #ff6d9b,
+        standardYellow: #ffd351,
+        standardBlue: #4a6785,
+        standardOrange: #ffa501,
+        standardLightBlue: #00c0ff,
+
+        lighterStandardGreen: #5aed78,
+        lighterStandardRed: #ffa3c0,
+        lighterStandardYellow: #ffe496,
+        lighterStandardBlue: #95c0ed,
+        lighterStandardOrange: #ffcb6d,
+        lighterStandardLightBlue: #87e1ff,
+
+        lighterStandardGreenBack: rgba(90, 237, 119, 0.2),
+        lighterStandardRedBack: rgba(255, 163, 192, 0.2),
+        lighterStandardYellowBack: rgba(255, 228, 150, 0.2),
+        lighterStandardBlueBack: rgba(149, 192, 237, 0.2),
+        lighterStandardOrangeBack: rgba(255, 203, 109, 0.2),
+        lighterStandardLightBlueBack: rgba(135, 225, 255, 0.2),
+    ),
+    greenIslands: (
+        primaryColour: #008866,
+        primaryTextOnPrimary: white,
+        secondaryColour: #00664d,
+        primaryTextOnSecondary: #ffab40,
+
+        loaderBackgroundColour: #bcd7e2,
+
+        notificationBackground: #00533f,
+        notificationNumber: #ffffff,
+
+        cancelButtonBackground: #f44336,
+        cancelButtonText: white,
+        resetButtonBackground: #868686,
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white,
+
+        standardGreen: #14892c,
+        standardRed: #ff6d9b,
+        standardYellow: #ffd351,
+        standardBlue: #4a6785,
+        standardOrange: #ffa501,
+        standardLightBlue: #00c0ff,
+
+        lighterStandardGreen: #5aed78,
+        lighterStandardRed: #ffa3c0,
+        lighterStandardYellow: #ffe496,
+        lighterStandardBlue: #95c0ed,
+        lighterStandardOrange: #ffcb6d,
+        lighterStandardLightBlue: #87e1ff,
+
+        lighterStandardGreenBack: rgba(90, 237, 119, 0.2),
+        lighterStandardRedBack: rgba(255, 163, 192, 0.2),
+        lighterStandardYellowBack: rgba(255, 228, 150, 0.2),
+        lighterStandardBlueBack: rgba(149, 192, 237, 0.2),
+        lighterStandardOrangeBack: rgba(255, 203, 109, 0.2),
+        lighterStandardLightBlueBack: rgba(135, 225, 255, 0.2),
+    ),
+    redRoses: (
+        primaryColour: #b8005c,
+        primaryTextOnPrimary: white,
+        secondaryColour: #a30052,
+        primaryTextOnSecondary: #ffffff,
+
+        loaderBackgroundColour: #bcd7e2,
+
+        notificationBackground: #6e0037,
+        notificationNumber: #ffffff,
+
+        cancelButtonBackground: #c40000,
+        cancelButtonText: white,
+        resetButtonBackground: #868686,
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white,
+
+        standardGreen: #14892c,
+        standardRed: #ff6d9b,
+        standardYellow: #ffd351,
+        standardBlue: #4a6785,
+        standardOrange: #ffa501,
+        standardLightBlue: #00c0ff,
+
+        lighterStandardGreen: #5aed78,
+        lighterStandardRed: #ffa3c0,
+        lighterStandardYellow: #ffe496,
+        lighterStandardBlue: #95c0ed,
+        lighterStandardOrange: #ffcb6d,
+        lighterStandardLightBlue: #87e1ff,
+
+        lighterStandardGreenBack: rgba(90, 237, 119, 0.2),
+        lighterStandardRedBack: rgba(255, 163, 192, 0.2),
+        lighterStandardYellowBack: rgba(255, 228, 150, 0.2),
+        lighterStandardBlueBack: rgba(149, 192, 237, 0.2),
+        lighterStandardOrangeBack: rgba(255, 203, 109, 0.2),
+        lighterStandardLightBlueBack: rgba(135, 225, 255, 0.2),
+    ),
+    greyClouds: (
+        primaryColour: #666666,
+        primaryTextOnPrimary: white,
+        secondaryColour: #e2e2e2,
+        primaryTextOnSecondary: #ffffff,
+
+        loaderBackgroundColour: #bcd7e2,
+
+        notificationBackground: #414141,
+        notificationNumber: #ffffff,
+
+        cancelButtonBackground: #f44336,
+        cancelButtonText: white,
+        resetButtonBackground: #868686,
+        resetButtonText: white,
+        activateButtonBackground: rgb(32, 170, 32),
+        activateButtonText: white,
+
+        standardGreen: #14892c,
+        standardRed: #ff6d9b,
+        standardYellow: #ffd351,
+        standardBlue: #4a6785,
+        standardOrange: #ffa501,
+        standardLightBlue: #00c0ff,
+
+        lighterStandardGreen: #5aed78,
+        lighterStandardRed: #ffa3c0,
+        lighterStandardYellow: #ffe496,
+        lighterStandardBlue: #95c0ed,
+        lighterStandardOrange: #ffcb6d,
+        lighterStandardLightBlue: #87e1ff,
+
+        lighterStandardGreenBack: rgba(90, 237, 119, 0.2),
+        lighterStandardRedBack: rgba(255, 163, 192, 0.2),
+        lighterStandardYellowBack: rgba(255, 228, 150, 0.2),
+        lighterStandardBlueBack: rgba(149, 192, 237, 0.2),
+        lighterStandardOrangeBack: rgba(255, 203, 109, 0.2),
+        lighterStandardLightBlueBack: rgba(135, 225, 255, 0.2),
+    )
+);
