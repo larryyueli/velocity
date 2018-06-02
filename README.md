@@ -48,6 +48,8 @@ and `mongodb` installed.
     * `db_host` - mongodb database server address (default: localhost)
     * `db_port` - mongodb connection port (default: 27017)
     * `db_name` - name of appplication's database within mongodb (default: velocity_UNKNOWN)
+    * `db_admin_name` - db admin account name (default: admin)
+    * `db_admin_password` - db admin account password (default: password)
     * `password` - password used for encryption and session security
     4. You can change the session expiration time(maxSessionAge), by default it is set to 1 hours. The number you enter represents the timeout in seconds, so 1 hour = 3600 seconds.
     5. Replace the default self-signed SSL Certificates with your certificates. The certificates are placed in Keys/private.key and Keys/cert.crt Make sure to use the same names.

@@ -80,6 +80,8 @@ const setupAdminAccount = function () {
         db_host: config.db_host,
         db_port: config.db_port,
         db_name: newDbName,
+        db_admin_name: config.db_admin_name,
+        db_admin_password: config.db_admin_password,
         password: config.password
     }, null, 4);
 

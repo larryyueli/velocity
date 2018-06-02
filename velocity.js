@@ -85,6 +85,8 @@ const parseConfigData = function () {
         || typeof (configObj.db_host) !== common_backend.variableTypes.STRING
         || typeof (configObj.db_port) !== common_backend.variableTypes.NUMBER
         || typeof (configObj.db_name) !== common_backend.variableTypes.STRING
+        || typeof (configObj.db_admin_name) !== common_backend.variableTypes.STRING
+        || typeof (configObj.db_admin_password) !== common_backend.variableTypes.STRING
         || typeof (configObj.password) !== common_backend.variableTypes.STRING) {
         logger.error('Invalid configuration');
         process.exit(1);
@@ -98,6 +100,8 @@ const parseConfigData = function () {
     config.db_host = configObj.db_host;
     config.db_port = configObj.db_port;
     config.db_name = configObj.db_name;
+    config.db_admin_name = configObj.db_admin_name;
+    config.db_admin_password = configObj.db_admin_password;
     config.password = configObj.password;
 
     logger.info(`Configuration has been loaded successfully.`);
