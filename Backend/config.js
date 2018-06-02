@@ -40,6 +40,7 @@ exports.notificationsWSPort = notificationsWSPort;
 exports.urlencoded = urlencoded;
 exports.debugMode = debugMode;
 exports.ssl_options = ssl_options;
+exports.password = password;
 
 // database related configuration
 var db_host = 'localhost';
@@ -51,7 +52,7 @@ exports.db_port = db_port;
 exports.db_name = db_name;
 
 // session related configuration
-const maxSessionAge = 60 * 60;
+const maxSessionAge = 60 * 60; // In seconds
 const sessionResave = false;
 const saveUninitializedSession = false;
 const rollingSession = true;
@@ -69,7 +70,7 @@ exports.languageOptions = languageOptions;
 exports.defaultLanguage = defaultLanguage;
 
 // files upload settings
-const filesSizeLimit = 50 * 1024 * 1024;
+const filesSizeLimit = 50 * 1024 * 1024; // In bytes
 const safeFileNames = true;
 const preserveFileExtension = true;
 const abortOnExceedLimit = true;
