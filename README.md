@@ -40,15 +40,17 @@ and `mongodb` installed.
     nodejs Scripts/setup.js
     ```
     1. Go to [velocity.config](velocity.config)
-    2. Change the https and http ports.
-    3. For `hostName` Enter the public web-address for this website, ex (www.velocity.com)
+    2. Change the following fields to your setup.https and http ports.
+    * `hostName` - Enter the public web-address for this website, ex (www.velocity.com) (default: localhost)
+    * `httpPort` - http port (default: 8000)
+    * `httpsPort` - https port (default: 8080)
+    * `maxSessionAge` - session timeout in seconds (default: 1 hour = 3600 seconds)
+    * `db_host` - mongodb database server address (default: localhost)
+    * `db_port` - mongodb connection port (default: 27017)
+    * `db_name` - name of appplication's database within mongodb (default: velocity_UNKNOWN)
+    * `password` - password used for encryption and session security
     4. You can change the session expiration time(maxSessionAge), by default it is set to 1 hours. The number you enter represents the timeout in seconds, so 1 hour = 3600 seconds.
     5. Replace the default self-signed SSL Certificates with your certificates. The certificates are placed in Keys/private.key and Keys/cert.crt Make sure to use the same names.
-    6. The port on which the server runs and the mongodb connection settings can be modified through the following environment variables or from :
-
-    * `DB_HOST` - mongodb database server address (default: localhost)
-    * `DB_PORT` - mongodb connection port (default: 27017)
-    * `DB_NAME` - name of appplication's database within mongodb (default: velocity_UNKNOWN)
 
   To generate your own Self-Signed Certificate, Run the following script on your shell (terminal):
   - Note: Make sure to have openssl installed on your shell.
