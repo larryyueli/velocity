@@ -72,10 +72,18 @@ const setupAdminAccount = function () {
 
     const newDbName = `velocity_db_${common.getUUID()}`;
     const newConfig = JSON.stringify({
+        hostName: config.hostName,
+        httpPort: config.httpPort,
+        httpsPort: config.httpsPort,
+        notificationsWSPort: config.notificationsWSPort,
+        maxSessionAge: config.maxSessionAge,
         db_host: config.db_host,
         db_port: config.db_port,
-        db_name: newDbName
-    });
+        db_name: newDbName,
+        db_admin_name: config.db_admin_name,
+        db_admin_password: config.db_admin_password,
+        password: config.password
+    }, null, 4);
 
     fs.writeFile(pathToConfigFile, newConfig, function (err) {
         if (err) {

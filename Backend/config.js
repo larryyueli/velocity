@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const fs = require('fs');
 
 // server related configuration
-const hostName = 'localhost';
-const httpPort = 8000;
-const httpsPort = 8080;
-const notificationsWSPort = 8001;
+var hostName = 'localhost';
+var httpPort = 8000;
+var httpsPort = 8080;
+var notificationsWSPort = 8001;
 const urlencoded = true;
-const password = 'superSecretSecret';
+var password = 'superSecretSecret';
 var debugMode = false;
 const ssl_options = {
     key: fs.readFileSync(`${__dirname}/../Keys/private.key`),
@@ -40,18 +40,23 @@ exports.notificationsWSPort = notificationsWSPort;
 exports.urlencoded = urlencoded;
 exports.debugMode = debugMode;
 exports.ssl_options = ssl_options;
+exports.password = password;
 
 // database related configuration
 var db_host = 'localhost';
 var db_port = 27017;
 var db_name = 'velocity_db_UNKNOWN';
+var db_admin_name = 'admin';
+var db_admin_password = 'password';
 
 exports.db_host = db_host;
 exports.db_port = db_port;
 exports.db_name = db_name;
+exports.db_admin_name = db_admin_name;
+exports.db_admin_password = db_admin_password;
 
 // session related configuration
-const maxSessionAge = 60 * 60;
+var maxSessionAge = 60 * 60; // In seconds
 const sessionResave = false;
 const saveUninitializedSession = false;
 const rollingSession = true;
@@ -69,7 +74,7 @@ exports.languageOptions = languageOptions;
 exports.defaultLanguage = defaultLanguage;
 
 // files upload settings
-const filesSizeLimit = 50 * 1024 * 1024;
+const filesSizeLimit = 50 * 1024 * 1024; // In bytes
 const safeFileNames = true;
 const preserveFileExtension = true;
 const abortOnExceedLimit = true;
