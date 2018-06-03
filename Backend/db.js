@@ -45,7 +45,7 @@ const db_vfs = require('./dbs/db-virtualFileSystem.js');
  * @param {function} callback callback function
  */
 const initialize = function (callback) {
-    const url = `mongodb://${config.db_host}:${config.db_port}`;
+    const url = `mongodb://${config.db_admin_name}:${config.db_admin_password}@${config.db_host}:${config.db_port}`;
     mongoClient.connect(url, function (err, client) {
         if (err) {
             return callback(common.getError(1001), null);

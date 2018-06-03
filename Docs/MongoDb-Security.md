@@ -24,8 +24,8 @@ Step 2 Create application server account (Velocity database)
    - Change user and pwd to something difficult
 ```
 db.createUser({
-  user : "appuser",
-  pwd  : "apppass",
+  user : "db_admin_name from velocity.config",
+  pwd  : "db_admin_password from velocity.config",
   roles: [
     { 
       role: 'readWrite', db: 'velocity'
