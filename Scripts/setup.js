@@ -47,7 +47,9 @@ const setupAdminAccount = function () {
         if (err) {
             logger.error(JSON.stringify(common.getError(1001)));
             process.exit(1);
-        } logger.error(JSON.stringify('ok'));
+        }
+
+        logger.info(JSON.stringify('ok'));
 
         const adminDb = client.db('admin');
         const randomDbSuffix = common.getUUID();
@@ -56,7 +58,7 @@ const setupAdminAccount = function () {
         const velocityUser = {
             roles: [{ role: 'readWrite', db: newDbName }]
         };
-        
+
         adminDb.addUser(newDbAdmin, config.db_admin_password, velocityUser, function (err, result) {
             if (err) {
                 logger.error(JSON.stringify(err));
@@ -118,6 +120,7 @@ const setupAdminAccount = function () {
                 }
 
                 config.db_name = newDbName;
+                config.db_admin_name = newDbAdmin;
                 logger.info('The new configuration has been saved!');
                 db.initialize(function (err, result) {
                     if (err) {
