@@ -3,7 +3,8 @@
 ## Contents
 
 0. [Introduction](#introduction)
-1. [Setup](#quick-setup)
+2. [Screenshots](#screenshots)
+1. [Setup](#setup)
 
 ## Introduction
 
