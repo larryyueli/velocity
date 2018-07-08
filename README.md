@@ -9,6 +9,10 @@
 
 Velocity is a CS organizational website, offering multiple kinds of developmental environments that can be used by both classes and groups.
 
+## Screenshot
+![Alt text](/Docs/Screenshots/board.png?raw=true "Board Image")
+![Alt text](/Docs/Screenshots/backlog.png?raw=true "Backlog Image")
+
 ## Setup
 
 These instructions will guide you through setting up an instance of Velocity.
