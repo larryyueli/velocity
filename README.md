@@ -39,8 +39,9 @@ and `mongodb` installed.
   $ cd velocity
   $ npm install
   ```
+2. To secure MongoDB authentication and advanced firewall rules follow the steps provided under [Docs/MongoDb-Security](Docs/MongoDb-Security.md).
 
-2. Configure server settings and SSL Certification
+3. Configure server settings and SSL Certification
    * Note: To run this application locally you do not have to change any configuration settings.
     1. Run the setup script, which will ask you for your administrator account information.
     ```
@@ -70,9 +71,6 @@ and `mongodb` installed.
     ```
     $ sh Scripts/certificateGenerator
     ```
-
-3. To secure MongoDB authentication and advanced firewall rules follow the steps provided under [Docs/MongoDb-Security](Docs/MongoDb-Security.md).
-   - Note: You can skip this step if you are running this in a local environment (localhost).
 
 4. You can now launch the server by running
 

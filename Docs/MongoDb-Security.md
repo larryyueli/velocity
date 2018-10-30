@@ -14,6 +14,8 @@ db.createUser({
 });
 ```
 
+WARNING: PROCEED ONLY IF YOU ARE THE ADMIN OF THE MACHINE
+
 Another layer of protection we can add is on the server side, only allowing the application server to connect to DB. 
 This is by configuring the firewall iptables:
 
