@@ -178,7 +178,7 @@ logoutButton.click(function () {
 
 $(function () {
     $('#feedbackModal').modal();
-    var socket = new WebSocket(`ws://${window.location.hostname}:8001`);
+    var socket = new WebSocket(`wss://${window.location.hostname}:8080/notifications`);
     socket.onmessage = function (event) {
         addNotification(JSON.parse(event.data)['notifList']);
     }

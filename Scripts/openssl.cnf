@@ -1,0 +1,42 @@
+[ req ]
+default_bits        = 2048
+default_keyfile     = server-key.pem
+distinguished_name  = subject
+req_extensions      = req_ext
+x509_extensions     = x509_ext
+string_mask         = utf8only
+
+[ subject ]
+countryName             = Country Name (2 letter code)
+stateOrProvinceName     = State or Province Name (full name)
+localityName            = Locality Name (eg, city
+organizationName        = Organization Name (eg, company)
+commonName              = Common Name (e.g. server FQDN or YOUR name)
+
+countryName_default             = CA
+stateOrProvinceName_default     = ON
+localityName_default            = Toronto
+organizationName_default        = University of Toronto
+commonName_default              = Velocity
+
+[ x509_ext ]
+subjectKeyIdentifier        = hash
+authorityKeyIdentifier      = keyid,issuer
+basicConstraints            = CA:FALSE
+keyUsage                    = digitalSignature, keyEncipherment
+subjectAltName              = @alternate_names
+nsComment                   = "OpenSSL Generated Certificate"
+
+[ req_ext ]
+subjectKeyIdentifier          = hash
+basicConstraints              = CA:FALSE
+keyUsage                      = digitalSignature, keyEncipherment
+subjectAltName                = @alternate_names
+nsComment                     = "OpenSSL Generated Certificate"
+
+[ alternate_names ]
+
+DNS.1       = localhost
+DNS.2       = 127.0.0.1
+DNS.3       = 142.1.4.196
+IP.1        = 142.1.4.196
