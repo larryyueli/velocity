@@ -77,17 +77,17 @@ const parseConfigData = function () {
         process.exit(1);
     }
 
-    if (typeof (configObj.hostName) !== common_backend.variableTypes.STRING
-        || typeof (configObj.httpPort) !== common_backend.variableTypes.NUMBER
-        || typeof (configObj.httpsPort) !== common_backend.variableTypes.NUMBER
-        || typeof (configObj.notificationsWSPort) !== common_backend.variableTypes.NUMBER
-        || typeof (configObj.maxSessionAge) !== common_backend.variableTypes.NUMBER
-        || typeof (configObj.db_host) !== common_backend.variableTypes.STRING
-        || typeof (configObj.db_port) !== common_backend.variableTypes.NUMBER
-        || typeof (configObj.db_name) !== common_backend.variableTypes.STRING
-        || typeof (configObj.db_admin_name) !== common_backend.variableTypes.STRING
-        || typeof (configObj.db_admin_password) !== common_backend.variableTypes.STRING
-        || typeof (configObj.password) !== common_backend.variableTypes.STRING) {
+    if (typeof (configObj.hostName) !== common_backend.variableTypes.STRING ||
+        typeof (configObj.httpPort) !== common_backend.variableTypes.NUMBER ||
+        typeof (configObj.httpsPort) !== common_backend.variableTypes.NUMBER ||
+        typeof (configObj.notificationsWSPort) !== common_backend.variableTypes.NUMBER ||
+        typeof (configObj.maxSessionAge) !== common_backend.variableTypes.NUMBER ||
+        typeof (configObj.db_host) !== common_backend.variableTypes.STRING ||
+        typeof (configObj.db_port) !== common_backend.variableTypes.NUMBER ||
+        typeof (configObj.db_name) !== common_backend.variableTypes.STRING ||
+        typeof (configObj.db_admin_name) !== common_backend.variableTypes.STRING ||
+        typeof (configObj.db_admin_password) !== common_backend.variableTypes.STRING ||
+        typeof (configObj.password) !== common_backend.variableTypes.STRING) {
         logger.error('Invalid configuration');
         process.exit(1);
     }
@@ -128,6 +128,7 @@ const wsSessionInterceptor = function (info, callback) {
     });
 }
 const notificationsWS = new ws.Server({
+    noServer: true,
     verifyClient: wsSessionInterceptor,
     port: config.notificationsWSPort
 });
@@ -156,13 +157,17 @@ app.use(
 );
 app.use(helmet());
 app.use(fileUpload({
-    limits: { fileSize: config.filesSizeLimit },
+    limits: {
+        fileSize: config.filesSizeLimit
+    },
     safeFileNames: config.safeFileNames,
     preserveExtension: config.preserveFileExtension,
     abortOnLimit: config.abortOnExceedLimit
 }));
 app.use(express.static(`${__dirname}/UI`));
-app.use(bodyParser.urlencoded({ extended: config.urlencoded }));
+app.use(bodyParser.urlencoded({
+    extended: config.urlencoded
+}));
 app.use(forceSSL);
 app.use(sessionParser);
 app.use(function (req, res, next) {
@@ -183,8 +188,22 @@ app.use(function (req, res, next) {
 // settings https server
 const httpsServer = https.createServer(config.ssl_options, app);
 const httpServer = http.createServer(function (req, res) {
-    res.writeHead(301, { 'Location': `https://${config.hostName}:${config.httpsPort}` });
+    res.writeHead(301, {
+        'Location': `https://${config.hostName}:${config.httpsPort}`
+    });
     res.end();
+});
+
+httpsServer.on('upgrade', function upgrade(request, socket, head) {
+    const pathname = request.url;
+
+    if (pathname === '/notifications') {
+        notificationsWS.handleUpgrade(request, socket, head, function done(ws) {
+            notificationsWS.emit('connection', ws, request);
+        });
+    } else {
+        socket.destroy();
+    }
 });
 
 httpServer.listen(config.httpPort, function () {
